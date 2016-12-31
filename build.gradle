@@ -1,0 +1,42 @@
+ext {
+    // Versions
+    minSdkVersion = 16
+    targetSdkVersion = 25
+    compileSdkVersion = 25
+    buildToolsVersion = '25.0.0'
+
+
+    rxKotlinVersion = '0.60.0'
+    rxAdnroidVersion = '1.2.1'
+    retrofitVersion = '2.1.0'
+    daggerVersion = '2.8'
+    supportLibVersion = '25.1.0'
+    constraintLayoutVersion = '1.0.0-beta4'
+    junitVersion = '4.12'
+}
+
+buildscript {
+    ext.androidPluginVersion = '2.3.0-beta1'
+    ext.aptVersion = '1.8'
+    ext.kotlinVersion = '1.0.6'
+
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:$androidPluginVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlinVersion"
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
