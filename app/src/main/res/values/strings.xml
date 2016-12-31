@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">PocketWaka</string>
+
+    <string name="prompt_api_key">Your API key</string>
+    <string name="prompt_api_key_explanation">Copy your API key after authorization</string>
+
+    <string name="action_open_waka_time">Log in using website</string>
+    <string name="action_authorize">OK</string>
+    <string name="action_retry">Retry</string>
+
+    <string name="error_invalid_api">This API key is invalid</string>
+    <string name="error_logging_in">Log in failed</string>
+    <string name="error_getting_token">Can\'t get token</string>
+
+    <string name="bottom_nav_menu_item_stats">Stats</string>
+    <string name="bottom_nav_menu_item_tools">Tools</string>
+    <string name="bottom_nav_menu_item_plugins">Plugins</string>
+
+</resources>
