@@ -8,7 +8,6 @@ import android.support.customtabs.CustomTabsIntent
 import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.api.ApiScope
 import com.kondenko.pocketwaka.api.oauth.LoginService
 import retrofit2.Retrofit
 import rx.android.schedulers.AndroidSchedulers
@@ -34,13 +33,13 @@ class LoginPresenterImpl(val view: LoginView) : LoginPresenter {
             if (code != null) {
                 getToken(code)
             } else if (uri.getQueryParameter("error") != null) {
-                view.displayError(null, R.string.error_getting_token)
+                view.onGetTokenError(null, R.string.error_getting_token)
             }
         }
     }
 
     override fun onAuthPageOpen(context: Context) {
-        val uri = getAuthUrl(Const.RESPONSE_TYPE_CODE, arrayOf(ApiScope.EMAIL.s))
+        val uri = getAuthUrl(Const.RESPONSE_TYPE_CODE, arrayOf(Const.SCOPE_EMAIL))
         val builder = CustomTabsIntent.Builder()
         builder.setToolbarColor(R.color.colorPrimary)
         val customTabsIntent = builder.build()
@@ -55,17 +54,16 @@ class LoginPresenterImpl(val view: LoginView) : LoginPresenter {
                 "&scope=${scope.joinToString(",")}")
     }
 
-
     fun getToken(code: String) {
         service.getAccessToken(Const.APP_ID, Const.APP_SECRET, Const.AUTH_REDIRECT_URI, Const.GRANT_TYPE_AUTH_CODE, code)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { token ->
-                            view.displayToken(token)
+                            view.onGetTokenSuccess(token)
                         },
                         { error ->
-                            view.displayError(error, R.string.error_getting_token)
+                            view.onGetTokenError(error, R.string.error_getting_token)
                         }
                 )
     }

@@ -1,7 +1,13 @@
 package com.kondenko.pocketwaka.screens.main
 
-/**
- * Created by Kondenko on 31.12.2016.
- */
-class MainActivityPresenter {
+import android.content.Intent
+import com.kondenko.pocketwaka.screens.login.LoginActivity
+
+class MainActivityPresenter(val view: MainActivityView) {
+
+    fun logout(activity: MainActivity) {
+        activity.finish()
+        activity.startActivity(Intent(activity, LoginActivity::class.java))
+    }
+
 }

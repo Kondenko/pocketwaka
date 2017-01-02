@@ -11,11 +11,12 @@
     tools:context="com.kondenko.pocketwaka.screens.main.MainActivity"
     >
 
-
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+    </FrameLayout>
 
 
     <android.support.design.widget.BottomNavigationView
@@ -23,7 +24,7 @@
         android:layout_height="@dimen/bottom_nav_height"
         android:layout_alignParentBottom="true"
         app:itemBackground="@color/colorPrimary"
-        app:itemIconTint="@color/colorAccent"
+        app:itemIconTint="@color/bottom_nav_color_state"
         app:itemTextColor="@android:color/white"
         app:menu="@menu/bottom_nav_menu"
         android:id="@+id/bottomNavigationView"/>
