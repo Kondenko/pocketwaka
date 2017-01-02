@@ -50,6 +50,17 @@ object AccessTokenUtils {
         return prefs.contains(KEY_ACCESS_TOKEN)
     }
 
+    fun removeFromPrefs(context: Context) {
+        val sp = getPrefs(context)
+        val e = sp.edit()
+        e.remove(KEY_ACCESS_TOKEN)
+        e.remove(KEY_EXPIRES_IN)
+        e.remove(KEY_REFRESH_TOKEN)
+        e.remove(KEY_SCOPE)
+        e.remove(KEY_TOKEN_TYPE)
+        e.remove(KEY_UID)
+    }
+
     private fun getPrefs(context: Context): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context)
     }
