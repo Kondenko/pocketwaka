@@ -6,11 +6,10 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import rx.Observable
-import java.lang.reflect.Type
 
 interface LoginService {
 
-//    @Headers(arrayOf(Const.HEADER_ACCEPT, Const.HEADER_AUTH))
+    @Headers(Const.HEADER_ACCEPT)
     @FormUrlEncoded
     @POST(Const.TOKEN_URL_POSTFIX)
     fun getAccessToken(

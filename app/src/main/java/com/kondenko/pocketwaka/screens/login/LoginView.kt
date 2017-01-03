@@ -5,8 +5,8 @@ import com.kondenko.pocketwaka.api.oauth.AccessToken
 
 interface LoginView {
 
-    fun displayToken(token: AccessToken)
+    fun onGetTokenSuccess(token: AccessToken)
 
-    fun displayError(e: Throwable?, @StringRes messageStringRes: Int)
+    fun onGetTokenError(error: Throwable?, @StringRes messageStringRes: Int)
 
 }
