@@ -1,10 +1,10 @@
-package com.kondenko.pocketwaka.screens
+package com.kondenko.pocketwaka.screens.activities
 
 import android.app.Activity
 import android.content.Intent
 import com.kondenko.pocketwaka.api.oauth.AccessTokenUtils
-import com.kondenko.pocketwaka.screens.login.LoginActivity
-import com.kondenko.pocketwaka.screens.main.MainActivity
+import com.kondenko.pocketwaka.screens.activities.login.LoginActivity
+import com.kondenko.pocketwaka.screens.activities.main.MainActivity
 
 /**
  * Checks if the user is logged in and proceeds to the appropriate screen

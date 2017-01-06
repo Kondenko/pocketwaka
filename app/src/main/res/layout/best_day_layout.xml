@@ -1,0 +1,70 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="112dp"
+    android:layout_marginTop="8dp"
+    android:background="@android:color/white"
+    >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:foregroundGravity="right"
+        android:scaleType="fitEnd"
+        android:src="@drawable/illustration_best_day"
+        />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/best_day_bottom_top_padding"
+        android:paddingEnd="@dimen/best_day_size_padding"
+        android:paddingStart="@dimen/best_day_size_padding"
+        android:paddingTop="@dimen/best_day_bottom_top_padding">
+
+        <TextView
+            android:id="@+id/textViewBestDayDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Date"
+            tools:text="Dec 28, 2016"
+            />
+
+        <TextView
+            android:id="@+id/textViewBestDayTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewBestDayDate"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Time"
+            tools:text="8 hrs 8 mins"
+            />
+
+        <TextView
+            android:id="@+id/textViewCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewBestDayTime"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Caption"
+            tools:text="@string/str_stats_coding_activity_caption"
+            />
+
+        <TextView
+            android:id="@+id/textViewBestDayHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/str_stats_best_day"
+            android:textAppearance="@style/TextAppearance.App.Stats.Header"
+            />
+
+    </RelativeLayout>
+
+</FrameLayout>

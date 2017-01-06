@@ -1,12 +1,15 @@
 package com.kondenko.pocketwaka.dagger.component
 
 import com.kondenko.pocketwaka.dagger.module.NetModule
-import com.kondenko.pocketwaka.screens.login.LoginPresenterImpl
+import com.kondenko.pocketwaka.screens.activities.login.LoginPresenterImpl
 import dagger.Component
 import javax.inject.Singleton
 
+/**
+ * A component for Wakatime authentication (requires website base URL)
+ */
 @Singleton
 @Component(modules = arrayOf(NetModule::class))
-interface NetComponent {
+interface LoginComponent {
     fun inject(activity: LoginPresenterImpl)
 }

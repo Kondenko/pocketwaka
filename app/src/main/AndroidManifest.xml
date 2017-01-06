@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme"
         >
 
-        <activity android:name=".screens.ResolverActivity"
+        <activity android:name=".screens.activities.ResolverActivity"
             android:theme="@android:style/Theme.NoDisplay"
             android:label="@string/app_name">
             <intent-filter>
@@ -26,7 +26,7 @@
         </activity>
 
         <activity
-            android:name=".screens.login.LoginActivity"
+            android:name=".screens.activities.login.LoginActivity"
             android:configChanges="keyboard|orientation|screenSize"
             android:theme="@style/LoginActivityTheme"
             >
@@ -42,7 +42,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".screens.main.MainActivity">
+        <activity android:name=".screens.activities.main.MainActivity">
         </activity>
 
 

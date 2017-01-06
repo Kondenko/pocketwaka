@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.screens.login
+package com.kondenko.pocketwaka.screens.activities.login
 
 import android.content.Intent
 import android.databinding.DataBindingUtil
@@ -10,7 +10,7 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.oauth.AccessToken
 import com.kondenko.pocketwaka.api.oauth.AccessTokenUtils
 import com.kondenko.pocketwaka.databinding.ActivityLoginBinding
-import com.kondenko.pocketwaka.screens.main.MainActivity
+import com.kondenko.pocketwaka.screens.activities.main.MainActivity
 
 
 class LoginActivity : AppCompatActivity(), LoginView {

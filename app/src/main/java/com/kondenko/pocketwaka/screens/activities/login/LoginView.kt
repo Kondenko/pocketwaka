@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.screens.login
+package com.kondenko.pocketwaka.screens.activities.login
 
 import android.support.annotation.StringRes
 import com.kondenko.pocketwaka.api.oauth.AccessToken

@@ -4,8 +4,8 @@ object Const {
 
     // URLs
     const val BASE_URL = "https://wakatime.com/"
+    const val API_URL = "https://wakatime.com/api/v1/"
 
-    const val API_BASE_URL_POSTFIX = "api/v1/"
     const val AUTH_URL_POSTFIX = "oauth/authorize"
     const val TOKEN_URL_POSTFIX = "oauth/token"
 
@@ -14,7 +14,13 @@ object Const {
     // Authorization
     const val AUTH_REDIRECT_URI = "pocketwaka://oauth2"
 
-    const val HEADER_ACCEPT = "Accept: application/x-www-form-urlencode"
+    const val HEADER_ACCEPT_NAME = "Accept"
+    const val HEADER_ACCEPT_VALUE = "application/x-www-form-urlencode"
+
+    const val HEADER_ACCEPT = HEADER_ACCEPT_NAME + " : " + HEADER_ACCEPT_VALUE
+
+    const val HEADER_BEARER_NAME = "Authorization"
+    const val HEADER_BEARER_VALUE_PREFIX = "Bearer"
 
     const val GRANT_TYPE_AUTH_CODE = "authorization_code"
     const val RESPONSE_TYPE_CODE = "code"

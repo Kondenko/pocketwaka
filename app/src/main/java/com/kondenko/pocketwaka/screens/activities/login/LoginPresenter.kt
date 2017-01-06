@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.screens.login
+package com.kondenko.pocketwaka.screens.activities.login
 
 import android.app.Activity
 import android.content.Context

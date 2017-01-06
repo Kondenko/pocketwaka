@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.screens.login
+package com.kondenko.pocketwaka.screens.activities.login
 
 import android.app.Activity
 import android.content.Context
@@ -10,7 +10,7 @@ import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.KeysManager
-import com.kondenko.pocketwaka.api.oauth.LoginService
+import com.kondenko.pocketwaka.api.services.LoginService
 import retrofit2.Retrofit
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -32,7 +32,7 @@ class LoginPresenterImpl(val view: LoginView) : LoginPresenter {
     }
 
     init {
-        App.netComponent.inject(this)
+        App.loginComponent.inject(this)
         service = retrofit.create(LoginService::class.java)
     }
 
@@ -49,7 +49,8 @@ class LoginPresenterImpl(val view: LoginView) : LoginPresenter {
     }
 
     override fun onAuthPageOpen(context: Context) {
-        val uri = getAuthUrl(Const.RESPONSE_TYPE_CODE, arrayOf(Const.SCOPE_EMAIL))
+        val uri = getAuthUrl(Const.RESPONSE_TYPE_CODE,
+                arrayOf(Const.SCOPE_EMAIL, Const.SCOPE_READ_LOGGED_TIME, Const.SCOPE_READ_STATS, Const.SCOPE_READ_TEAMS))
         val builder = CustomTabsIntent.Builder()
         builder.setToolbarColor(R.color.colorPrimary)
         val customTabsIntent = builder.build()

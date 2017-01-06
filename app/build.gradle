@@ -13,6 +13,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     dataBinding {
         enabled = true
@@ -44,7 +45,6 @@ dependencies {
 
     // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-
     // Rx
     compile "io.reactivex:rxkotlin:$rxKotlinVersion"
     compile "io.reactivex:rxandroid:$rxAdnroidVersion"
@@ -68,4 +68,5 @@ dependencies {
     testCompile "junit:junit:$junitVersion"
     compile 'javax.annotation:jsr250-api:1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile 'com.android.support:support-v4:25.1.0'
 }

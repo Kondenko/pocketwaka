@@ -12,5 +12,20 @@
 
     <dimen name="size_logo">120dp</dimen>
 
+    <!--Text-->
+    <dimen name="text_size_stats_header">16dp</dimen>
+    <dimen name="text_size_stats_total_info">20dp</dimen>
+
+
+    <dimen name="best_day_layout_height">112dp</dimen>
+
+    <dimen name="best_day_size_padding">24dp</dimen>
+    <dimen name="best_day_bottom_top_padding">16dp</dimen>
+
+    <dimen name="text_size_best_day_date">16dp</dimen>
+    <dimen name="text_size_best_day_time">24dp</dimen>
+    <dimen name="text_size_best_day_caption">12dp</dimen>
+
+    <dimen name="elevation_best_day">4dp</dimen>
 
 </resources>

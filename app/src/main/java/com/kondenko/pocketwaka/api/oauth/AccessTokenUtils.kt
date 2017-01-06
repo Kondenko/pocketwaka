@@ -3,6 +3,7 @@ package com.kondenko.pocketwaka.api.oauth
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.kondenko.pocketwaka.Const
 
 object AccessTokenUtils {
 
@@ -13,7 +14,7 @@ object AccessTokenUtils {
     private val KEY_TOKEN_TYPE = "token_type"
     private val KEY_UID = "uid"
 
-    fun getFromPreferences(context: Context): AccessToken {
+    fun getTokenObject(context: Context): AccessToken {
         val sp = getPrefs(context)
         if (!isTokenSaved(sp)) throw IllegalStateException("Access Token not yet acquired")
         return AccessToken(
@@ -26,20 +27,25 @@ object AccessTokenUtils {
         )
     }
 
-    fun getToken(context: Context): String {
+    fun getTokenString(context: Context): String {
         return getPrefs(context).getString(KEY_ACCESS_TOKEN, null)
     }
 
+    fun getTokenHeaderValue(context: Context): String {
+        return Const.HEADER_BEARER_VALUE_PREFIX + " " + getTokenString(context)
+    }
+
     fun storeToPreferences(token: AccessToken, context: Context) {
-        val sp = getPrefs(context)
-        val e = sp.edit()
-        e.putString(KEY_ACCESS_TOKEN, token.access_token)
-        e.putFloat(KEY_EXPIRES_IN, token.expires_in.toFloat())
-        e.putString(KEY_REFRESH_TOKEN, token.refresh_token)
-        e.putString(KEY_SCOPE, token.scope)
-        e.putString(KEY_TOKEN_TYPE, token.token_type)
-        e.putString(KEY_UID, token.uid)
-        e.apply()
+        val editor = getPrefs(context).edit()
+        with(editor) {
+            putString(KEY_ACCESS_TOKEN, token.access_token)
+            putFloat(KEY_EXPIRES_IN, token.expires_in.toFloat())
+            putString(KEY_REFRESH_TOKEN, token.refresh_token)
+            putString(KEY_SCOPE, token.scope)
+            putString(KEY_TOKEN_TYPE, token.token_type)
+            putString(KEY_UID, token.uid)
+            apply()
+        }
     }
 
     fun isTokenSaved(context: Context): Boolean {
@@ -51,14 +57,17 @@ object AccessTokenUtils {
     }
 
     fun removeFromPrefs(context: Context) {
-        val sp = getPrefs(context)
-        val e = sp.edit()
-        e.remove(KEY_ACCESS_TOKEN)
-        e.remove(KEY_EXPIRES_IN)
-        e.remove(KEY_REFRESH_TOKEN)
-        e.remove(KEY_SCOPE)
-        e.remove(KEY_TOKEN_TYPE)
-        e.remove(KEY_UID)
+        val e = getPrefs(context).edit()
+        with(e) {
+            remove(KEY_ACCESS_TOKEN)
+            remove(KEY_EXPIRES_IN)
+            remove(KEY_REFRESH_TOKEN)
+            remove(KEY_SCOPE)
+            remove(KEY_TOKEN_TYPE)
+            remove(KEY_UID)
+            apply()
+        }
+
     }
 
     private fun getPrefs(context: Context): SharedPreferences {
