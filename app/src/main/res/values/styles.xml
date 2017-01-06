@@ -16,6 +16,7 @@
 
     <style name="TextAppearance.App.Stats.TotalInfo" parent="TextAppearance.AppCompat">
         <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/colorTextBlackPrimary</item>
         <item name="android:textSize">@dimen/text_size_stats_total_info</item>
     </style>

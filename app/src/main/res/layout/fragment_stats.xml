@@ -1,10 +1,12 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     >
 
     <data>
+
         <variable
             name="dataWrapper"
             type="com.kondenko.pocketwaka.api.model.stats.DataWrapper"
@@ -14,76 +16,100 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.kondenko.pocketwaka.screens.fragments.stats.FragmentStats">
+        tools:context="com.kondenko.pocketwaka.screens.fragments.stats.FragmentStats"
+        >
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            >
 
             <TextView
                 android:id="@+id/textViewHeaderTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/str_stats_total"
                 android:textAppearance="@style/TextAppearance.App.Stats.Header"
                 app:layout_constraintLeft_toLeftOf="@+id/textViewTotal"
                 app:layout_constraintRight_toRightOf="@+id/textViewTotal"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent"
+                />
 
             <TextView
                 android:id="@+id/textViewHeaderAvg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/str_stats_daily_average"
                 android:textAppearance="@style/TextAppearance.App.Stats.Header"
                 app:layout_constraintLeft_toLeftOf="@+id/textViewDailyAverage"
                 app:layout_constraintRight_toRightOf="@+id/textViewDailyAverage"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent"
+                />
 
             <TextView
                 android:id="@+id/textViewTotal"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
+                android:gravity="center"
                 android:text="@{dataWrapper.stats.humanReadableTotal}"
                 android:textAppearance="@style/TextAppearance.App.Stats.TotalInfo"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@+id/textViewDailyAverage"
+                app:layout_constraintRight_toLeftOf="@+id/guideline6"
                 app:layout_constraintTop_toBottomOf="@+id/textViewHeaderTotal"
-                tools:text="28 hrs 57 mins"/>
+                tools:text="28 hrs 57 mins"
+                />
 
             <TextView
                 android:id="@+id/textViewDailyAverage"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
+                android:gravity="center"
                 android:text="@{dataWrapper.stats.humanReadableDailyAverage}"
                 android:textAppearance="@style/TextAppearance.App.Stats.TotalInfo"
-                app:layout_constraintLeft_toRightOf="@+id/textViewTotal"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="@+id/guideline6"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewHeaderAvg"
-                tools:text="4 hrs 8 mins"/>
+                tools:text="4 hrs 8 mins"
+                />
 
             <include
-                layout="@layout/best_day_layout"
+                layout="@layout/layout_best_day"
                 android:layout_width="0dp"
                 android:layout_height="112dp"
-                android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
+                bind:dataWrapper="@{dataWrapper}"
+                app:layout_constraintHorizontal_bias="0.0"
+                android:id="@+id/include"
+                android:layout_marginTop="16dp"
                 app:layout_constraintTop_toBottomOf="@+id/textViewDailyAverage"
-                app:layout_constraintVertical_bias="0.0"/>
+                app:layout_constraintVertical_bias="0.0"
+                />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5"
+                tools:layout_editor_absoluteX="192dp"
+                tools:layout_editor_absoluteY="81dp"
+                />
 
         </android.support.constraint.ConstraintLayout>
 

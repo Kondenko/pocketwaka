@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">PocketWaka</string>
 
-    <string name="prompt_api_key">Your API key</string>
-    <string name="prompt_api_key_explanation">Copy your API key after authorization</string>
-
     <string name="str_action_open_waka_time">Log in using website</string>
     <string name="str_action_authorize">OK</string>
     <string name="str_action_retry">Retry</string>
@@ -17,6 +14,9 @@
     <string name="bottom_nav_menu_item_stats">Stats</string>
     <string name="bottom_nav_menu_item_calendar">Calendar</string>
     <string name="bottom_nav_menu_item_leaders">Leaders</string>
+
+    <string name="time_format" formatted="false">%d hrs %d mins</string>
+
 
     <!--Stats fragment-->
     <string name="str_stats_7_days">7 days</string>

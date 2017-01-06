@@ -24,7 +24,7 @@
 
     <dimen name="text_size_best_day_date">16dp</dimen>
     <dimen name="text_size_best_day_time">24dp</dimen>
-    <dimen name="text_size_best_day_caption">12dp</dimen>
+    <dimen name="text_size_best_day_caption">14dp</dimen>
 
     <dimen name="elevation_best_day">4dp</dimen>
 

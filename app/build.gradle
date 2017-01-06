@@ -42,6 +42,7 @@ dependencies {
     })
 
     kapt "com.android.databinding:compiler:$androidPluginVersion"
+    compile 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
 
     // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"

@@ -15,7 +15,6 @@
         android:layout_height="match_parent"
         />
 
-    <!--app:itemBackground="@android:color/white"-->
     <!--app:itemIconTint="@color/bottom_nav_color_state"-->
     <!--app:itemTextColor="@color/bottom_nav_color_state"-->
 
@@ -24,6 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_nav_height"
         android:layout_alignParentBottom="true"
+        app:itemBackground="@android:color/white"
         app:menu="@menu/bottom_nav_menu"/>
 
 </RelativeLayout>
