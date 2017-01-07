@@ -7,4 +7,5 @@ import com.kondenko.pocketwaka.api.model.stats.DataWrapper
 interface FragmentStatsView {
     fun onSuccess(dataWrapper: DataWrapper)
     fun onError(error: Throwable?, @StringRes messageString: Int)
+    fun setLoading(loading: Boolean)
 }

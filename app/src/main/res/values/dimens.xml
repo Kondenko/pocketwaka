@@ -1,30 +1,39 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_horizontal_margin_small">8dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin_small">8dp</dimen>
 
     <dimen name="bottom_nav_height">56dp</dimen>
 
     <dimen name="text_view_height">48dp</dimen>
 
-    <dimen name="button_height">36dp</dimen>
+    <dimen name="button_height">48dp</dimen>
     <dimen name="button_padding_side">16dp</dimen>
 
     <dimen name="size_logo">120dp</dimen>
 
-    <!--Text-->
+    <!--Stats-->
     <dimen name="text_size_stats_header">16dp</dimen>
     <dimen name="text_size_stats_total_info">20dp</dimen>
 
+    <dimen name="tab_bar_height">56dp</dimen>
+    <dimen name="tab_min_width">90dp</dimen>
+
+    <dimen name="tab_bar_indicator_height">36dp</dimen>
+    <dimen name="tab_bar_indicator_width">90dp</dimen>
+
+    <dimen name="text_size_stats_tabs">14dp</dimen>
 
     <dimen name="best_day_layout_height">112dp</dimen>
-
-    <dimen name="best_day_size_padding">24dp</dimen>
-    <dimen name="best_day_bottom_top_padding">16dp</dimen>
 
     <dimen name="text_size_best_day_date">16dp</dimen>
     <dimen name="text_size_best_day_time">24dp</dimen>
     <dimen name="text_size_best_day_caption">14dp</dimen>
+
+    <dimen name="best_day_size_padding">24dp</dimen>
+    <dimen name="best_day_bottom_top_padding">16dp</dimen>
 
     <dimen name="elevation_best_day">4dp</dimen>
 

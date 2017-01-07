@@ -66,6 +66,7 @@
                 android:layout_centerHorizontal="true"
                 android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Caption"
                 android:text="@string/str_stats_coding_activity_caption"
+                android:visibility="invisible"
                 />
 
             <TextView

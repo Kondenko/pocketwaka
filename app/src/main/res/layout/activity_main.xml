@@ -15,8 +15,8 @@
         android:layout_height="match_parent"
         />
 
-    <!--app:itemIconTint="@color/bottom_nav_color_state"-->
-    <!--app:itemTextColor="@color/bottom_nav_color_state"-->
+    <!--app:itemIconTint="@color/color_state_bottom_navigation"-->
+    <!--app:itemTextColor="@color/color_state_bottom_navigation"-->
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottomNavigationView"

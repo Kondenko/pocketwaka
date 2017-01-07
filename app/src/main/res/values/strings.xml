@@ -19,8 +19,9 @@
 
 
     <!--Stats fragment-->
-    <string name="str_stats_7_days">7 days</string>
-    <string name="str_stats_14_days">14 days</string>
+    <string name="str_stats_today">Today</string>
+    <string name="str_stats_7_days">Week</string>
+    <string name="str_stats_14_days">2 weeks</string>
     <string name="str_stats_6_months">6 months</string>
     <string name="str_stats_1_year">1 year</string>
 
@@ -33,6 +34,5 @@
     <string name="str_stats_editors">Editors</string>
     <string name="str_stats_languages">Languages</string>
     <string name="str_stats_operating_systems">Operating systems</string>
-
 
 </resources>

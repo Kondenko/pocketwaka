@@ -8,9 +8,11 @@
     <color name="colorBottomNavEnabled">#54000000</color>
     <color name="colorBottomNavDisabled">#33000000</color>
 
+    <color name="colorTabTextDefault">@color/colorPrimary</color>
+
     <color name="colorTextBlackPrimary">#DD000000</color>
     <color name="colorTextBlackSecondary">#89000000</color>
 
-
+    <color name="colorDividerBlack">#33000000</color>
 
 </resources>

@@ -32,4 +32,10 @@ object Const {
     const val SCOPE_READ_STATS = "read_stats"
     const val SCOPE_READ_TEAMS = "read_teams"
 
+    const val STATS_RANGE_KEY = "stats_range"
+    const val STATS_RANGE_7_DAYS = "last_7_days"
+    const val STATS_RANGE_30_DAYS = "last_30_days"
+    const val STATS_RANGE_6_MONTHS = "last_6_months"
+    const val STATS_RANGE_1_YEAR = "last_year"
+
 }

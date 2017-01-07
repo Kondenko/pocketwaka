@@ -2,18 +2,16 @@ package com.kondenko.pocketwaka.screens.fragments.stats
 
 import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.api.StatsRange
 import com.kondenko.pocketwaka.api.services.StatsService
 import retrofit2.Retrofit
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
 
-class FragmentStatsPresenter(val tokenHeaderValue: String, val view: FragmentStatsView) {
+class FragmentStatsPresenter(val statsRange: String, val tokenHeaderValue: String, val view: FragmentStatsView) {
 
     @Inject
     lateinit var retrofit: Retrofit
-
     private var service: StatsService
 
     init {
@@ -26,9 +24,11 @@ class FragmentStatsPresenter(val tokenHeaderValue: String, val view: FragmentSta
     }
 
     fun getStats() {
-        service.getCurrentUserStats(tokenHeaderValue, StatsRange.WEEK.value)
+        view.setLoading(true)
+        service.getCurrentUserStats(tokenHeaderValue, statsRange)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .cache()
                 .subscribe(
                         { data -> view.onSuccess(data) },
                         { error -> view.onError(error, R.string.error_loading_stats) }

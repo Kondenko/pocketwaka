@@ -10,6 +10,7 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.screens.fragments.calendar.FragmentCalendar
 import com.kondenko.pocketwaka.screens.fragments.leaders.FragmentLeaders
 import com.kondenko.pocketwaka.screens.fragments.stats.FragmentStats
+import com.kondenko.pocketwaka.screens.fragments.stats.FragmentStatsContainer
 
 
 class MainActivity : AppCompatActivity(), MainActivityView {
@@ -20,7 +21,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val stats = FragmentStats()
+        val stats = FragmentStatsContainer()
         val calendar = FragmentCalendar()
         val leaderboard = FragmentLeaders()
 
