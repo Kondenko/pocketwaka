@@ -38,4 +38,6 @@ object Const {
     const val STATS_RANGE_6_MONTHS = "last_6_months"
     const val STATS_RANGE_1_YEAR = "last_year"
 
+    const val MAX_SHADOW_OPACITY = .2f
+
 }

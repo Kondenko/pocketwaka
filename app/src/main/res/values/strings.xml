@@ -17,7 +17,6 @@
 
     <string name="time_format" formatted="false">%d hrs %d mins</string>
 
-
     <!--Stats fragment-->
     <string name="str_stats_today">Today</string>
     <string name="str_stats_7_days">Week</string>
@@ -34,5 +33,7 @@
     <string name="str_stats_editors">Editors</string>
     <string name="str_stats_languages">Languages</string>
     <string name="str_stats_operating_systems">Operating systems</string>
+
+    <string name="str_stats_percent" formatted="false">%.1f%%</string>
 
 </resources>

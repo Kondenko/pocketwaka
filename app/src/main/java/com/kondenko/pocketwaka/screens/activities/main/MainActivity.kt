@@ -3,7 +3,9 @@ package com.kondenko.pocketwaka.screens.activities.main
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import com.kondenko.pocketwaka.R
@@ -22,11 +24,12 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         setContentView(R.layout.activity_main)
 
         val stats = FragmentStatsContainer()
-        val calendar = FragmentCalendar()
-        val leaderboard = FragmentLeaders()
+//        val calendar = FragmentCalendar()
+//        val leaderboard = FragmentLeaders()
 
         setFragment(stats)
 
+        /*
         val navigation = findViewById(R.id.bottomNavigationView) as BottomNavigationView
         navigation.setOnNavigationItemSelectedListener({ item ->
             when (item.itemId) {
@@ -36,8 +39,14 @@ class MainActivity : AppCompatActivity(), MainActivityView {
             }
             true
         })
+        var elevation: TypedValue = TypedValue()
+        resources.getValue(R.dimen.elevation_bottom_nav, elevation, true)
+        ViewCompat.setElevation(navigation, 8f)
+        */
+
         presenter = MainActivityPresenter(this)
     }
+
 
     private fun setFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
@@ -58,6 +67,5 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         }
         return super.onOptionsItemSelected(item)
     }
-
 
 }

@@ -1,5 +1,6 @@
 package com.kondenko.pocketwaka.screens.fragments.stats
 
+import android.util.Log
 import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.services.StatsService
