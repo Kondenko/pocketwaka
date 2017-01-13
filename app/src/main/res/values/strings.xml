@@ -5,6 +5,7 @@
     <string name="str_action_authorize">OK</string>
     <string name="str_action_retry">Retry</string>
     <string name="str_action_logout">Log out</string>
+    <string name="str_action_refresh">Refresh</string>
 
     <string name="error_invalid_api">This API key is invalid</string>
     <string name="error_logging_in">Log in failed</string>

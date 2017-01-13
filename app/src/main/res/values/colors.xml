@@ -3,7 +3,8 @@
     <color name="colorPrimary">#35434f</color>
     <color name="colorPrimaryDark">#28333c</color>
     <color name="colorAccent">#2595ff</color>
-    <color name="colorBackgroundMain">#eceff1</color>
+    <color name="colorBackgroundGray">#eceff1</color>
+    <color name="colorBackgroundPrimaryLight">#ffff</color>
 
     <color name="colorBottomNavEnabled">#54000000</color>
     <color name="colorBottomNavDisabled">#33000000</color>

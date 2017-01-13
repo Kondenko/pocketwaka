@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:paddingStart="@dimen/card_stats_padding_size"
-              android:paddingEnd="@dimen/card_stats_padding_size"
-              android:paddingTop="@dimen/card_stats_padding_top"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/card_stats_padding"
     >
 
     <TextView
         android:id="@+id/statsCardHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/card_stats_header_bottom_margin"
         android:textAppearance="@style/TextAppearance.App.Stats.Header"
         />
 

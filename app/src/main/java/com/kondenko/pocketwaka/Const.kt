@@ -39,5 +39,5 @@ object Const {
     const val STATS_RANGE_1_YEAR = "last_year"
 
     const val MAX_SHADOW_OPACITY = .2f
-
+    const val DEFAULT_ANIM_DURATION: Long = 400
 }

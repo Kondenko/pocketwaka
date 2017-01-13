@@ -8,15 +8,19 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.model.stats.DataWrapper
 import com.kondenko.pocketwaka.api.oauth.AccessTokenUtils
 import com.kondenko.pocketwaka.databinding.FragmentStatsBinding
+import com.kondenko.pocketwaka.events.RefreshEvent
+import com.kondenko.pocketwaka.events.TabsAnimationEvent
 import com.kondenko.pocketwaka.ui.CardStats
 import com.kondenko.pocketwaka.ui.ObservableScrollView
 import com.kondenko.pocketwaka.ui.OnScrollViewListener
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 
 
@@ -36,14 +40,17 @@ class FragmentStats : Fragment(), FragmentStatsView {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate<FragmentStatsBinding>(inflater, R.layout.fragment_stats, container, false)
-//        binding.swipeRefreshLayout.setOnRefreshListener { presenter.getStats() }
         binding.statsScrollView.setOnScrollListener(object : OnScrollViewListener {
             override fun onScrollChanged(scrollView: ObservableScrollView, x: Int, y: Int, oldX: Int, oldY: Int) {
                 if (y >= 10) {
-                    if (shadowAnimationNeeded) binding.shadowView.animate().alpha(Const.MAX_SHADOW_OPACITY)
+                    if (shadowAnimationNeeded) {
+                        binding.shadowView.animate().alpha(Const.MAX_SHADOW_OPACITY)
+                        EventBus.getDefault().post(TabsAnimationEvent(false))
+                    }
                     shadowAnimationNeeded = false
                 } else {
                     binding.shadowView.animate().alpha(0f)
+                    EventBus.getDefault().post(TabsAnimationEvent(true))
                     shadowAnimationNeeded = true
                 }
             }
@@ -56,6 +63,19 @@ class FragmentStats : Fragment(), FragmentStatsView {
         super.onResume()
         presenter.onResume()
     }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    fun onRefreshEvent(event: RefreshEvent) = presenter.getStats()
 
     override fun onSuccess(dataWrapper: DataWrapper) {
         setLoading(false)
@@ -75,7 +95,6 @@ class FragmentStats : Fragment(), FragmentStatsView {
     }
 
     override fun setLoading(loading: Boolean) {
-//        binding.swipeRefreshLayout.isRefreshing = loading
         binding.include.textViewCaption.visibility = if (loading) View.INVISIBLE else View.VISIBLE
     }
 

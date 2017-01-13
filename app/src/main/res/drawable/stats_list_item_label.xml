@@ -4,8 +4,6 @@
     android:shape="oval"
     >
 
-    <solid android:color="@color/colorPrimary"/>
-
     <size
         android:width="@dimen/card_stats_list_color_label_size"
         android:height="@dimen/card_stats_list_color_label_size"

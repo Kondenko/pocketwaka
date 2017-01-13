@@ -9,10 +9,12 @@ import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.events.RefreshEvent
 import com.kondenko.pocketwaka.screens.fragments.calendar.FragmentCalendar
 import com.kondenko.pocketwaka.screens.fragments.leaders.FragmentLeaders
 import com.kondenko.pocketwaka.screens.fragments.stats.FragmentStats
 import com.kondenko.pocketwaka.screens.fragments.stats.FragmentStatsContainer
+import org.greenrobot.eventbus.EventBus
 
 
 class MainActivity : AppCompatActivity(), MainActivityView {
@@ -64,6 +66,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.action_logout -> presenter.logout(this)
+            R.id.action_refresh -> EventBus.getDefault().post(RefreshEvent)
         }
         return super.onOptionsItemSelected(item)
     }

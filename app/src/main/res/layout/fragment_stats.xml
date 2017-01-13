@@ -4,7 +4,6 @@
     xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     >
-
     <data>
 
         <variable
@@ -13,20 +12,10 @@
             />
     </data>
 
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-
-        <!--
-                <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
-
-            -->
 
         <com.kondenko.pocketwaka.ui.ObservableScrollView
             android:id="@+id/statsScrollView"
@@ -132,10 +121,11 @@
                     android:id="@+id/linearLayoutCards"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_marginRight="@dimen/card_margin"
+                    android:layout_marginLeft="@dimen/card_margin"
+                    android:layout_marginStart="@dimen/card_margin"
+                    android:layout_marginBottom="@dimen/card_margin"
                     android:layout_marginTop="16dp"
                     android:orientation="vertical"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -146,8 +136,6 @@
             </android.support.constraint.ConstraintLayout>
 
         </com.kondenko.pocketwaka.ui.ObservableScrollView>
-
-        <!--</android.support.v4.widget.SwipeRefreshLayout>-->
 
         <View
             android:id="@+id/shadowView"

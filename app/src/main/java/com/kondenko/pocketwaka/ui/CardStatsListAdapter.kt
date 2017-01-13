@@ -1,6 +1,8 @@
 package com.kondenko.pocketwaka.ui
 
 import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -22,14 +24,14 @@ class CardStatsListAdapter(val dataset: List<StatsItem>) : RecyclerView.Adapter<
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         val item = dataset[position]
-        holder?.labelColor?.background = context?.resources?.getDrawable(R.drawable.stats_list_item_label) // TODO Use different colors for different items
+        val labelDrawable: Drawable? = context?.resources?.getDrawable(R.drawable.stats_list_item_label)
+        labelDrawable?.setColorFilter(item.color, PorterDuff.Mode.SRC_IN)
+        holder?.labelColor?.background = labelDrawable
         holder?.header?.text = item.name
         holder?.percentage?.text = String.format(context?.getString(R.string.str_stats_percent) as String, item.percent)
     }
 
     override fun getItemCount(): Int = dataset.size
-
-    private fun correctPercent(percent: Double): Double = if (percent < 1) percent else Math.round(percent).toDouble()
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var labelColor = itemView.findViewById(R.id.labelColor)

@@ -18,6 +18,8 @@ import com.google.gson.annotations.SerializedName;
  */
 public class StatsItem  implements Parcelable {
 
+    public static final int DEFAULT_COLOR_VAL = -1;
+
     @SerializedName("digital")
     @Expose
     public String digital;
@@ -39,6 +41,8 @@ public class StatsItem  implements Parcelable {
     @SerializedName("total_seconds")
     @Expose
     public Integer totalSeconds;
+
+    public int color = DEFAULT_COLOR_VAL;
 
     public final static Parcelable.Creator<Editor> CREATOR = new Creator<Editor>() {
 
