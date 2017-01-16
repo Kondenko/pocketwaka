@@ -45,11 +45,10 @@
     <dimen name="card_stats_padding_top">24dp</dimen>
 
     <dimen name="card_stats_padding">16dp</dimen>
-    <dimen name="card_stats_header_bottom_margin">8dp</dimen>
-
-    <dimen name="card_stats_bar_height">24dp</dimen>
-    <dimen name="card_stats_bar_bar_height">16dp</dimen>
-    <dimen name="card_stats_bar_side_margin">8dp</dimen>
+    <dimen name="card_stats_bar_height">16dp</dimen>
+    <dimen name="card_stats_bar_corner_radius">90dp</dimen>
+    <dimen name="card_stats_bar_margin_top">16dp</dimen>
+    <dimen name="card_stats_bar_margin_bottom">7dp</dimen>
 
     <dimen name="card_stats_list_item_height">48dp</dimen>
     <dimen name="card_stats_list_text_padding_left">30dp</dimen>

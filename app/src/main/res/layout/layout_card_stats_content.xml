@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -11,8 +12,17 @@
         android:id="@+id/statsCardHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/card_stats_header_bottom_margin"
         android:textAppearance="@style/TextAppearance.App.Stats.Header"
+        />
+
+    <com.vladimirkondenko.onelinebarchart.OneLineSegmentedChart
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/card_stats_bar_height"
+        android:layout_marginTop="@dimen/card_stats_bar_margin_top"
+        android:layout_marginBottom="@dimen/card_stats_bar_margin_bottom"
+        app:bar_width="@dimen/card_stats_bar_height"
+        app:corner_radius="@dimen/card_stats_bar_corner_radius"
         />
 
     <android.support.v7.widget.RecyclerView
@@ -20,5 +30,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
+
 
 </LinearLayout>

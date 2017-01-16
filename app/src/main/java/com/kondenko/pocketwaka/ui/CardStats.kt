@@ -9,9 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
-import com.github.mikephil.charting.charts.PieChart
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.model.stats.StatsItem
+import com.vladimirkondenko.onelinebarchart.OneLineSegmentedChart
+import com.vladimirkondenko.onelinebarchart.Segment
+import java.util.*
 
 class CardStats(val context: Context, val type: Int, val data: List<StatsItem>) {
 
@@ -49,7 +51,7 @@ class CardStats(val context: Context, val type: Int, val data: List<StatsItem>) 
             TYPE_EDITORS -> R.string.str_stats_editors
             TYPE_LANGUAGES -> R.string.str_stats_languages
             TYPE_OPERATING_SYSTEMS -> R.string.str_stats_operating_systems
-            else -> throw IllegalArgumentException("Cannot resolve card type. Make sure you are using ${javaClass.simpleName}.TYPE_ constants")
+            else -> throw IllegalArgumentException("Cannot resolve card type. Make sure you are using ${javaClass.simpleName}.TYPE_ constants.")
         })
     }
 
@@ -61,7 +63,10 @@ class CardStats(val context: Context, val type: Int, val data: List<StatsItem>) 
     }
 
     fun setupChart(content: View) {
-
+        val chart = content.findViewById(R.id.chart) as OneLineSegmentedChart
+        val segments = ArrayList<Segment>(data.size)
+        data.mapTo(segments) { Segment(it.percent.toFloat(), it.color, it.name) }
+        chart.setSegments(segments)
     }
 
 }
