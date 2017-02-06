@@ -27,7 +27,12 @@ class FragmentStatsPresenter(val statsRange: String, val tokenHeaderValue: Strin
 
     fun setColors(data: DataWrapper): DataWrapper {
         val dataArrays = arrayOf(data.stats.editors, data.stats.languages, data.stats.projects, data.stats.operatingSystems)
-        for (array in dataArrays) array.map { item -> item.color = ColorGenerator.getColor(array) }
+        for (array in dataArrays) {
+            val colors = ColorGenerator.getColors(array.size)
+            for (i in 0..(array.size - 1)) {
+                array[i].color = colors[i]
+            }
+        }
         return data
     }
 
@@ -36,10 +41,10 @@ class FragmentStatsPresenter(val statsRange: String, val tokenHeaderValue: Strin
         service.getCurrentUserStats(tokenHeaderValue, statsRange)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext { data -> setColors(data) }
                 .cache()
                 .subscribe(
-                        { data -> view.onSuccess(setColors(data))
-                        },
+                        { data -> view.onSuccess(data) },
                         { error -> view.onError(error, R.string.error_loading_stats) }
                 )
     }

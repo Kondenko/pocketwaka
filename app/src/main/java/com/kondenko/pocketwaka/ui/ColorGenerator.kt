@@ -1,27 +1,31 @@
 package com.kondenko.pocketwaka.ui
 
 import android.graphics.Color
-import com.kondenko.pocketwaka.api.model.stats.StatsItem
 import java.util.*
+
 
 object ColorGenerator {
 
-    private val COLOR_CEILING = 255
+    private val SATURATION = 0.65f
+    private val VALUE = 1f
 
-    fun getColor(objects: List<StatsItem>): Int {
+    fun getColors(n: Int): ArrayList<Int> {
         val random = Random()
-        var color = getRandomColor(random)
-        for (obj in objects) {
-            if (obj.color == StatsItem.DEFAULT_COLOR_VAL) return color
-            while (obj.color == color) {
-                color = getRandomColor(random)
-            }
+        val colors = ArrayList<Int>(n)
+        val part: Float = 360 / n.toFloat()
+        for (i in 0..(n - 1)) {
+            // Shift a value left or right from the current position in range of the current sector
+            val randomFactor = random.nextInt(Math.round(part / 2)) * if (random.nextBoolean()) 1 else -1
+            val hue: Float = (360 - part * i) + randomFactor
+            val hueOpposite: Float = (hue - 180) + randomFactor
+            val color = getColorByHue(hue)
+            val colorOpposite = getColorByHue(hueOpposite)
+            colors.add(color)
+            colors.add(colorOpposite)
         }
-        return color
+        return colors
     }
 
-    private fun getRandomColor(random: Random): Int {
-        return Color.rgb(random.nextInt(COLOR_CEILING), random.nextInt(COLOR_CEILING), random.nextInt(COLOR_CEILING))
-    }
+    private fun getColorByHue(hue: Float) = Color.HSVToColor(floatArrayOf(hue, SATURATION, VALUE))
 
 }

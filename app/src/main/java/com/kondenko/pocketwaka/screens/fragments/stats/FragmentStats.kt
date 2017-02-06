@@ -74,7 +74,7 @@ class FragmentStats : Fragment(), FragmentStatsView {
         EventBus.getDefault().unregister(this)
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRefreshEvent(event: RefreshEvent) = presenter.getStats()
 
     override fun onSuccess(dataWrapper: DataWrapper) {

@@ -31,9 +31,11 @@
     <dimen name="text_size_stats_tabs">14dp</dimen>
 
     <dimen name="best_day_layout_height">112dp</dimen>
-
     <dimen name="best_day_size_padding">24dp</dimen>
     <dimen name="best_day_bottom_top_padding">16dp</dimen>
+    <dimen name="best_day_image_margin_top">16dp</dimen>
+    <dimen name="best_day_image_margin_right">8dp</dimen>
+    <item name="best_day_image_alpha" format="float" type="dimen">0.6</item>
 
     <dimen name="text_size_best_day_date">16sp</dimen>
     <dimen name="text_size_best_day_time">24sp</dimen>

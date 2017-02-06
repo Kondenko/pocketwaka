@@ -40,9 +40,9 @@ class OneLineSegmentedChart(context: Context, val attrs: AttributeSet?) : View(c
         // Get the attributes defined in XML (if there are any)
         attrs?.let {
             val attributes = context.obtainStyledAttributes(attrs, R.styleable.OneLineSegmentedChart, 0, 0)
-            barWidth = attributes.getDimension(R.styleable.OneLineBarChart_bar_width, barWidth)
-            cornerRadius = attributes.getDimension(R.styleable.OneLineBarChart_corner_radius, cornerRadius)
-            sortDescending = attributes.getBoolean(R.styleable.OneLineBarChart_sortDescending, sortDescending)
+            barWidth = attributes.getDimension(R.styleable.OneLineSegmentedChart_bar_width, barWidth)
+            cornerRadius = attributes.getDimension(R.styleable.OneLineSegmentedChart_corner_radius, cornerRadius)
+            sortDescending = attributes.getBoolean(R.styleable.OneLineSegmentedChart_sortDescending, sortDescending)
             attributes.recycle()
         }
 

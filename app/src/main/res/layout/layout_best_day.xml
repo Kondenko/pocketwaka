@@ -1,6 +1,5 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     >
 
@@ -24,6 +23,10 @@
             android:foregroundGravity="right"
             android:scaleType="fitEnd"
             android:src="@drawable/illustration_best_day"
+            android:alpha="@dimen/best_day_image_alpha"
+            android:layout_marginEnd="@dimen/best_day_image_margin_right"
+            android:layout_marginTop="@dimen/best_day_image_margin_top"
+            android:layout_marginRight="@dimen/best_day_image_margin_right"
             />
 
 
