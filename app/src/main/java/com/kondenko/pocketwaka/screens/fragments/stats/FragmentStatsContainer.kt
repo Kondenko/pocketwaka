@@ -23,15 +23,27 @@ import org.greenrobot.eventbus.ThreadMode
 
 class FragmentStatsContainer : Fragment() {
 
-    lateinit var  smartTabLayout: SmartTabLayout
+    private lateinit var smartTabLayout: SmartTabLayout
+    private lateinit var viewPager: ViewPager
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater?.inflate(R.layout.fragment_stats_container, container, false)
-        val viewPager = view?.findViewById(R.id.viewPager) as ViewPager
+        viewPager = view?.findViewById(R.id.viewPager) as ViewPager
         smartTabLayout = view?.findViewById(R.id.tabLayout) as SmartTabLayout
+        return view
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
         viewPager.adapter = FragmentPagerItemAdapter(
-                activity.supportFragmentManager, FragmentPagerItems.with(activity)
+                childFragmentManager, FragmentPagerItems.with(activity)
                 .add(R.string.str_stats_7_days, FragmentStats::class.java, Bundler().putString(Const.STATS_RANGE_KEY, Const.STATS_RANGE_7_DAYS).get())
                 .add(R.string.str_stats_14_days, FragmentStats::class.java, Bundler().putString(Const.STATS_RANGE_KEY, Const.STATS_RANGE_30_DAYS).get())
                 .add(R.string.str_stats_6_months, FragmentStats::class.java, Bundler().putString(Const.STATS_RANGE_KEY, Const.STATS_RANGE_6_MONTHS).get())
@@ -39,8 +51,13 @@ class FragmentStatsContainer : Fragment() {
                 .create()
         )
         smartTabLayout.setViewPager(viewPager)
-        return view
     }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onTabsAnimationEvent(event: TabsAnimationEvent) {
@@ -58,15 +75,5 @@ class FragmentStatsContainer : Fragment() {
         }
     }
 
-
-    override fun onStart() {
-        super.onStart()
-        EventBus.getDefault().register(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        EventBus.getDefault().unregister(this)
-    }
 
 }
