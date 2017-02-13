@@ -25,17 +25,6 @@ class FragmentStatsPresenter(val statsRange: String, val tokenHeaderValue: Strin
         getStats()
     }
 
-    fun setColors(data: DataWrapper): DataWrapper {
-        val dataArrays = arrayOf(data.stats.editors, data.stats.languages, data.stats.projects, data.stats.operatingSystems)
-        for (array in dataArrays) {
-            val colors = ColorGenerator.getColors(array.size)
-            for (i in 0..(array.size - 1)) {
-                array[i].color = colors[i]
-            }
-        }
-        return data
-    }
-
     fun getStats() {
         view.setLoading(true)
         service.getCurrentUserStats(tokenHeaderValue, statsRange)
@@ -47,6 +36,19 @@ class FragmentStatsPresenter(val statsRange: String, val tokenHeaderValue: Strin
                         { data -> view.onSuccess(data) },
                         { error -> view.onError(error, R.string.error_loading_stats) }
                 )
+    }
+
+    private fun setColors(data: DataWrapper): DataWrapper {
+        val dataArrays = arrayOf(data.stats.editors, data.stats.languages, data.stats.projects, data.stats.operatingSystems)
+        for (array in dataArrays) {
+            array?.let {
+                val colors = ColorGenerator.getColors(array.size)
+                for (i in 0..(array.size - 1)) {
+                    array[i].color = colors[i]
+                }
+            }
+        }
+        return data
     }
 
 }

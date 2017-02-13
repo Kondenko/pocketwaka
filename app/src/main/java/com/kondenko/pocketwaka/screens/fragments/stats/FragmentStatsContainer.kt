@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.events.ErrorEvent
+import com.kondenko.pocketwaka.events.SuccessEvent
 import com.kondenko.pocketwaka.events.TabsAnimationEvent
 import com.ogaclejapan.smarttablayout.SmartTabLayout
 import com.ogaclejapan.smarttablayout.utils.v4.Bundler
@@ -22,6 +24,8 @@ import org.greenrobot.eventbus.ThreadMode
 
 
 class FragmentStatsContainer : Fragment() {
+
+    private val TAG = "FragmentStatsContainer"
 
     private lateinit var smartTabLayout: SmartTabLayout
     private lateinit var viewPager: ViewPager
@@ -54,10 +58,9 @@ class FragmentStatsContainer : Fragment() {
     }
 
     override fun onStop() {
-        super.onStop()
         EventBus.getDefault().unregister(this)
+        super.onStop()
     }
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onTabsAnimationEvent(event: TabsAnimationEvent) {

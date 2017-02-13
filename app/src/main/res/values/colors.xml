@@ -12,6 +12,7 @@
     <color name="colorTabTextDefault">@color/colorPrimary</color>
 
     <color name="colorTextBlackPrimary">#DD000000</color>
+    <color name="colorTextWhitePrimary">#FFFFFF</color>
     <color name="colorTextBlackSecondary">#89000000</color>
 
     <color name="colorDividerBlack">#33000000</color>

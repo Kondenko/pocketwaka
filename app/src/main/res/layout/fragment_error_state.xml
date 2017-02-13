@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.kondenko.pocketwaka.screens.fragments.states.FragmentErrorState"
+              android:gravity="center"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/error_state_title"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/error_state_subtitle"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+        />
+
+    <Button
+        android:id="@+id/button_error_state_update"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_error_screen_button"
+        android:background="?attr/colorAccent"
+        android:textColor="@color/colorTextWhitePrimary"
+        android:text="@string/error_state_retry_action"
+        />
+
+</LinearLayout>

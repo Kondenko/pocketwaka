@@ -3,8 +3,8 @@ package com.kondenko.pocketwaka.screens.fragments.stats
 
 import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +13,9 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.model.stats.DataWrapper
 import com.kondenko.pocketwaka.api.oauth.AccessTokenUtils
 import com.kondenko.pocketwaka.databinding.FragmentStatsBinding
+import com.kondenko.pocketwaka.events.ErrorEvent
 import com.kondenko.pocketwaka.events.RefreshEvent
+import com.kondenko.pocketwaka.events.SuccessEvent
 import com.kondenko.pocketwaka.events.TabsAnimationEvent
 import com.kondenko.pocketwaka.ui.CardStats
 import com.kondenko.pocketwaka.ui.ObservableScrollView
@@ -25,6 +27,8 @@ import java.util.*
 
 
 class FragmentStats : Fragment(), FragmentStatsView {
+
+    private val TAG = this.javaClass.simpleName
 
     private lateinit var binding: FragmentStatsBinding
     private lateinit var presenter: FragmentStatsPresenter
@@ -70,14 +74,19 @@ class FragmentStats : Fragment(), FragmentStatsView {
     }
 
     override fun onStop() {
-        super.onStop()
         EventBus.getDefault().unregister(this)
+        super.onStop()
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onRefreshEvent(event: RefreshEvent) = presenter.getStats()
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true  )
+    fun onRefresh(event: RefreshEvent) {
+        Log.i(TAG, "onRefresh")
+        presenter.getStats()
+    }
 
     override fun onSuccess(dataWrapper: DataWrapper) {
+        Log.i(TAG, "onSuccess")
+        EventBus.getDefault().post(SuccessEvent)
         setLoading(false)
         binding.dataWrapper = dataWrapper
         binding.executePendingBindings()
@@ -85,13 +94,9 @@ class FragmentStats : Fragment(), FragmentStatsView {
     }
 
     override fun onError(error: Throwable?, messageString: Int) {
+        EventBus.getDefault().post(ErrorEvent)
         setLoading(false)
-        error?.printStackTrace()
-        Snackbar.make(binding.rootLayout, messageString, Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.str_action_retry, { view ->
-                    view.setOnClickListener { presenter.getStats() }
-                })
-                .show()
+        error?.let { Log.e(TAG, "FragmentStats@onError: ${error.stackTrace}") }
     }
 
     override fun setLoading(loading: Boolean) {

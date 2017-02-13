@@ -18,6 +18,13 @@
 
     <string name="time_format" formatted="false">%d hrs %d mins</string>
 
+    <!--STATES -->
+    <!--Error state-->
+    <string name="error_state_title">Oh, no</string>
+    <string name="error_state_subtitle">We couldn\'t get your stats</string>
+    <string name="error_state_retry_action">Retry</string>
+
+
     <!--Stats fragment-->
     <string name="str_stats_today">Today</string>
     <string name="str_stats_7_days">Week</string>
@@ -36,5 +43,8 @@
     <string name="str_stats_operating_systems">Operating systems</string>
 
     <string name="str_stats_percent" formatted="false">%.1f%%</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

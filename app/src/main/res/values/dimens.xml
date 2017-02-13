@@ -18,6 +18,10 @@
 
     <item name="elevation_bottom_nav" format="float" type="dimen">8</item>
 
+    <!--STATES -->
+    <!--Error state-->
+    <dimen name="height_error_screen_button">36dp</dimen>
+
     <!--Stats-->
     <dimen name="text_size_stats_header">16sp</dimen>
     <dimen name="text_size_stats_total_info">20sp</dimen>
