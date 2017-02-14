@@ -5,6 +5,7 @@ ext {
     compileSdkVersion = 25
     buildToolsVersion = '25.0.2'
 
+    androidPluginVersion = '2.3.0-beta1'
     eventBusVersion = '3.0.0'
     smartTabLayoutVersion = '1.6.1'
     rxKotlinVersion = '0.60.0'
@@ -16,23 +17,21 @@ ext {
     junitVersion = '4.12'
     supportTestVersion = '0.5'
     mockitoVersion = '2.6.3'
-    roboelectricVersion = '3.2.2'
+    robolectricVersion = '3.2.2'
 }
 
 buildscript {
-    ext.kotlin_version = '1.0.6'
-    ext.androidPluginVersion = '2.3.0-beta1'
-    ext.aptVersion = '1.8'
     ext.kotlinVersion = '1.0.6'
+    ext.gradleVersion = '2.3.0-beta3'
 
     repositories {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0-beta3'
+        classpath "com.android.tools.build:gradle:$gradleVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlinVersion"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
 

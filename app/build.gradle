@@ -8,7 +8,6 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-
         applicationId "com.kondenko.pocketwaka"
 
         minSdkVersion rootProject.ext.minSdkVersion
@@ -89,7 +88,7 @@ dependencies {
     androidTestCompile "com.android.support.test:runner:$supportTestVersion"
     androidTestCompile "com.android.support.test:rules:$supportTestVersion"
     testCompile "org.mockito:mockito-core:$mockitoVersion"
-    testCompile "org.robolectric:robolectric:$roboelectricVersion"
+    testCompile "org.robolectric:robolectric:$robolectricVersion"
 
     compile 'javax.annotation:jsr250-api:1.0'
     compile 'com.android.support:support-v4:25.1.1'
