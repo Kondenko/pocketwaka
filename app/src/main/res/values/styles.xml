@@ -8,6 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="TextAppearance.App.State.Error.Title" parent="TextAppearance.AppCompat.Display1">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+    </style>
+
+    <style name="TextAppearance.App.State.Error.Subtitle" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+    </style>
+
     <style name="TextAppearance.App.Stats.Header" parent="TextAppearance.AppCompat">
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/colorAccent</item>
