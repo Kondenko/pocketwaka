@@ -1,7 +1,6 @@
 package com.kondenko.pocketwaka.screens.fragments.stats
 
 
-import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
@@ -12,25 +11,22 @@ import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.model.stats.DataWrapper
 import com.kondenko.pocketwaka.api.oauth.AccessTokenUtils
-import com.kondenko.pocketwaka.databinding.FragmentStatsBinding
 import com.kondenko.pocketwaka.events.ErrorEvent
 import com.kondenko.pocketwaka.events.RefreshEvent
 import com.kondenko.pocketwaka.events.SuccessEvent
-import com.kondenko.pocketwaka.events.TabsAnimationEvent
-import com.kondenko.pocketwaka.ui.CardStats
-import com.kondenko.pocketwaka.ui.ObservableScrollView
-import com.kondenko.pocketwaka.ui.OnScrollViewListener
+import com.kondenko.pocketwaka.screens.fragments.states.FragmentEmptyState
+import com.kondenko.pocketwaka.screens.fragments.states.FragmentErrorState
+import com.kondenko.pocketwaka.screens.fragments.states.FragmentLoadingState
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.*
 
 
 class FragmentStats : Fragment(), FragmentStatsView {
 
+
     private val TAG = this.javaClass.simpleName
 
-    private lateinit var binding: FragmentStatsBinding
     private lateinit var presenter: FragmentStatsPresenter
 
     private var shadowAnimationNeeded = true
@@ -43,34 +39,13 @@ class FragmentStats : Fragment(), FragmentStatsView {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate<FragmentStatsBinding>(inflater, R.layout.fragment_stats, container, false)
-        binding.statsScrollView.setOnScrollListener(object : OnScrollViewListener {
-            override fun onScrollChanged(scrollView: ObservableScrollView, x: Int, y: Int, oldX: Int, oldY: Int) {
-                if (y >= 10) {
-                    if (shadowAnimationNeeded) {
-                        binding.shadowView.animate().alpha(Const.MAX_SHADOW_OPACITY)
-                        EventBus.getDefault().post(TabsAnimationEvent(false))
-                    }
-                    shadowAnimationNeeded = false
-                } else {
-                    binding.shadowView.animate().alpha(0f)
-                    EventBus.getDefault().post(TabsAnimationEvent(true))
-                    shadowAnimationNeeded = true
-                }
-            }
-
-        })
-        return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-        presenter.onResume()
+        return inflater?.inflate(R.layout.fragment_stats, container, false)
     }
 
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
+        presenter.onStart()
     }
 
     override fun onStop() {
@@ -78,52 +53,52 @@ class FragmentStats : Fragment(), FragmentStatsView {
         super.onStop()
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true  )
-    fun onRefresh(event: RefreshEvent) {
-        Log.i(TAG, "onRefresh")
-        presenter.getStats()
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onRefreshEvent(event: RefreshEvent) {
+        onRefresh()
+    }
+
+    override fun onRefresh() {
+        setLoadingFragment()
     }
 
     override fun onSuccess(dataWrapper: DataWrapper) {
-        Log.i(TAG, "onSuccess")
         EventBus.getDefault().post(SuccessEvent)
-        setLoading(false)
-        binding.dataWrapper = dataWrapper
-        binding.executePendingBindings()
-        addStatsCards(dataWrapper)
+        setContentFragment(dataWrapper)
     }
 
     override fun onError(error: Throwable?, messageString: Int) {
         EventBus.getDefault().post(ErrorEvent)
-        setLoading(false)
         error?.let { Log.e(TAG, "FragmentStats@onError: ${error.stackTrace}") }
+        setErrorFragment()
     }
 
-    override fun setLoading(loading: Boolean) {
-        binding.include.textViewCaption.visibility = if (loading) View.INVISIBLE else View.VISIBLE
+    private fun setLoadingFragment() {
+        val loadingFragment = FragmentLoadingState()
+        setFragment(loadingFragment)
     }
 
-    private fun addStatsCards(dataWrapper: DataWrapper) {
-        if (binding.linearLayoutCards.childCount <= 0) {
-            val cards = getAvailableCards(dataWrapper)
-            for (card in cards) {
-                binding.linearLayoutCards.addView(card.getView())
-            }
+    private fun setContentFragment(data: DataWrapper) {
+        val fragment = if (data.stats != null && data.stats.totalSeconds > 0) {
+            FragmentStatsData.newInstance(data)
+        } else {
+            FragmentEmptyState()
         }
+        setFragment(fragment)
     }
 
-    fun getAvailableCards(dataWrapper: DataWrapper): ArrayList<CardStats> {
-        val cards = ArrayList<CardStats>()
-        val projects = dataWrapper.stats.projects
-        val editors = dataWrapper.stats.editors
-        val languages = dataWrapper.stats.languages
-        val operatingSystems = dataWrapper.stats.operatingSystems
-        projects?.let { cards.add(CardStats(context, CardStats.TYPE_PROJECTS, it)) }
-        editors?.let { cards.add(CardStats(context, CardStats.TYPE_EDITORS, it)) }
-        languages?.let { cards.add(CardStats(context, CardStats.TYPE_LANGUAGES, it)) }
-        operatingSystems?.let { cards.add(CardStats(context, CardStats.TYPE_OPERATING_SYSTEMS, it)) }
-        return cards
+    private fun setErrorFragment() {
+        val errorFragment = FragmentErrorState()
+        errorFragment.setOnUpdateListener {
+            EventBus.getDefault().post(RefreshEvent)
+        }
+        setFragment(errorFragment)
     }
 
+    private fun setFragment(fragment: Fragment) {
+        val transaction = childFragmentManager.beginTransaction()
+        transaction.replace(R.id.container_stats, fragment)
+        transaction.commit()
+    }
 
 }

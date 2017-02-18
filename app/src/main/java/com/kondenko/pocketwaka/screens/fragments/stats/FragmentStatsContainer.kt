@@ -49,7 +49,7 @@ class FragmentStatsContainer : Fragment() {
         viewPager.adapter = FragmentPagerItemAdapter(
                 childFragmentManager, FragmentPagerItems.with(activity)
                 .add(R.string.str_stats_7_days, FragmentStats::class.java, Bundler().putString(Const.STATS_RANGE_KEY, Const.STATS_RANGE_7_DAYS).get())
-                .add(R.string.str_stats_14_days, FragmentStats::class.java, Bundler().putString(Const.STATS_RANGE_KEY, Const.STATS_RANGE_30_DAYS).get())
+                .add(R.string.str_stats_30_days, FragmentStats::class.java, Bundler().putString(Const.STATS_RANGE_KEY, Const.STATS_RANGE_30_DAYS).get())
                 .add(R.string.str_stats_6_months, FragmentStats::class.java, Bundler().putString(Const.STATS_RANGE_KEY, Const.STATS_RANGE_6_MONTHS).get())
                 .add(R.string.str_stats_1_year, FragmentStats::class.java, Bundler().putString(Const.STATS_RANGE_KEY, Const.STATS_RANGE_1_YEAR).get())
                 .create()

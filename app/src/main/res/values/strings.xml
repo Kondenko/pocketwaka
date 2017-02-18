@@ -22,13 +22,18 @@
     <!--Error state-->
     <string name="error_state_title">Oh, no</string>
     <string name="error_state_subtitle">We couldn\'t get your stats</string>
-    <string name="error_state_retry_action">Retry</string>
+    <string name="error_state_action">Retry</string>
+    <!--Empty state-->
+    <string name="empty_state_title">No activity</string>
+    <string name="empty_state_subtitle">New to Wakatime?</string>
+    <string name="empty_state_text">Install plugins for you favorite editors and write some code!</string>
+    <string name="empty_state_action">Browse plugins</string>
 
 
     <!--Stats fragment-->
     <string name="str_stats_today">Today</string>
     <string name="str_stats_7_days">Week</string>
-    <string name="str_stats_14_days">2 weeks</string>
+    <string name="str_stats_30_days">Month</string>
     <string name="str_stats_6_months">6 months</string>
     <string name="str_stats_1_year">1 year</string>
 

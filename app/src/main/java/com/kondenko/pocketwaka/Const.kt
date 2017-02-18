@@ -3,6 +3,8 @@ package com.kondenko.pocketwaka
 object Const {
 
     // URLs
+    const val URL_PLUGINS = "https://wakatime.com/editors"
+
     const val BASE_URL = "https://wakatime.com/"
     const val API_URL = "https://wakatime.com/api/v1/"
 
@@ -40,4 +42,5 @@ object Const {
 
     const val MAX_SHADOW_OPACITY = .2f
     const val DEFAULT_ANIM_DURATION: Long = 400
+
 }

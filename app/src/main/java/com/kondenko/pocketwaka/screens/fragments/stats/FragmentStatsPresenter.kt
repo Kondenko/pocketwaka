@@ -21,12 +21,12 @@ class FragmentStatsPresenter(val statsRange: String, val tokenHeaderValue: Strin
         service = retrofit.create(StatsService::class.java)
     }
 
-    fun onResume() {
+    fun onStart() {
         getStats()
     }
 
     fun getStats() {
-        view.setLoading(true)
+        view.onRefresh()
         service.getCurrentUserStats(tokenHeaderValue, statsRange)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -38,6 +38,7 @@ class FragmentStatsPresenter(val statsRange: String, val tokenHeaderValue: Strin
                 )
     }
 
+    // TODO Move to DataWrapper and separate
     private fun setColors(data: DataWrapper): DataWrapper {
         val dataArrays = arrayOf(data.stats.editors, data.stats.languages, data.stats.projects, data.stats.operatingSystems)
         for (array in dataArrays) {
