@@ -16,29 +16,29 @@ import com.google.gson.annotations.SerializedName;
  * @see com.kondenko.pocketwaka.ui.CardStats
  * @see com.kondenko.pocketwaka.ui.CardStatsListAdapter
  */
-public class StatsItem  implements Parcelable {
+public class StatsItem implements Parcelable {
 
     @SerializedName("digital")
     @Expose
-    public String digital;
+    public String digital = null;
     @SerializedName("hours")
     @Expose
-    public Integer hours;
+    public Integer hours = null;
     @SerializedName("minutes")
     @Expose
-    public Integer minutes;
+    public Integer minutes = null;
     @SerializedName("name")
     @Expose
-    public String name;
+    public String name = null;
     @SerializedName("percent")
     @Expose
-    public Double percent;
+    public Double percent = null;
     @SerializedName("text")
     @Expose
-    public String text;
+    public String text = null;
     @SerializedName("total_seconds")
     @Expose
-    public Integer totalSeconds;
+    public Integer totalSeconds = null;
 
     public int color;
 
@@ -63,8 +63,7 @@ public class StatsItem  implements Parcelable {
             return (new Editor[size]);
         }
 
-    }
-            ;
+    };
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(digital);
@@ -77,7 +76,7 @@ public class StatsItem  implements Parcelable {
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 }

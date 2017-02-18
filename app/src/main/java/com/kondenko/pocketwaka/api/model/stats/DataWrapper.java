@@ -12,7 +12,7 @@ public class DataWrapper implements Parcelable
 
     @SerializedName("data")
     @Expose
-    public Stats stats;
+    public Stats stats = null;
 
     public final static Parcelable.Creator<DataWrapper> CREATOR = new Creator<DataWrapper>() {
         @SuppressWarnings({

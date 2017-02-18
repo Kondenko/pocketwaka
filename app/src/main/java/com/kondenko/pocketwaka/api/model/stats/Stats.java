@@ -13,88 +13,88 @@ public class Stats implements Parcelable {
 
     @SerializedName("best_day")
     @Expose
-    public BestDay bestDay;
+    public BestDay bestDay = null;
     @SerializedName("created_at")
     @Expose
-    public String createdAt;
+    public String createdAt = null;
     @SerializedName("daily_average")
     @Expose
-    public Integer dailyAverage;
+    public Integer dailyAverage = null;
     @SerializedName("days_including_holidays")
     @Expose
-    public Integer daysIncludingHolidays;
+    public Integer daysIncludingHolidays = null;
     @SerializedName("days_minus_holidays")
     @Expose
-    public Integer daysMinusHolidays;
+    public Integer daysMinusHolidays = null;
     @SerializedName("editors")
     @Expose
-    public List<Editor> editors;
+    public List<Editor> editors = null;
     @SerializedName("end")
     @Expose
-    public String end;
+    public String end = null;
     @SerializedName("holidays")
     @Expose
-    public Integer holidays;
+    public Integer holidays = null;
     @SerializedName("human_readable_daily_average")
     @Expose
-    public String humanReadableDailyAverage;
+    public String humanReadableDailyAverage = null;
     @SerializedName("human_readable_total")
     @Expose
-    public String humanReadableTotal;
+    public String humanReadableTotal = null;
     @SerializedName("id")
     @Expose
-    public String id;
+    public String id = null;
     @SerializedName("is_already_updating")
     @Expose
-    public Boolean isAlreadyUpdating;
+    public Boolean isAlreadyUpdating = null;
     @SerializedName("is_stuck")
     @Expose
-    public Boolean isStuck;
+    public Boolean isStuck = null;
     @SerializedName("is_up_to_date")
     @Expose
-    public Boolean isUpToDate;
+    public Boolean isUpToDate = null;
     @SerializedName("languages")
     @Expose
-    public List<Language> languages;
+    public List<Language> languages = null;
     @SerializedName("modified_at")
     @Expose
-    public String modifiedAt;
+    public String modifiedAt = null;
     @SerializedName("operating_systems")
     @Expose
-    public List<OperatingSystem> operatingSystems;
+    public List<OperatingSystem> operatingSystems = null;
     @SerializedName("project")
     @Expose
-    public Object project;
+    public Object project = null;
     @SerializedName("projects")
     @Expose
-    public List<Project> projects;
+    public List<Project> projects = null;
     @SerializedName("range")
     @Expose
-    public String range;
+    public String range = null;
     @SerializedName("start")
     @Expose
-    public String start;
+    public String start = null;
     @SerializedName("status")
     @Expose
-    public String status;
+    public String status = null;
     @SerializedName("timeout")
     @Expose
-    public Integer timeout;
+    public Integer timeout = null;
     @SerializedName("timezone")
     @Expose
-    public String timezone;
+    public String timezone = null;
     @SerializedName("total_seconds")
     @Expose
-    public Integer totalSeconds;
+    public Integer totalSeconds = null;
     @SerializedName("user_id")
     @Expose
-    public String userId;
+    public String userId = null;
     @SerializedName("username")
     @Expose
-    public String username;
+    public String username = null;
     @SerializedName("writes_only")
     @Expose
-    public Boolean writesOnly;
+    public Boolean writesOnly = null;
 
 
     public final static Parcelable.Creator<Stats> CREATOR = new Creator<Stats>() {
