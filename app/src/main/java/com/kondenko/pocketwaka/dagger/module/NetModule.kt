@@ -17,7 +17,7 @@ class NetModule(val baseUrl: String) {
     @Provides
     @Singleton
     fun provideHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder().addInterceptor(LoggingInterceptor()).build()
+        return OkHttpClient.Builder().build()
     }
 
     @Provides
