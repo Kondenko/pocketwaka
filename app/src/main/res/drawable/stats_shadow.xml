@@ -4,7 +4,7 @@
     >
 
     <size
-        android:height="@dimen/shadow_height"
+        android:height="@dimen/height_stats_shadow"
         />
 
     <gradient

@@ -29,7 +29,7 @@ class CardStats(val context: Context, val type: Int, val data: List<StatsItem>) 
     init {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
-        val content = inflater.inflate(R.layout.layout_card_stats_content, card, true)
+        val content = inflater.inflate(R.layout.view_card_stats_content, card, true)
 
         params.gravity = Gravity.CENTER_VERTICAL
         card.useCompatPadding = true
@@ -47,10 +47,10 @@ class CardStats(val context: Context, val type: Int, val data: List<StatsItem>) 
     fun setupHeader(content: View) {
         val header = content.findViewById(R.id.statsCardHeader) as TextView
         header.text = context.getString(when (type) {
-            TYPE_PROJECTS -> R.string.str_stats_projects
-            TYPE_EDITORS -> R.string.str_stats_editors
-            TYPE_LANGUAGES -> R.string.str_stats_languages
-            TYPE_OPERATING_SYSTEMS -> R.string.str_stats_operating_systems
+            TYPE_PROJECTS -> R.string.stats_card_header_projects
+            TYPE_EDITORS -> R.string.stats_card_header_editors
+            TYPE_LANGUAGES -> R.string.stats_card_header_languages
+            TYPE_OPERATING_SYSTEMS -> R.string.stats_card_header_operating_systems
             else -> throw IllegalArgumentException("Cannot resolve card type. Make sure you are using ${javaClass.simpleName}.TYPE_ constants.")
         })
     }

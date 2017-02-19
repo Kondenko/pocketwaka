@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackgroundGray"
+    android:background="@color/color_background_gray"
     tools:context="com.kondenko.pocketwaka.screens.activities.main.MainActivity"
     >
 
@@ -17,7 +17,7 @@
         android:layout_alignParentBottom="true"
         android:clipToPadding="false"
         app:itemBackground="@android:color/white"
-        app:menu="@menu/bottom_nav_menu"
+        app:menu="@menu/main_bottom_navigation_menu"
         />
 
         -->

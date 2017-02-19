@@ -8,11 +8,8 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.kondenko.pocketwaka.Const
-
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.api.model.stats.DataWrapper
 
 class FragmentEmptyState : Fragment() {
 
@@ -23,7 +20,7 @@ class FragmentEmptyState : Fragment() {
         updateButton.setOnClickListener {
             val uri = Const.URL_PLUGINS
             val builder = CustomTabsIntent.Builder()
-            builder.setToolbarColor(R.color.colorPrimary)
+            builder.setToolbarColor(R.color.color_primary)
             val customTabsIntent = builder.build()
             customTabsIntent.launchUrl(context, Uri.parse(uri))
         }

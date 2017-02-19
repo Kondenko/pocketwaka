@@ -34,7 +34,7 @@ class FragmentStatsPresenter(val statsRange: String, val tokenHeaderValue: Strin
                 .cache()
                 .subscribe(
                         { data -> view.onSuccess(data) },
-                        { error -> view.onError(error, R.string.error_loading_stats) }
+                        { error -> view.onError(error) }
                 )
     }
 

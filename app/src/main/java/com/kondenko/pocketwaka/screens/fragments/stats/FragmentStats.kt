@@ -67,7 +67,7 @@ class FragmentStats : Fragment(), FragmentStatsView {
         setContentFragment(dataWrapper)
     }
 
-    override fun onError(error: Throwable?, messageString: Int) {
+    override fun onError(error: Throwable?) {
         EventBus.getDefault().post(ErrorEvent)
         error?.let { Log.e(TAG, "FragmentStats@onError: ${error.stackTrace}") }
         setErrorFragment()

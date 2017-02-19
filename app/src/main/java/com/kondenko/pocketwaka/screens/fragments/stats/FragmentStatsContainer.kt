@@ -11,8 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.events.ErrorEvent
-import com.kondenko.pocketwaka.events.SuccessEvent
 import com.kondenko.pocketwaka.events.TabsAnimationEvent
 import com.ogaclejapan.smarttablayout.SmartTabLayout
 import com.ogaclejapan.smarttablayout.utils.v4.Bundler
@@ -48,10 +46,10 @@ class FragmentStatsContainer : Fragment() {
         EventBus.getDefault().register(this)
         viewPager.adapter = FragmentPagerItemAdapter(
                 childFragmentManager, FragmentPagerItems.with(activity)
-                .add(R.string.str_stats_7_days, FragmentStats::class.java, Bundler().putString(Const.STATS_RANGE_KEY, Const.STATS_RANGE_7_DAYS).get())
-                .add(R.string.str_stats_30_days, FragmentStats::class.java, Bundler().putString(Const.STATS_RANGE_KEY, Const.STATS_RANGE_30_DAYS).get())
-                .add(R.string.str_stats_6_months, FragmentStats::class.java, Bundler().putString(Const.STATS_RANGE_KEY, Const.STATS_RANGE_6_MONTHS).get())
-                .add(R.string.str_stats_1_year, FragmentStats::class.java, Bundler().putString(Const.STATS_RANGE_KEY, Const.STATS_RANGE_1_YEAR).get())
+                .add(R.string.stats_tab_7_days, FragmentStats::class.java, Bundler().putString(Const.STATS_RANGE_KEY, Const.STATS_RANGE_7_DAYS).get())
+                .add(R.string.stats_tab_30_days, FragmentStats::class.java, Bundler().putString(Const.STATS_RANGE_KEY, Const.STATS_RANGE_30_DAYS).get())
+                .add(R.string.stats_tab_6_months, FragmentStats::class.java, Bundler().putString(Const.STATS_RANGE_KEY, Const.STATS_RANGE_6_MONTHS).get())
+                .add(R.string.stats_tab_1_year, FragmentStats::class.java, Bundler().putString(Const.STATS_RANGE_KEY, Const.STATS_RANGE_1_YEAR).get())
                 .create()
         )
         smartTabLayout.setViewPager(viewPager)
@@ -64,7 +62,7 @@ class FragmentStatsContainer : Fragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onTabsAnimationEvent(event: TabsAnimationEvent) {
-        val colorGray = resources.getColor(R.color.colorBackgroundGray)
+        val colorGray = resources.getColor(R.color.color_background_gray)
         val colorPrimaryLight = resources.getColor(android.R.color.white)
         val colorAnim = ValueAnimator()
         with(colorAnim) {

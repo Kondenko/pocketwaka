@@ -1,55 +1,49 @@
 <resources>
-    <string name="app_name">PocketWaka</string>
+    <string name="all_app_name">PocketWaka</string>
 
-    <string name="str_action_open_waka_time">Log in using website</string>
-    <string name="str_action_authorize">OK</string>
-    <string name="str_action_retry">Retry</string>
-    <string name="str_action_logout">Log out</string>
-    <string name="str_action_refresh">Refresh</string>
+    <string name="loginactivity_sign_in">Log in</string>
+    <string name="all_action_retry">Retry</string>
+    <string name="main_action_logout">Log out</string>
+    <string name="main_action_refresh">Refresh</string>
 
-    <string name="error_invalid_api">This API key is invalid</string>
+
     <string name="error_logging_in">Log in failed</string>
     <string name="error_getting_token">Can\'t get token</string>
     <string name="error_loading_stats">Can\'t load stats</string>
+
 
     <string name="bottom_nav_menu_item_stats">Stats</string>
     <string name="bottom_nav_menu_item_calendar">Calendar</string>
     <string name="bottom_nav_menu_item_leaders">Leaders</string>
 
-    <string name="time_format" formatted="false">%d hrs %d mins</string>
 
-    <!--STATES -->
-    <!--Error state-->
     <string name="error_state_title">Oh, no</string>
     <string name="error_state_subtitle">We couldn\'t get your stats</string>
     <string name="error_state_action">Retry</string>
-    <!--Empty state-->
+
     <string name="empty_state_title">No activity</string>
     <string name="empty_state_subtitle">New to Wakatime?</string>
     <string name="empty_state_text">Install plugins for you favorite editors and write some code!</string>
     <string name="empty_state_action">Browse plugins</string>
 
 
-    <!--Stats fragment-->
-    <string name="str_stats_today">Today</string>
-    <string name="str_stats_7_days">Week</string>
-    <string name="str_stats_30_days">Month</string>
-    <string name="str_stats_6_months">6 months</string>
-    <string name="str_stats_1_year">1 year</string>
+    <string name="stats_tab_today">Today</string>
+    <string name="stats_tab_7_days">Week</string>
+    <string name="stats_tab_30_days">Month</string>
+    <string name="stats_tab_6_months">6 months</string>
+    <string name="stats_tab_1_year">1 year</string>
 
-    <string name="str_stats_total">Total</string>
-    <string name="str_stats_daily_average">Daily average</string>
-    <string name="str_stats_best_day">Best day</string>
-    <string name="str_stats_coding_activity_caption">of coding activity</string>
+    <string name="stats_header_total">Total</string>
+    <string name="stats_header_daily_average">Daily average</string>
+    <string name="stats_header_best_day">Best day</string>
+    <string name="stats_caption_best_day">of coding activity</string>
 
-    <string name="str_stats_projects">Projects</string>
-    <string name="str_stats_editors">Editors</string>
-    <string name="str_stats_languages">Languages</string>
-    <string name="str_stats_operating_systems">Operating systems</string>
+    <string name="stats_card_header_projects">Projects</string>
+    <string name="stats_card_header_editors">Editors</string>
+    <string name="stats_card_header_languages">Languages</string>
+    <string name="stats_card_header_operating_systems">Operating systems</string>
 
-    <string name="str_stats_percent" formatted="false">%.1f%%</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="stats_time_format" formatted="false">%d hrs %d mins</string>
+    <string name="stats_card_percent_format" formatted="false">%.1f%%</string>
 
 </resources>

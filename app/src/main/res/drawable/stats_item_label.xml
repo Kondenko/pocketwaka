@@ -5,8 +5,8 @@
     >
 
     <size
-        android:width="@dimen/card_stats_list_color_label_size"
-        android:height="@dimen/card_stats_list_color_label_size"
+        android:width="@dimen/size_stats_card_item_label"
+        android:height="@dimen/size_stats_card_item_label"
         />
 
 </shape>

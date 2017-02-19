@@ -34,12 +34,12 @@
     <Button
         android:id="@+id/button_error_state_update"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/height_error_screen_button"
+        android:layout_height="@dimen/height_button"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:background="?attr/colorAccent"
         android:text="@string/error_state_action"
-        android:textColor="@color/colorTextWhitePrimary"
+        android:textColor="@color/color_text_white_primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/textView"
         app:layout_constraintRight_toRightOf="@+id/textView"
@@ -55,7 +55,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/state_error_illustration"
+        app:srcCompat="@drawable/state_error_img"
         />
 
 </android.support.constraint.ConstraintLayout>

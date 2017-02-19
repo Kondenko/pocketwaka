@@ -23,7 +23,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/state_empty_illustration"
+        app:srcCompat="@drawable/state_empty_img"
         />
 
     <TextView
@@ -72,12 +72,12 @@
         android:layout_height="48dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        android:drawableEnd="@drawable/ic_open_plugins_white_24dp"
-        android:drawablePadding="@dimen/button_padding_side"
-        android:paddingLeft="@dimen/button_padding_side"
-        android:paddingRight="@dimen/button_padding_side"
+        android:drawableEnd="@drawable/state_empty_ic_open_plugins_white_24dp"
+        android:drawablePadding="@dimen/padding_button_inner_side"
+        android:paddingLeft="@dimen/padding_button_inner_side"
+        android:paddingRight="@dimen/padding_button_inner_side"
         android:text="@string/empty_state_action"
-        android:textColor="@color/colorTextWhitePrimary"
+        android:textColor="@color/color_text_white_primary"
         style="@style/Widget.AppCompat.Button.Colored"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

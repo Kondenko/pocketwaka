@@ -1,6 +1,5 @@
 package com.kondenko.pocketwaka.screens.activities.login
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -52,7 +51,7 @@ class LoginPresenter(val view: LoginView) {
         val uri = getAuthUrl(Const.RESPONSE_TYPE_CODE,
                 arrayOf(Const.SCOPE_EMAIL, Const.SCOPE_READ_LOGGED_TIME, Const.SCOPE_READ_STATS, Const.SCOPE_READ_TEAMS))
         val builder = CustomTabsIntent.Builder()
-        builder.setToolbarColor(R.color.colorPrimary)
+        builder.setToolbarColor(R.color.color_primary)
         val customTabsIntent = builder.build()
         customTabsIntent.launchUrl(context, Uri.parse(uri))
     }

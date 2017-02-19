@@ -31,7 +31,7 @@ public class BestDay implements Parcelable
     public Integer totalSeconds;
 
     public String getHumanReadableTime(Context context) {
-        String pattern = context.getString(R.string.time_format);
+        String pattern = context.getString(R.string.stats_time_format);
         long hours = TimeUnit.SECONDS.toHours(totalSeconds);
         long minutes = TimeUnit.SECONDS.toMinutes(totalSeconds) - TimeUnit.HOURS.toMinutes(hours);
         return String.format(pattern, hours, minutes);

@@ -17,18 +17,18 @@ class CardStatsListAdapter(val dataset: List<StatsItem>) : RecyclerView.Adapter<
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         context = parent?.context
-        val view = LayoutInflater.from(context).inflate(R.layout.list_item_card_stats, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.item_card_stats, parent, false)
         val viewHolder = ViewHolder(view)
         return viewHolder
     }
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         val item = dataset[position]
-        val labelDrawable: Drawable? = context?.resources?.getDrawable(R.drawable.stats_list_item_label)
+        val labelDrawable: Drawable? = context?.resources?.getDrawable(R.drawable.stats_item_label)
         labelDrawable?.setColorFilter(item.color, PorterDuff.Mode.SRC_IN)
         holder?.labelColor?.background = labelDrawable
         holder?.header?.text = item.name
-        holder?.percentage?.text = String.format(context?.getString(R.string.str_stats_percent) as String, item.percent)
+        holder?.percentage?.text = String.format(context?.getString(R.string.stats_card_percent_format) as String, item.percent)
     }
 
     override fun getItemCount(): Int = dataset.size
