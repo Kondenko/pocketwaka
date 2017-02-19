@@ -1,11 +1,46 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="TextAppearance.App.State.Any.Title" parent="TextAppearance.AppCompat.Display1">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+    </style>
+
+    <style name="TextAppearance.App.State.Any.Subtitle" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+    </style>
+
+    <style name="TextAppearance.App.State.Any.Text" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+    </style>
+
+    <style name="TextAppearance.App.Stats.Header" parent="TextAppearance.AppCompat">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/text_size_stats_header</item>
+    </style>
+
+    <style name="TextAppearance.App.Stats.TotalInfo" parent="TextAppearance.AppCompat">
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorTextBlackPrimary</item>
+        <item name="android:textSize">@dimen/text_size_stats_total_info</item>
+    </style>
+
+    <style name="TextAppearance.App.Stats.BestDay.Date" parent="TextAppearance.AppCompat">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorTextBlackPrimary</item>
+        <item name="android:textSize">@dimen/text_size_best_day_date</item>
+    </style>
+
+    <style name="TextAppearance.App.Stats.BestDay.Time" parent="TextAppearance.AppCompat">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorTextBlackPrimary</item>
+        <item name="android:textSize">@dimen/text_size_best_day_time</item>
+    </style>
+
+    <style name="TextAppearance.App.Stats.BestDay.Caption" parent="TextAppearance.AppCompat">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorTextBlackSecondary</item>
+        <item name="android:textSize">@dimen/text_size_best_day_caption</item>
     </style>
 
 </resources>

@@ -3,4 +3,18 @@
     <color name="colorPrimary">#35434f</color>
     <color name="colorPrimaryDark">#28333c</color>
     <color name="colorAccent">#2595ff</color>
+    <color name="colorBackgroundGray">#eceff1</color>
+    <color name="colorBackgroundPrimaryLight">#ffff</color>
+
+    <color name="colorBottomNavEnabled">#54000000</color>
+    <color name="colorBottomNavDisabled">#33000000</color>
+
+    <color name="colorTabTextDefault">@color/colorPrimary</color>
+
+    <color name="colorTextBlackPrimary">#DD000000</color>
+    <color name="colorTextWhitePrimary">#FFFFFF</color>
+    <color name="colorTextBlackSecondary">#89000000</color>
+
+    <color name="colorDividerBlack">#33000000</color>
+
 </resources>

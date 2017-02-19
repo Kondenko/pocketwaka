@@ -1,38 +1,44 @@
 ext {
     // Versions
-    minSdkVersion = 16
+    minSdkVersion = 17
     targetSdkVersion = 25
     compileSdkVersion = 25
-    buildToolsVersion = '25.0.0'
+    buildToolsVersion = '25.0.2'
 
-
+    androidPluginVersion = '2.3.0-beta1'
+    eventBusVersion = '3.0.0'
+    smartTabLayoutVersion = '1.6.1'
     rxKotlinVersion = '0.60.0'
     rxAdnroidVersion = '1.2.1'
-    retrofitVersion = '2.1.0'
     daggerVersion = '2.8'
-    supportLibVersion = '25.1.0'
+    retrofitVersion = '2.1.0'
+    supportLibVersion = '25.1.1'
     constraintLayoutVersion = '1.0.0-beta4'
     junitVersion = '4.12'
+    supportTestVersion = '0.5'
+    mockitoVersion = '2.6.3'
+    robolectricVersion = '3.2.2'
 }
 
 buildscript {
-    ext.androidPluginVersion = '2.3.0-beta1'
-    ext.aptVersion = '1.8'
     ext.kotlinVersion = '1.0.6'
+    ext.gradleVersion = '2.3.0-beta3'
 
     repositories {
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$androidPluginVersion"
+        classpath 'com.android.tools.build:gradle:2.3.0-beta4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
 
 allprojects {
     repositories {
         jcenter()
+        maven { url "https://jitpack.io" }
     }
 }
 
