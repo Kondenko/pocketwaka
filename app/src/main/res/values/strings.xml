@@ -1,7 +1,6 @@
 <resources>
     <string name="all_app_name">PocketWaka</string>
 
-    <string name="loginactivity_sign_in">Log in</string>
     <string name="all_action_retry">Retry</string>
     <string name="main_action_logout">Log out</string>
     <string name="main_action_refresh">Refresh</string>
@@ -25,6 +24,11 @@
     <string name="empty_state_subtitle">New to Wakatime?</string>
     <string name="empty_state_text">Install plugins for you favorite editors and write some code!</string>
     <string name="empty_state_action">Browse plugins</string>
+
+
+    <string name="loginactivity_sign_in">Log in</string>
+    <string name="loginactivity_title">PocketWaka</string>
+    <string name="loginactivity_subtitle">Your coding activity, visualized</string>
 
 
     <string name="stats_tab_today">Today</string>

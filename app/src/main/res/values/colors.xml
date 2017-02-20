@@ -15,6 +15,7 @@
     <color name="color_text_white_primary">#FFFFFF</color>
     <color name="color_text_black_secondary">#89000000</color>
 
-    <color name="color_divider_black">#33000000</color>
+    <color name="color_statusbar">#00000000</color>
+    <color name="color_login_shadow_start">#59000000</color>
 
 </resources>

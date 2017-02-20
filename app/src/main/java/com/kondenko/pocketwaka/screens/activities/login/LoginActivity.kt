@@ -1,9 +1,11 @@
 package com.kondenko.pocketwaka.screens.activities.login
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
+import android.view.WindowManager
 import android.widget.Toast
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.oauth.AccessToken
@@ -22,6 +24,9 @@ class LoginActivity : AppCompatActivity(), LoginView {
         val buttonLogin = findViewById(R.id.button_login)
         buttonLogin.setOnClickListener {
             loginPresenter.onAuthPageOpen(this)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         }
     }
 

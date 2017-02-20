@@ -48,8 +48,8 @@ class LoginPresenter(val view: LoginView) {
     }
 
     fun onAuthPageOpen(context: Context) {
-        val uri = getAuthUrl(Const.RESPONSE_TYPE_CODE,
-                arrayOf(Const.SCOPE_EMAIL, Const.SCOPE_READ_LOGGED_TIME, Const.SCOPE_READ_STATS, Const.SCOPE_READ_TEAMS))
+        val scopes = arrayOf(Const.SCOPE_EMAIL, Const.SCOPE_READ_LOGGED_TIME, Const.SCOPE_READ_STATS, Const.SCOPE_READ_TEAMS)
+        val uri = getAuthUrl(Const.RESPONSE_TYPE_CODE, scopes)
         val builder = CustomTabsIntent.Builder()
         builder.setToolbarColor(R.color.color_primary)
         val customTabsIntent = builder.build()

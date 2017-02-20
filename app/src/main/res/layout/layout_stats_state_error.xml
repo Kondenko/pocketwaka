@@ -33,8 +33,9 @@
 
     <Button
         android:id="@+id/button_error_state_update"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/height_button"
+        android:layout_height="36dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:background="?attr/colorAccent"

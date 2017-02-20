@@ -5,20 +5,17 @@
     <dimen name="margin_all_vertical">16dp</dimen>
     <dimen name="margin_all_vertical_small">8dp</dimen>
 
-    <dimen name="margin_card_inner">8dp</dimen>
+    <dimen name="margin_all_card_inner">8dp</dimen>
 
-    <dimen name="height_bottom_navigation">56dp</dimen>
-
-    <dimen name="height_button">48dp</dimen>
-    <dimen name="padding_button_inner_side">16dp</dimen>
-
-    <dimen name="size_login_logo">120dp</dimen>
-
-    <dimen name="height_stats_shadow">4dp</dimen>
+    <dimen name="height_main_bottom_navigation">56dp</dimen>
 
     <item name="elevation_bottom_navigation" format="float" type="dimen">8</item>
 
-        <!--Stats-->
+    <!--Login-->
+    <dimen name="height_login_shadow">8dp</dimen>
+    <item name="alpha_login_shadow" format="float" type="dimen">0.2</item>
+
+    <!--Stats-->
     <dimen name="textsize_stats_header">16sp</dimen>
     <dimen name="textsize_stats_info">20sp</dimen> <!-- Total and average time -->
 
@@ -29,6 +26,8 @@
     <dimen name="width_stats_tab_indicator">90dp</dimen>
 
     <dimen name="textsize_stats_tabs">14dp</dimen>
+
+    <dimen name="height_stats_shadow">4dp</dimen>
 
     <dimen name="height_stats_bestday">112dp</dimen>
     <dimen name="padding_stats_bestday_side">24dp</dimen>
