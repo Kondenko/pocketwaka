@@ -5,7 +5,9 @@
     xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     >
+
     <data>
+
         <import type="android.view.View"/>
 
         <variable
@@ -16,7 +18,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         >
 
         <com.kondenko.pocketwaka.ui.ObservableScrollView
@@ -29,7 +31,7 @@
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/rootLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 >
 
                 <TextView
@@ -39,9 +41,11 @@
                     android:layout_marginTop="16dp"
                     android:text="@string/stats_header_total"
                     android:textAppearance="@style/TextAppearance.App.Stats.Header"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintLeft_toLeftOf="@+id/textViewTotal"
                     app:layout_constraintRight_toRightOf="@+id/textViewTotal"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="spread"
                     />
 
                 <TextView
@@ -51,6 +55,7 @@
                     android:layout_marginTop="16dp"
                     android:text="@string/stats_header_daily_average"
                     android:textAppearance="@style/TextAppearance.App.Stats.Header"
+                    app:layout_constraintHorizontal_bias="0.49"
                     app:layout_constraintLeft_toLeftOf="@+id/textViewDailyAverage"
                     app:layout_constraintRight_toRightOf="@+id/textViewDailyAverage"
                     app:layout_constraintTop_toTopOf="parent"
@@ -64,7 +69,7 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:gravity="center"
                     android:text="@{dataWrapper.stats.humanReadableTotal}"
                     android:textAppearance="@style/TextAppearance.App.Stats.TotalInfo"
@@ -83,7 +88,7 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:gravity="center"
                     android:text="@{dataWrapper.stats.humanReadableDailyAverage}"
                     android:textAppearance="@style/TextAppearance.App.Stats.TotalInfo"
@@ -95,18 +100,20 @@
                     />
 
                 <include
-                    android:id="@+id/include"
-                    layout="@layout/layout_best_day"
+                    android:id="@+id/include_best_day"
+                    layout="@layout/layout_stats_best_day"
                     android:layout_width="0dp"
                     android:layout_height="112dp"
+                    android:layout_marginBottom="16dp"
                     android:layout_marginTop="24dp"
+                    android:clipToPadding="false"
                     android:visibility="@{(dataWrapper.stats.bestDay != null &amp;&amp; dataWrapper.stats.bestDay.totalSeconds &gt; 0) ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/linearLayoutCards"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewDailyAverage"
-                    app:layout_constraintVertical_bias="0.0"
+                    app:layout_constraintTop_toTopOf="@+id/guideline_best_day"
+                    app:layout_constraintVertical_bias="0.5"
                     bind:dataWrapper="@{dataWrapper}"
                     />
 
@@ -116,7 +123,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     app:layout_constraintGuide_percent="0.5"
-                    tools:layout_editor_absoluteX="192dp"
+                    tools:layout_editor_absoluteX="180dp"
                     tools:layout_editor_absoluteY="81dp"
                     />
 
@@ -124,15 +131,29 @@
                     android:id="@+id/linearLayoutCards"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
                     android:layout_marginEnd="@dimen/margin_all_card_inner"
                     android:layout_marginLeft="@dimen/margin_all_card_inner"
                     android:layout_marginRight="@dimen/margin_all_card_inner"
                     android:layout_marginStart="@dimen/margin_all_card_inner"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="0dp"
                     android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/include"
+                    app:layout_constraintTop_toBottomOf="@+id/include_best_day"
+                    app:layout_constraintVertical_bias="0.5"
+                    tools:background="@android:color/darker_gray"
+                    tools:layout_height="400dp"
+                    />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline_best_day"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_begin="67dp"
                     />
 
             </android.support.constraint.ConstraintLayout>

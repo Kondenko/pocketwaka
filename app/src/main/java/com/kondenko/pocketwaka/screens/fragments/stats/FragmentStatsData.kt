@@ -42,7 +42,7 @@ class FragmentStatsData : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Setup data
+        // Setup data binding
         val dataObject: DataWrapper? = arguments?.getParcelable(ARG_STATS_DATA)
         val binding = DataBindingUtil.inflate<FragmentStatsDataBinding>(inflater, R.layout.fragment_stats_data, container, false)
         dataObject?.let {

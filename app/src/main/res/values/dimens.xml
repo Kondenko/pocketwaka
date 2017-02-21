@@ -30,8 +30,7 @@
     <dimen name="height_stats_shadow">4dp</dimen>
 
     <dimen name="height_stats_bestday">112dp</dimen>
-    <dimen name="padding_stats_bestday_side">24dp</dimen>
-    <dimen name="padding_stats_bestday_bottom_top">16dp</dimen>
+    <dimen name="padding_stats_bestday_left">16dp</dimen>
     <dimen name="margin_top_stats_bestday_img">16dp</dimen>
     <dimen name="margin_right_stats_bestday_img">8dp</dimen>
     <item name="alpha_stats_bestday_img" format="float" type="dimen">0.6</item>

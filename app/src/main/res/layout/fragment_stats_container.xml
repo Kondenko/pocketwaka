@@ -8,7 +8,7 @@
     >
 
         <com.ogaclejapan.smarttablayout.SmartTabLayout
-            android:id="@+id/tabLayout"
+            android:id="@+id/tablayout_stats_ranges"
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_stats_tab_bar"
             android:clipToPadding="false"
@@ -17,8 +17,7 @@
             app:stl_defaultTabTextColor="@color/color_state_stats_tab"
             app:stl_defaultTabTextMinWidth="@dimen/width_stats_tab_min"
             app:stl_defaultTabTextSize="@dimen/textsize_stats_tabs"
-            app:stl_distributeEvenly="true"
-            app:stl_dividerColor="@android:color/transparent"
+            app:stl_distributeEvenly="false"
             app:stl_dividerThickness="0dp"
             app:stl_indicatorColor="@color/color_accent"
             app:stl_indicatorCornerRadius="18dp"
@@ -26,12 +25,11 @@
             app:stl_indicatorInterpolation="linear"
             app:stl_indicatorThickness="@dimen/height_stats_tab_indicator"
             app:stl_indicatorWidth="@dimen/width_stats_tab_indicator"
-            app:stl_underlineColor="@android:color/transparent"
-            app:stl_underlineThickness="1dp"
+            app:stl_underlineThickness="0dp"
             />
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager"
+        android:id="@+id/viewpager_stats_tab_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
