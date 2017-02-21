@@ -24,12 +24,9 @@ import org.greenrobot.eventbus.ThreadMode
 
 class FragmentStats : Fragment(), FragmentStatsView {
 
-
-    private val TAG = this.javaClass.simpleName
+    private val TAG = this.javaClass.simpleName + "@" + this.hashCode()
 
     private lateinit var presenter: FragmentStatsPresenter
-
-    private var shadowAnimationNeeded = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,6 +94,7 @@ class FragmentStats : Fragment(), FragmentStatsView {
 
     private fun setFragment(fragment: Fragment) {
         val transaction = childFragmentManager.beginTransaction()
+        transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
         transaction.replace(R.id.container_stats, fragment)
         transaction.commit()
     }

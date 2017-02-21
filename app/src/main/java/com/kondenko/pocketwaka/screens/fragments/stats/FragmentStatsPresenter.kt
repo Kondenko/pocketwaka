@@ -30,26 +30,11 @@ class FragmentStatsPresenter(val statsRange: String, val tokenHeaderValue: Strin
         service.getCurrentUserStats(tokenHeaderValue, statsRange)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext { data -> setColors(data) }
-                .cache()
+                .doOnSuccess { data -> data.stats.provideColors() }
                 .subscribe(
                         { data -> view.onSuccess(data) },
                         { error -> view.onError(error) }
                 )
-    }
-
-    // TODO Move to DataWrapper and separate
-    private fun setColors(data: DataWrapper): DataWrapper {
-        val dataArrays = arrayOf(data.stats.editors, data.stats.languages, data.stats.projects, data.stats.operatingSystems)
-        for (array in dataArrays) {
-            array?.let {
-                val colors = ColorGenerator.getColors(array.size)
-                for (i in 0..(array.size - 1)) {
-                    array[i].color = colors[i]
-                }
-            }
-        }
-        return data
     }
 
 }

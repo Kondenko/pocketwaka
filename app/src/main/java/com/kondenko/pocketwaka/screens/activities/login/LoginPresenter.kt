@@ -40,7 +40,7 @@ class LoginPresenter(val view: LoginView) {
         if (uri != null && uri.toString().startsWith(Const.AUTH_REDIRECT_URI)) {
             val code = uri.getQueryParameter("code")
             if (code != null) {
-                getToken(code)
+                getToken(appId, appSecret, Const.AUTH_REDIRECT_URI, Const.GRANT_TYPE_AUTH_CODE, code)
             } else if (uri.getQueryParameter("error") != null) {
                 view.onGetTokenError(null, R.string.error_getting_token)
             }
@@ -64,17 +64,13 @@ class LoginPresenter(val view: LoginView) {
                 "&scope=${scope.joinToString(",")}")
     }
 
-    fun getToken(code: String) {
-        service.getAccessToken(appId, appSecret, Const.AUTH_REDIRECT_URI, Const.GRANT_TYPE_AUTH_CODE, code)
-                .subscribeOn(Schedulers.io())
+    fun getToken(id: String, secret: String, redirectUri: String, grantType: String, code: String) {
+        service.getAccessToken(id, secret, redirectUri, grantType, code)
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { token ->
-                            view.onGetTokenSuccess(token)
-                        },
-                        { error ->
-                            view.onGetTokenError(error, R.string.error_getting_token)
-                        }
+                        { token -> view.onGetTokenSuccess(token) },
+                        { error -> view.onGetTokenError(error, R.string.error_getting_token) }
                 )
     }
 

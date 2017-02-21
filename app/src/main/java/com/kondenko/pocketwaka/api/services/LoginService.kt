@@ -6,7 +6,7 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Headers
 import retrofit2.http.POST
-import rx.Observable
+import rx.Single
 
 interface LoginService {
 
@@ -19,6 +19,6 @@ interface LoginService {
             @Field("redirect_uri") redirectUri: String,
             @Field("grant_type") grantType: String,
             @Field("code") code: String
-    ): Observable<AccessToken>
+    ): Single<AccessToken>
 
 }

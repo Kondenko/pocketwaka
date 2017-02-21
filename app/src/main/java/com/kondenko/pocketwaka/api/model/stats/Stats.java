@@ -1,13 +1,16 @@
 
 package com.kondenko.pocketwaka.api.model.stats;
 
+import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.kondenko.pocketwaka.ui.ColorGenerator;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Stats implements Parcelable {
 
@@ -96,6 +99,18 @@ public class Stats implements Parcelable {
     @Expose
     public Boolean writesOnly = null;
 
+    public void provideColors() {
+        provideColor(projects, languages, editors, operatingSystems);
+    }
+
+    private void provideColor(List<? extends StatsItem>... lists) {
+        for (List<? extends StatsItem> list : lists) {
+            List<Integer> colors = ColorGenerator.INSTANCE.getColors(list.size());
+            for (int i = 0; i < list.size(); i++) {
+                list.get(i).color = colors.get(i);
+            }
+        }
+    }
 
     public final static Parcelable.Creator<Stats> CREATOR = new Creator<Stats>() {
         @SuppressWarnings({
