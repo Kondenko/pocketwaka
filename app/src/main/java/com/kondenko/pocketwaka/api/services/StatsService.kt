@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.api.services
 
 import com.kondenko.pocketwaka.Const
-import com.kondenko.pocketwaka.api.model.stats.DataWrapper
+import com.kondenko.pocketwaka.api.model.stats.StatsDataWrapper
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
@@ -13,6 +13,6 @@ interface StatsService {
     fun getCurrentUserStats(
             @Header(Const.HEADER_BEARER_NAME) tokenHeaderValue: String,
             @Path("range") range: String
-    ): Single<DataWrapper>
+    ): Single<StatsDataWrapper>
 
 }

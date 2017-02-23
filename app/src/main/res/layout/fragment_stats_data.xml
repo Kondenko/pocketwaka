@@ -12,7 +12,7 @@
 
         <variable
             name="dataWrapper"
-            type="com.kondenko.pocketwaka.api.model.stats.DataWrapper"
+            type="com.kondenko.pocketwaka.api.model.stats.StatsDataWrapper"
             />
     </data>
 

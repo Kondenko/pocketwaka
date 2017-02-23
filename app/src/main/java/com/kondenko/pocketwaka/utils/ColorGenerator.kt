@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.ui
+package com.kondenko.pocketwaka.utils
 
 import android.graphics.Color
 import java.util.*

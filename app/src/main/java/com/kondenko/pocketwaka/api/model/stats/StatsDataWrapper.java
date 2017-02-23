@@ -7,24 +7,24 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class DataWrapper implements Parcelable
+public class StatsDataWrapper implements Parcelable
 {
 
     @SerializedName("data")
     @Expose
     public Stats stats = null;
 
-    public final static Parcelable.Creator<DataWrapper> CREATOR = new Creator<DataWrapper>() {
+    public final static Parcelable.Creator<StatsDataWrapper> CREATOR = new Creator<StatsDataWrapper>() {
         @SuppressWarnings({
             "unchecked"
         })
-        public DataWrapper createFromParcel(Parcel in) {
-            DataWrapper instance = new DataWrapper();
+        public StatsDataWrapper createFromParcel(Parcel in) {
+            StatsDataWrapper instance = new StatsDataWrapper();
             instance.stats = ((Stats) in.readValue((Stats.class.getClassLoader())));
             return instance;
         }
-        public DataWrapper[] newArray(int size) {
-            return (new DataWrapper[size]);
+        public StatsDataWrapper[] newArray(int size) {
+            return (new StatsDataWrapper[size]);
         }
 
     };

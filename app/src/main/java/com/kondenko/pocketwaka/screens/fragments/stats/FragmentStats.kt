@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.api.model.stats.DataWrapper
+import com.kondenko.pocketwaka.api.model.stats.StatsDataWrapper
 import com.kondenko.pocketwaka.api.oauth.AccessTokenUtils
 import com.kondenko.pocketwaka.events.ErrorEvent
 import com.kondenko.pocketwaka.events.RefreshEvent
@@ -24,14 +24,17 @@ import org.greenrobot.eventbus.ThreadMode
 
 class FragmentStats : Fragment(), FragmentStatsView {
 
-    private val TAG = this.javaClass.simpleName + "@" + this.hashCode()
+    private lateinit var TAG: String
 
     private lateinit var presenter: FragmentStatsPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        TAG = this.javaClass.simpleName + "@" + arguments.getString(Const.STATS_RANGE_KEY)
         val token = AccessTokenUtils.getTokenHeaderValue(activity)
         presenter = FragmentStatsPresenter(arguments.getString(Const.STATS_RANGE_KEY), token, this)
+        presenter.onCreate()
+        setLoadingFragment()
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -47,6 +50,7 @@ class FragmentStats : Fragment(), FragmentStatsView {
 
     override fun onStop() {
         EventBus.getDefault().unregister(this)
+        presenter.onStop()
         super.onStop()
     }
 
@@ -57,16 +61,18 @@ class FragmentStats : Fragment(), FragmentStatsView {
 
     override fun onRefresh() {
         setLoadingFragment()
+        presenter.updateData()
     }
 
-    override fun onSuccess(dataWrapper: DataWrapper) {
+    override fun onSuccess(statsDataWrapper: StatsDataWrapper) {
         EventBus.getDefault().post(SuccessEvent)
-        setContentFragment(dataWrapper)
+        setContentFragment(statsDataWrapper)
     }
 
     override fun onError(error: Throwable?) {
+        Log.i(TAG, "onError")
         EventBus.getDefault().post(ErrorEvent)
-        error?.let { Log.e(TAG, "FragmentStats@onError: ${error.stackTrace}") }
+        error?.printStackTrace()
         setErrorFragment()
     }
 
@@ -75,9 +81,9 @@ class FragmentStats : Fragment(), FragmentStatsView {
         setFragment(loadingFragment)
     }
 
-    private fun setContentFragment(data: DataWrapper) {
-        val fragment = if (data.stats != null && data.stats.totalSeconds > 0) {
-            FragmentStatsData.newInstance(data)
+    private fun setContentFragment(statsData: StatsDataWrapper) {
+        val fragment = if (statsData.stats != null && statsData.stats.totalSeconds > 0) {
+            FragmentStatsData.newInstance(statsData)
         } else {
             FragmentEmptyState()
         }
@@ -93,10 +99,12 @@ class FragmentStats : Fragment(), FragmentStatsView {
     }
 
     private fun setFragment(fragment: Fragment) {
-        val transaction = childFragmentManager.beginTransaction()
-        transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-        transaction.replace(R.id.container_stats, fragment)
-        transaction.commit()
+        if (activity != null && !activity.isDestroyed) {
+            val transaction = childFragmentManager.beginTransaction()
+            transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+            transaction.replace(R.id.container_stats, fragment)
+            transaction.commit()
+        }
     }
 
 }

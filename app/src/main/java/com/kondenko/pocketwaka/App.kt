@@ -24,10 +24,10 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         loginComponent = DaggerLoginComponent.builder()
-                .netModule(NetModule(Const.BASE_URL))
+                .netModule(NetModule(this, Const.BASE_URL))
                 .build()
         apiComponent = DaggerApiComponent.builder()
-                .netModule(NetModule(Const.API_URL))
+                .netModule(NetModule(this, Const.API_URL))
                 .build()
     }
 

@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.api.model.stats.DataWrapper
+import com.kondenko.pocketwaka.api.model.stats.StatsDataWrapper
 import com.kondenko.pocketwaka.api.model.stats.StatsItem
 import com.kondenko.pocketwaka.databinding.FragmentStatsDataBinding
 import com.kondenko.pocketwaka.events.TabsAnimationEvent
@@ -27,10 +27,10 @@ class FragmentStatsData : Fragment() {
     companion object {
         val ARG_STATS_DATA: String = "stats"
 
-        fun newInstance(data: DataWrapper): FragmentStatsData {
+        fun newInstance(statsData: StatsDataWrapper): FragmentStatsData {
             val fragment = FragmentStatsData()
             val bundle = Bundle()
-            bundle.putParcelable(ARG_STATS_DATA, data)
+            bundle.putParcelable(ARG_STATS_DATA, statsData)
             fragment.arguments = bundle
             return fragment
         }
@@ -43,11 +43,11 @@ class FragmentStatsData : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Setup data binding
-        val dataObject: DataWrapper? = arguments?.getParcelable(ARG_STATS_DATA)
+        val statsDataObject: StatsDataWrapper? = arguments?.getParcelable(ARG_STATS_DATA)
         val binding = DataBindingUtil.inflate<FragmentStatsDataBinding>(inflater, R.layout.fragment_stats_data, container, false)
-        dataObject?.let {
-            binding.dataWrapper = dataObject
-            addStatsCards(binding, dataObject)
+        statsDataObject?.let {
+            binding.dataWrapper = statsDataObject
+            addStatsCards(binding, statsDataObject)
         }
         // Make the tabs "float" over the other views
         binding.statsScrollView.setOnScrollListener(object : OnScrollViewListener {
@@ -69,21 +69,21 @@ class FragmentStatsData : Fragment() {
         return binding.root
     }
 
-    private fun addStatsCards(binding: FragmentStatsDataBinding, dataWrapper: DataWrapper) {
+    private fun addStatsCards(binding: FragmentStatsDataBinding, statsDataWrapper: StatsDataWrapper) {
         if (binding.linearLayoutCards.childCount == 0) {
-            val cards = getAvailableCards(dataWrapper)
+            val cards = getAvailableCards(statsDataWrapper)
             for (card in cards) {
                 binding.linearLayoutCards.addView(card.getView())
             }
         }
     }
 
-    fun getAvailableCards(dataWrapper: DataWrapper): ArrayList<CardStats> {
+    fun getAvailableCards(statsDataWrapper: StatsDataWrapper): ArrayList<CardStats> {
         val cards = ArrayList<CardStats>()
-        cards.addIfNotEmpty(dataWrapper.stats.projects, CardStats.TYPE_EDITORS)
-        cards.addIfNotEmpty(dataWrapper.stats.editors, CardStats.TYPE_PROJECTS)
-        cards.addIfNotEmpty(dataWrapper.stats.languages, CardStats.TYPE_LANGUAGES)
-        cards.addIfNotEmpty(dataWrapper.stats.operatingSystems, CardStats.TYPE_OPERATING_SYSTEMS)
+        cards.addIfNotEmpty(statsDataWrapper.stats.projects, CardStats.TYPE_EDITORS)
+        cards.addIfNotEmpty(statsDataWrapper.stats.editors, CardStats.TYPE_PROJECTS)
+        cards.addIfNotEmpty(statsDataWrapper.stats.languages, CardStats.TYPE_LANGUAGES)
+        cards.addIfNotEmpty(statsDataWrapper.stats.operatingSystems, CardStats.TYPE_OPERATING_SYSTEMS)
         return cards
     }
 

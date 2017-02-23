@@ -1,16 +1,14 @@
 
 package com.kondenko.pocketwaka.api.model.stats;
 
-import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.kondenko.pocketwaka.ui.ColorGenerator;
+import com.kondenko.pocketwaka.utils.ColorGenerator;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class Stats implements Parcelable {
 
