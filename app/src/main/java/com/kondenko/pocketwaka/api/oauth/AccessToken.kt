@@ -1,10 +1,10 @@
 package com.kondenko.pocketwaka.api.oauth
 
 data class AccessToken(
-        val access_token: String,
-        val expires_in: Double,
-        val refresh_token: String,
-        val scope: String,
-        val token_type: String,
-        val uid: String
+        var access_token: String,
+        var expires_in: Double,
+        var refresh_token: String,
+        var scope: String,
+        var token_type: String,
+        var uid: String
 )

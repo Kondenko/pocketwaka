@@ -9,7 +9,7 @@ class MainActivityPresenter(val view: MainActivityView) {
     fun logout(activity: MainActivity) {
         activity.finish()
         activity.startActivity(Intent(activity, LoginActivity::class.java))
-        AccessTokenUtils.removeFromPrefs(activity)
+        AccessTokenUtils.deleteToken(activity)
     }
 
 }

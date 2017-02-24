@@ -10,6 +10,7 @@ import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.KeysManager
 import com.kondenko.pocketwaka.api.services.LoginService
+import com.kondenko.pocketwaka.utils.Encryptor
 import retrofit2.Retrofit
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -23,11 +24,11 @@ class LoginPresenter(val view: LoginView) {
     private val service: LoginService
 
     private val appId by lazy {
-        String(Base64.decode(KeysManager.getAppId(), Base64.DEFAULT))
+        Encryptor.decrypt(KeysManager.getAppId())
     }
 
     private val appSecret by lazy {
-        String(Base64.decode(KeysManager.getAppSecret(), Base64.DEFAULT))
+        Encryptor.decrypt(KeysManager.getAppSecret())
     }
 
     init {
