@@ -26,7 +26,6 @@
 
         <activity
             android:name=".screens.activities.login.LoginActivity"
-            android:configChanges="keyboard|orientation|screenSize"
             android:theme="@style/LoginActivityTheme"
             >
             <intent-filter>
