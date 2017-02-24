@@ -5,13 +5,16 @@ import okhttp3.Interceptor
 import okhttp3.Response
 
 class LoggingInterceptor : Interceptor {
+
+    private val TAG = "HTTP"
+
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        Log.i("HTTP", "Request: $request")
-        Log.i("HTTP", "Request header: ${request.headers()}")
+        Log.i(TAG, request.toString())
+        Log.i(TAG, "Request headers: ${request.headers()}")
         val response = chain.proceed(request)
-        Log.i("HTTP", "Responce: $response")
-        Log.i("HTTP", "Responce header: ${response.headers()}")
+        Log.i(TAG, response.toString())
+        Log.i(TAG, "Response headers: ${response.headers()}")
         return response
     }
 }
