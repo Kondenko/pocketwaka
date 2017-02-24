@@ -5,6 +5,8 @@ ext {
     compileSdkVersion = 25
     buildToolsVersion = '25.0.2'
 
+    supportLibVersion = '25.2.0'
+    constraintLayoutVersion = '1.0.0'
     androidPluginVersion = '2.3.0-beta1'
     eventBusVersion = '3.0.0'
     smartTabLayoutVersion = '1.6.1'
@@ -12,8 +14,6 @@ ext {
     rxAdnroidVersion = '1.2.1'
     daggerVersion = '2.8'
     retrofitVersion = '2.1.0'
-    supportLibVersion = '25.1.1'
-    constraintLayoutVersion = '1.0.0-beta4'
     junitVersion = '4.12'
     supportTestVersion = '0.5'
     mockitoVersion = '2.6.3'

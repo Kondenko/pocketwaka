@@ -75,6 +75,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:$supportLibVersion"
     compile "com.android.support:design:$supportLibVersion"
     compile "com.android.support:customtabs:$supportLibVersion"
+    compile "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
 
     // Retrofit
     compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
@@ -89,7 +90,5 @@ dependencies {
     testCompile "org.mockito:mockito-core:$mockitoVersion"
     testCompile "org.robolectric:robolectric:$robolectricVersion"
 
-    compile 'javax.annotation:jsr250-api:1.0'
-    compile 'com.android.support:support-v4:25.1.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta5'
+    compile "javax.annotation:jsr250-api:1.0"
 }
