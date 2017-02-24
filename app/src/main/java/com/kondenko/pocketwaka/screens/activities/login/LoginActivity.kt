@@ -36,9 +36,10 @@ class LoginActivity : AppCompatActivity(), LoginView {
     }
 
     override fun onGetTokenSuccess(token: AccessToken) {
-        AccessTokenUtils.storeToPreferences(token, this)
-        startActivity(Intent(this, MainActivity::class.java))
-        this.finish()
+        AccessTokenUtils.saveToken(token, this)
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finishAffinity()
     }
 
     override fun onGetTokenError(error: Throwable?, @StringRes messageStringRes: Int) {
