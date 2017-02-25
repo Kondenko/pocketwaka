@@ -57,7 +57,7 @@ class CardStats(val context: Context, val type: Int, val data: List<StatsItem>) 
 
     fun setupList(content: View) {
         val list = content.findViewById(R.id.statsCardRecyclerView) as RecyclerView
-        val adapter = CardStatsListAdapter(data)
+        val adapter = CardStatsListAdapter(context, data)
         list.adapter = adapter
         list.layoutManager = NonScrollableLinearLayoutManager(context)
     }

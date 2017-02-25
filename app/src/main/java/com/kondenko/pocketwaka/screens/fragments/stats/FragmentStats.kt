@@ -93,7 +93,7 @@ class FragmentStats : Fragment(), FragmentStatsView {
     private fun setErrorFragment() {
         val errorFragment = FragmentErrorState()
         errorFragment.setOnUpdateListener {
-            EventBus.getDefault().post(RefreshEvent)
+            onRefresh()
         }
         setFragment(errorFragment)
     }

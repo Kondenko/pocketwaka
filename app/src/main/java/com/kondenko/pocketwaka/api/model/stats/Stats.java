@@ -103,9 +103,11 @@ public class Stats implements Parcelable {
 
     private void provideColor(List<? extends StatsItem>... lists) {
         for (List<? extends StatsItem> list : lists) {
-            List<Integer> colors = ColorGenerator.INSTANCE.getColors(list.size());
-            for (int i = 0; i < list.size(); i++) {
-                list.get(i).color = colors.get(i);
+            if (list != null) {
+                List<Integer> colors = ColorGenerator.INSTANCE.getColors(list.size());
+                for (int i = 0; i < list.size(); i++) {
+                    list.get(i).color = colors.get(i);
+                }
             }
         }
     }
