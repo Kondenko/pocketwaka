@@ -1,4 +1,4 @@
-package com.vladimirkondenko.onelinebarchart
+package com.kondenko.pocketwaka.ui.onelinesegmentedchart
 
 import android.support.annotation.ColorInt
 import android.support.annotation.FloatRange

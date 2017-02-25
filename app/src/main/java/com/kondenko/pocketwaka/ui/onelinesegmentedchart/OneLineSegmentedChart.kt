@@ -1,10 +1,11 @@
-package com.vladimirkondenko.onelinebarchart
+package com.kondenko.pocketwaka.ui.onelinesegmentedchart
 
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
+import com.kondenko.pocketwaka.R
 import java.util.*
 
 /**
