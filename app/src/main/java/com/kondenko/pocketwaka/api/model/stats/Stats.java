@@ -10,6 +10,8 @@ import com.kondenko.pocketwaka.utils.ColorGenerator;
 
 import java.util.List;
 
+import static android.R.id.list;
+
 public class Stats implements Parcelable {
 
     @SerializedName("best_day")
@@ -98,18 +100,22 @@ public class Stats implements Parcelable {
     public Boolean writesOnly = null;
 
     public void provideColors() {
-        provideColor(projects, languages, editors, operatingSystems);
+        provideColor(projects);
+        provideColor(languages);
+        provideColor(editors);
+        provideColor(operatingSystems);
     }
 
-    private void provideColor(List<? extends StatsItem>... lists) {
-        for (List<? extends StatsItem> list : lists) {
-            if (list != null) {
+    private void provideColor(final List<? extends StatsItem> list) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
                 List<Integer> colors = ColorGenerator.INSTANCE.getColors(list.size());
                 for (int i = 0; i < list.size(); i++) {
                     list.get(i).color = colors.get(i);
                 }
             }
-        }
+        }).start();
     }
 
     public final static Parcelable.Creator<Stats> CREATOR = new Creator<Stats>() {
