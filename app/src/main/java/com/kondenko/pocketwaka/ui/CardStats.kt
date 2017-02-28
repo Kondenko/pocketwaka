@@ -11,8 +11,8 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.model.stats.StatsItem
-import com.vladimirkondenko.onelinebarchart.OneLineSegmentedChart
-import com.vladimirkondenko.onelinebarchart.Segment
+import com.kondenko.pocketwaka.ui.onelinesegmentedchart.OneLineSegmentedChart
+import com.kondenko.pocketwaka.ui.onelinesegmentedchart.Segment
 import java.util.*
 
 class CardStats(val context: Context, val type: Int, val data: List<StatsItem>) {

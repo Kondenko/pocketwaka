@@ -15,7 +15,7 @@
         android:textAppearance="@style/TextAppearance.App.Stats.Header"
         />
 
-    <com.vladimirkondenko.onelinebarchart.OneLineSegmentedChart
+    <com.kondenko.pocketwaka.ui.onelinesegmentedchart.OneLineSegmentedChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
         android:layout_height="@dimen/card_stats_bar_height"
@@ -28,7 +28,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/statsCardRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         />
 
 
