@@ -42,10 +42,14 @@ class FragmentStats : Fragment(), FragmentStatsView {
         return inflater?.inflate(R.layout.fragment_stats, container, false)
     }
 
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        presenter.onCreateView()
+    }
+
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
-        presenter.onStart()
     }
 
     override fun onStop() {
@@ -100,6 +104,7 @@ class FragmentStats : Fragment(), FragmentStatsView {
 
     private fun setFragment(fragment: Fragment) {
         if (activity != null && !activity.isDestroyed) {
+            Log.i(TAG, "setFragment: $fragment")
             val transaction = childFragmentManager.beginTransaction()
             transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
             transaction.replace(R.id.container_stats, fragment)

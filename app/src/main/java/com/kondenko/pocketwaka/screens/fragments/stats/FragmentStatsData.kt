@@ -80,8 +80,8 @@ class FragmentStatsData : Fragment() {
 
     fun getAvailableCards(statsDataWrapper: StatsDataWrapper): ArrayList<CardStats> {
         val cards = ArrayList<CardStats>()
-        cards.addIfNotEmpty(statsDataWrapper.stats.projects, CardStats.TYPE_EDITORS)
-        cards.addIfNotEmpty(statsDataWrapper.stats.editors, CardStats.TYPE_PROJECTS)
+        cards.addIfNotEmpty(statsDataWrapper.stats.projects, CardStats.TYPE_PROJECTS)
+        cards.addIfNotEmpty(statsDataWrapper.stats.editors, CardStats.TYPE_EDITORS)
         cards.addIfNotEmpty(statsDataWrapper.stats.languages, CardStats.TYPE_LANGUAGES)
         cards.addIfNotEmpty(statsDataWrapper.stats.operatingSystems, CardStats.TYPE_OPERATING_SYSTEMS)
         return cards

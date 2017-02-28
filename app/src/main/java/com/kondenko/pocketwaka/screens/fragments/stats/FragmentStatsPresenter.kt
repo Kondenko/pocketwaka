@@ -13,8 +13,6 @@ import javax.inject.Inject
 
 class FragmentStatsPresenter(val statsRange: String, val tokenHeaderValue: String, val view: FragmentStatsView) {
 
-    private val TAG = this.javaClass.simpleName + "@" + statsRange
-
     @Inject lateinit var retrofit: Retrofit
 
     private val service: StatsService
@@ -34,7 +32,7 @@ class FragmentStatsPresenter(val statsRange: String, val tokenHeaderValue: Strin
         statsSingle = getStatsForSubscription()
     }
 
-    fun onStart() {
+    fun onCreateView() {
         updateData()
     }
 
