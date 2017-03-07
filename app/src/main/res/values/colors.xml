@@ -19,4 +19,14 @@
     <color name="color_statusbar">#00000000</color>
     <color name="color_login_shadow_start">#59000000</color>
 
+    <array name="chart_colors">
+        <!--<item name="chart_blue">#4da2db</item>-->
+        <item name="chart_blue">@color/color_accent</item>
+        <item name="chart_red">#ff6a59</item>
+        <item name="chart_yellow">#f2ef55</item>
+        <item name="chart_purple">#9b59b6</item>
+        <item name="chart_green">#59ff9e</item>
+        <item name="chart_orange">#ff8859</item>
+    </array>
+
 </resources>

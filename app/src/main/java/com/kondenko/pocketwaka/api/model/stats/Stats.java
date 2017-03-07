@@ -1,6 +1,7 @@
 
 package com.kondenko.pocketwaka.api.model.stats;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -99,20 +100,21 @@ public class Stats implements Parcelable {
     @Expose
     public Boolean writesOnly = null;
 
-    public void provideColors() {
-        provideColor(projects);
-        provideColor(languages);
-        provideColor(editors);
-        provideColor(operatingSystems);
+    public void provideColors(Context context) {
+        provideColor(context, projects, languages, editors, operatingSystems);
     }
 
-    private void provideColor(final List<? extends StatsItem> list) {
+    private void provideColor(final Context context, final List<? extends StatsItem>... lists) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<Integer> colors = ColorGenerator.INSTANCE.getColors(list.size());
-                for (int i = 0; i < list.size(); i++) {
-                    list.get(i).color = colors.get(i);
+                for (List<? extends StatsItem> list: lists) {
+                    if (list != null) {
+                        List<Integer> colors = ColorGenerator.INSTANCE.getColors(context, list);
+                        for (int i = 0; i < list.size(); i++) {
+                            list.get(i).color = colors.get(i);
+                        }
+                    }
                 }
             }
         }).start();

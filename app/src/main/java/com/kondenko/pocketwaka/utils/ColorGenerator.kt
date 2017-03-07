@@ -1,29 +1,41 @@
 package com.kondenko.pocketwaka.utils
 
+import android.content.Context
 import android.graphics.Color
+import android.util.Log
+import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.api.model.stats.StatsItem
 import java.util.*
 
 
 object ColorGenerator {
 
+    private val TAG = "ColorGenerator"
+
     private val SATURATION = 0.65f
     private val VALUE = 1f
 
-    fun getColors(n: Int): ArrayList<Int> {
-        val random = Random()
+    fun getColors(context: Context, items: List<StatsItem>): ArrayList<Int> {
+        val n = items.size
+        val predefinedColors = getPredefinedColors(context)
         val colors = ArrayList<Int>(n)
-        val part: Float = 360 / n.toFloat()
         for (i in 0..(n - 1)) {
-            // Shift a value left or right from the current position in range of the current sector
-            val randomFactor = random.nextInt(Math.round(part / 2)) * if (random.nextBoolean()) 1 else -1
-            val hue: Float = (360 - part * i) + randomFactor
-            val hueOpposite: Float = (hue - 180) + randomFactor
-            val color = getColorByHue(hue)
-            val colorOpposite = getColorByHue(hueOpposite)
+            val color: Int
+            if (i <= predefinedColors.size - 1) {
+                color = predefinedColors[i]
+            } else {
+                color = getRandomColor(items[i].name.hashCode().toLong())
+            }
             colors.add(color)
-            colors.add(colorOpposite)
         }
         return colors
+    }
+
+    private fun getPredefinedColors(context: Context): IntArray = context.resources.getIntArray(R.array.chart_colors)
+
+    private fun getRandomColor(seed: Long): Int {
+        val random = Random(seed)
+        return getColorByHue(random.nextInt(360).toFloat())
     }
 
     private fun getColorByHue(hue: Float) = Color.HSVToColor(floatArrayOf(hue, SATURATION, VALUE))
