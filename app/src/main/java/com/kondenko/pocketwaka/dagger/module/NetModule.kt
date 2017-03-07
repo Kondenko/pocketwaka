@@ -26,7 +26,7 @@ class NetModule(val context: Context, val baseUrl: String) {
         val cache = Cache(cacheDirectory, cacheSize)
         client.cache(cache)
         client.addInterceptor(CacheInterceptor(context))
-        client.addInterceptor(LoggingInterceptor())
+//        client.addInterceptor(LoggingInterceptor())
         return client.build()
     }
 
