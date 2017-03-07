@@ -28,23 +28,35 @@ class FragmentStats : Fragment(), FragmentStatsView {
 
     private lateinit var presenter: FragmentStatsPresenter
 
+    private val fragmentEmptyState by lazy {
+        FragmentEmptyState()
+    }
+
+    private val fragmentErrorState by lazy {
+        FragmentErrorState()
+    }
+
+    private val fragmentLoadingState by lazy {
+        FragmentLoadingState()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         TAG = this.javaClass.simpleName + "@" + arguments.getString(Const.STATS_RANGE_KEY)
         val token = AccessTokenUtils.getTokenHeaderValue(activity)
         presenter = FragmentStatsPresenter(arguments.getString(Const.STATS_RANGE_KEY), token, this)
-        presenter.onCreate()
-        setLoadingFragment()
+        fragmentErrorState.setOnUpdateListener { EventBus.getDefault().post(RefreshEvent) }
+    }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        showLoadingState()
+        presenter.onViewCreated(context)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.fragment_stats, container, false)
-    }
-
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        presenter.onCreateView()
     }
 
     override fun onStart() {
@@ -64,42 +76,36 @@ class FragmentStats : Fragment(), FragmentStatsView {
     }
 
     override fun onRefresh() {
-        setLoadingFragment()
-        presenter.updateData()
+        showLoadingState()
+        presenter.updateData(context)
     }
 
     override fun onSuccess(statsDataWrapper: StatsDataWrapper) {
         EventBus.getDefault().post(SuccessEvent)
-        setContentFragment(statsDataWrapper)
+        showContent(statsDataWrapper)
     }
 
     override fun onError(error: Throwable?) {
         Log.i(TAG, "onError")
         EventBus.getDefault().post(ErrorEvent)
         error?.printStackTrace()
-        setErrorFragment()
+        showError()
     }
 
-    private fun setLoadingFragment() {
-        val loadingFragment = FragmentLoadingState()
-        setFragment(loadingFragment)
-    }
-
-    private fun setContentFragment(statsData: StatsDataWrapper) {
-        val fragment = if (statsData.stats != null && statsData.stats.totalSeconds > 0) {
-            FragmentStatsData.newInstance(statsData)
+    private fun showContent(statsData: StatsDataWrapper) {
+        if (statsData.stats != null && statsData.stats.totalSeconds > 0) {
+            setFragment(FragmentStatsData.newInstance(statsData))
         } else {
-            FragmentEmptyState()
+            setFragment(fragmentEmptyState)
         }
-        setFragment(fragment)
     }
 
-    private fun setErrorFragment() {
-        val errorFragment = FragmentErrorState()
-        errorFragment.setOnUpdateListener {
-            EventBus.getDefault().post(RefreshEvent)
-        }
-        setFragment(errorFragment)
+    private fun showLoadingState() {
+        setFragment(fragmentLoadingState)
+    }
+
+    private fun showError() {
+        setFragment(fragmentErrorState)
     }
 
     private fun setFragment(fragment: Fragment) {

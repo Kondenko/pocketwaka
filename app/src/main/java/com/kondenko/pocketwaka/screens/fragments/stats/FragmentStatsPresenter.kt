@@ -1,13 +1,11 @@
 package com.kondenko.pocketwaka.screens.fragments.stats
 
+import android.content.Context
 import com.kondenko.pocketwaka.App
-import com.kondenko.pocketwaka.api.model.stats.StatsDataWrapper
 import com.kondenko.pocketwaka.api.services.StatsService
-import com.kondenko.pocketwaka.utils.SingleSubscriberLambda
 import retrofit2.Retrofit
-import rx.Single
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
-import rx.lang.kotlin.subscriber
 import rx.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -16,42 +14,34 @@ class FragmentStatsPresenter(val statsRange: String, val tokenHeaderValue: Strin
     @Inject lateinit var retrofit: Retrofit
 
     private val service: StatsService
-    private val statsSubscriber: SingleSubscriberLambda<StatsDataWrapper>
-    private var statsSingle: Single<StatsDataWrapper>? = null
+    private var statsSubscription: Subscription? = null
 
     init {
         App.apiComponent.inject(this)
         service = retrofit.create(StatsService::class.java)
-        statsSubscriber = SingleSubscriberLambda<StatsDataWrapper>(
-                { value -> view.onSuccess(value) },
-                { error -> view.onError(error) }
-        )
     }
 
-    fun onCreate() {
-        statsSingle = getStatsForSubscription()
-    }
-
-    fun onCreateView() {
-        updateData()
+    fun onViewCreated(context: Context) {
+        updateData(context)
     }
 
     fun onStop() {
-        if (!statsSubscriber.isUnsubscribed) {
-            statsSubscriber.unsubscribe()
+        statsSubscription?.let {
+            if (!it.isUnsubscribed) it.unsubscribe()
         }
     }
 
-    fun updateData() {
-        statsSingle?.subscribe(statsSubscriber)
+    fun updateData(context: Context) {
+        statsSubscription = service.getCurrentUserStats(tokenHeaderValue, statsRange)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess { data -> data.stats.provideColors(context) }
+                .subscribe(
+                        { value -> view.onSuccess(value) },
+                        { error -> view.onError(error) }
+                )
     }
 
-    private fun getStatsForSubscription(): Single<StatsDataWrapper> {
-        return service.getCurrentUserStats(tokenHeaderValue, statsRange)
-                .subscribeOn(Schedulers.newThread())
-                .doOnSuccess { data -> data.stats.provideColors() }
-                .observeOn(AndroidSchedulers.mainThread())
-    }
 
 }
 
