@@ -6,6 +6,7 @@
 
     <style name="TextAppearance.App.State.Any.Subtitle" parent="TextAppearance.AppCompat.Title">
         <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
     <style name="TextAppearance.App.State.Any.Text" parent="TextAppearance.AppCompat.Body2">
