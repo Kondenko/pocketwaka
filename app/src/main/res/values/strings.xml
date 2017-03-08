@@ -6,7 +6,7 @@
     <string name="main_action_refresh">Refresh</string>
 
 
-    <string name="error_logging_in">Log in failed</string>
+    <string name="error_logging_in">Logging in failed</string>
     <string name="error_getting_token">Can\'t get token</string>
     <string name="error_loading_stats">Can\'t load stats</string>
 

@@ -43,7 +43,7 @@ class LoginPresenter(val view: LoginView) {
             if (code != null) {
                 getToken(appId, appSecret, Const.AUTH_REDIRECT_URI, Const.GRANT_TYPE_AUTH_CODE, code)
             } else if (uri.getQueryParameter("error") != null) {
-                view.onGetTokenError(null, R.string.error_getting_token)
+                view.onGetTokenError(null, R.string.error_logging_in)
             }
         }
     }
@@ -71,7 +71,7 @@ class LoginPresenter(val view: LoginView) {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { token -> view.onGetTokenSuccess(token) },
-                        { error -> view.onGetTokenError(error, R.string.error_getting_token) }
+                        { error -> view.onGetTokenError(error, R.string.error_logging_in) }
                 )
     }
 
