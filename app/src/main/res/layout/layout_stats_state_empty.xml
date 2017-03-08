@@ -17,9 +17,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:adjustViewBounds="false"
+        android:adjustViewBounds="true"
         android:cropToPadding="true"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -30,7 +31,6 @@
         android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="@string/empty_state_title"
         android:textAppearance="@style/TextAppearance.App.State.Any.Title"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -68,18 +68,17 @@
 
     <Button
         android:id="@+id/button_error_state_update"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="192dp"
-        android:layout_height="36dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="wrap_content"
         android:drawableEnd="@drawable/state_empty_ic_open_plugins_white_24dp"
         android:text="@string/empty_state_action"
         android:textColor="@color/color_text_white_primary"
-        style="@style/Widget.AppCompat.Button.Colored"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewText"
+        app:layout_constraintVertical_bias="0.506"
         >
 
     </Button>

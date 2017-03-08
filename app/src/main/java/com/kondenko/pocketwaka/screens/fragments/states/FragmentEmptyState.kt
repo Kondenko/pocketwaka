@@ -15,7 +15,7 @@ class FragmentEmptyState : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater!!.inflate(R.layout.layout_all_state_empty, container, false)
+        val view = inflater!!.inflate(R.layout.layout_stats_state_empty, container, false)
         val updateButton = view.findViewById(R.id.button_error_state_update)
         updateButton.setOnClickListener {
             val uri = Const.URL_PLUGINS
