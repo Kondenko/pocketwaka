@@ -1,9 +1,8 @@
 package com.kondenko.pocketwaka.dagger.module
 
 import android.content.Context
-import android.util.Log
+import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.utils.CacheInterceptor
-import com.kondenko.pocketwaka.utils.LoggingInterceptor
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache
@@ -12,10 +11,11 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
-class NetModule(val context: Context, val baseUrl: String) {
+class NetModule(val context: Context) {
 
     @Provides
     @Singleton
@@ -32,11 +32,24 @@ class NetModule(val context: Context, val baseUrl: String) {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    @Named(Const.URL_TYPE_AUTH)
+    fun provideRetrofitForAuthentication(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(baseUrl)
+                .baseUrl(Const.URL_BASE)
+                .client(okHttpClient)
+                .build()
+    }
+
+    @Provides
+    @Singleton
+    @Named(Const.URL_TYPE_API)
+    fun provideRetrofitForApi(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(Const.URL_API)
                 .client(okHttpClient)
                 .build()
     }

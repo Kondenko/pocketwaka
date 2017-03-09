@@ -4,24 +4,25 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.support.customtabs.CustomTabsIntent
-import android.util.Base64
 import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.KeysManager
-import com.kondenko.pocketwaka.api.services.LoginService
+import com.kondenko.pocketwaka.api.services.TokenService
 import com.kondenko.pocketwaka.utils.Encryptor
 import retrofit2.Retrofit
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
+import javax.inject.Named
 
 class LoginPresenter(val view: LoginView) {
 
     @Inject
+    @field:[Named(Const.URL_TYPE_AUTH)]
     lateinit var retrofit: Retrofit
 
-    private val service: LoginService
+    private val service: TokenService
 
     private val appId by lazy {
         Encryptor.decrypt(KeysManager.getAppId())
@@ -32,8 +33,8 @@ class LoginPresenter(val view: LoginView) {
     }
 
     init {
-        App.loginComponent.inject(this)
-        service = retrofit.create(LoginService::class.java)
+        App.netComponent.inject(this)
+        service = retrofit.create(TokenService::class.java)
     }
 
     fun onResume(intent: Intent) {
@@ -58,7 +59,7 @@ class LoginPresenter(val view: LoginView) {
     }
 
     private fun getAuthUrl(responseType: String, scope: Array<String>): String {
-        return (Const.AUTH_URL +
+        return (Const.URL_AUTH +
                 "?client_id=$appId" +
                 "&response_type=$responseType" +
                 "&redirect_uri=${Const.AUTH_REDIRECT_URI}" +

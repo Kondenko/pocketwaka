@@ -2,19 +2,23 @@ package com.kondenko.pocketwaka
 
 object Const {
 
-    // URLs
+    const val DEFAULT_ANIM_DURATION: Long = 400
+
+    /** URLs */
     const val URL_PLUGINS = "https://wakatime.com/editors"
 
-    const val BASE_URL = "https://wakatime.com/"
-    const val API_URL = "https://wakatime.com/api/v1/"
+    // Auth
+    const val URL_TYPE_AUTH = "base_url"
+    const val URL_BASE = "https://wakatime.com/" // Used when a user is not authenticated yet
+    const val TOKEN_URL_POSTFIX = "oauth/token" // Used in a POST request to obtain a token
+    const val URL_AUTH = URL_BASE + "oauth/authorize" // Used to authenticate a user
+    // API
+    const val URL_API = "https://wakatime.com/api/v1/" // Used for all API calls
 
-    const val AUTH_URL_POSTFIX = "oauth/authorize"
-    const val TOKEN_URL_POSTFIX = "oauth/token"
-
-    const val AUTH_URL = BASE_URL + AUTH_URL_POSTFIX
-
-    // Authorization
+    /** Authorization */
+    const val URL_TYPE_API = "api_url"
     const val AUTH_REDIRECT_URI = "pocketwaka://oauth2"
+
 
     const val HEADER_ACCEPT_NAME = "Accept"
     const val HEADER_ACCEPT_VALUE = "application/x-www-form-urlencode"
@@ -34,6 +38,9 @@ object Const {
     const val SCOPE_READ_STATS = "read_stats"
     const val SCOPE_READ_TEAMS = "read_teams"
 
+    /** Stats */
+
+    // Ranges
     const val STATS_RANGE_KEY = "stats_range"
     const val STATS_RANGE_7_DAYS = "last_7_days"
     const val STATS_RANGE_30_DAYS = "last_30_days"
@@ -41,6 +48,5 @@ object Const {
     const val STATS_RANGE_1_YEAR = "last_year"
 
     const val MAX_SHADOW_OPACITY = .2f
-    const val DEFAULT_ANIM_DURATION: Long = 400
 
 }
