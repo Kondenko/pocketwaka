@@ -14,15 +14,12 @@ import javax.inject.Named
 class FragmentStatsPresenter(val statsRange: String, val tokenHeaderValue: String, val view: FragmentStatsView) {
 
     @Inject
-    @field:[Named(Const.URL_TYPE_API)]
-    lateinit var retrofit: Retrofit
+    lateinit var service: StatsService
 
-    private val service: StatsService
     private var statsSubscription: Subscription? = null
 
     init {
-        App.netComponent.inject(this)
-        service = retrofit.create(StatsService::class.java)
+        App.serviceComponent.inject(this)
     }
 
     fun onViewCreated(context: Context) {

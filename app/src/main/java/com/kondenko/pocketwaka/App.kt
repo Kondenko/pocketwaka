@@ -1,22 +1,24 @@
 package com.kondenko.pocketwaka
 
 import android.app.Application
-import com.kondenko.pocketwaka.dagger.component.DaggerNetComponent
-import com.kondenko.pocketwaka.dagger.component.NetComponent
+import com.kondenko.pocketwaka.dagger.component.DaggerServiceComponent
+import com.kondenko.pocketwaka.dagger.component.ServiceComponent
 import com.kondenko.pocketwaka.dagger.module.NetModule
+import com.kondenko.pocketwaka.dagger.module.ServiceModule
 
 
 class App : Application() {
 
     companion object {
         @JvmStatic
-        lateinit var netComponent: NetComponent
+        lateinit var serviceComponent: ServiceComponent
     }
 
     override fun onCreate() {
         super.onCreate()
-        netComponent = DaggerNetComponent.builder()
+        serviceComponent = DaggerServiceComponent.builder()
                 .netModule(NetModule(this))
+                .serviceModule(ServiceModule())
                 .build()
     }
 

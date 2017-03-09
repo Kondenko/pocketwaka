@@ -10,19 +10,15 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.KeysManager
 import com.kondenko.pocketwaka.api.services.TokenService
 import com.kondenko.pocketwaka.utils.Encryptor
-import retrofit2.Retrofit
+import com.kondenko.pocketwaka.utils.Utils
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
-import javax.inject.Named
 
 class LoginPresenter(val view: LoginView) {
 
     @Inject
-    @field:[Named(Const.URL_TYPE_AUTH)]
-    lateinit var retrofit: Retrofit
-
-    private val service: TokenService
+    lateinit var service: TokenService
 
     private val appId by lazy {
         Encryptor.decrypt(KeysManager.getAppId())
@@ -33,8 +29,7 @@ class LoginPresenter(val view: LoginView) {
     }
 
     init {
-        App.netComponent.inject(this)
-        service = retrofit.create(TokenService::class.java)
+        App.serviceComponent.inject(this)
     }
 
     fun onResume(intent: Intent) {
@@ -69,6 +64,7 @@ class LoginPresenter(val view: LoginView) {
     fun getToken(id: String, secret: String, redirectUri: String, grantType: String, code: String) {
         service.getAccessToken(id, secret, redirectUri, grantType, code)
                 .subscribeOn(Schedulers.newThread())
+                .doOnSuccess { token -> token.createdAt = Utils.currentTimeSec() }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { token -> view.onGetTokenSuccess(token) },
