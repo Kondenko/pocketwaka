@@ -7,7 +7,7 @@
 
 
     <string name="error_logging_in">Logging in failed</string>
-    <string name="error_getting_token">Can\'t get token</string>
+    <string name="error_refreshing_token">Please log in again</string>
     <string name="error_loading_stats">Can\'t load stats</string>
 
 
