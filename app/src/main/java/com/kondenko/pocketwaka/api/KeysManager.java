@@ -1,5 +1,7 @@
 package com.kondenko.pocketwaka.api;
 
+import com.kondenko.pocketwaka.utils.Encryptor;
+
 /**
  * Gets app ID and secret from native code
  * WARNING: If you change the location of this class,
@@ -11,7 +13,14 @@ public class KeysManager {
         System.loadLibrary("keys");
     }
 
-    public static native String getAppId();
-    public static native String getAppSecret();
+    private static native String getAppIdEncrypted();
+    private static native String getAppSecretEncrypted();
 
+    public static String getAppId() {
+        return Encryptor.decrypt(getAppIdEncrypted());
+    }
+
+    public static String getAppSecret() {
+        return Encryptor.decrypt(getAppSecretEncrypted());
+    }
 }
