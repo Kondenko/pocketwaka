@@ -4,6 +4,7 @@ import android.content.Context
 import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.api.services.StatsService
+import com.kondenko.pocketwaka.utils.Utils
 import retrofit2.Retrofit
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
@@ -16,7 +17,7 @@ class FragmentStatsPresenter(val statsRange: String, val tokenHeaderValue: Strin
     @Inject
     lateinit var service: StatsService
 
-    private var statsSubscription: Subscription? = null
+    private var subscription: Subscription? = null
 
     init {
         App.serviceComponent.inject(this)
@@ -27,13 +28,11 @@ class FragmentStatsPresenter(val statsRange: String, val tokenHeaderValue: Strin
     }
 
     fun onStop() {
-        statsSubscription?.let {
-            if (!it.isUnsubscribed) it.unsubscribe()
-        }
+        Utils.unsubscribe(subscription)
     }
 
     fun updateData(context: Context) {
-        statsSubscription = service.getCurrentUserStats(tokenHeaderValue, statsRange)
+        subscription = service.getCurrentUserStats(tokenHeaderValue, statsRange)
                 .subscribeOn(Schedulers.newThread())
                 .doOnSuccess { data -> data.stats.provideColors(context) }
                 .observeOn(AndroidSchedulers.mainThread())

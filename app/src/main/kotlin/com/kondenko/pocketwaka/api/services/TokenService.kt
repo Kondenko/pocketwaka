@@ -8,7 +8,7 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 import rx.Single
 
-interface LoginService {
+interface TokenService {
 
     @Headers(Const.HEADER_ACCEPT)
     @FormUrlEncoded
@@ -20,5 +20,17 @@ interface LoginService {
             @Field("grant_type") grantType: String,
             @Field("code") code: String
     ): Single<AccessToken>
+
+    @Headers(Const.HEADER_ACCEPT)
+    @FormUrlEncoded
+    @POST(Const.TOKEN_URL_POSTFIX)
+    fun getRefreshToken(
+            @Field("client_id") clientId: String,
+            @Field("client_secret") clientSecret: String,
+            @Field("redirect_uri") redirectUri: String,
+            @Field("grant_type") grantType: String,
+            @Field("refresh_token") refreshToken: String
+    ): Single<AccessToken>
+
 
 }

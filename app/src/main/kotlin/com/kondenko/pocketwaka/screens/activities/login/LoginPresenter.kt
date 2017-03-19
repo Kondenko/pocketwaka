@@ -11,6 +11,7 @@ import com.kondenko.pocketwaka.api.KeysManager
 import com.kondenko.pocketwaka.api.services.TokenService
 import com.kondenko.pocketwaka.utils.Encryptor
 import com.kondenko.pocketwaka.utils.Utils
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
@@ -20,12 +21,14 @@ class LoginPresenter(val view: LoginView) {
     @Inject
     lateinit var service: TokenService
 
+    var subscription: Subscription? = null
+
     private val appId by lazy {
-        Encryptor.decrypt(KeysManager.getAppId())
+        KeysManager.getAppId()
     }
 
     private val appSecret by lazy {
-        Encryptor.decrypt(KeysManager.getAppSecret())
+        KeysManager.getAppSecret()
     }
 
     init {
@@ -42,6 +45,10 @@ class LoginPresenter(val view: LoginView) {
                 view.onGetTokenError(null, R.string.error_logging_in)
             }
         }
+    }
+
+    fun onStop() {
+        Utils.unsubscribe(subscription)
     }
 
     fun onAuthPageOpen(context: Context) {
@@ -62,9 +69,9 @@ class LoginPresenter(val view: LoginView) {
     }
 
     fun getToken(id: String, secret: String, redirectUri: String, grantType: String, code: String) {
-        service.getAccessToken(id, secret, redirectUri, grantType, code)
+        subscription = service.getAccessToken(id, secret, redirectUri, grantType, code)
                 .subscribeOn(Schedulers.newThread())
-                .doOnSuccess { token -> token.createdAt = Utils.currentTimeSec() }
+                .doOnSuccess { token -> token.created_at = Utils.currentTimeSec() }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { token -> view.onGetTokenSuccess(token) },

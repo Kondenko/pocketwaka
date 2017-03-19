@@ -15,15 +15,15 @@ import com.kondenko.pocketwaka.screens.activities.main.MainActivity
 
 class LoginActivity : AppCompatActivity(), LoginView {
 
-    private lateinit var loginPresenter: LoginPresenter
+    private lateinit var presenter: LoginPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        loginPresenter = LoginPresenter(this)
+        presenter = LoginPresenter(this)
         val buttonLogin = findViewById(R.id.button_login)
         buttonLogin.setOnClickListener {
-            loginPresenter.onAuthPageOpen(this)
+            presenter.onAuthPageOpen(this)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
@@ -32,7 +32,12 @@ class LoginActivity : AppCompatActivity(), LoginView {
 
     override fun onResume() {
         super.onResume()
-        loginPresenter.onResume(intent)
+        presenter.onResume(intent)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.onStop()
     }
 
     override fun onGetTokenSuccess(token: AccessToken) {

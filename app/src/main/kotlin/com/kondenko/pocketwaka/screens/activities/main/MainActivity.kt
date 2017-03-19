@@ -6,7 +6,9 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.api.oauth.AccessToken
 import com.kondenko.pocketwaka.api.oauth.AccessTokenUtils
 import com.kondenko.pocketwaka.events.RefreshEvent
 import com.kondenko.pocketwaka.screens.activities.login.LoginActivity
@@ -24,6 +26,12 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         val stats = FragmentStatsContainer()
         setFragment(stats)
         presenter = MainActivityPresenter(this)
+        presenter.onCreate(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.onStop()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -37,6 +45,16 @@ class MainActivity : AppCompatActivity(), MainActivityView {
             R.id.action_refresh -> EventBus.getDefault().post(RefreshEvent)
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onTokenRefreshSuccess(refreshToken: AccessToken) {
+        AccessTokenUtils.saveToken(refreshToken, this)
+    }
+
+    override fun onTokenRefreshFail(error: Throwable?) {
+        error?.printStackTrace()
+        Toast.makeText(this, R.string.error_refreshing_token, Toast.LENGTH_LONG).show()
+        logout()
     }
 
     private fun setFragment(fragment: Fragment) {

@@ -3,6 +3,7 @@ package com.kondenko.pocketwaka.dagger.module
 import android.content.Context
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.utils.CacheInterceptor
+import com.kondenko.pocketwaka.utils.LoggingInterceptor
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache
@@ -15,25 +16,25 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
-class NetModule(val context: Context) {
+open class NetModule(val context: Context) {
 
     @Provides
     @Singleton
-    fun provideHttpClient(): OkHttpClient {
+    open fun provideHttpClient(): OkHttpClient {
         val client = OkHttpClient.Builder()
         val cacheDirectory = File(context.cacheDir, "responses")
         val cacheSize: Long = 1024 * 512 // 512 Kb
         val cache = Cache(cacheDirectory, cacheSize)
         client.cache(cache)
         client.addInterceptor(CacheInterceptor(context))
-//        client.addInterceptor(LoggingInterceptor())
+        client.addInterceptor(LoggingInterceptor())
         return client.build()
     }
 
     @Provides
     @Singleton
     @Named(Const.URL_TYPE_AUTH)
-    fun provideRetrofitForAuthentication(okHttpClient: OkHttpClient): Retrofit {
+    open fun provideRetrofitForAuthentication(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
@@ -45,7 +46,7 @@ class NetModule(val context: Context) {
     @Provides
     @Singleton
     @Named(Const.URL_TYPE_API)
-    fun provideRetrofitForApi(okHttpClient: OkHttpClient): Retrofit {
+    open fun provideRetrofitForApi(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())

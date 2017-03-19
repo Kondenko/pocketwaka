@@ -6,8 +6,7 @@ import com.kondenko.pocketwaka.dagger.component.ServiceComponent
 import com.kondenko.pocketwaka.dagger.module.NetModule
 import com.kondenko.pocketwaka.dagger.module.ServiceModule
 
-
-class App : Application() {
+open class App : Application() {
 
     companion object {
         @JvmStatic
