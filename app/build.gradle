@@ -34,9 +34,32 @@ android {
         }
     }
     sourceSets {
-        androidTest.setRoot('src/test')
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+
+        /*
+        main {
+            java.srcDirs += 'src/main/kotlin'
+            java.srcDirs += [file("$buildDir/generated/source/kapt/main")]
+        }
+        test {
+            setRoot('src/test')
+            java.srcDirs += 'src/main/kotlin'
+            java.srcDirs += [file("$buildDir/generated/source/kapt/main")]
+        }
         androidTest {
+            setRoot('src/test')
             java.srcDirs = ['src/test/kotlin']
+        }
+        */
+    }
+}
+
+afterEvaluate {
+    android.sourceSets.all { sourceSet ->
+        if (!sourceSet.name.startsWith("test")) {
+            sourceSet.kotlin.setSrcDirs([])
         }
     }
 }
@@ -47,9 +70,8 @@ kapt {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+
+    provided 'org.glassfish:javax.annotation:10.0-b28'
 
     kapt "com.android.databinding:compiler:$androidPluginVersion"
 
@@ -86,8 +108,21 @@ dependencies {
     androidTestCompile "com.android.support:support-annotations:$supportLibVersion"
     androidTestCompile "com.android.support.test:runner:$supportTestVersion"
     androidTestCompile "com.android.support.test:rules:$supportTestVersion"
+
     testCompile "org.mockito:mockito-core:$mockitoVersion"
+    testCompile "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion"
+    androidTestCompile "org.mockito:mockito-core:$mockitoVersion"
+    androidTestCompile "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion"
+
     testCompile "org.robolectric:robolectric:$robolectricVersion"
 
-    compile "javax.annotation:jsr250-api:1.0"
+    kaptTest "com.google.dagger:dagger-compiler:$daggerVersion"
+    kaptTest "com.google.dagger:dagger:$daggerVersion"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
+    kaptAndroidTest "com.google.dagger:dagger:$daggerVersion"
+
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
 }
