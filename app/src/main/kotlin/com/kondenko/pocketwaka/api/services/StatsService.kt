@@ -5,7 +5,7 @@ import com.kondenko.pocketwaka.api.model.stats.StatsDataWrapper
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
-import rx.Single
+import io.reactivex.Single
 
 interface StatsService {
 

@@ -1,57 +1,47 @@
 package com.kondenko.pocketwaka.screens.activities.main
 
 import android.content.Context
-import com.kondenko.pocketwaka.App
+import com.kondenko.pocketwaka.BasePresenter
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.api.KeysManager
 import com.kondenko.pocketwaka.api.oauth.AccessToken
 import com.kondenko.pocketwaka.api.oauth.AccessTokenUtils
 import com.kondenko.pocketwaka.api.services.TokenService
-import com.kondenko.pocketwaka.utils.SingleSubscriberLambda
 import com.kondenko.pocketwaka.utils.Utils
-import rx.SingleSubscriber
-import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class MainActivityPresenter(val view: MainActivityView) {
+class MainActivityPresenter @Inject constructor(val tokenService: TokenService, val view: MainActivityView) : BasePresenter() {
 
     private val TAG = this.javaClass.simpleName
 
-    @Inject
-    lateinit var tokenService: TokenService
-
-    var subscription: Subscription? = null
-    val subscriber: SingleSubscriber<AccessToken>
-
-    init {
-        App.serviceComponent.inject(this)
-        subscriber = SingleSubscriberLambda<AccessToken>(
-                { refreshToken -> view.onTokenRefreshSuccess(refreshToken) },
-                { error -> view.onTokenRefreshFail(error) }
-        )
-    }
+    var subscription: Disposable? = null
 
     fun onCreate(context: Context) {
         val token = AccessTokenUtils.getTokenObject(context)
-        updateToken(tokenService, token)
+        val id = KeysManager.getAppId()
+        val secret = KeysManager.getAppSecret()
+        val redirectUri = Const.AUTH_REDIRECT_URI
+        updateToken(token, id, secret, redirectUri)
     }
 
     fun onStop() {
         Utils.unsubscribe(subscription)
     }
 
-    fun updateToken(service: TokenService, token: AccessToken) {
-        if (!token.isValid()) {
-            val id = KeysManager.getAppId()
-            val secret = KeysManager.getAppSecret()
-            val redirectUri = Const.AUTH_REDIRECT_URI
-            subscription = service.getRefreshToken(id, secret, redirectUri, token.token_type, token.refresh_token)
+    fun updateToken(accessToken: AccessToken, id: String, secret: String, redirectUri: String) {
+        if (!accessToken.isValid()) {
+            subscription = tokenService.getRefreshToken(id, secret, redirectUri, accessToken.token_type, accessToken.refresh_token)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(subscriber)
+                    .subscribe(
+                            { refreshToken -> view.onTokenRefreshSuccess(refreshToken) },
+                            { error -> view.onTokenRefreshFail(error) }
+                    )
         }
     }
+
 
 }

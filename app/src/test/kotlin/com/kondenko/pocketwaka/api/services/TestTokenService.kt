@@ -2,15 +2,15 @@ package com.kondenko.pocketwaka.api.services
 
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.api.oauth.AccessToken
-import io.reactivex.Single
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import rx.Single
 
-interface TokenService {
+interface TestTokenService {
 
-//    @Headers(Const.HEADER_ACCEPT)
+    @Headers(Const.HEADER_ACCEPT)
     @FormUrlEncoded
     @POST(Const.TOKEN_URL_POSTFIX)
     fun getAccessToken(
@@ -21,7 +21,7 @@ interface TokenService {
             @Field("code") code: String
     ): Single<AccessToken>
 
-//    @Headers(Const.HEADER_ACCEPT)
+    @Headers(Const.HEADER_ACCEPT)
     @FormUrlEncoded
     @POST(Const.TOKEN_URL_POSTFIX)
     fun getRefreshToken(

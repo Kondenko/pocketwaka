@@ -9,7 +9,7 @@ import dagger.Provides
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import javax.inject.Named
@@ -36,7 +36,7 @@ open class NetModule(val context: Context) {
     @Named(Const.URL_TYPE_AUTH)
     open fun provideRetrofitForAuthentication(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(Const.URL_BASE)
                 .client(okHttpClient)
@@ -48,7 +48,7 @@ open class NetModule(val context: Context) {
     @Named(Const.URL_TYPE_API)
     open fun provideRetrofitForApi(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(Const.URL_API)
                 .client(okHttpClient)

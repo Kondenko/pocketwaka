@@ -3,7 +3,6 @@ package com.kondenko.pocketwaka.api.oauth
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import android.util.Log
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.utils.Encryptor
 

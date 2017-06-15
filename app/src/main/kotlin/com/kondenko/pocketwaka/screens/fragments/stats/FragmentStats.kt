@@ -93,7 +93,7 @@ class FragmentStats : Fragment(), FragmentStatsView {
     }
 
     private fun showContent(statsData: StatsDataWrapper) {
-        if (statsData.stats != null && statsData.stats.totalSeconds > 0) {
+        if (statsData.stats != null) {
             setFragment(FragmentStatsData.newInstance(statsData))
         } else {
             setFragment(fragmentEmptyState)

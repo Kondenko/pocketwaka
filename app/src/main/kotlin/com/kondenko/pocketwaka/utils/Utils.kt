@@ -1,12 +1,11 @@
 package com.kondenko.pocketwaka.utils
 
 import android.content.Context
-import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.os.Build
 import android.support.annotation.ColorRes
 import com.kondenko.pocketwaka.R
-import rx.Subscription
+import io.reactivex.disposables.Disposable
 
 
 object Utils {
@@ -26,9 +25,9 @@ object Utils {
 
     fun currentTimeSec(): Float = System.currentTimeMillis() / 1000f
 
-    fun unsubscribe(subscription: Subscription?) {
-        if (subscription != null && !subscription.isUnsubscribed) {
-            subscription.unsubscribe()
+    fun unsubscribe(disposable: Disposable?) {
+        if (disposable != null && !disposable.isDisposed) {
+            disposable.dispose()
         }
     }
 

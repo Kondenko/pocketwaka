@@ -1,10 +1,8 @@
 package com.kondenko.pocketwaka.utils
 
 import android.content.Context
-import okhttp3.CacheControl
 import okhttp3.Interceptor
 import okhttp3.Response
-import java.util.concurrent.TimeUnit
 
 
 class CacheInterceptor(val context: Context) : Interceptor {

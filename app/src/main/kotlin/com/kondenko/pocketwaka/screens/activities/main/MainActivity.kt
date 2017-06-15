@@ -7,31 +7,39 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.oauth.AccessToken
 import com.kondenko.pocketwaka.api.oauth.AccessTokenUtils
+import com.kondenko.pocketwaka.dagger.module.MainActivityPresenterModule
 import com.kondenko.pocketwaka.events.RefreshEvent
 import com.kondenko.pocketwaka.screens.activities.login.LoginActivity
 import com.kondenko.pocketwaka.screens.fragments.stats.FragmentStatsContainer
 import org.greenrobot.eventbus.EventBus
+import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity(), MainActivityView {
 
-    private lateinit var presenter: MainActivityPresenter
+    @Inject
+    public lateinit var presenter: MainActivityPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Dependency Injection
+        App.plus(MainActivityPresenterModule(this)).inject(this)
+        // UI
         setContentView(R.layout.activity_main)
         val stats = FragmentStatsContainer()
         setFragment(stats)
-        presenter = MainActivityPresenter(this)
+
         presenter.onCreate(this)
     }
 
     override fun onStop() {
         super.onStop()
         presenter.onStop()
+        App.clearMainActivityComponent()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

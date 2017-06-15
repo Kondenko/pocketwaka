@@ -2,7 +2,6 @@ package com.kondenko.pocketwaka.utils
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.model.stats.StatsItem
 import java.util.*

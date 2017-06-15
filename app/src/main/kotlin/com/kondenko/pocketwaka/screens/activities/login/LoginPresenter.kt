@@ -5,23 +5,23 @@ import android.content.Intent
 import android.net.Uri
 import android.support.customtabs.CustomTabsIntent
 import com.kondenko.pocketwaka.App
+import com.kondenko.pocketwaka.BasePresenter
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.KeysManager
 import com.kondenko.pocketwaka.api.services.TokenService
-import com.kondenko.pocketwaka.utils.Encryptor
 import com.kondenko.pocketwaka.utils.Utils
-import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class LoginPresenter(val view: LoginView) {
+class LoginPresenter(val view: LoginView) : BasePresenter() {
 
     @Inject
     lateinit var service: TokenService
 
-    var subscription: Subscription? = null
+    var subscription: Disposable? = null
 
     private val appId by lazy {
         KeysManager.getAppId()
@@ -55,7 +55,7 @@ class LoginPresenter(val view: LoginView) {
         val scopes = arrayOf(Const.SCOPE_EMAIL, Const.SCOPE_READ_LOGGED_TIME, Const.SCOPE_READ_STATS, Const.SCOPE_READ_TEAMS)
         val uri = getAuthUrl(Const.RESPONSE_TYPE_CODE, scopes)
         val builder = CustomTabsIntent.Builder()
-        builder.setToolbarColor(R.color.color_primary)
+        builder.setToolbarColor(context.resources.getColor(R.color.color_primary))
         val customTabsIntent = builder.build()
         customTabsIntent.launchUrl(context, Uri.parse(uri))
     }

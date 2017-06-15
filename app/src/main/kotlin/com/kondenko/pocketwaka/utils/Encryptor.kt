@@ -1,7 +1,6 @@
 package com.kondenko.pocketwaka.utils
 
 import android.util.Base64
-import com.kondenko.pocketwaka.api.KeysManager
 
 object Encryptor {
 
