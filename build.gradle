@@ -22,14 +22,14 @@ ext {
 }
 
 buildscript {
-    ext.gradleVersion = '2.3.2'
+    ext.gradleVersion = '3.0.0-alpha4'
     ext.kotlinVersion = '1.1.2-4'
 
     repositories {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-alpha3'
+        classpath "com.android.tools.build:gradle:$gradleVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlinVersion"
     }
