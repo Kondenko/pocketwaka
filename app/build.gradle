@@ -72,62 +72,62 @@ kapt {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    provided 'org.glassfish:javax.annotation:10.0-b28'
+    compileOnly 'org.glassfish:javax.annotation:10.0-b28'
 
     kapt "com.android.databinding:compiler:$androidPluginVersion"
 
-    compile "org.greenrobot:eventbus:$eventBusVersion"
+    implementation "org.greenrobot:eventbus:$eventBusVersion"
 
-    compile "com.ogaclejapan.smarttablayout:library:$smartTabLayoutVersion@aar"
-    compile "com.ogaclejapan.smarttablayout:utils-v4:$smartTabLayoutVersion@aar"
+    implementation "com.ogaclejapan.smarttablayout:library:$smartTabLayoutVersion@aar"
+    implementation "com.ogaclejapan.smarttablayout:utils-v4:$smartTabLayoutVersion@aar"
 
     // Kotlin
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
     // Rx
-    compile "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
-    compile "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
 
     // Dagger 2
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
-    compile "com.google.dagger:dagger:$daggerVersion"
+    implementation "com.google.dagger:dagger:$daggerVersion"
 
     // Support Library
-    compile "com.android.support:support-v4:$supportLibVersion"
-    compile "com.android.support:cardview-v7:$supportLibVersion"
-    compile "com.android.support:appcompat-v7:$supportLibVersion"
-    compile "com.android.support:design:$supportLibVersion"
-    compile "com.android.support:customtabs:$supportLibVersion"
-    compile "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
+    implementation "com.android.support:support-v4:$supportLibVersion"
+    implementation "com.android.support:cardview-v7:$supportLibVersion"
+    implementation "com.android.support:appcompat-v7:$supportLibVersion"
+    implementation "com.android.support:design:$supportLibVersion"
+    implementation "com.android.support:customtabs:$supportLibVersion"
+    implementation "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
 
     // Retrofit
-    compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
-    compile "com.squareup.retrofit2:converter-gson:$retrofitVersion"
-    compile "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
 
     // Testing
     //  Unit testing
-    testCompile "junit:junit:$junitVersion"
+    testImplementation "junit:junit:$junitVersion"
 
-    testCompile "org.mockito:mockito-core:$mockitoVersion"
-    testCompile "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion"
 
-    testCompile "org.robolectric:robolectric:$robolectricVersion"
+    testImplementation "org.robolectric:robolectric:$robolectricVersion"
 
     kaptTest "com.google.dagger:dagger-compiler:$daggerVersion"
     kaptTest "com.google.dagger:dagger:$daggerVersion"
 
     // Instrumented testing
-    androidTestCompile "com.android.support:support-annotations:$supportLibVersion"
-    androidTestCompile "com.android.support.test:runner:$supportTestVersion"
-    androidTestCompile "com.android.support.test:rules:$supportTestVersion"
+    androidTestImplementation "com.android.support:support-annotations:$supportLibVersion"
+    androidTestImplementation "com.android.support.test:runner:$supportTestVersion"
+    androidTestImplementation "com.android.support.test:rules:$supportTestVersion"
 
     kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
     kaptAndroidTest "com.google.dagger:dagger:$daggerVersion"
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
