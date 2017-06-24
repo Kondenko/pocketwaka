@@ -5,8 +5,8 @@ ext {
     compileSdkVersion = 25
     buildToolsVersion = '25.0.3'
 
+    supportLibVersion = '25.4.0'
     androidPluginVersion = '2.3.0-beta1'
-    supportLibVersion = '25.0.0'
     constraintLayoutVersion = '1.0.2'
     eventBusVersion = '3.0.0'
     smartTabLayoutVersion = '1.6.1'
@@ -22,8 +22,10 @@ ext {
 }
 
 buildscript {
-    ext.gradleVersion = '3.0.0-alpha4'
-    ext.kotlinVersion = '1.1.2-4'
+    ext{
+        gradleVersion = '3.0.0-alpha4'
+        kotlinVersion = '1.1.2-4'
+    }
 
     repositories {
         jcenter()
@@ -32,6 +34,13 @@ buildscript {
         classpath "com.android.tools.build:gradle:$gradleVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlinVersion"
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        maven { url "https://maven.google.com" }
     }
 }
 
@@ -46,12 +55,6 @@ subprojects {
     }
 }
 
-allprojects {
-    repositories {
-        jcenter()
-        maven { url "https://jitpack.io" }
-    }
-}
 
 task clean(type: Delete) {
     delete rootProject.buildDir

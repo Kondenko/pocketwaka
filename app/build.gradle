@@ -17,6 +17,13 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath false
+            }
+        }
     }
     dataBinding {
         enabled = true
@@ -34,12 +41,6 @@ android {
         }
     }
     sourceSets {
-        /*
-        main.java.srcDirs += 'src/main/kotlin'
-        test.java.srcDirs += 'src/test/kotlin'
-        androidTest.java.srcDirs += 'src/androidTest/kotlin'
-        */
-
         main {
             setRoot('src/main')
             java.srcDirs += 'src/main/kotlin'
@@ -55,8 +56,8 @@ android {
             java.srcDirs += ['src/androidTest/kotlin']
             java.srcDirs += [file("$buildDir/generated/source/kapt/debug")]
         }
-
     }
+
 }
 
 afterEvaluate {
