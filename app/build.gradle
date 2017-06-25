@@ -7,6 +7,8 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
+    // compileOptions.incremental = false
+
     defaultConfig {
         applicationId "com.kondenko.pocketwaka"
 
@@ -18,28 +20,39 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
-
+        /*
         javaCompileOptions {
             annotationProcessorOptions {
                 includeCompileClasspath false
             }
         }
+        */
     }
+
+
     dataBinding {
         enabled = true
     }
+
     buildTypes {
         release {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            shrinkResources false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
     }
+
     externalNativeBuild {
         ndkBuild {
             path 'src/main/jni/Android.mk'
         }
     }
+
     sourceSets {
         main {
             setRoot('src/main')
@@ -53,7 +66,7 @@ android {
         }
         androidTest {
             setRoot('src/androidTest')
-            java.srcDirs += ['src/androidTest/kotlin']
+            java.srcDirs += 'src/androidTest/kotlin'
             java.srcDirs += [file("$buildDir/generated/source/kapt/debug")]
         }
     }
@@ -73,9 +86,8 @@ kapt {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    compileOnly 'org.glassfish:javax.annotation:10.0-b28'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     kapt "com.android.databinding:compiler:$androidPluginVersion"
 
