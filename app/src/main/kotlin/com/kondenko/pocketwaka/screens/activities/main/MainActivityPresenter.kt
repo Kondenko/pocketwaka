@@ -6,14 +6,14 @@ import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.api.KeysManager
 import com.kondenko.pocketwaka.api.oauth.AccessToken
 import com.kondenko.pocketwaka.api.oauth.AccessTokenUtils
-import com.kondenko.pocketwaka.api.services.TokenService
+import com.kondenko.pocketwaka.api.services.LoginService
 import com.kondenko.pocketwaka.utils.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class MainActivityPresenter @Inject constructor(val tokenService: TokenService, val view: MainActivityView) : BasePresenter() {
+class MainActivityPresenter @Inject constructor(val loginService: LoginService, val view: MainView) : BasePresenter() {
 
     private val TAG = this.javaClass.simpleName
 
@@ -33,7 +33,7 @@ class MainActivityPresenter @Inject constructor(val tokenService: TokenService, 
 
     fun updateToken(accessToken: AccessToken, id: String, secret: String, redirectUri: String) {
         if (!accessToken.isValid()) {
-            subscription = tokenService.getRefreshToken(id, secret, redirectUri, accessToken.token_type, accessToken.refresh_token)
+            subscription = loginService.getRefreshToken(id, secret, redirectUri, accessToken.token_type, accessToken.refresh_token)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(

@@ -22,11 +22,11 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 
-class FragmentStats : Fragment(), FragmentStatsView {
+class FragmentStats : Fragment(), StatsView {
 
     private lateinit var TAG: String
 
-    private lateinit var presenter: FragmentStatsPresenter
+    private lateinit var presenter: StatsPresenter
 
     private val fragmentEmptyState by lazy {
         FragmentEmptyState()
@@ -44,7 +44,7 @@ class FragmentStats : Fragment(), FragmentStatsView {
         super.onCreate(savedInstanceState)
         TAG = this.javaClass.simpleName + "@" + arguments.getString(Const.STATS_RANGE_KEY)
         val token = AccessTokenUtils.getTokenHeaderValue(activity)
-        presenter = FragmentStatsPresenter(arguments.getString(Const.STATS_RANGE_KEY), token, this)
+//        presenter = StatsPresenter(arguments.getString(Const.STATS_RANGE_KEY), token, this)
         fragmentErrorState.setOnUpdateListener { EventBus.getDefault().post(RefreshEvent) }
     }
 
@@ -77,7 +77,7 @@ class FragmentStats : Fragment(), FragmentStatsView {
 
     override fun onRefresh() {
         showLoadingState()
-        presenter.updateData(context)
+//        presenter.updateData(context,, )
     }
 
     override fun onSuccess(statsDataWrapper: StatsDataWrapper) {

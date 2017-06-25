@@ -11,7 +11,7 @@ import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.oauth.AccessToken
 import com.kondenko.pocketwaka.api.oauth.AccessTokenUtils
-import com.kondenko.pocketwaka.dagger.module.MainActivityPresenterModule
+import com.kondenko.pocketwaka.dagger.module.MainModule
 import com.kondenko.pocketwaka.events.RefreshEvent
 import com.kondenko.pocketwaka.screens.activities.login.LoginActivity
 import com.kondenko.pocketwaka.screens.fragments.stats.FragmentStatsContainer
@@ -19,7 +19,7 @@ import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity(), MainActivityView {
+class MainActivity : AppCompatActivity(), MainView {
 
     @Inject
     public lateinit var presenter: MainActivityPresenter
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Dependency Injection
-        App.plus(MainActivityPresenterModule(this)).inject(this)
+        App.plus(MainModule(this)).injectMainSubcomponent(this)
         // UI
         setContentView(R.layout.activity_main)
         val stats = FragmentStatsContainer()
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     override fun onStop() {
         super.onStop()
         presenter.onStop()
-        App.clearMainActivityComponent()
+        App.clearMainComponent()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

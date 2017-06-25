@@ -5,7 +5,7 @@ import com.kondenko.pocketwaka.TestApp
 import com.kondenko.pocketwaka.api.oauth.AccessToken
 import com.kondenko.pocketwaka.api.oauth.InvalidAccessTokenTest
 import com.kondenko.pocketwaka.api.oauth.ValidAccessTokenTest
-import com.kondenko.pocketwaka.api.services.TokenService
+import com.kondenko.pocketwaka.api.services.LoginService
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
@@ -22,21 +22,21 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = "src/main/AndroidManifest.xml", application = TestApp::class)
-class MainActivityPresenterTest {
+class MainActivityActivityPresenterTest {
 
     @Rule
     @JvmField
     val rxRule = RxSchedulersOverrideRule()
 
     //    @Inject
-    val tokenService: TokenService = mock()
-    val view: MainActivityView = mock()
+    val loginService: LoginService = mock()
+    val view: MainView = mock()
 
     lateinit var presenter: MainActivityPresenter
 
     @Before
     fun setup() {
-        presenter = MainActivityPresenter(tokenService, view)
+        presenter = MainActivityPresenter(loginService, view)
     }
 
     @Test
@@ -45,7 +45,7 @@ class MainActivityPresenterTest {
         val invalidToken = InvalidAccessTokenTest()
         val validToken = ValidAccessTokenTest()
         presenter.updateToken(invalidToken, "", "", "")
-        doReturn(Single.just(validToken)).whenever(tokenService.getRefreshToken(anyString(), anyString(), anyString(), anyString(), anyString()))
+        doReturn(Single.just(validToken)).whenever(loginService.getRefreshToken(anyString(), anyString(), anyString(), anyString(), anyString()))
         verify(view).onTokenRefreshSuccess(any<AccessToken>())
     }
 

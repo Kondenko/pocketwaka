@@ -1,14 +1,13 @@
 package com.kondenko.pocketwaka.dagger.component
 
-import com.kondenko.pocketwaka.dagger.module.AppModule
-import com.kondenko.pocketwaka.dagger.module.MainActivityPresenterModule
-import com.kondenko.pocketwaka.dagger.module.NetModule
-import com.kondenko.pocketwaka.dagger.module.ServiceModule
+import com.kondenko.pocketwaka.dagger.module.*
 import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = arrayOf(AppModule::class, NetModule::class, ServiceModule::class))
+@Component(modules = arrayOf(AppModule::class, NetModule::class))
 interface AppComponent {
-    fun plus(module: MainActivityPresenterModule): MainActivityPresenterSubcomponent
+    fun plusMainSubcomponent(module: MainModule): MainSubcomponent
+    fun plusStatsSubcomponent(module: StatsModule): StatsSubcomponent
+    fun plusLoginSubcomponent(module: LoginModule): LoginSubcomponent
 }

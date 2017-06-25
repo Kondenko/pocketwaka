@@ -1,3 +1,3 @@
 package com.kondenko.pocketwaka.dagger.module
 
-abstract class BasePresenterModule
+abstract class BaseModule

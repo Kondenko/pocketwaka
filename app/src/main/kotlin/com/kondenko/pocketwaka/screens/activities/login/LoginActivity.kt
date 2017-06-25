@@ -11,16 +11,17 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.oauth.AccessToken
 import com.kondenko.pocketwaka.api.oauth.AccessTokenUtils
 import com.kondenko.pocketwaka.screens.activities.main.MainActivity
+import javax.inject.Inject
 
 
 class LoginActivity : AppCompatActivity(), LoginView {
 
-    private lateinit var presenter: LoginPresenter
+    @Inject
+    public lateinit var presenter: LoginPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        presenter = LoginPresenter(this)
         val buttonLogin = findViewById(R.id.button_login)
         buttonLogin.setOnClickListener {
             presenter.onAuthPageOpen(this)

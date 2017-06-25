@@ -10,27 +10,20 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class FragmentStatsPresenter(val statsRange: String, val tokenHeaderValue: String, val view: FragmentStatsView) : BasePresenter() {
-
-    @Inject
-    lateinit var service: StatsService
+class StatsPresenter(val view: StatsView, val service: StatsService) : BasePresenter() {
 
     private var subscription: Disposable? = null
 
-    init {
-        App.serviceComponent.inject(this)
-    }
-
     fun onViewCreated(context: Context) {
-        updateData(context)
+//        updateData(context,, )
     }
 
     fun onStop() {
         Utils.unsubscribe(subscription)
     }
 
-    fun updateData(context: Context) {
-        subscription = service.getCurrentUserStats(tokenHeaderValue, statsRange)
+    fun updateData(context: Context, statsRange: String, tokenHeader: String) {
+        subscription = service.getCurrentUserStats(tokenHeader, statsRange)
                 .subscribeOn(Schedulers.newThread())
                 .doOnSuccess { data -> data.stats.provideColors(context) }
                 .observeOn(AndroidSchedulers.mainThread())

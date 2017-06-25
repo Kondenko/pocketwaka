@@ -8,7 +8,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
-interface TokenService {
+interface LoginService {
 
 //    @Headers(Const.HEADER_ACCEPT)
     @FormUrlEncoded

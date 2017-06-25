@@ -9,17 +9,13 @@ import com.kondenko.pocketwaka.BasePresenter
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.api.KeysManager
-import com.kondenko.pocketwaka.api.services.TokenService
+import com.kondenko.pocketwaka.api.services.LoginService
 import com.kondenko.pocketwaka.utils.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import javax.inject.Inject
 
-class LoginPresenter(val view: LoginView) : BasePresenter() {
-
-    @Inject
-    lateinit var service: TokenService
+class LoginPresenter(val view: LoginView, val service: LoginService) : BasePresenter() {
 
     var subscription: Disposable? = null
 
@@ -29,10 +25,6 @@ class LoginPresenter(val view: LoginView) : BasePresenter() {
 
     private val appSecret by lazy {
         KeysManager.getAppSecret()
-    }
-
-    init {
-        App.serviceComponent.inject(this)
     }
 
     fun onResume(intent: Intent) {

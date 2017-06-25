@@ -1,15 +1,8 @@
 package com.kondenko.pocketwaka
 
 import android.app.Application
-import com.kondenko.pocketwaka.dagger.component.AppComponent
-import com.kondenko.pocketwaka.dagger.component.MainActivityPresenterSubcomponent
-import com.kondenko.pocketwaka.dagger.component.ServiceComponent
-import com.kondenko.pocketwaka.dagger.component.DaggerAppComponent
-import com.kondenko.pocketwaka.dagger.component.DaggerServiceComponent
-import com.kondenko.pocketwaka.dagger.module.AppModule
-import com.kondenko.pocketwaka.dagger.module.MainActivityPresenterModule
-import com.kondenko.pocketwaka.dagger.module.NetModule
-import com.kondenko.pocketwaka.dagger.module.ServiceModule
+import com.kondenko.pocketwaka.dagger.component.*
+import com.kondenko.pocketwaka.dagger.module.*
 
 open class App : Application() {
 
@@ -17,19 +10,43 @@ open class App : Application() {
         @JvmStatic
         lateinit var appComponent: AppComponent
         @JvmStatic
-        lateinit var serviceComponent: ServiceComponent
+        private var mainSubcomponent: MainSubcomponent? = null
         @JvmStatic
-        private var mainActivityPresenterSubcomponent: MainActivityPresenterSubcomponent? = null
+        private var loginSubcomponent: LoginSubcomponent? = null
+        @JvmStatic
+        private var statsSubcomponent: StatsSubcomponent? = null
 
-        fun plus(module: MainActivityPresenterModule): MainActivityPresenterSubcomponent {
-            if (mainActivityPresenterSubcomponent == null) {
-                mainActivityPresenterSubcomponent = appComponent.plus(module)
+        fun plus(module: MainModule): MainSubcomponent {
+            if (mainSubcomponent == null) {
+                mainSubcomponent = appComponent.plusMainSubcomponent(module)
             }
-            return mainActivityPresenterSubcomponent!!
+            return mainSubcomponent!!
         }
 
-        fun clearMainActivityComponent() {
-            mainActivityPresenterSubcomponent = null
+        fun plus(module: LoginModule): LoginSubcomponent {
+            if (mainSubcomponent == null) {
+                loginSubcomponent = appComponent.plusLoginSubcomponent(module)
+            }
+            return loginSubcomponent!!
+        }
+
+        fun plus(module: StatsModule): StatsSubcomponent {
+            if (mainSubcomponent == null) {
+                statsSubcomponent = appComponent.plusStatsSubcomponent(module)
+            }
+            return statsSubcomponent!!
+        }
+
+        fun clearMainComponent() {
+            mainSubcomponent = null
+        }
+
+        fun clearLoginSubcomponent() {
+            loginSubcomponent = null
+        }
+
+        fun clearStatsSubcomponent() {
+            statsSubcomponent = null
         }
     }
 
@@ -38,11 +55,6 @@ open class App : Application() {
         appComponent = DaggerAppComponent.builder()
                 .appModule(AppModule(this))
                 .netModule(NetModule(this))
-                .serviceModule(ServiceModule())
-                .build()
-        serviceComponent = DaggerServiceComponent.builder()
-                .netModule(NetModule(this))
-                .serviceModule(ServiceModule())
                 .build()
     }
 
