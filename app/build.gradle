@@ -52,11 +52,15 @@ android {
         test {
             setRoot('src/test')
             java.srcDirs += 'src/test/kotlin'
+            java.srcDirs += 'src/mock/kotlin'
+            java.srcDirs += 'src/testUtils/kotlin'
             java.srcDirs += [file("$buildDir/generated/source/kapt/debug")]
         }
         androidTest {
             setRoot('src/androidTest')
             java.srcDirs += 'src/androidTest/kotlin'
+            java.srcDirs += 'src/mock/kotlin'
+            java.srcDirs += 'src/testUtils/kotlin'
             java.srcDirs += [file("$buildDir/generated/source/kapt/debug")]
         }
     }
