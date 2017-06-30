@@ -34,7 +34,7 @@ proguard/
 captures/
 
 # Intellij
-.idea/*
+.idea/
 
 # Keystore files
 *.jks
@@ -42,6 +42,8 @@ captures/
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 
-*/jni/*
+# Application API key
+app/src/main/jni/*
+
 *.iml
 .DS_Store
