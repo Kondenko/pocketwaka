@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.api.model.stats.StatsItem
+import com.kondenko.pocketwaka.data.stats.model.StatsItem
 import com.kondenko.pocketwaka.utils.SpanFormatter
 import com.kondenko.pocketwaka.utils.Utils
 
@@ -61,10 +61,8 @@ class CardStatsListAdapter(val context: Context, val dataset: List<StatsItem>) :
     }
 
     private fun getPercent(percent: Double): String {
-        val value: String
-        if (percent < 1) value = String.format(context.getString(R.string.stats_card_percent_format_two_digit) as String, percent)
-        else value = String.format(context.getString(R.string.stats_card_percent_format_int) as String, percent)
-        return value
+        return if (percent < 1) String.format(context.getString(R.string.stats_card_percent_format_two_digit), percent)
+        else String.format(context.getString(R.string.stats_card_percent_format_int), percent)
     }
 
     override fun getItemCount(): Int = dataset.size

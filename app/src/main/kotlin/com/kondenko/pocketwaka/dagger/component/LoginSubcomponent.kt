@@ -3,7 +3,7 @@ package com.kondenko.pocketwaka.dagger.component
 import com.kondenko.pocketwaka.dagger.PerView
 import com.kondenko.pocketwaka.dagger.module.LoginModule
 import com.kondenko.pocketwaka.dagger.module.NetModule
-import com.kondenko.pocketwaka.screens.activities.login.LoginActivity
+import com.kondenko.pocketwaka.screens.auth.LoginActivity
 import dagger.Subcomponent
 
 @PerView

@@ -1,9 +1,9 @@
 package com.kondenko.pocketwaka.dagger.module
 
 import com.kondenko.pocketwaka.Const
-import com.kondenko.pocketwaka.api.services.StatsService
-import com.kondenko.pocketwaka.screens.fragments.stats.StatsPresenter
-import com.kondenko.pocketwaka.screens.fragments.stats.StatsView
+import com.kondenko.pocketwaka.data.stats.service.StatsService
+import com.kondenko.pocketwaka.screens.stats.StatsPresenter
+import com.kondenko.pocketwaka.screens.stats.StatsView
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

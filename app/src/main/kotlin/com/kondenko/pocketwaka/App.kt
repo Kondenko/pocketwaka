@@ -1,7 +1,10 @@
 package com.kondenko.pocketwaka
 
 import android.app.Application
-import com.kondenko.pocketwaka.dagger.component.*
+import com.kondenko.pocketwaka.dagger.component.AppComponent
+import com.kondenko.pocketwaka.dagger.component.LoginSubcomponent
+import com.kondenko.pocketwaka.dagger.component.MainSubcomponent
+import com.kondenko.pocketwaka.dagger.component.StatsSubcomponent
 import com.kondenko.pocketwaka.dagger.module.*
 
 open class App : Application() {

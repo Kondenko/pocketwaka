@@ -6,7 +6,7 @@
     <data>
         <variable
             name="dataWrapper"
-            type="com.kondenko.pocketwaka.api.model.stats.StatsDataWrapper"
+            type="com.kondenko.pocketwaka.data.stats.model.StatsDataWrapper"
             />
     </data>
 

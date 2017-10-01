@@ -23,4 +23,5 @@ class ObservableScrollView(context: Context, attrs: AttributeSet?, defStyleAttr:
         listener?.onScrollChanged(this, x, y, oldX, oldY)
         super.onScrollChanged(x, y, oldX, oldY)
     }
+
 }

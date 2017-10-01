@@ -3,6 +3,7 @@ package com.kondenko.pocketwaka.ui
 import android.content.Context
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.CardView
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -10,7 +11,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.api.model.stats.StatsItem
+import com.kondenko.pocketwaka.data.stats.model.StatsItem
 import com.kondenko.pocketwaka.ui.onelinesegmentedchart.OneLineSegmentedChart
 import com.kondenko.pocketwaka.ui.onelinesegmentedchart.Segment
 import java.util.*
@@ -59,7 +60,9 @@ class CardStats(val context: Context, val type: Int, val data: List<StatsItem>) 
         val list = content.findViewById(R.id.statsCardRecyclerView) as RecyclerView
         val adapter = CardStatsListAdapter(context, data)
         list.adapter = adapter
-        list.layoutManager = NonScrollableLinearLayoutManager(context)
+        list.layoutManager = object: LinearLayoutManager(context) {
+            override fun canScrollVertically() = false
+        }
     }
 
     fun setupChart(content: View) {

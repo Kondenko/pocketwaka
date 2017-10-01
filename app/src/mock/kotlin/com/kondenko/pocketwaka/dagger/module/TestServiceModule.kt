@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.dagger.module
 
-import com.kondenko.pocketwaka.api.services.StatsService
-import com.kondenko.pocketwaka.api.services.LoginService
+import com.kondenko.pocketwaka.data.stats.service.StatsService
+import com.kondenko.pocketwaka.data.auth.service.AuthService
 import com.nhaarman.mockito_kotlin.mock
 import dagger.Module
 import dagger.Provides
@@ -13,7 +13,7 @@ class TestServiceModule {
 
     @Provides
     @Singleton
-    fun provideTokenService(): LoginService {
+    fun provideTokenService(): AuthService {
         return mock()
     }
 

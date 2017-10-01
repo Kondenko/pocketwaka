@@ -11,7 +11,7 @@
 
         <variable
             name="dataWrapper"
-            type="com.kondenko.pocketwaka.api.model.stats.StatsDataWrapper"
+            type="com.kondenko.pocketwaka.data.stats.model.StatsDataWrapper"
             />
     </data>
 
@@ -24,7 +24,7 @@
             android:id="@+id/statsScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="com.kondenko.pocketwaka.screens.fragments.stats.FragmentStats"
+            tools:context=".screens.stats.FragmentStats"
             >
 
             <android.support.constraint.ConstraintLayout

@@ -1,5 +1,7 @@
 package com.kondenko.pocketwaka.api.oauth
 
+import com.kondenko.pocketwaka.data.auth.model.AccessToken
+
 class InvalidAccessTokenTest(
         override var access_token: String = "sec_EbSZXye0Itq18jDeCeG53xNsPOkxB2ptRCUSZG3BXoqXwtNVa2WLRjcB4jKELykjmzUu5kRUMFPI1fQm",
         override var expires_in: Double = 5184000.0,

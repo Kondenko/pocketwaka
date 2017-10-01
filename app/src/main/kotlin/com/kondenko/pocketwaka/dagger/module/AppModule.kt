@@ -2,8 +2,7 @@ package com.kondenko.pocketwaka.dagger.module
 
 import android.content.Context
 import com.kondenko.pocketwaka.Const
-import com.kondenko.pocketwaka.api.services.LoginService
-import com.kondenko.pocketwaka.dagger.PerView
+import com.kondenko.pocketwaka.data.auth.service.AuthService
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -21,8 +20,8 @@ class AppModule(val context: Context) {
     @Provides
     @Singleton
     @Inject
-    fun provideTokenService(@Named(Const.URL_TYPE_AUTH) retrofit: Retrofit): LoginService {
-        return retrofit.create(LoginService::class.java)
+    fun provideTokenService(@Named(Const.URL_TYPE_AUTH) retrofit: Retrofit): AuthService {
+        return retrofit.create(AuthService::class.java)
     }
 
 }

@@ -25,4 +25,5 @@ class CacheInterceptor(val context: Context) : Interceptor {
         }
         return chain.proceed(request)
     }
+
 }
