@@ -1,0 +1,98 @@
+allprojects {
+    repositories {
+        jcenter()
+        google()
+        maven { url "https://maven.google.com" }
+    }
+}
+
+ext {
+
+    versions = [
+            // Android
+            androidMinSdk    : 17,
+            androidTargetSdk : 26,
+            androidCompileSdk: 26,
+            androidBuildTools: '26.0.2',
+            androidPlugin    : '3.0.0-beta6',
+            // Dependencies
+            kotlin : '1.1.51',
+            supportLib       : '26.1.0',
+            constraintLayout : '1.0.2',
+            smartTabLayout   : '1.6.1',
+            rxKotlin         : '2.1.0',
+            retrofit         : '2.3.0',
+            dagger           : '2.11',
+            rxAndroid        : '2.0.1',
+            rxJava           : '2.1.1',
+            rxBinding        : '2.0.0',
+            gson             : '2.8.1',
+            eventBus         : '3.0.0',
+            junit            : '4.12',
+            supportTest      : '0.5',
+            mockito          : '2.7.16',
+            mockitoKotlin    : '1.3.0',
+            robolectric      : '3.2.2',
+            espresso         : '2.2.2'
+    ]
+
+    support = [
+            "com.android.support:support-v4:${versions.supportLib}",
+            "com.android.support:cardview-v7:${versions.supportLib}",
+            "com.android.support:appcompat-v7:${versions.supportLib}",
+            "com.android.support:design:${versions.supportLib}",
+            "com.android.support:customtabs:${versions.supportLib}"
+    ]
+
+    rx = [
+            "io.reactivex.rxjava2:rxkotlin:${versions.rxKotlin}",
+            "io.reactivex.rxjava2:rxandroid:${versions.rxAndroid}",
+            "com.jakewharton.rxbinding2:rxbinding:${versions.rxBinding}"
+    ]
+
+    retrofit = [
+            "com.squareup.retrofit2:retrofit:${versions.retrofit}",
+            "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
+            "com.squareup.retrofit2:adapter-rxjava2:${versions.retrofit}"
+    ]
+
+    smartTabLayout = [
+            "com.ogaclejapan.smarttablayout:library:${versions.smartTabLayout}@aar",
+            "com.ogaclejapan.smarttablayout:utils-v4:${versions.smartTabLayout}@aar"
+    ]
+
+    kotlinLib = "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
+    dagger = "com.google.dagger:dagger:${versions.dagger}"
+    daggerCompiler = "com.google.dagger:dagger-compiler:${versions.dagger}"
+    databindingCompiler = "com.android.databinding:compiler:${versions.androidPlugin}"
+    eventBus = "org.greenrobot:eventbus:${versions.eventBus}"
+    constraintLayout = "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
+
+    testingDependencies = [
+            "junit:junit:${versions.junit}",
+            "org.mockito:mockito-core:${versions.mockito}",
+            "com.nhaarman:mockito-kotlin:${versions.mockitoKotlin}",
+            "org.robolectric:robolectric:${versions.robolectric}"
+    ]
+
+    testingCompilerDependencies = [
+            "com.google.dagger:dagger-compiler:${versions.dagger}",
+            "com.google.dagger:dagger:${versions.dagger}"
+    ]
+
+    androidTestingDependencies = [
+            "com.android.support:support-annotations:${versions.supportLib}",
+            "com.android.support.test:runner:${versions.supportTest}",
+            "com.android.support.test:rules:${versions.supportTest}"
+    ]
+
+    androidTestingCompilerDependencies = [
+            "com.google.dagger:dagger-compiler:${versions.dagger}",
+            "com.google.dagger:dagger:${versions.dagger}"
+    ]
+
+    androidTestingSupportDependencies = [
+            'com.android.support.test.espresso:espresso-core:2.2.2'
+    ]
+
+}
