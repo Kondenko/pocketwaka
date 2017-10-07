@@ -14,7 +14,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-class LoginPresenter(val view: LoginView, val service: AuthService) : BasePresenter() {
+class LoginPresenter(val service: AuthService) : BasePresenter<AuthView>() {
 
     var subscription: Disposable? = null
 
@@ -33,7 +33,7 @@ class LoginPresenter(val view: LoginView, val service: AuthService) : BasePresen
             if (code != null) {
                 getToken(appId, appSecret, Const.AUTH_REDIRECT_URI, Const.GRANT_TYPE_AUTH_CODE, code)
             } else if (uri.getQueryParameter("error") != null) {
-                view.onGetTokenError(null, R.string.error_logging_in)
+                view?.onGetTokenError(null, R.string.error_logging_in)
             }
         }
     }
@@ -65,8 +65,8 @@ class LoginPresenter(val view: LoginView, val service: AuthService) : BasePresen
                 .doOnSuccess { token -> token.created_at = Utils.currentTimeSec() }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { token -> view.onGetTokenSuccess(token) },
-                        { error -> view.onGetTokenError(error, R.string.error_logging_in) }
+                        { token -> view?.onGetTokenSuccess(token) },
+                        { error -> view?.onGetTokenError(error, R.string.error_logging_in) }
                 )
     }
 

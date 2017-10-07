@@ -8,11 +8,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-class StatsPresenter(val view: StatsView, val service: StatsService) : BasePresenter() {
+class StatsPresenter(val service: StatsService) : BasePresenter<StatsView>() {
 
     private var subscription: Disposable? = null
 
-    fun onViewCreated(context: Context) {
+    fun onViewCreated() {
 //        updateData(context,, )
     }
 
@@ -26,8 +26,8 @@ class StatsPresenter(val view: StatsView, val service: StatsService) : BasePrese
                 .doOnSuccess { data -> data.stats.provideColors(context) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { value -> view.onSuccess(value) },
-                        { error -> view.onError(error) }
+                        { value -> view?.onSuccess(value) },
+                        { error -> view?.onError(error) }
                 )
     }
 

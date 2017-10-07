@@ -46,7 +46,7 @@ class CardStats(val context: Context, val type: Int, val data: List<StatsItem>) 
     fun getView() = card
 
     fun setupHeader(content: View) {
-        val header = content.findViewById(R.id.statsCardHeader) as TextView
+        val header = content.findViewById<TextView>(R.id.statsCardHeader) as TextView
         header.text = context.getString(when (type) {
             TYPE_PROJECTS -> R.string.stats_card_header_projects
             TYPE_EDITORS -> R.string.stats_card_header_editors
@@ -57,7 +57,7 @@ class CardStats(val context: Context, val type: Int, val data: List<StatsItem>) 
     }
 
     fun setupList(content: View) {
-        val list = content.findViewById(R.id.statsCardRecyclerView) as RecyclerView
+        val list = content.findViewById<RecyclerView>(R.id.statsCardRecyclerView)
         val adapter = CardStatsListAdapter(context, data)
         list.adapter = adapter
         list.layoutManager = object: LinearLayoutManager(context) {
@@ -66,7 +66,7 @@ class CardStats(val context: Context, val type: Int, val data: List<StatsItem>) 
     }
 
     fun setupChart(content: View) {
-        val chart = content.findViewById(R.id.chart) as OneLineSegmentedChart
+        val chart = content.findViewById<RecyclerView>(R.id.chart) as OneLineSegmentedChart
         val segments = ArrayList<Segment>(data.size)
         data.mapTo(segments) { Segment(it.percent.toFloat(), it.color, it.name) }
         chart.setSegments(segments)

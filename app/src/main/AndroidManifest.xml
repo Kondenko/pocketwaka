@@ -25,7 +25,7 @@
         </activity>
 
         <activity
-            android:name=".screens.auth.LoginActivity"
+            android:name=".screens.auth.AuthActivity"
             android:theme="@style/LoginActivityTheme"
             >
             <intent-filter>

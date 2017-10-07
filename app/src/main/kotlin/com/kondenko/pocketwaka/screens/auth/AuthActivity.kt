@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.Toast
+import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenUtils
@@ -14,15 +16,16 @@ import com.kondenko.pocketwaka.screens.main.MainActivity
 import javax.inject.Inject
 
 
-class LoginActivity : AppCompatActivity(), LoginView {
+class AuthActivity : AppCompatActivity(), AuthView {
 
     @Inject
-    public lateinit var presenter: LoginPresenter
+    lateinit var presenter: LoginPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        App.authComponent.inject(this)
         setContentView(R.layout.activity_login)
-        val buttonLogin = findViewById(R.id.button_login)
+        val buttonLogin = findViewById<Button>(R.id.button_login)
         buttonLogin.setOnClickListener {
             presenter.onAuthPageOpen(this)
         }

@@ -9,11 +9,11 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.dagger.module.MainModule
+import com.kondenko.pocketwaka.dagger.modules.MainModule
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenUtils
 import com.kondenko.pocketwaka.events.RefreshEvent
-import com.kondenko.pocketwaka.screens.auth.LoginActivity
+import com.kondenko.pocketwaka.screens.auth.AuthActivity
 import com.kondenko.pocketwaka.screens.stats.FragmentStatsContainer
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(), MainView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Dependency Injection
-        App.plus(MainModule(this)).injectMainSubcomponent(this)
+        App.mainComponent.inject(this)
         // UI
         setContentView(R.layout.activity_main)
         val stats = FragmentStatsContainer()
@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity(), MainView {
     override fun onStop() {
         super.onStop()
         presenter.onStop()
-        App.clearMainComponent()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -75,7 +74,7 @@ class MainActivity : AppCompatActivity(), MainView {
 
     private fun logout() {
         finish()
-        startActivity(Intent(this, LoginActivity::class.java))
+        startActivity(Intent(this, AuthActivity::class.java))
         AccessTokenUtils.deleteToken(this)
     }
 }

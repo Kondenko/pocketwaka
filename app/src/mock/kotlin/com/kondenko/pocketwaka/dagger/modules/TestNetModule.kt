@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.dagger.module
+package com.kondenko.pocketwaka.dagger.modules
 
 import com.nhaarman.mockito_kotlin.mock
 import dagger.Module

@@ -13,7 +13,8 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class MainActivityPresenter @Inject constructor(val authService: AuthService, val view: MainView) : BasePresenter() {
+
+class MainActivityPresenter @Inject constructor(val authService: AuthService) : BasePresenter<MainView>() {
 
     private val TAG = this.javaClass.simpleName
 
@@ -37,8 +38,8 @@ class MainActivityPresenter @Inject constructor(val authService: AuthService, va
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            { refreshToken -> view.onTokenRefreshSuccess(refreshToken) },
-                            { error -> view.onTokenRefreshFail(error) }
+                            { refreshToken -> view?.onTokenRefreshSuccess(refreshToken) },
+                            { error -> view?.onTokenRefreshFail(error) }
                     )
         }
     }

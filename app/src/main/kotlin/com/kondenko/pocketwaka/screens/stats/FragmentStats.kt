@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenUtils
@@ -27,7 +28,7 @@ class FragmentStats : Fragment(), StatsView {
 
     private lateinit var TAG: String
 
-    @Inject
+    @field:Inject
     lateinit var presenter: StatsPresenter
 
     private val fragmentEmptyState by lazy {
@@ -44,6 +45,7 @@ class FragmentStats : Fragment(), StatsView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        App.statsComponent.inject(this)
         TAG = this.javaClass.simpleName + "@" + arguments.getString(Const.STATS_RANGE_KEY)
         val token = AccessTokenUtils.getTokenHeaderValue(activity)
 //        presenter = StatsPresenter(arguments.getString(Const.STATS_RANGE_KEY), token, this)
@@ -53,7 +55,7 @@ class FragmentStats : Fragment(), StatsView {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showLoadingState()
-        presenter.onViewCreated(context)
+        presenter.onViewCreated()
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,

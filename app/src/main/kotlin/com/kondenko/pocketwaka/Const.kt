@@ -9,9 +9,9 @@ object Const {
 
     // Auth
     const val URL_TYPE_AUTH = "base_url"
-    const val URL_BASE = "https://wakatime.com/" // Used when a user is not authenticated yet
+    const val URL_OAUTH = "https://wakatime.com/" // Used when a user is not authenticated yet
     const val TOKEN_URL_POSTFIX = "oauth/token" // Used in a POST request to obtain a token
-    const val URL_AUTH = URL_BASE + "oauth/authorize" // Used to authenticate a user
+    const val URL_AUTH = URL_OAUTH + "oauth/authorize" // Used to authenticate a user
     // API
     const val URL_API = "https://wakatime.com/api/v1/" // Used for all API calls
 

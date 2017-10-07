@@ -68,9 +68,9 @@ class CardStatsListAdapter(val context: Context, val dataset: List<StatsItem>) :
     override fun getItemCount(): Int = dataset.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var labelColor = itemView.findViewById(R.id.labelColor)
-        var header = itemView.findViewById(R.id.textItem) as TextView
-        var percentage = itemView.findViewById(R.id.textPercent) as TextView
+        var labelColor = itemView.findViewById<View>(R.id.labelColor)
+        var header = itemView.findViewById<TextView>(R.id.textItem)
+        var percentage = itemView.findViewById<TextView>(R.id.textPercent)
     }
 
 }

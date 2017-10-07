@@ -2,9 +2,9 @@ package com.kondenko.pocketwaka.screens.main
 
 import com.kondenko.pocketwaka.RxSchedulersOverrideRule
 import com.kondenko.pocketwaka.TestApp
-import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.api.oauth.InvalidAccessTokenTest
 import com.kondenko.pocketwaka.api.oauth.ValidAccessTokenTest
+import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.data.auth.service.AuthService
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
@@ -36,7 +36,7 @@ class MainActivityActivityPresenterTest {
 
     @Before
     fun setup() {
-        presenter = MainActivityPresenter(authService, view)
+        presenter = MainActivityPresenter(authService)
     }
 
     @Test

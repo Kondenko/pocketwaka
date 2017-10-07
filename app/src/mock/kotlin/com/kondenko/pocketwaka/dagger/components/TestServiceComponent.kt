@@ -1,7 +1,7 @@
-package com.kondenko.pocketwaka.dagger.component
+package com.kondenko.pocketwaka.dagger.components
 
-import com.kondenko.pocketwaka.dagger.module.TestNetModule
-import com.kondenko.pocketwaka.dagger.module.TestServiceModule
+import com.kondenko.pocketwaka.dagger.modules.TestNetModule
+import com.kondenko.pocketwaka.dagger.modules.TestServiceModule
 import com.kondenko.pocketwaka.screens.main.MainActivityActivityPresenterTest
 import dagger.Component
 import javax.inject.Singleton

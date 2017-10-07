@@ -1,10 +1,10 @@
 package com.kondenko.pocketwaka
 
 import android.app.Application
-import com.kondenko.pocketwaka.dagger.component.DaggerTestServiceComponent
-import com.kondenko.pocketwaka.dagger.component.TestServiceComponent
-import com.kondenko.pocketwaka.dagger.module.TestNetModule
-import com.kondenko.pocketwaka.dagger.module.TestServiceModule
+import com.kondenko.pocketwaka.dagger.components.DaggerTestServiceComponent
+import com.kondenko.pocketwaka.dagger.components.TestServiceComponent
+import com.kondenko.pocketwaka.dagger.modules.TestNetModule
+import com.kondenko.pocketwaka.dagger.modules.TestServiceModule
 
 
 class TestApp : Application() {
