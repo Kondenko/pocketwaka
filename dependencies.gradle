@@ -16,7 +16,7 @@ ext {
             androidBuildTools: '26.0.2',
             androidPlugin    : '3.0.0-beta6',
             // Dependencies
-            kotlin : '1.1.51',
+            kotlin           : '1.1.51',
             supportLib       : '26.1.0',
             constraintLayout : '1.0.2',
             smartTabLayout   : '1.6.1',
@@ -29,6 +29,7 @@ ext {
             gson             : '2.8.1',
             eventBus         : '3.0.0',
             junit            : '4.12',
+            timber           : '4.5.1',
             supportTest      : '0.5',
             mockito          : '2.7.16',
             mockitoKotlin    : '1.3.0',
@@ -38,9 +39,9 @@ ext {
 
     support = [
             "com.android.support:support-v4:${versions.supportLib}",
-            "com.android.support:cardview-v7:${versions.supportLib}",
             "com.android.support:appcompat-v7:${versions.supportLib}",
             "com.android.support:design:${versions.supportLib}",
+            "com.android.support:cardview-v7:${versions.supportLib}",
             "com.android.support:customtabs:${versions.supportLib}"
     ]
 
@@ -67,6 +68,7 @@ ext {
     databindingCompiler = "com.android.databinding:compiler:${versions.androidPlugin}"
     eventBus = "org.greenrobot:eventbus:${versions.eventBus}"
     constraintLayout = "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
+    timber = "com.jakewharton.timber:timber:${versions.timber}"
 
     testingDependencies = [
             "junit:junit:${versions.junit}",
@@ -76,8 +78,8 @@ ext {
     ]
 
     testingCompilerDependencies = [
-            "com.google.dagger:dagger-compiler:${versions.dagger}",
-            "com.google.dagger:dagger:${versions.dagger}"
+            "com.google.dagger:dagger:${versions.dagger}",
+            "com.google.dagger:dagger-compiler:${versions.dagger}"
     ]
 
     androidTestingDependencies = [
@@ -87,8 +89,8 @@ ext {
     ]
 
     androidTestingCompilerDependencies = [
-            "com.google.dagger:dagger-compiler:${versions.dagger}",
-            "com.google.dagger:dagger:${versions.dagger}"
+            "com.google.dagger:dagger:${versions.dagger}",
+            "com.google.dagger:dagger-compiler:${versions.dagger}"
     ]
 
     androidTestingSupportDependencies = [
