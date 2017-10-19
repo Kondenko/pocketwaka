@@ -3,25 +3,24 @@ package com.kondenko.pocketwaka.screens.stats
 import android.content.Context
 import com.kondenko.pocketwaka.data.stats.service.StatsService
 import com.kondenko.pocketwaka.screens.BasePresenter
-import com.kondenko.pocketwaka.utils.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 class StatsPresenter(val service: StatsService) : BasePresenter<StatsView>() {
 
-    private var subscription: Disposable? = null
+    private var disposable: Disposable? = null
 
     fun onViewCreated() {
 //        updateData(context,, )
     }
 
     fun onStop() {
-        Utils.unsubscribe(subscription)
+        disposable?.dispose()
     }
 
     fun updateData(context: Context, statsRange: String, tokenHeader: String) {
-        subscription = service.getCurrentUserStats(tokenHeader, statsRange)
+        disposable = service.getCurrentUserStats(tokenHeader, statsRange)
                 .subscribeOn(Schedulers.newThread())
                 .doOnSuccess { data -> data.stats.provideColors(context) }
                 .observeOn(AndroidSchedulers.mainThread())

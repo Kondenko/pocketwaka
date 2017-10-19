@@ -3,6 +3,7 @@ package com.kondenko.pocketwaka.ui
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -13,7 +14,6 @@ import android.widget.TextView
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.stats.model.StatsItem
 import com.kondenko.pocketwaka.utils.SpanFormatter
-import com.kondenko.pocketwaka.utils.Utils
 
 class CardStatsListAdapter(val context: Context, val dataset: List<StatsItem>) : RecyclerView.Adapter<CardStatsListAdapter.ViewHolder>() {
 
@@ -30,7 +30,7 @@ class CardStatsListAdapter(val context: Context, val dataset: List<StatsItem>) :
         holder?.labelColor?.background = labelDrawable
         holder?.header?.text = item.name
 //        holder?.percentage?.text = getPercent(item.percent)
-        setPercent(holder?.percentage, item.percent)
+        setPercent(holder?.percentage, item.percent!!)
     }
 
     /**
@@ -42,10 +42,10 @@ class CardStatsListAdapter(val context: Context, val dataset: List<StatsItem>) :
         if (percent > 1) {
             textView?.text = String.format(context.getString(R.string.stats_card_percent_format_int) as String, percent)
         } else {
-            val percentValue: Float = 1f
+            val percentValue = 1f
             // Colors
-            val colorPrimary = Utils.getColor(context, R.color.color_text_black_secondary)
-            val colorSecondary = Utils.getColor(context, R.color.color_text_black_pale)
+            val colorPrimary = ContextCompat.getColor(textView?.context, R.color.color_text_black_secondary)
+            val colorSecondary = ContextCompat.getColor(textView?.context, R.color.color_text_black_pale)
             // Strings
             val stringLessThan = context.getString(R.string.stats_card_less_than)
             val stringPercent = String.format(context.getString(R.string.stats_card_percent_format_int) as String, percentValue)

@@ -24,8 +24,6 @@ class GetAuthUrl
                     "&redirect_uri=${Const.AUTH_REDIRECT_URI}" +
                     "&scope=${scopes.joinToString(",")}" 
                 }
-        // https://wakatime.com/oauth/authorize?client_id=b'BSdizeGtyagrFYG9rh5il9p1'&response_type=code&redirect_uri=pocketwaka://oauth2&scope=email,read_logged_time,read_stats,read_teams
-
     }
 
 }

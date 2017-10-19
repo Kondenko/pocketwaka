@@ -9,9 +9,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.dagger.modules.MainModule
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
-import com.kondenko.pocketwaka.data.auth.repository.AccessTokenUtils
 import com.kondenko.pocketwaka.events.RefreshEvent
 import com.kondenko.pocketwaka.screens.auth.AuthActivity
 import com.kondenko.pocketwaka.screens.stats.FragmentStatsContainer
@@ -22,7 +20,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity(), MainView {
 
     @Inject
-    public lateinit var presenter: MainActivityPresenter
+    lateinit var presenter: MainActivityPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +31,7 @@ class MainActivity : AppCompatActivity(), MainView {
         val stats = FragmentStatsContainer()
         setFragment(stats)
 
-        presenter.onCreate(this)
+        presenter.onCreate()
     }
 
     override fun onStop() {
@@ -55,11 +53,11 @@ class MainActivity : AppCompatActivity(), MainView {
     }
 
     override fun onTokenRefreshSuccess(refreshToken: AccessToken) {
-        AccessTokenUtils.saveToken(refreshToken, this)
+//        AccessTokenRepository.saveToken(refreshToken, this)
     }
 
-    override fun onTokenRefreshFail(error: Throwable?) {
-        error?.printStackTrace()
+    override fun onError(throwable: Throwable?, messageStringRes: Int?) {
+        throwable?.printStackTrace()
         Toast.makeText(this, R.string.error_refreshing_token, Toast.LENGTH_LONG).show()
         logout()
     }
@@ -75,6 +73,6 @@ class MainActivity : AppCompatActivity(), MainView {
     private fun logout() {
         finish()
         startActivity(Intent(this, AuthActivity::class.java))
-        AccessTokenUtils.deleteToken(this)
+//        AccessTokenRepository.deleteToken(this)
     }
 }

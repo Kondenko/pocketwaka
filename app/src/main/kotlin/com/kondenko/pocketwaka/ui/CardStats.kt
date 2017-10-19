@@ -66,9 +66,9 @@ class CardStats(val context: Context, val type: Int, val data: List<StatsItem>) 
     }
 
     fun setupChart(content: View) {
-        val chart = content.findViewById<RecyclerView>(R.id.chart) as OneLineSegmentedChart
+        val chart = content.findViewById<OneLineSegmentedChart>(R.id.chart)
         val segments = ArrayList<Segment>(data.size)
-        data.mapTo(segments) { Segment(it.percent.toFloat(), it.color, it.name) }
+        data.mapTo(segments) { Segment(it.percent!!.toFloat(), it.color, it.name) }
         chart.setSegments(segments)
     }
 

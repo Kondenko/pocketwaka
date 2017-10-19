@@ -23,7 +23,7 @@ object ColorGenerator {
             if (i <= predefinedColors.size - 1) {
                 color = predefinedColors[i]
             } else {
-                color = getRandomColor(items[i].name.hashCode().toLong())
+                color = getRandomColor(items[i].name!!.hashCode().toLong())
             }
             colors.add(color)
         }

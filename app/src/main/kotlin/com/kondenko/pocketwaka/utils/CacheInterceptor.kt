@@ -15,11 +15,11 @@ class CacheInterceptor(val context: Context) : Interceptor {
         if (request.method() == "GET") {
             val name = "Cache-Control"
             val value: String
-            if (Utils.isConnectionAvailable(context)) {
-                value = "public, max-age=" + MAX_AGE
+            value = if (isConnectionAvailable(context)) {
+                "public, max-age=" + MAX_AGE
             } else {
                 val maxStale = 60 * 60 * 24 * DAYS_VALID
-                value = "public, only-if-cached, max-stale=" + maxStale
+                "public, only-if-cached, max-stale=" + maxStale
             }
             request = request.newBuilder().header(name, value).build()
         }
