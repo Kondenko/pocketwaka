@@ -1,23 +1,16 @@
 package com.kondenko.pocketwaka.data.auth.model
 
-import com.kondenko.pocketwaka.utils.Utils
+import com.kondenko.pocketwaka.utils.currentTimeSec
 
-open class AccessToken(
-        open var access_token: String,
-        open var expires_in: Double,
-        open var refresh_token: String,
-        open var scope: String,
-        open var token_type: String,
-        open var uid: String,
-        open var created_at: Float) {
+data class AccessToken(
+        var access_token: String,
+        var expires_in: Double,
+        var refresh_token: String,
+        var scope: String,
+        var token_type: String,
+        var uid: String,
+        var created_at: Float) {
 
-    open fun isValid(): Boolean {
-        val expirationTime = created_at + expires_in
-        val currentTime = Utils.currentTimeSec()
-        return expirationTime > currentTime
-    }
+    fun isValid() = created_at + expires_in > currentTimeSec()
 
-    override fun toString(): String {
-        return "AccessToken: { access_token: $access_token, expires_in: $expires_in, refresh_token: $refresh_token, scope: $scope, token_type: $token_type, uid: $uid"
-    }
 }

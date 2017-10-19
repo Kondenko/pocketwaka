@@ -1,5 +1,6 @@
 package com.kondenko.pocketwaka
 
+// TODO Remove top Const object
 object Const {
 
     const val DEFAULT_ANIM_DURATION: Long = 400
@@ -8,7 +9,6 @@ object Const {
     const val URL_PLUGINS = "https://wakatime.com/editors"
 
     // Auth
-    const val URL_TYPE_AUTH = "base_url"
     const val URL_OAUTH = "https://wakatime.com/" // Used when a user is not authenticated yet
     const val TOKEN_URL_POSTFIX = "oauth/token" // Used in a POST request to obtain a token
     const val URL_AUTH = URL_OAUTH + "oauth/authorize" // Used to authenticate a user
@@ -16,7 +16,6 @@ object Const {
     const val URL_API = "https://wakatime.com/api/v1/" // Used for all API calls
 
     /** Authorization */
-    const val URL_TYPE_API = "api_url"
     const val AUTH_REDIRECT_URI = "pocketwaka://oauth2"
 
 

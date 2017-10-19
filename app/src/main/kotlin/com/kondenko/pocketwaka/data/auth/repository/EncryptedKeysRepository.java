@@ -1,13 +1,13 @@
 package com.kondenko.pocketwaka.data.auth.repository;
 
-import com.kondenko.pocketwaka.utils.Encryptor;
+import io.reactivex.Single;
 
 /**
  * Gets app ID and secret from native code
  * WARNING: If you change the location of this class,
  * make sure to reflect the changes in the native code file (keys.c)
  */
-public class KeysManager {
+public class EncryptedKeysRepository {
 
     static {
         System.loadLibrary("keys");
@@ -17,12 +17,12 @@ public class KeysManager {
 
     private static native String getAppSecretEncrypted();
 
-    public static String getAppId() {
-        return Encryptor.decrypt(getAppIdEncrypted());
+    public Single<String> getAppId() {
+        return Single.just(getAppIdEncrypted());
     }
 
-    public static String getAppSecret() {
-        return Encryptor.decrypt(getAppSecretEncrypted());
+    public Single<String> getAppSecret() {
+        return Single.just(getAppSecretEncrypted());
     }
 
 }

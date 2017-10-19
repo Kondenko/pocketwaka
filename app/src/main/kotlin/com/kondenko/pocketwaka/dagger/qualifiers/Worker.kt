@@ -4,8 +4,8 @@ import java.lang.annotation.Documented
 import javax.inject.Qualifier
 
 /**
- * A scope for OAuth 2.0 calls.
+ * A scope for worker Schedulers.
  */
 @Qualifier
 @MustBeDocumented
-annotation class Auth
+annotation class Worker

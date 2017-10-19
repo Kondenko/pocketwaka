@@ -4,9 +4,14 @@ import android.content.Context
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.dagger.qualifiers.Api
 import com.kondenko.pocketwaka.dagger.qualifiers.Auth
+import com.kondenko.pocketwaka.dagger.qualifiers.Ui
+import com.kondenko.pocketwaka.dagger.qualifiers.Worker
 import com.kondenko.pocketwaka.utils.CacheInterceptor
 import dagger.Module
 import dagger.Provides
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -17,6 +22,16 @@ import javax.inject.Singleton
 
 @Module
 class NetModule {
+
+    @Provides
+    @Singleton
+    @Worker
+    fun provideWorkerScheduler(): Scheduler = Schedulers.io()
+
+    @Provides
+    @Singleton
+    @Ui
+    fun provideUiScheduler(): Scheduler = AndroidSchedulers.mainThread()
 
     @Provides
     @Singleton

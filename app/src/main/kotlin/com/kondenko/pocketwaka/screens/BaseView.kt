@@ -1,3 +1,9 @@
 package com.kondenko.pocketwaka.screens
 
-interface BaseView
+import android.support.annotation.StringRes
+
+interface BaseView {
+
+    fun onError(throwable: Throwable?, @StringRes messageStringRes: Int? = null)
+
+}

@@ -5,5 +5,4 @@ import com.kondenko.pocketwaka.screens.BaseView
 
 interface MainView : BaseView {
     fun onTokenRefreshSuccess(refreshToken: AccessToken)
-    fun onTokenRefreshFail(error: Throwable?)
 }

@@ -5,6 +5,5 @@ import com.kondenko.pocketwaka.screens.BaseView
 
 interface StatsView : BaseView {
     fun onSuccess(statsDataWrapper: StatsDataWrapper)
-    fun onError(error: Throwable?)
     fun onRefresh()
 }

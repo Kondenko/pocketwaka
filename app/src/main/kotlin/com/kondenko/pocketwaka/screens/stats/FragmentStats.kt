@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.data.auth.repository.AccessTokenUtils
 import com.kondenko.pocketwaka.data.stats.model.StatsDataWrapper
 import com.kondenko.pocketwaka.events.ErrorEvent
 import com.kondenko.pocketwaka.events.RefreshEvent
@@ -47,7 +46,7 @@ class FragmentStats : Fragment(), StatsView {
         super.onCreate(savedInstanceState)
         App.statsComponent.inject(this)
         TAG = this.javaClass.simpleName + "@" + arguments.getString(Const.STATS_RANGE_KEY)
-        val token = AccessTokenUtils.getTokenHeaderValue(activity)
+//        val token = AccessTokenRepository.getTokenHeaderValue(activity)
 //        presenter = StatsPresenter(arguments.getString(Const.STATS_RANGE_KEY), token, this)
         fragmentErrorState.setOnUpdateListener { EventBus.getDefault().post(RefreshEvent) }
     }
@@ -89,7 +88,7 @@ class FragmentStats : Fragment(), StatsView {
         showContent(statsDataWrapper)
     }
 
-    override fun onError(error: Throwable?) {
+    override fun onError(error: Throwable?, messageRes: Int?) {
         Log.i(TAG, "onError")
         EventBus.getDefault().post(ErrorEvent)
         error?.printStackTrace()
