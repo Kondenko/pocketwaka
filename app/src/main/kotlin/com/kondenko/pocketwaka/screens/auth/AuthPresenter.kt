@@ -5,7 +5,6 @@ import com.kondenko.pocketwaka.dagger.PerApp
 import com.kondenko.pocketwaka.domain.auth.GetAccessToken
 import com.kondenko.pocketwaka.domain.auth.GetAuthUrl
 import com.kondenko.pocketwaka.screens.BasePresenter
-import timber.log.Timber
 import javax.inject.Inject
 
 @PerApp
@@ -14,7 +13,7 @@ class AuthPresenter
     : BasePresenter<AuthView>() {
 
     fun onLoginButtonClicked() {
-        getAuthUrl.execute(null,
+        getAuthUrl.execute(
                 { url ->
                     view?.openAuthUrl(url)
                 },
@@ -27,7 +26,7 @@ class AuthPresenter
     fun getToken(code: String) {
         getAccessToken.execute(code,
                 { token -> view?.onGetTokenSuccess(token) },
-                { error -> view?.onError(error, R.string.error_logging_in)})
+                { error -> view?.onError(error, R.string.error_logging_in) })
     }
 
     override fun detach() {

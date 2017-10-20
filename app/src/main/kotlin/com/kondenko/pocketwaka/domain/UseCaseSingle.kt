@@ -12,9 +12,9 @@ abstract class UseCaseSingle<PARAMS, RESULT>(private val schedulers: SchedulerCo
 
     private var disposable: Disposable? = null
 
-    abstract fun build(params: PARAMS): Single<RESULT>
+    abstract fun build(params: PARAMS? = null): Single<RESULT>
 
-    fun execute(params: PARAMS, onSuccess: ((RESULT) -> Unit), onError: ((Throwable) -> Unit)): Single<RESULT> {
+    fun execute(params: PARAMS?, onSuccess: (RESULT) -> Unit, onError: (Throwable) -> Unit): Single<RESULT> {
         val single = build(params)
                 .doOnEvent { result, error -> Timber.i("Result: $result \n Error: $error") }
                 .subscribeOn(schedulers.workerScheduler)
@@ -22,6 +22,8 @@ abstract class UseCaseSingle<PARAMS, RESULT>(private val schedulers: SchedulerCo
         disposable = single.subscribe(onSuccess, onError)
         return single
     }
+
+    fun execute(onSuccess: (RESULT) -> Unit, onError: (Throwable) -> Unit) = execute(null, onSuccess, onError)
 
     override fun dispose() {
         disposable?.dispose()

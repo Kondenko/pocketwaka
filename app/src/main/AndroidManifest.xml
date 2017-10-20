@@ -15,21 +15,13 @@
         android:theme="@style/AppTheme"
         >
 
-        <activity android:name=".screens.ResolverActivity"
-            android:theme="@android:style/Theme.NoDisplay"
-            android:label="@string/all_app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-
         <activity
             android:name=".screens.auth.AuthActivity"
             android:theme="@style/LoginActivityTheme"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
@@ -40,7 +32,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.kondenko.pocketwaka.screens.main.MainActivity">
+        <activity
+            android:name="com.kondenko.pocketwaka.screens.main.MainActivity"
+            android:label="@string/all_app_name"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
 
     </application>

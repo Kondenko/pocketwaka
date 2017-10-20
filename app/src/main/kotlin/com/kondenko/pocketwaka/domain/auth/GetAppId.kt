@@ -14,8 +14,8 @@ import javax.inject.Inject
 @PerApp
 class GetAppId
 @Inject constructor(schedulers: SchedulerContainer, private val encryptedKeysRepository: EncryptedKeysRepository, private val encryptor: Encryptor)
-    : UseCaseSingle<Unit?, String>(schedulers) {
+    : UseCaseSingle<Nothing, String>(schedulers) {
 
-    override fun build(params: Unit?): Single<String> = encryptedKeysRepository.appId.map { encryptor.decrypt(it) }
+    override fun build(params: Nothing?): Single<String> = encryptedKeysRepository.appId.map { encryptor.decrypt(it) }
 
 }

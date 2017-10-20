@@ -9,8 +9,4 @@ import dagger.Provides
 @Module
 class MainModule {
 
-    @Provides
-    @PerApp
-    fun providePresenter(service: AuthService) = MainActivityPresenter(service)
-
 }

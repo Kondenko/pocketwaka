@@ -19,10 +19,10 @@ class GetAccessToken
 @Inject constructor(schedulers: SchedulerContainer, private val accessTokenRepository: AccessTokenRepository, private val getAppId: GetAppId, private val getAppSecret: GetAppSecret)
     : UseCaseSingle<String, AccessToken>(schedulers) {
 
-    override fun build(code: String): Single<AccessToken> {
+    override fun build(code: String?): Single<AccessToken> {
         val currentTime = currentTimeSec().toFloat()
-        return getAppId.build(null).zipWith(getAppSecret.build(null))
-                { id, secret -> accessTokenRepository.getNewAccessToken(id, secret, Const.AUTH_REDIRECT_URI, Const.GRANT_TYPE_AUTH_CODE, code) }
+        return getAppId.build().zipWith(getAppSecret.build())
+                { id, secret -> accessTokenRepository.getNewAccessToken(id, secret, Const.AUTH_REDIRECT_URI, Const.GRANT_TYPE_AUTH_CODE, code!!) }
                 .flatMap { it }
                 .doOnSuccess { accessTokenRepository.saveToken(it, currentTime) }
     }

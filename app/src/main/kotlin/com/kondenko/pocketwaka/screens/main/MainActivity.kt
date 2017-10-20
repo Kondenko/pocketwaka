@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.events.RefreshEvent
 import com.kondenko.pocketwaka.screens.auth.AuthActivity
 import com.kondenko.pocketwaka.screens.stats.FragmentStatsContainer
@@ -24,19 +23,17 @@ class MainActivity : AppCompatActivity(), MainView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Dependency Injection
         App.mainComponent.inject(this)
-        // UI
         setContentView(R.layout.activity_main)
+        presenter.attach(this)
+        presenter.checkIfLoggedIn()
         val stats = FragmentStatsContainer()
         setFragment(stats)
-
-        presenter.onCreate()
     }
 
-    override fun onStop() {
-        super.onStop()
-        presenter.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detach()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -52,9 +49,12 @@ class MainActivity : AppCompatActivity(), MainView {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onTokenRefreshSuccess(refreshToken: AccessToken) {
-//        AccessTokenRepository.saveToken(refreshToken, this)
+    override fun showLoginScreen() {
+        val intent = Intent(this, AuthActivity::class.java)
+        startActivity(intent)
+        finish()
     }
+
 
     override fun onError(throwable: Throwable?, messageStringRes: Int?) {
         throwable?.printStackTrace()
