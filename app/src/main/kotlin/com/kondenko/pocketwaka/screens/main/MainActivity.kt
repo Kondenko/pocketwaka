@@ -43,23 +43,10 @@ class MainActivity : AppCompatActivity(), MainView {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.action_logout -> logout()
+            R.id.action_logout -> presenter.logout()
             R.id.action_refresh -> EventBus.getDefault().post(RefreshEvent)
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun showLoginScreen() {
-        val intent = Intent(this, AuthActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
-
-
-    override fun onError(throwable: Throwable?, messageStringRes: Int?) {
-        throwable?.printStackTrace()
-        Toast.makeText(this, R.string.error_refreshing_token, Toast.LENGTH_LONG).show()
-        logout()
     }
 
     private fun setFragment(fragment: Fragment) {
@@ -70,9 +57,20 @@ class MainActivity : AppCompatActivity(), MainView {
         }
     }
 
-    private fun logout() {
+    override fun showLoginScreen() {
+        val intent = Intent(this, AuthActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    override fun onError(throwable: Throwable?, messageStringRes: Int?) {
+        throwable?.printStackTrace()
+        Toast.makeText(this, R.string.error_refreshing_token, Toast.LENGTH_LONG).show()
+    }
+
+    override fun onLogout() {
         finish()
         startActivity(Intent(this, AuthActivity::class.java))
-//        AccessTokenRepository.deleteToken(this)
     }
+
 }

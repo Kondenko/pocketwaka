@@ -1,10 +1,17 @@
 package com.kondenko.pocketwaka.domain
 
 /**
- * The base class for all UUseCases in the application.
+ * UseCase is an entity that performs some operation and provides callbacks with either a result or an error.
+ * It's also responsible for performing the operation in the background thread.
+ *
+ * @param PARAMS prerequisites for executing this UseCase.
+ * @param RESULT the result of the performed operation.
+ * @param CONTEXT determines the way we run this operation (like [io.reactivex.Observable], [io.reactivex.Completable] or [io.reactivex.Single])
  */
-abstract class UseCase<PARAMS, RESULT> {
+ interface UseCase<PARAMS, RESULT, CONTEXT> {
 
-    abstract fun execute(params: PARAMS): RESULT
+    fun build(params: PARAMS? = null): CONTEXT
+
+    fun execute(params: PARAMS? = null, onSuccess: (RESULT) -> Unit = {}, onError: (Throwable) -> Unit = {}): CONTEXT
 
 }

@@ -16,9 +16,8 @@ fun isConnectionAvailable(context: Context): Boolean {
     return service.activeNetworkInfo != null && service.activeNetworkInfo.isConnectedOrConnecting
 }
 
-inline fun SharedPreferences.edit(action: SharedPreferences.Editor.() -> Unit) {
+inline fun SharedPreferences.edit(crossinline action: SharedPreferences.Editor.() -> Unit) {
     val editor = edit()
     editor.action()
     editor.apply()
 }
-

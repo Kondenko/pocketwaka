@@ -1,19 +1,27 @@
 package com.kondenko.pocketwaka.screens.main
 
 import com.kondenko.pocketwaka.dagger.PerApp
-import com.kondenko.pocketwaka.domain.main.IsUserLoggedIn
+import com.kondenko.pocketwaka.domain.main.CheckIfUserIsLoggedIn
+import com.kondenko.pocketwaka.domain.main.DeleteSavedToken
 import com.kondenko.pocketwaka.screens.BasePresenter
 import javax.inject.Inject
 
 @PerApp
-class MainActivityPresenter @Inject constructor(private val isUserLoggedIn: IsUserLoggedIn) : BasePresenter<MainView>() {
+class MainActivityPresenter
+@Inject constructor(private val checkIfUserIsLoggedIn: CheckIfUserIsLoggedIn, private val deleteSavedToken: DeleteSavedToken) : BasePresenter<MainView>() {
+
+    fun logout() {
+        deleteSavedToken.execute {
+            view?.onLogout()
+        }
+    }
 
     fun checkIfLoggedIn() {
-        isUserLoggedIn.execute(null,
-                { isLoggedIn ->
+        checkIfUserIsLoggedIn.execute(
+                onSuccess = { isLoggedIn ->
                     if (!isLoggedIn) view?.showLoginScreen()
                 },
-                { error ->
+                onError = { error ->
                     view?.onError(error)
                 }
         )
@@ -21,7 +29,7 @@ class MainActivityPresenter @Inject constructor(private val isUserLoggedIn: IsUs
 
     override fun detach() {
         super.detach()
-        dispose(isUserLoggedIn)
+        dispose(checkIfUserIsLoggedIn, deleteSavedToken)
     }
 
 

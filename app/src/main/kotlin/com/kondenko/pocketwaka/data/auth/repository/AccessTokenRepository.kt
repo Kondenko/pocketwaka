@@ -5,6 +5,7 @@ import com.kondenko.pocketwaka.dagger.PerApp
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.data.auth.service.AuthService
 import com.kondenko.pocketwaka.utils.edit
+import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -25,7 +26,7 @@ class AccessTokenRepository @Inject constructor(private val service: AuthService
 
     fun getEncryptedToken(): Single<AccessToken> {
         return isTokenSaved().flatMap { isSaved ->
-            if (isSaved) Single.error(IllegalStateException("Access Token is not acquired yet"))
+            if (!isSaved) Single.error(IllegalStateException("Access Token is not acquired yet"))
             else Single.just(
                     AccessToken(
                             prefs.getString(KEY_ACCESS_TOKEN, null),
@@ -39,7 +40,7 @@ class AccessTokenRepository @Inject constructor(private val service: AuthService
         }
     }
 
-//    fun getTokenHeaderValue() = Const.HEADER_BEARER_VALUE_PREFIX + " " + getEncryptedAccessTOken()
+//    fun getTokenHeaderValue() = Const.HEADER_BEARER_VALUE_PREFIX + " " + getEncryptedAccessToken()
 
     fun saveToken(token: AccessToken, createdAt: Float) {
         prefs.edit {
@@ -53,20 +54,22 @@ class AccessTokenRepository @Inject constructor(private val service: AuthService
         }
     }
 
-    fun deleteToken() {
-        prefs.edit {
-            remove(KEY_ACCESS_TOKEN)
-            remove(KEY_EXPIRES_IN)
-            remove(KEY_REFRESH_TOKEN)
-            remove(KEY_SCOPE)
-            remove(KEY_TOKEN_TYPE)
-            remove(KEY_UID)
-            remove(KEY_CREATED_AT)
+    fun deleteToken(): Completable {
+       return Completable.fromRunnable {
+            prefs.edit {
+                remove(KEY_ACCESS_TOKEN)
+                remove(KEY_EXPIRES_IN)
+                remove(KEY_REFRESH_TOKEN)
+                remove(KEY_SCOPE)
+                remove(KEY_TOKEN_TYPE)
+                remove(KEY_UID)
+                remove(KEY_CREATED_AT)
+            }
         }
     }
 
     fun isTokenSaved() = Single.just(prefs.contains(KEY_ACCESS_TOKEN))
 
-    fun getEncryptedAccessTOken() = prefs.getString(KEY_ACCESS_TOKEN, null)
+    fun getEncryptedAccessToken() = prefs.getString(KEY_ACCESS_TOKEN, null)
 
 }

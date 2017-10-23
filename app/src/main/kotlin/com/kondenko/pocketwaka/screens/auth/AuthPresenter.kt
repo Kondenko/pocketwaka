@@ -14,19 +14,17 @@ class AuthPresenter
 
     fun onLoginButtonClicked() {
         getAuthUrl.execute(
-                { url ->
-                    view?.openAuthUrl(url)
-                },
-                { error ->
-                    view?.onError(error)
-                }
+                onSuccess = { url -> view?.openAuthUrl(url) },
+                onError = { view?.onError(it) }
         )
     }
 
     fun getToken(code: String) {
-        getAccessToken.execute(code,
-                { token -> view?.onGetTokenSuccess(token) },
-                { error -> view?.onError(error, R.string.error_logging_in) })
+        getAccessToken.execute(
+                params = code,
+                onSuccess = { token -> view?.onGetTokenSuccess(token) },
+                onError = { view?.onError(it, R.string.error_logging_in) }
+        )
     }
 
     override fun detach() {

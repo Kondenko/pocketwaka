@@ -11,7 +11,7 @@ import javax.inject.Inject
  * Checks whether user should log in to use the app.
  */
 @PerApp
-class IsUserLoggedIn
+class CheckIfUserIsLoggedIn
 @Inject constructor(schedulers: SchedulerContainer, private val repository: AccessTokenRepository) : UseCaseSingle<Nothing, Boolean>(schedulers) {
 
     override fun build(params: Nothing?): Single<Boolean> = repository.isTokenSaved()
