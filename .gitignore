@@ -11,6 +11,8 @@ gradle/
 # Local configuration file (sdk path, etc)
 local.properties
 
+gradle.properties
+
 # Log Files
 *.log
 
@@ -36,3 +38,5 @@ app/src/main/jni/*
 .DS_Store
 
 release.properties
+
+projectFilesBackup*/
