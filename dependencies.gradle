@@ -96,7 +96,7 @@ ext {
     ]
 
     androidTestingSupportDependencies = [
-            'com.android.support.test.espresso:espresso-core:2.2.2'
+            "com.android.support.test.espresso:espresso-core:${versions.espresso}"
     ]
 
 }
