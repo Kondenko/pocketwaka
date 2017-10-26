@@ -2,7 +2,7 @@ package com.kondenko.pocketwaka.data.auth.model
 
 import com.kondenko.pocketwaka.utils.currentTimeSec
 
-data class AccessToken(
+data class  AccessToken(
         var access_token: String,
         var expires_in: Double,
         var refresh_token: String,

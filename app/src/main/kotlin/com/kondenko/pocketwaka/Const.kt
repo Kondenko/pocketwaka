@@ -27,7 +27,6 @@ object Const {
     const val HEADER_BEARER_NAME = "Authorization"
     const val HEADER_BEARER_VALUE_PREFIX = "Bearer"
 
-    const val GRANT_TYPE_AUTH_CODE = "authorization_code"
     const val RESPONSE_TYPE_CODE = "code"
 
     // Scopes

@@ -16,13 +16,19 @@ import javax.inject.Inject
  */
 @PerApp
 class GetAccessToken
-@Inject constructor(schedulers: SchedulerContainer, private val accessTokenRepository: AccessTokenRepository, private val getAppId: GetAppId, private val getAppSecret: GetAppSecret)
-    : UseCaseSingle<String, AccessToken>(schedulers) {
+@Inject constructor(
+        schedulers: SchedulerContainer,
+        private val accessTokenRepository: AccessTokenRepository,
+        private val getAppId: GetAppId,
+        private val getAppSecret: GetAppSecret
+) : UseCaseSingle<String, AccessToken>(schedulers) {
+
+    private val GRANT_TYPE_AUTH_CODE = "authorization_code"
 
     override fun build(code: String?): Single<AccessToken> {
-        val currentTime = currentTimeSec().toFloat()
+        val currentTime = currentTimeSec()
         return getAppId.build().zipWith(getAppSecret.build())
-                { id, secret -> accessTokenRepository.getNewAccessToken(id, secret, Const.AUTH_REDIRECT_URI, Const.GRANT_TYPE_AUTH_CODE, code!!) }
+                { id, secret -> accessTokenRepository.getNewAccessToken(id, secret, Const.AUTH_REDIRECT_URI, GRANT_TYPE_AUTH_CODE, code!!) }
                 .flatMap { it }
                 .doOnSuccess { accessTokenRepository.saveToken(it, currentTime) }
     }

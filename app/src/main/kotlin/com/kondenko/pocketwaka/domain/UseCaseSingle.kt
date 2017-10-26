@@ -3,7 +3,6 @@ package com.kondenko.pocketwaka.domain
 import com.kondenko.pocketwaka.utils.SchedulerContainer
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
-import timber.log.Timber
 
 /**
  * The base class for all UseCases that use [Single].
@@ -16,7 +15,6 @@ abstract class UseCaseSingle<PARAMS, RESULT>(private val schedulers: SchedulerCo
 
     override fun execute(params: PARAMS?, onSuccess: (RESULT) -> Unit, onError: (Throwable) -> Unit): Single<RESULT> {
         val single = build(params)
-                .doOnEvent { result, error -> Timber.i("Result: $result \n Error: $error") }
                 .subscribeOn(schedulers.workerScheduler)
                 .observeOn(schedulers.uiScheduler)
         disposable = single.subscribe(onSuccess, onError)

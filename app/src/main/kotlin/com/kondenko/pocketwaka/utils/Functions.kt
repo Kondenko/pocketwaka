@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
  * Extension functions.
  */
 
-fun currentTimeSec() = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
+fun currentTimeSec() = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()).toFloat()
 
 fun isConnectionAvailable(context: Context): Boolean {
     val service = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

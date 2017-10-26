@@ -20,9 +20,13 @@ class AccessTokenRepository @Inject constructor(private val service: AuthService
     private val KEY_UID = "uid"
     private val KEY_CREATED_AT = "created_at"
 
-    fun getNewAccessToken(id: String, secret: String, redirectUri: String, grantType: String, code: String): Single<AccessToken> {
-        return service.getAccessToken(id, secret, redirectUri, grantType, code)
-    }
+    fun getNewAccessToken(id: String, secret: String, redirectUri: String, grantType: String, code: String) =
+            service.getAccessToken(id, secret, redirectUri, grantType, code)
+
+
+    fun getRefreshToken(clientId: String, clientSecret: String, redirectUri: String, grantType: String, refreshToken: String) =
+            service.getRefreshToken(clientId, clientSecret, redirectUri, grantType, refreshToken)
+
 
     fun getEncryptedToken(): Single<AccessToken> {
         return isTokenSaved().flatMap { isSaved ->
@@ -40,6 +44,12 @@ class AccessTokenRepository @Inject constructor(private val service: AuthService
         }
     }
 
+    fun getRefreshToken(): Single<String> {
+        val refreshTokenValue = prefs.getString(KEY_REFRESH_TOKEN, null)
+        return if (refreshTokenValue != null) Single.just(refreshTokenValue)
+        else Single.error(NullPointerException("NO refresh token available"))
+    }
+
 //    fun getTokenHeaderValue() = Const.HEADER_BEARER_VALUE_PREFIX + " " + getEncryptedAccessToken()
 
     fun saveToken(token: AccessToken, createdAt: Float) {
@@ -55,7 +65,7 @@ class AccessTokenRepository @Inject constructor(private val service: AuthService
     }
 
     fun deleteToken(): Completable {
-       return Completable.fromRunnable {
+        return Completable.fromRunnable {
             prefs.edit {
                 remove(KEY_ACCESS_TOKEN)
                 remove(KEY_EXPIRES_IN)
