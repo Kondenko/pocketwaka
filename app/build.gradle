@@ -83,11 +83,6 @@ android {
         }
     }
 
-    splits {
-        abi {
-            exclude "armeabi" // deprecated
-        }
-    }
 }
 
 afterEvaluate {

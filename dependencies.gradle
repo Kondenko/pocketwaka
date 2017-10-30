@@ -13,8 +13,8 @@ ext {
             androidMinSdk    : 17,
             androidTargetSdk : 26,
             androidCompileSdk: 26,
-            androidBuildTools: '26.0.2',
-            androidPlugin    : '3.0.0-beta6',
+            androidBuildTools: '27.0.0',
+            androidPlugin    : '3.0.0',
             // Dependencies
             kotlin           : '1.1.51',
             supportLib       : '26.1.0',
