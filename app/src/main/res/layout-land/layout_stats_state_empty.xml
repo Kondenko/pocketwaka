@@ -13,20 +13,19 @@
     >
 
     <TextView
-        android:id="@+id/textViewTitle"
+        android:id="@+id/textview_emptystate_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/empty_state_title"
         android:textAppearance="@style/TextAppearance.App.State.Any.Title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.19999999"
         />
 
     <TextView
-        android:id="@+id/textViewSubtitle"
+        android:id="@+id/textview_emptystate_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -35,11 +34,11 @@
         android:textAppearance="@style/TextAppearance.App.State.Any.Subtitle"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTitle"
+        app:layout_constraintTop_toBottomOf="@+id/textview_emptystate_title"
         />
 
     <TextView
-        android:id="@+id/textViewText"
+        android:id="@+id/textview_emptystate_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -49,12 +48,12 @@
         android:textAppearance="@style/TextAppearance.App.State.Any.Text"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewSubtitle"
+        app:layout_constraintTop_toBottomOf="@+id/textview_emptystate_subtitle"
         />
 
 
     <Button
-        android:id="@+id/button_error_state_update"
+        android:id="@+id/button_emptystate_plugins"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="192dp"
         android:layout_height="wrap_content"
@@ -64,7 +63,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewText"
+        app:layout_constraintTop_toBottomOf="@+id/textview_emptystate_text"
         app:layout_constraintVertical_bias="0.506"
         >
 

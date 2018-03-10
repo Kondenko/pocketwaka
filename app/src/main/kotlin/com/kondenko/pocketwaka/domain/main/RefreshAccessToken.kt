@@ -6,6 +6,7 @@ import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.domain.auth.GetAppId
 import com.kondenko.pocketwaka.domain.auth.GetAppSecret
+import com.kondenko.pocketwaka.utils.Encryptor
 import com.kondenko.pocketwaka.utils.SchedulerContainer
 import com.kondenko.pocketwaka.utils.currentTimeSec
 import io.reactivex.Single
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class RefreshAccessToken
 @Inject constructor(
         schedulers: SchedulerContainer,
+        private val encryptor: Encryptor,
         private val accessTokenRepository: AccessTokenRepository,
         private val getStoredAccessToken: GetStoredAccessToken,
         private val getAppId: GetAppId,
@@ -30,7 +32,7 @@ class RefreshAccessToken
     override fun build(params: Nothing?): Single<AccessToken> {
         return getStoredAccessToken.build()
                 .flatMap { token ->
-                    if (token.isValid()) {
+                    if (!token.isValid()) {
                         Timber.i("Token has expired, updating")
                         getAppId.build().zipWith(getAppSecret.build()) { id, secret ->
                             accessTokenRepository.getRefreshToken().flatMap { refreshToken ->
@@ -38,13 +40,13 @@ class RefreshAccessToken
                             }
                         }
                                 .flatMap { it }
+                                .map { encryptor.encryptToken(it) }
                                 .doOnSuccess { accessTokenRepository.saveToken(it, currentTimeSec()) }
                     } else {
                         Timber.i("Token is valid, proceeding")
                         Single.just(token)
                     }
                 }
-                .doOnEvent { result, error -> Timber.i("Result: $result \n Error: $error") }
 
     }
 

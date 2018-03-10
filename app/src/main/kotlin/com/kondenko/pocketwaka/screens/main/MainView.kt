@@ -6,6 +6,8 @@ interface MainView : BaseView {
 
     fun showLoginScreen()
 
+    fun showStats()
+
     fun onLogout()
 
 }

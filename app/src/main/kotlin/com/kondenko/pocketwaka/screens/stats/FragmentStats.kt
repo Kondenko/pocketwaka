@@ -1,123 +1,56 @@
 package com.kondenko.pocketwaka.screens.stats
 
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.data.stats.model.StatsDataWrapper
-import com.kondenko.pocketwaka.events.ErrorEvent
-import com.kondenko.pocketwaka.events.RefreshEvent
-import com.kondenko.pocketwaka.events.SuccessEvent
-import com.kondenko.pocketwaka.screens.states.FragmentEmptyState
-import com.kondenko.pocketwaka.screens.states.FragmentErrorState
-import com.kondenko.pocketwaka.screens.states.FragmentLoadingState
-import org.greenrobot.eventbus.EventBus
+import com.kondenko.pocketwaka.events.TabsAnimationEvent
+import com.ogaclejapan.smarttablayout.utils.v4.Bundler
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
+import kotlinx.android.synthetic.main.fragment_stats_container.*
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import javax.inject.Inject
 
+class FragmentStats : Fragment() {
 
-class FragmentStats : Fragment(), StatsView {
-
-    private lateinit var TAG: String
-
-    @field:Inject
-    lateinit var presenter: StatsPresenter
-
-    private val fragmentEmptyState by lazy {
-        FragmentEmptyState()
-    }
-
-    private val fragmentErrorState by lazy {
-        FragmentErrorState()
-    }
-
-    private val fragmentLoadingState by lazy {
-        FragmentLoadingState()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        App.statsComponent.inject(this)
-        TAG = this.javaClass.simpleName + "@" + arguments.getString(Const.STATS_RANGE_KEY)
-//        val token = AccessTokenRepository.getTokenHeaderValue(activity)
-//        presenter = StatsPresenter(arguments.getString(Const.STATS_RANGE_KEY), token, this)
-        fragmentErrorState.setOnUpdateListener { EventBus.getDefault().post(RefreshEvent) }
-    }
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?)
+            = inflater?.inflate(R.layout.fragment_stats_container, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showLoadingState()
-        presenter.onViewCreated()
-    }
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_stats, container, false)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        EventBus.getDefault().register(this)
-    }
-
-    override fun onStop() {
-        EventBus.getDefault().unregister(this)
-        presenter.onStop()
-        super.onStop()
+        stats_viewpager_content.adapter = FragmentPagerItemAdapter(
+                childFragmentManager,
+                FragmentPagerItems.with(activity)
+                        .add(R.string.stats_tab_7_days, FragmentStatsHolder::class.java, Bundler().putString(FragmentStatsHolder.ARG_RANGE, Const.STATS_RANGE_7_DAYS).get())
+                        .add(R.string.stats_tab_30_days, FragmentStatsHolder::class.java, Bundler().putString(FragmentStatsHolder.ARG_RANGE, Const.STATS_RANGE_30_DAYS).get())
+                        .add(R.string.stats_tab_6_months, FragmentStatsHolder::class.java, Bundler().putString(FragmentStatsHolder.ARG_RANGE, Const.STATS_RANGE_6_MONTHS).get())
+                        .add(R.string.stats_tab_1_year, FragmentStatsHolder::class.java, Bundler().putString(FragmentStatsHolder.ARG_RANGE, Const.STATS_RANGE_1_YEAR).get())
+                        .create()
+        )
+        stats_smarttablayout_ranges.setViewPager(stats_viewpager_content)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onRefreshEvent(event: RefreshEvent) {
-        onRefresh()
-    }
-
-    override fun onRefresh() {
-        showLoadingState()
-//        presenter.updateData(context,, )
-    }
-
-    override fun onSuccess(statsDataWrapper: StatsDataWrapper) {
-        EventBus.getDefault().post(SuccessEvent)
-        showContent(statsDataWrapper)
-    }
-
-    override fun onError(error: Throwable?, messageRes: Int?) {
-        Log.i(TAG, "onError")
-        EventBus.getDefault().post(ErrorEvent)
-        error?.printStackTrace()
-        showError()
-    }
-
-    private fun showContent(statsData: StatsDataWrapper) {
-        if (statsData.stats != null) {
-            setFragment(FragmentStatsData.newInstance(statsData))
-        } else {
-            setFragment(fragmentEmptyState)
-        }
-    }
-
-    private fun showLoadingState() {
-        setFragment(fragmentLoadingState)
-    }
-
-    private fun showError() {
-        setFragment(fragmentErrorState)
-    }
-
-    private fun setFragment(fragment: Fragment) {
-        if (activity != null && !activity.isDestroyed) {
-            Log.i(TAG, "setFragment: $fragment")
-            val transaction = childFragmentManager.beginTransaction()
-            transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-            transaction.replace(R.id.container_stats, fragment)
-            transaction.commit()
+    fun onTabsAnimationEvent(event: TabsAnimationEvent) {
+        val colorGray = ContextCompat.getColor(activity, R.color.color_background_gray)
+        val colorPrimaryLight = ContextCompat.getColor(activity, android.R.color.white)
+        val colorAnim = ValueAnimator()
+        with(colorAnim) {
+            setDuration(Const.DEFAULT_ANIM_DURATION)
+            setIntValues(if (event.out) colorPrimaryLight else colorGray, if (event.out) colorGray else colorPrimaryLight)
+            setEvaluator(ArgbEvaluator())
+            addUpdateListener { valueAnimator ->
+                stats_smarttablayout_ranges.setBackgroundColor(valueAnimator.animatedValue as Int)
+            }
+            start()
         }
     }
 

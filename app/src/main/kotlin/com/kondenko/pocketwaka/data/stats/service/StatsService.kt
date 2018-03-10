@@ -7,12 +7,14 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
 
+private const val PATH_RANGE = "range"
+
 interface StatsService {
 
-    @GET("users/current/stats/{range}")
+    @GET("users/current/stats/{$PATH_RANGE}")
     fun getCurrentUserStats(
             @Header(Const.HEADER_BEARER_NAME) tokenHeaderValue: String,
-            @Path("range") range: String
+            @Path(PATH_RANGE) range: String
     ): Single<StatsDataWrapper>
 
 }

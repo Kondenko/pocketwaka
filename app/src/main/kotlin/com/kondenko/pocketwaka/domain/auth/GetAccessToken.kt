@@ -5,6 +5,7 @@ import com.kondenko.pocketwaka.dagger.PerApp
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
+import com.kondenko.pocketwaka.utils.Encryptor
 import com.kondenko.pocketwaka.utils.SchedulerContainer
 import com.kondenko.pocketwaka.utils.currentTimeSec
 import io.reactivex.Single
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class GetAccessToken
 @Inject constructor(
         schedulers: SchedulerContainer,
+        private val encryptor: Encryptor,
         private val accessTokenRepository: AccessTokenRepository,
         private val getAppId: GetAppId,
         private val getAppSecret: GetAppSecret
@@ -28,8 +30,9 @@ class GetAccessToken
     override fun build(code: String?): Single<AccessToken> {
         val currentTime = currentTimeSec()
         return getAppId.build().zipWith(getAppSecret.build())
-                { id, secret -> accessTokenRepository.getNewAccessToken(id, secret, Const.AUTH_REDIRECT_URI, GRANT_TYPE_AUTH_CODE, code!!) }
+        { id, secret -> accessTokenRepository.getNewAccessToken(id, secret, Const.AUTH_REDIRECT_URI, GRANT_TYPE_AUTH_CODE, code!!) }
                 .flatMap { it }
+                .map { encryptor.encryptToken(it) }
                 .doOnSuccess { accessTokenRepository.saveToken(it, currentTime) }
     }
 

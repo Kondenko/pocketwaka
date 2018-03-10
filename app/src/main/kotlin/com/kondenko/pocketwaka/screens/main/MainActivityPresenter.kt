@@ -24,6 +24,7 @@ class MainActivityPresenter
         checkIfUserIsLoggedIn.execute(
                 onSuccess = { isLoggedIn ->
                     if (!isLoggedIn) view?.showLoginScreen()
+                    else view?.showStats()
                 },
                 onError = { error ->
                     view?.onError(error)

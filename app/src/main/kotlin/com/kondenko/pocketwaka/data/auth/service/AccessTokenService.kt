@@ -7,9 +7,8 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
-interface AuthService {
+interface AccessTokenService {
 
-//    @Headers(Const.HEADER_ACCEPT)
     @FormUrlEncoded
     @POST(Const.TOKEN_URL_POSTFIX)
     fun getAccessToken(
@@ -20,7 +19,6 @@ interface AuthService {
             @Field("code") code: String
     ): Single<AccessToken>
 
-//    @Headers(Const.HEADER_ACCEPT)
     @FormUrlEncoded
     @POST(Const.TOKEN_URL_POSTFIX)
     fun getRefreshToken(
@@ -30,6 +28,5 @@ interface AuthService {
             @Field("grant_type") grantType: String,
             @Field("refresh_token") refreshToken: String
     ): Single<AccessToken>
-
 
 }

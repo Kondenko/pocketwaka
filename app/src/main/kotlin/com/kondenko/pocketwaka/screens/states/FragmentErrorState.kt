@@ -6,35 +6,30 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import com.jakewharton.rxbinding2.view.RxView
 import com.kondenko.pocketwaka.R
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
+import kotlinx.android.synthetic.main.layout_stats_state_error.*
 
 
-/**
- * A simple [Fragment] subclass.
- */
 class FragmentErrorState : Fragment() {
 
-    companion object {
-        val TAG = "ErrorStateFragment"
+    private val publishSubject = PublishSubject.create<Any>()
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View?
+            = inflater!!.inflate(R.layout.layout_stats_state_error, container, false)
+
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        RxView.clicks(button_errorstate_retry).subscribeWith(publishSubject)
     }
 
-    private var updateAction: (() -> Unit)? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    fun setMessage(message: CharSequence) {
+        textivew_errorstate_message.text = message
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater!!.inflate(R.layout.layout_stats_state_error, container, false)
-        val updateButton = view.findViewById<Button>(R.id.button_error_state_update)
-        updateButton.setOnClickListener { updateAction?.invoke() }
-        return view
-    }
-
-    fun setOnUpdateListener(action: () -> Unit) {
-        updateAction = action
-    }
+    fun retryClicks(): Observable<Any> = publishSubject
 
 }

@@ -25,7 +25,6 @@ object Const {
     const val HEADER_ACCEPT = HEADER_ACCEPT_NAME + " : " + HEADER_ACCEPT_VALUE
 
     const val HEADER_BEARER_NAME = "Authorization"
-    const val HEADER_BEARER_VALUE_PREFIX = "Bearer"
 
     const val RESPONSE_TYPE_CODE = "code"
 

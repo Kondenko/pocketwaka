@@ -3,14 +3,15 @@ package com.kondenko.pocketwaka.data.auth.repository
 import android.content.SharedPreferences
 import com.kondenko.pocketwaka.dagger.PerApp
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
-import com.kondenko.pocketwaka.data.auth.service.AuthService
+import com.kondenko.pocketwaka.data.auth.service.AccessTokenService
 import com.kondenko.pocketwaka.utils.edit
+import com.kondenko.pocketwaka.utils.singleOrErrorIfNull
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
 @PerApp
-class AccessTokenRepository @Inject constructor(private val service: AuthService, private val prefs: SharedPreferences) {
+class AccessTokenRepository @Inject constructor(private val service: AccessTokenService, private val prefs: SharedPreferences) {
 
     private val KEY_ACCESS_TOKEN = "access_token"
     private val KEY_EXPIRES_IN = "expires_in"
@@ -30,7 +31,7 @@ class AccessTokenRepository @Inject constructor(private val service: AuthService
 
     fun getEncryptedToken(): Single<AccessToken> {
         return isTokenSaved().flatMap { isSaved ->
-            if (!isSaved) Single.error(IllegalStateException("Access Token is not acquired yet"))
+            if (!isSaved) Single.error(NullPointerException("Access Token is not acquired yet"))
             else Single.just(
                     AccessToken(
                             prefs.getString(KEY_ACCESS_TOKEN, null),
@@ -44,13 +45,9 @@ class AccessTokenRepository @Inject constructor(private val service: AuthService
         }
     }
 
-    fun getRefreshToken(): Single<String> {
-        val refreshTokenValue = prefs.getString(KEY_REFRESH_TOKEN, null)
-        return if (refreshTokenValue != null) Single.just(refreshTokenValue)
-        else Single.error(NullPointerException("NO refresh token available"))
-    }
+    fun getRefreshToken() = prefs.getString(KEY_REFRESH_TOKEN, null).singleOrErrorIfNull(IllegalStateException("No refresh token available"))
 
-//    fun getTokenHeaderValue() = Const.HEADER_BEARER_VALUE_PREFIX + " " + getEncryptedAccessToken()
+    fun getEncryptedTokenValue() = prefs.getString(KEY_ACCESS_TOKEN, null).singleOrErrorIfNull(IllegalStateException("Access Token is not acquired yet"))
 
     fun saveToken(token: AccessToken, createdAt: Float) {
         prefs.edit {
@@ -78,8 +75,6 @@ class AccessTokenRepository @Inject constructor(private val service: AuthService
         }
     }
 
-    fun isTokenSaved() = Single.just(prefs.contains(KEY_ACCESS_TOKEN))
-
-    fun getEncryptedAccessToken() = prefs.getString(KEY_ACCESS_TOKEN, null)
+    fun isTokenSaved(): Single<Boolean> = Single.just(prefs.contains(KEY_ACCESS_TOKEN))
 
 }

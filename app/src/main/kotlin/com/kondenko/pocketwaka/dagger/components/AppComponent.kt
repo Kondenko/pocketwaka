@@ -10,7 +10,7 @@ import com.kondenko.pocketwaka.dagger.qualifiers.Auth
 import com.kondenko.pocketwaka.dagger.qualifiers.Ui
 import com.kondenko.pocketwaka.dagger.qualifiers.Worker
 import com.kondenko.pocketwaka.data.auth.repository.EncryptedKeysRepository
-import com.kondenko.pocketwaka.data.auth.service.AuthService
+import com.kondenko.pocketwaka.data.auth.service.AccessTokenService
 import com.kondenko.pocketwaka.utils.CacheInterceptor
 import com.kondenko.pocketwaka.utils.Encryptor
 import dagger.Component
@@ -54,7 +54,7 @@ interface AppComponent {
     @Ui
     fun getUiScheduler(): Scheduler
 
-    fun getAuthService(): AuthService
+    fun getAuthService(): AccessTokenService
 
     fun getEncryptor(): Encryptor
 

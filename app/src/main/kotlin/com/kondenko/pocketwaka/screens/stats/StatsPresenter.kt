@@ -1,34 +1,25 @@
 package com.kondenko.pocketwaka.screens.stats
 
-import android.content.Context
-import com.kondenko.pocketwaka.data.stats.service.StatsService
+import com.kondenko.pocketwaka.dagger.PerApp
+import com.kondenko.pocketwaka.domain.stats.GetStats
 import com.kondenko.pocketwaka.screens.BasePresenter
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class StatsPresenter(val service: StatsService) : BasePresenter<StatsView>() {
+@PerApp
+class StatsPresenter
+@Inject constructor(private val getStats: GetStats) : BasePresenter<StatsView>() {
 
-    private var disposable: Disposable? = null
-
-    fun onViewCreated() {
-//        updateData(context,, )
+    fun getStats(range: String) {
+        getStats.execute(
+            range,
+            { stats -> view?.onSuccess(stats) },
+            { error -> view?.onError(error) }
+        )
     }
 
-    fun onStop() {
-        disposable?.dispose()
+    override fun detach() {
+        super.detach()
+        dispose(getStats)
     }
-
-    fun updateData(context: Context, statsRange: String, tokenHeader: String) {
-        disposable = service.getCurrentUserStats(tokenHeader, statsRange)
-                .subscribeOn(Schedulers.newThread())
-                .doOnSuccess { data -> data.stats.provideColors(context) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { value -> view?.onSuccess(value) },
-                        { error -> view?.onError(error) }
-                )
-    }
-
 
 }

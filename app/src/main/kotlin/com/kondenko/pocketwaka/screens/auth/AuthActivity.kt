@@ -37,7 +37,6 @@ class AuthActivity : AppCompatActivity(), AuthView {
 
     override fun onResume() {
         super.onResume()
-        Timber.i("onResume")
         val uri = intent.data
         if (uri != null && uri.toString().startsWith(Const.AUTH_REDIRECT_URI)) {
             val code = uri.getQueryParameter("code")

@@ -7,7 +7,7 @@
     >
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textivew_errorstate_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/error_state_title"
@@ -21,7 +21,7 @@
         />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textivew_errorstate_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -29,11 +29,11 @@
         android:textAppearance="@style/TextAppearance.App.State.Any.Subtitle"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/textivew_errorstate_title"
         />
 
     <Button
-        android:id="@+id/button_error_state_update"
+        android:id="@+id/button_errorstate_retry"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/height_all_button"
@@ -45,7 +45,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textivew_errorstate_message"
         app:layout_constraintVertical_bias="0.481"
         />
 

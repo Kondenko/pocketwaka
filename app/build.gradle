@@ -22,10 +22,6 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
-    dataBinding {
-        enabled = true
-    }
-
     signingConfigs {
         config {
             def props = new Properties()

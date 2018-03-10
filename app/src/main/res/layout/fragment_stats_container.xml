@@ -4,11 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
+    tools:context="screens.stats.FragmentStats"
     >
 
         <com.ogaclejapan.smarttablayout.SmartTabLayout
-            android:id="@+id/tablayout_stats_ranges"
+            android:id="@+id/stats_smarttablayout_ranges"
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_stats_tab_bar"
             android:clipToPadding="false"
@@ -29,7 +31,7 @@
             />
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager_stats_tab_content"
+        android:id="@+id/stats_viewpager_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />

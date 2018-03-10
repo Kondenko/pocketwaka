@@ -1,9 +1,6 @@
 package com.kondenko.pocketwaka.screens.stats
 
-import com.kondenko.pocketwaka.data.stats.model.StatsDataWrapper
-import com.kondenko.pocketwaka.screens.BaseView
+import com.kondenko.pocketwaka.data.stats.model.Stats
+import com.kondenko.pocketwaka.screens.StatefulView
 
-interface StatsView : BaseView {
-    fun onSuccess(statsDataWrapper: StatsDataWrapper)
-    fun onRefresh()
-}
+interface StatsView : StatefulView<Stats>
