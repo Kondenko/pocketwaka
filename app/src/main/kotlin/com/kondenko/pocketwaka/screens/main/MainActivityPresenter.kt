@@ -17,14 +17,19 @@ class MainActivityPresenter
 
     override fun attach(view: MainView) {
         super.attach(view)
-        refreshAccessToken.execute()
+        checkIfLoggedIn()
     }
 
-    fun checkIfLoggedIn() {
+    private fun checkIfLoggedIn() {
         checkIfUserIsLoggedIn.execute(
                 onSuccess = { isLoggedIn ->
-                    if (!isLoggedIn) view?.showLoginScreen()
-                    else view?.showStats()
+                    if (isLoggedIn) {
+                        refreshAccessToken.execute()
+                        view?.showStats()
+                    }
+                    else {
+                        view?.showLoginScreen()
+                    }
                 },
                 onError = { error ->
                     view?.onError(error)

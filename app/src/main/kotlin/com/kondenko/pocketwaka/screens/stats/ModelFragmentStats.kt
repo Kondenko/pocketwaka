@@ -66,11 +66,11 @@ class ModelFragmentStats : ModelFragment<Stats>() {
     private fun displayModel(model: Stats) {
         stats_textview_time_total.text = model.humanReadableTotal
         stats_textview_daily_average.text = model.humanReadableDailyAverage
-        if (model.bestDay!!.totalSeconds!! > 0) {
+        if (model.bestDay != null && model.bestDay!!.totalSeconds!! > 0) {
             bestday_textview_time.text = model.bestDay!!.getHumanReadableTime(context)
             bestday_textview_date.text = model.bestDay!!.date
         } else {
-            bestday_constraintlayout_container.visibility = View.GONE
+            bestday_constraintlayout_container?.visibility = View.GONE
         }
         addStatsCards(model)
     }

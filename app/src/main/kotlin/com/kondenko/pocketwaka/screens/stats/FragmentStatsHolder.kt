@@ -24,7 +24,6 @@ class FragmentStatsHolder : StatefulFragment<Stats>(), StatsView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.statsComponent.inject(this)
-        presenter.attach(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -38,14 +37,19 @@ class FragmentStatsHolder : StatefulFragment<Stats>(), StatsView {
         presenter.getStats(range)
     }
 
+    override fun onStart() {
+        super.onStart()
+        presenter.attach(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.detach()
+    }
+
     override fun onSuccess(result: Stats?) {
         result?.let { modelFragment = ModelFragmentStats.create(it) }
         super.onSuccess(result)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detach()
     }
 
 }

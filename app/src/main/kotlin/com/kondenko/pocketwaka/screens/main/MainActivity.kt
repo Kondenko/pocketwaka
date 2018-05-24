@@ -22,18 +22,19 @@ class MainActivity : AppCompatActivity(), MainView {
     @Inject
     lateinit var presenter: MainActivityPresenter
 
-    private val stats = FragmentStats()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.mainComponent.inject(this)
         setContentView(R.layout.activity_main)
-        presenter.attach(this)
-        presenter.checkIfLoggedIn()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStart() {
+        super.onStart()
+        presenter.attach(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
         presenter.detach()
     }
 
