@@ -110,6 +110,8 @@ class Stats : Parcelable {
         }
     }
 
+
+
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeValue(bestDay)
         dest.writeValue(createdAt)
@@ -143,6 +145,10 @@ class Stats : Parcelable {
 
     override fun describeContents(): Int {
         return 0
+    }
+
+    override fun toString(): String {
+        return "Stats(bestDay=$bestDay, createdAt=$createdAt, dailyAverage=$dailyAverage, daysIncludingHolidays=$daysIncludingHolidays, daysMinusHolidays=$daysMinusHolidays, editors=$editors, end=$end, holidays=$holidays, humanReadableDailyAverage=$humanReadableDailyAverage, humanReadableTotal=$humanReadableTotal, id=$id, isAlreadyUpdating=$isAlreadyUpdating, isStuck=$isStuck, isUpToDate=$isUpToDate, languages=$languages, modifiedAt=$modifiedAt, operatingSystems=$operatingSystems, project=$project, projects=$projects, range=$range, start=$start, status=$status, timeout=$timeout, timezone=$timezone, totalSeconds=$totalSeconds, userId=$userId, username=$username, writesOnly=$writesOnly)"
     }
 
     companion object {

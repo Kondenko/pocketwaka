@@ -36,13 +36,13 @@ class ModelFragmentStats : ModelFragment<Stats>() {
 
     private var shadowAnimationNeeded = true
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_stats_data, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_stats_data, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        model = arguments.getParcelable(ARG_MODEL)
+        model = arguments!!.getParcelable(ARG_MODEL)
         Timber.i("onViewCreated: $model")
         displayModel(model)
         // Make the tabs "float" over the other views
@@ -67,7 +67,7 @@ class ModelFragmentStats : ModelFragment<Stats>() {
         stats_textview_time_total.text = model.humanReadableTotal
         stats_textview_daily_average.text = model.humanReadableDailyAverage
         if (model.bestDay != null && model.bestDay!!.totalSeconds!! > 0) {
-            bestday_textview_time.text = model.bestDay!!.getHumanReadableTime(context)
+            bestday_textview_time.text = model.bestDay!!.getHumanReadableTime(context!!)
             bestday_textview_date.text = model.bestDay!!.date
         } else {
             bestday_constraintlayout_container?.visibility = View.GONE
@@ -94,7 +94,7 @@ class ModelFragmentStats : ModelFragment<Stats>() {
     }
 
     private fun ArrayList<CardStats>.addIfNotEmpty(dataArray: List<StatsItem>?, type: Int) {
-        if (dataArray != null && dataArray.isNotEmpty()) this.add(CardStats(context, type, dataArray))
+        if (dataArray != null && dataArray.isNotEmpty()) this.add(CardStats(context!!, type, dataArray))
     }
 
 }

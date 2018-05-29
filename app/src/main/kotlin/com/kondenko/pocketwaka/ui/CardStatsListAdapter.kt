@@ -17,20 +17,20 @@ import com.kondenko.pocketwaka.utils.SpanFormatter
 
 class CardStatsListAdapter(val context: Context, val dataset: List<StatsItem>) : RecyclerView.Adapter<CardStatsListAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_card_stats, parent, false)
         val viewHolder = ViewHolder(view)
         return viewHolder
     }
 
-    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = dataset[position]
         val labelDrawable: Drawable? = context.resources?.getDrawable(R.drawable.stats_item_label)
         labelDrawable?.setColorFilter(item.color, PorterDuff.Mode.SRC_IN)
-        holder?.labelColor?.background = labelDrawable
-        holder?.header?.text = item.name
+        holder.labelColor?.background = labelDrawable
+        holder.header?.text = item.name
 //        holder?.percentage?.text = getPercent(item.percent)
-        setPercent(holder?.percentage, item.percent!!)
+        setPercent(holder.percentage, item.percent!!)
     }
 
     /**
@@ -44,8 +44,8 @@ class CardStatsListAdapter(val context: Context, val dataset: List<StatsItem>) :
         } else {
             val percentValue = 1f
             // Colors
-            val colorPrimary = ContextCompat.getColor(textView?.context, R.color.color_text_black_secondary)
-            val colorSecondary = ContextCompat.getColor(textView?.context, R.color.color_text_black_pale)
+            val colorPrimary = ContextCompat.getColor(context, R.color.color_text_black_secondary)
+            val colorSecondary = ContextCompat.getColor(context, R.color.color_text_black_pale)
             // Strings
             val stringLessThan = context.getString(R.string.stats_card_less_than)
             val stringPercent = String.format(context.getString(R.string.stats_card_percent_format_int) as String, percentValue)

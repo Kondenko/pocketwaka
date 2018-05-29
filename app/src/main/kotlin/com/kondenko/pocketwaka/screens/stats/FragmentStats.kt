@@ -4,6 +4,7 @@ package com.kondenko.pocketwaka.screens.stats
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
@@ -21,27 +22,30 @@ import org.greenrobot.eventbus.ThreadMode
 
 class FragmentStats : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?)
-            = inflater?.inflate(R.layout.fragment_stats_container, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)
+            = inflater.inflate(R.layout.fragment_stats_container, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         stats_viewpager_content.adapter = FragmentPagerItemAdapter(
                 childFragmentManager,
                 FragmentPagerItems.with(activity)
-                        .add(R.string.stats_tab_7_days, FragmentStatsHolder::class.java, Bundler().putString(FragmentStatsHolder.ARG_RANGE, Const.STATS_RANGE_7_DAYS).get())
-                        .add(R.string.stats_tab_30_days, FragmentStatsHolder::class.java, Bundler().putString(FragmentStatsHolder.ARG_RANGE, Const.STATS_RANGE_30_DAYS).get())
-                        .add(R.string.stats_tab_6_months, FragmentStatsHolder::class.java, Bundler().putString(FragmentStatsHolder.ARG_RANGE, Const.STATS_RANGE_6_MONTHS).get())
-                        .add(R.string.stats_tab_1_year, FragmentStatsHolder::class.java, Bundler().putString(FragmentStatsHolder.ARG_RANGE, Const.STATS_RANGE_1_YEAR).get())
+                        .addFragment(R.string.stats_tab_7_days, Const.STATS_RANGE_7_DAYS)
+                        .addFragment(R.string.stats_tab_30_days, Const.STATS_RANGE_30_DAYS)
+                        .addFragment(R.string.stats_tab_6_months, Const.STATS_RANGE_6_MONTHS)
+                        .addFragment(R.string.stats_tab_1_year, Const.STATS_RANGE_1_YEAR)
                         .create()
         )
         stats_smarttablayout_ranges.setViewPager(stats_viewpager_content)
     }
 
+    private fun FragmentPagerItems.Creator.addFragment(@StringRes title: Int, range: String)
+       = this.add(title, FragmentStatsHolder::class.java, Bundler().putString(FragmentStatsHolder.ARG_RANGE, range).get())
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onTabsAnimationEvent(event: TabsAnimationEvent) {
-        val colorGray = ContextCompat.getColor(activity, R.color.color_background_gray)
-        val colorPrimaryLight = ContextCompat.getColor(activity, android.R.color.white)
+        val colorGray = ContextCompat.getColor(context!!, R.color.color_background_gray)
+        val colorPrimaryLight = ContextCompat.getColor(context!!, android.R.color.white)
         val colorAnim = ValueAnimator()
         with(colorAnim) {
             setDuration(Const.DEFAULT_ANIM_DURATION)

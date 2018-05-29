@@ -6,14 +6,15 @@ import com.kondenko.pocketwaka.screens.BasePresenter
 import javax.inject.Inject
 
 @PerApp
-class StatsPresenter
+ class StatsPresenter
 @Inject constructor(private val getStats: GetStats) : BasePresenter<StatsView>() {
 
     fun getStats(range: String) {
+        view?.setLoading(true)
         getStats.execute(
             range,
-            { stats -> view?.onSuccess(stats) },
-            { error -> view?.onError(error) }
+            { stats -> view?.let { it.onSuccess(stats); it.setLoading(false)} },
+            { error -> view?.let { it.onError(error); it.setLoading(false)} }
         )
     }
 

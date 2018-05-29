@@ -17,11 +17,11 @@ class FragmentErrorState : Fragment() {
 
     private val publishSubject = PublishSubject.create<Any>()
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View?
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
             = inflater!!.inflate(R.layout.layout_stats_state_error, container, false)
 
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         RxView.clicks(button_errorstate_retry).subscribeWith(publishSubject)
     }

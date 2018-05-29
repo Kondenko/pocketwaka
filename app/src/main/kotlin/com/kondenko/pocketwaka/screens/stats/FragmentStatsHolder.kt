@@ -15,7 +15,7 @@ import javax.inject.Inject
 class FragmentStatsHolder : StatefulFragment<Stats>(), StatsView {
 
     companion object {
-        val ARG_RANGE = "range"
+        const val ARG_RANGE = "range"
     }
 
     @Inject
@@ -26,20 +26,16 @@ class FragmentStatsHolder : StatefulFragment<Stats>(), StatsView {
         App.statsComponent.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_stats, container, false)
-    }
-
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val range = arguments.getString(ARG_RANGE)
-        presenter.getStats(range)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_stats, container, false)
     }
 
     override fun onStart() {
         super.onStart()
         presenter.attach(this)
+        containerId = R.id.stats_framelayout_container
+        val range = arguments?.getString(ARG_RANGE)
+        if (modelFragment == null && range != null) presenter.getStats(range)
     }
 
     override fun onStop() {
