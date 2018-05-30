@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity(), MainView {
     override fun onStart() {
         super.onStart()
         presenter.attach(this)
+
     }
 
     override fun onStop() {

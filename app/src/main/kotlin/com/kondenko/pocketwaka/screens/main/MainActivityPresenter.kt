@@ -26,8 +26,7 @@ class MainActivityPresenter
                     if (isLoggedIn) {
                         refreshAccessToken.execute()
                         view?.showStats()
-                    }
-                    else {
+                    } else {
                         view?.showLoginScreen()
                     }
                 },
@@ -38,9 +37,7 @@ class MainActivityPresenter
     }
 
     fun logout() {
-        deleteSavedToken.execute {
-            view?.onLogout()
-        }
+        deleteSavedToken.execute(onSuccess = { view?.onLogout() })
     }
 
     override fun detach() {

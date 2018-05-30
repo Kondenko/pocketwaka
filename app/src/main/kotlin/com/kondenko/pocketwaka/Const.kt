@@ -8,12 +8,9 @@ object Const {
     /** URLs */
     const val URL_PLUGINS = "https://wakatime.com/editors"
 
-    // Auth
-    const val URL_OAUTH = "https://wakatime.com/" // Used when a user is not authenticated yet
-    const val TOKEN_URL_POSTFIX = "oauth/token" // Used in a POST request to obtain a token
-    const val URL_AUTH = URL_OAUTH + "oauth/authorize" // Used to authenticate a user
-    // API
-    const val URL_API = "https://wakatime.com/api/v1/" // Used for all API calls
+    const val BASE_URL = "https://wakatime.com/" // Used when a user is not authenticated yet
+    const val URL_AUTH = "${BASE_URL}oauth/authorize" // Used to authenticate a user
+    const val URL_API = "${BASE_URL}/api/v1/" // Used for all API calls
 
     /** Authorization */
     const val AUTH_REDIRECT_URI = "pocketwaka://oauth2"
@@ -27,13 +24,6 @@ object Const {
     const val HEADER_BEARER_NAME = "Authorization"
 
     const val RESPONSE_TYPE_CODE = "code"
-
-    // Scopes
-    const val SCOPE_EMAIL = "email"
-    const val SCOPE_READ_LOGGED_TIME = "read_logged_time"
-    const val SCOPE_WRITE_LOGGED_TIME = "write_logged_time"
-    const val SCOPE_READ_STATS = "read_stats"
-    const val SCOPE_READ_TEAMS = "read_teams"
 
     /** Stats */
 

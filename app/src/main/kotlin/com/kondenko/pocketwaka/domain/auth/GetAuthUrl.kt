@@ -12,18 +12,17 @@ import javax.inject.Inject
  */
 @PerApp
 class GetAuthUrl
-@Inject constructor(schedulers: SchedulerContainer, private val getAppId: GetAppId)
-    : UseCaseSingle<Nothing?, String>(schedulers) {
+@Inject constructor(schedulers: SchedulerContainer, private val getAppId: GetAppId) : UseCaseSingle<Nothing?, String>(schedulers) {
+
+    private val urlAuth = "${Const.BASE_URL}oauth/authorize" // Used to authenticate a user
+
+    private val responseType = "code"
 
     override fun build(params: Nothing?): Single<String> {
-        val scopes = arrayOf(Const.SCOPE_EMAIL, Const.SCOPE_READ_LOGGED_TIME, Const.SCOPE_READ_STATS, Const.SCOPE_READ_TEAMS)
+        val scopes = arrayOf("email", "read_logged_time", "read_stats", "read_teams").joinToString(",")
         return getAppId.build()
-                .map { id ->
-                    Const.URL_AUTH + "?client_id=$id" +
-                    "&response_type=${Const.RESPONSE_TYPE_CODE}" +
-                    "&redirect_uri=${Const.AUTH_REDIRECT_URI}" +
-                    "&scope=${scopes.joinToString(",")}" 
-                }
+                .map { id -> "$urlAuth?client_id=$id&response_type=$responseType&redirect_uri=${Const.AUTH_REDIRECT_URI}&scope=$scopes&force_approve=true" }
+                .map { it.trimMargin() }
     }
 
 }

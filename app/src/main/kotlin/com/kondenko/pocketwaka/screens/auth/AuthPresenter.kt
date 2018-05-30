@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 @PerApp
 class AuthPresenter
-@Inject constructor(private val getAccessToken: GetAccessToken, private val getAuthUrl: GetAuthUrl)
+@Inject constructor(private val getAuthUrl: GetAuthUrl, private val getAccessToken: GetAccessToken)
     : BasePresenter<AuthView>() {
 
     fun onLoginButtonClicked() {

@@ -1,11 +1,14 @@
 package com.kondenko.pocketwaka.screens.auth
 
+import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.StringRes
+import android.support.customtabs.CustomTabsClient
 import android.support.customtabs.CustomTabsIntent
+import android.support.customtabs.CustomTabsServiceConnection
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.WindowManager
@@ -16,11 +19,11 @@ import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.screens.main.MainActivity
-import timber.log.Timber
 import javax.inject.Inject
 
 
 class AuthActivity : AppCompatActivity(), AuthView {
+
     @Inject
     lateinit var presenter: AuthPresenter
 
@@ -32,7 +35,6 @@ class AuthActivity : AppCompatActivity(), AuthView {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         }
-        presenter.attach(this)
     }
 
     override fun onResume() {
@@ -42,8 +44,8 @@ class AuthActivity : AppCompatActivity(), AuthView {
             val code = uri.getQueryParameter("code")
             if (code != null) {
                 presenter.getToken(code)
-            } else if (uri.getQueryParameter("error") != null) {
-                onError(null, R.string.error_logging_in)
+            } else uri.getQueryParameter("error")?.let {
+                onError(RuntimeException(it), R.string.error_logging_in)
             }
         }
     }
@@ -59,11 +61,21 @@ class AuthActivity : AppCompatActivity(), AuthView {
     }
 
     override fun openAuthUrl(url: String) {
-        Timber.i("openAuthUrl: $url")
-        val builder = CustomTabsIntent.Builder()
-        val customTabsIntent = builder.build()
-        builder.setToolbarColor(ContextCompat.getColor(this, R.color.color_primary))
-        customTabsIntent.launchUrl(this, Uri.parse(url))
+        val connection = object : CustomTabsServiceConnection() {
+            override fun onCustomTabsServiceConnected(componentName: ComponentName, client: CustomTabsClient) {
+                client.warmup(0L) // This prevents backgrounding after redirection
+                val customTabsIntent = with(CustomTabsIntent.Builder()) {
+                    setToolbarColor(ContextCompat.getColor(this@AuthActivity, R.color.color_primary))
+                    build()
+                }
+                customTabsIntent.launchUrl(this@AuthActivity, Uri.parse(url))
+            }
+
+            override fun onServiceDisconnected(name: ComponentName) {
+
+            }
+        }
+        CustomTabsClient.bindCustomTabsService(this, "com.android.chrome", connection)
     }
 
     override fun onGetTokenSuccess(token: AccessToken) {

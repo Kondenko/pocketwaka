@@ -74,7 +74,7 @@ class NetModule {
     @Provides
     @Singleton
     @Auth
-    fun provideRetrofitForAuthentication(builder: Retrofit.Builder): Retrofit = builder.baseUrl(Const.URL_OAUTH).build()
+    fun provideRetrofitForAuthentication(builder: Retrofit.Builder): Retrofit = builder.baseUrl(Const.BASE_URL).build()
 
     @Provides
     @Singleton

@@ -21,19 +21,18 @@
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
-
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data
-                    android:host="oauth2"
                     android:scheme="pocketwaka"
+                    android:host="oauth2"
                     />
             </intent-filter>
         </activity>
 
         <activity
-            android:name="com.kondenko.pocketwaka.screens.main.MainActivity"
+            android:name=".screens.main.MainActivity"
             android:label="@string/all_app_name"
             >
             <intent-filter>
