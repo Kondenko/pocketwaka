@@ -117,5 +117,4 @@ dependencies {
     androidTestImplementation(androidTestingSupportDependencies, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
 }

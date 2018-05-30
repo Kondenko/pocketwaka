@@ -35,7 +35,11 @@ ext {
             "com.ogaclejapan.smarttablayout:utils-v4:${versions.smartTabLayout}@aar"
     ]
 
-    kotlinLib = "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
+    kotlinLib = [
+            "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}",
+            "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
+    ]
+
     dagger = "com.google.dagger:dagger:${versions.dagger}"
     daggerCompiler = "com.google.dagger:dagger-compiler:${versions.dagger}"
     databindingCompiler = "com.android.databinding:compiler:${versions.androidPlugin}"
