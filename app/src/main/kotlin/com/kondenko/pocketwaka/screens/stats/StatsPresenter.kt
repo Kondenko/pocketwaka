@@ -2,7 +2,7 @@ package com.kondenko.pocketwaka.screens.stats
 
 import com.kondenko.pocketwaka.dagger.PerApp
 import com.kondenko.pocketwaka.domain.stats.GetStats
-import com.kondenko.pocketwaka.screens.BasePresenter
+import com.kondenko.pocketwaka.screens.base.BasePresenter
 import javax.inject.Inject
 
 @PerApp

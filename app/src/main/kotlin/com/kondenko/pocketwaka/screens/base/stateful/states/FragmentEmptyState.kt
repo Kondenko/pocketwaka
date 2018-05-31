@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.screens.states
+package com.kondenko.pocketwaka.screens.base.stateful.states
 
 
 import android.net.Uri

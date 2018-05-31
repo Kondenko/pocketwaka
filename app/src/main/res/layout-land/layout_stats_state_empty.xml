@@ -7,7 +7,7 @@
                                              android:layout_gravity="center_vertical"
                                              android:gravity="center_horizontal"
                                              android:orientation="vertical"
-                                             tools:context=".screens.states.FragmentErrorState"
+                                             tools:context=".screens.base.stateful.states.FragmentErrorState"
                                              tools:layout_editor_absoluteX="0dp"
                                              tools:layout_editor_absoluteY="81dp"
     >

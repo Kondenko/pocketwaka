@@ -4,7 +4,7 @@ import com.kondenko.pocketwaka.dagger.PerApp
 import com.kondenko.pocketwaka.domain.main.CheckIfUserIsLoggedIn
 import com.kondenko.pocketwaka.domain.main.DeleteSavedToken
 import com.kondenko.pocketwaka.domain.main.RefreshAccessToken
-import com.kondenko.pocketwaka.screens.BasePresenter
+import com.kondenko.pocketwaka.screens.base.BasePresenter
 import javax.inject.Inject
 
 @PerApp

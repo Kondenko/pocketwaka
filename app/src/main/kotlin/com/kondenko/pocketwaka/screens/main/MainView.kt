@@ -1,6 +1,6 @@
 package com.kondenko.pocketwaka.screens.main
 
-import com.kondenko.pocketwaka.screens.BaseView
+import com.kondenko.pocketwaka.screens.base.BaseView
 
 interface MainView : BaseView {
 

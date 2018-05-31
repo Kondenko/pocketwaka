@@ -4,7 +4,7 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.dagger.PerApp
 import com.kondenko.pocketwaka.domain.auth.GetAccessToken
 import com.kondenko.pocketwaka.domain.auth.GetAuthUrl
-import com.kondenko.pocketwaka.screens.BasePresenter
+import com.kondenko.pocketwaka.screens.base.BasePresenter
 import javax.inject.Inject
 
 @PerApp

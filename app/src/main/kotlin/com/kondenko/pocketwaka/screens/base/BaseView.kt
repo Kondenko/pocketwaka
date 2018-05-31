@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.screens
+package com.kondenko.pocketwaka.screens.base
 
 import android.support.annotation.StringRes
 

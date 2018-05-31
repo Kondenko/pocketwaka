@@ -10,7 +10,7 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.stats.model.Stats
 import com.kondenko.pocketwaka.data.stats.model.StatsItem
 import com.kondenko.pocketwaka.events.TabsAnimationEvent
-import com.kondenko.pocketwaka.screens.ModelFragment
+import com.kondenko.pocketwaka.screens.base.stateful.ModelFragment
 import com.kondenko.pocketwaka.ui.CardStats
 import com.kondenko.pocketwaka.ui.ObservableScrollView
 import com.kondenko.pocketwaka.ui.OnScrollViewListener

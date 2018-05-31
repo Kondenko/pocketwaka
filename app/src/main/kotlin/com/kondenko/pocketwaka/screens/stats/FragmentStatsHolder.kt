@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.stats.model.Stats
-import com.kondenko.pocketwaka.screens.StatefulFragment
+import com.kondenko.pocketwaka.screens.base.stateful.StatefulFragment
 import javax.inject.Inject
 
 

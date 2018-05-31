@@ -1,4 +1,6 @@
-package com.kondenko.pocketwaka.screens
+package com.kondenko.pocketwaka.screens.base.stateful
+
+import com.kondenko.pocketwaka.screens.base.BaseView
 
 interface StatefulView<T> : BaseView {
 

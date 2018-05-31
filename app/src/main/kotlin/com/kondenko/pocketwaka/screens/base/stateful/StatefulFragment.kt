@@ -1,10 +1,10 @@
-package com.kondenko.pocketwaka.screens
+package com.kondenko.pocketwaka.screens.base.stateful
 
 import android.os.Parcelable
 import android.support.v4.app.Fragment
-import com.kondenko.pocketwaka.screens.states.FragmentEmptyState
-import com.kondenko.pocketwaka.screens.states.FragmentErrorState
-import com.kondenko.pocketwaka.screens.states.FragmentLoadingState
+import com.kondenko.pocketwaka.screens.base.stateful.states.FragmentEmptyState
+import com.kondenko.pocketwaka.screens.base.stateful.states.FragmentErrorState
+import com.kondenko.pocketwaka.screens.base.stateful.states.FragmentLoadingState
 import com.kondenko.pocketwaka.ui.LogFragment
 import com.kondenko.pocketwaka.utils.transaction
 import timber.log.Timber
