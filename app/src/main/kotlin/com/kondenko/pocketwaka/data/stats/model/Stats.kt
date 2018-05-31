@@ -6,7 +6,7 @@ import android.os.Parcelable
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.kondenko.pocketwaka.utils.ColorGenerator
+import com.kondenko.pocketwaka.utils.ColorProvider
 
 class Stats : Parcelable {
 
@@ -94,22 +94,6 @@ class Stats : Parcelable {
     @SerializedName("writes_only")
     @Expose
     var writesOnly: Boolean? = null
-
-    fun provideColors(context: Context) {
-        provideColor(context, projects, languages, editors, operatingSystems)
-    }
-
-    private fun provideColor(context: Context, vararg lists: List<StatsItem>?) {
-        for (list in lists) {
-            if (list != null) {
-                val colors = ColorGenerator.getColors(context, list)
-                for (i in list.indices) {
-                    list[i].color = colors[i]
-                }
-            }
-        }
-    }
-
 
 
     override fun writeToParcel(dest: Parcel, flags: Int) {

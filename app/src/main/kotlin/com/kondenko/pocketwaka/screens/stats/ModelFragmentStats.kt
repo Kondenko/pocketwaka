@@ -7,8 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.data.stats.model.Stats
-import com.kondenko.pocketwaka.data.stats.model.StatsItem
+import com.kondenko.pocketwaka.domain.stats.model.BestDay
+import com.kondenko.pocketwaka.domain.stats.model.StatsItem
+import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.events.TabsAnimationEvent
 import com.kondenko.pocketwaka.screens.base.stateful.ModelFragment
 import com.kondenko.pocketwaka.ui.CardStats
@@ -19,13 +20,14 @@ import kotlinx.android.synthetic.main.layout_stats_best_day.*
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 import java.util.*
+import java.util.concurrent.TimeUnit
 
-class ModelFragmentStats : ModelFragment<Stats>() {
+class ModelFragmentStats : ModelFragment<StatsModel>() {
 
     companion object {
         val ARG_MODEL = "model"
 
-        fun create(model: Stats): ModelFragment<Stats> {
+        fun create(model: StatsModel): ModelFragment<StatsModel> {
             val fragment = ModelFragmentStats()
             val bundle = Bundle()
             bundle.putParcelable(ARG_MODEL, model)
@@ -63,19 +65,19 @@ class ModelFragmentStats : ModelFragment<Stats>() {
         })
     }
 
-    private fun displayModel(model: Stats) {
+    private fun displayModel(model: StatsModel) {
         stats_textview_time_total.text = model.humanReadableTotal
         stats_textview_daily_average.text = model.humanReadableDailyAverage
-        if (model.bestDay != null && model.bestDay!!.totalSeconds!! > 0) {
-            bestday_textview_time.text = model.bestDay!!.getHumanReadableTime(context!!)
-            bestday_textview_date.text = model.bestDay!!.date
+        if (model.bestDay != null && model.bestDay.totalSeconds?:0 > 0) {
+            bestday_textview_time.text = model.bestDay.getHumanReadableTime()
+            bestday_textview_date.text = model.bestDay.date
         } else {
             bestday_constraintlayout_container?.visibility = View.GONE
         }
         addStatsCards(model)
     }
 
-    private fun addStatsCards(stats: Stats) {
+    private fun addStatsCards(stats: StatsModel) {
         if (stats_linearlayout_cards.childCount == 0) {
             val cards = getAvailableCards(stats)
             for (card in cards) {
@@ -84,7 +86,7 @@ class ModelFragmentStats : ModelFragment<Stats>() {
         }
     }
 
-    private fun getAvailableCards(stats: Stats): ArrayList<CardStats> {
+    private fun getAvailableCards(stats: StatsModel): ArrayList<CardStats> {
         val cards = ArrayList<CardStats>()
         cards.addIfNotEmpty(stats.projects, CardStats.TYPE_PROJECTS)
         cards.addIfNotEmpty(stats.editors, CardStats.TYPE_EDITORS)
@@ -96,5 +98,13 @@ class ModelFragmentStats : ModelFragment<Stats>() {
     private fun ArrayList<CardStats>.addIfNotEmpty(dataArray: List<StatsItem>?, type: Int) {
         if (dataArray != null && dataArray.isNotEmpty()) this.add(CardStats(context!!, type, dataArray))
     }
+
+    fun BestDay.getHumanReadableTime(): String {
+        val pattern = context!!.getString(R.string.stats_time_format)
+        val hours = TimeUnit.SECONDS.toHours(totalSeconds?.toLong()?:0)
+        val minutes = TimeUnit.SECONDS.toMinutes(totalSeconds?.toLong()?:0) - TimeUnit.HOURS.toMinutes(hours)
+        return String.format(pattern, hours, minutes)
+    }
+
 
 }

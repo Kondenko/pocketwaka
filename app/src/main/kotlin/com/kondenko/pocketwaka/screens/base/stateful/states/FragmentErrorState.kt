@@ -18,7 +18,7 @@ class FragmentErrorState : Fragment() {
     private val publishSubject = PublishSubject.create<Any>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-            = inflater!!.inflate(R.layout.layout_stats_state_error, container, false)
+            = inflater.inflate(R.layout.layout_stats_state_error, container, false)
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

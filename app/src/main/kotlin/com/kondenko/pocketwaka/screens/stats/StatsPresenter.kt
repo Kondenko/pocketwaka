@@ -6,8 +6,7 @@ import com.kondenko.pocketwaka.screens.base.BasePresenter
 import javax.inject.Inject
 
 @PerApp
- class StatsPresenter
-@Inject constructor(private val getStats: GetStats) : BasePresenter<StatsView>() {
+class StatsPresenter @Inject constructor(private val getStats: GetStats) : BasePresenter<StatsView>() {
 
     fun getStats(range: String) {
         view?.setLoading(true)

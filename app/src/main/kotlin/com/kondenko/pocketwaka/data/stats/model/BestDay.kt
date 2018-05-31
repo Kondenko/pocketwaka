@@ -32,13 +32,6 @@ class BestDay : Parcelable {
     @Expose
     var totalSeconds: Int? = null
 
-    fun getHumanReadableTime(context: Context): String {
-        val pattern = context.getString(R.string.stats_time_format)
-        val hours = TimeUnit.SECONDS.toHours(totalSeconds!!.toLong())
-        val minutes = TimeUnit.SECONDS.toMinutes(totalSeconds!!.toLong()) - TimeUnit.HOURS.toMinutes(hours)
-        return String.format(pattern, hours, minutes)
-    }
-
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeValue(createdAt)
         dest.writeValue(date)

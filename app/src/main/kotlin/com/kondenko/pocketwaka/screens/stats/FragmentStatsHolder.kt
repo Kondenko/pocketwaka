@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.data.stats.model.Stats
+import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.stateful.StatefulFragment
 import javax.inject.Inject
 
 
-class FragmentStatsHolder : StatefulFragment<Stats>(), StatsView {
+class FragmentStatsHolder : StatefulFragment<StatsModel>(), StatsView {
 
     companion object {
         const val ARG_RANGE = "range"
@@ -43,7 +43,7 @@ class FragmentStatsHolder : StatefulFragment<Stats>(), StatsView {
         presenter.detach()
     }
 
-    override fun onSuccess(result: Stats?) {
+    override fun onSuccess(result: StatsModel?) {
         result?.let { modelFragment = ModelFragmentStats.create(it) }
         super.onSuccess(result)
     }
