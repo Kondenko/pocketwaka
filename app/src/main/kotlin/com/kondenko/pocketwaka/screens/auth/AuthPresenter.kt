@@ -15,7 +15,7 @@ class AuthPresenter
     fun onLoginButtonClicked() {
         getAuthUrl.execute(
                 onSuccess = { url -> view?.openAuthUrl(url) },
-                onError = { view?.onError(it) }
+                onError = { view?.showError(it) }
         )
     }
 
@@ -23,7 +23,7 @@ class AuthPresenter
         getAccessToken.execute(
                 params = code,
                 onSuccess = { token -> view?.onGetTokenSuccess(token) },
-                onError = { view?.onError(it, R.string.error_logging_in) }
+                onError = { view?.showError(it, R.string.error_logging_in) }
         )
     }
 

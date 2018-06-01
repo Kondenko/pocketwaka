@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class StatsModel(
+data class StatsModel(
         val bestDay: BestDay?,
         val humanReadableDailyAverage: String?,
         val humanReadableTotal: String?,

@@ -45,7 +45,7 @@ class AuthActivity : AppCompatActivity(), AuthView {
             if (code != null) {
                 presenter.getToken(code)
             } else uri.getQueryParameter("error")?.let {
-                onError(RuntimeException(it), R.string.error_logging_in)
+                showError(RuntimeException(it), R.string.error_logging_in)
             }
         }
     }
@@ -84,7 +84,7 @@ class AuthActivity : AppCompatActivity(), AuthView {
         finishAffinity()
     }
 
-    override fun onError(throwable: Throwable?, @StringRes messageStringRes: Int?) {
+    override fun showError(throwable: Throwable?, @StringRes messageStringRes: Int?) {
         throwable?.printStackTrace()
         messageStringRes?.let { Toast.makeText(this, getString(messageStringRes), Toast.LENGTH_SHORT).show() }
     }

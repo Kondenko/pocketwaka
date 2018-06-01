@@ -18,9 +18,13 @@ class FragmentEmptyState : Fragment() {
 
     val TAG = "fragment_empty_state"
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.layout_stats_state_empty, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        super.onCreateView(inflater, container, savedInstanceState)
+        return inflater.inflate(R.layout.layout_stats_state_empty, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         RxView.clicks(button_emptystate_plugins).subscribe {
             val uri = Const.URL_PLUGINS
             val builder = CustomTabsIntent.Builder()
@@ -28,7 +32,6 @@ class FragmentEmptyState : Fragment() {
             val customTabsIntent = builder.build()
             customTabsIntent.launchUrl(context, Uri.parse(uri))
         }
-        return view
     }
 
 }

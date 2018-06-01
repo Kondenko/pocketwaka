@@ -4,10 +4,10 @@ import com.kondenko.pocketwaka.screens.base.BaseView
 
 interface StatefulView<T> : BaseView {
 
-    fun onSuccess(result: T?)
+    fun showModel(model: T)
 
-    fun onRefresh()
+    fun showLoading()
 
-    fun setLoading(isLoading: Boolean)
+    fun showEmptyState()
 
 }

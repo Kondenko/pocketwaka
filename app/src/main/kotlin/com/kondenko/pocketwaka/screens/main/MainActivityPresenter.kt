@@ -31,7 +31,7 @@ class MainActivityPresenter
                     }
                 },
                 onError = { error ->
-                    view?.onError(error)
+                    view?.showError(error)
                 }
         )
     }

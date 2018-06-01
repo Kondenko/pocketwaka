@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity(), MainView {
         setFragment(stats, tagStats)
     }
 
-    override fun onError(throwable: Throwable?, messageStringRes: Int?) {
+    override fun showError(throwable: Throwable?, messageStringRes: Int?) {
         throwable?.printStackTrace()
         Toast.makeText(this, R.string.error_refreshing_token, Toast.LENGTH_LONG).show()
     }

@@ -8,7 +8,11 @@ import android.view.ViewGroup
 import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
+import com.kondenko.pocketwaka.events.RefreshEvent
 import com.kondenko.pocketwaka.screens.base.stateful.StatefulFragment
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
 
 
@@ -17,6 +21,8 @@ class FragmentStatsHolder : StatefulFragment<StatsModel>(), StatsView {
     companion object {
         const val ARG_RANGE = "range"
     }
+
+    lateinit var range: String
 
     @Inject
     lateinit var presenter: StatsPresenter
@@ -31,22 +37,24 @@ class FragmentStatsHolder : StatefulFragment<StatsModel>(), StatsView {
         return inflater.inflate(R.layout.fragment_stats, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
         presenter.attach(this)
-        val range = arguments?.getString(ARG_RANGE)
-        if (range != null && modelFragment == null) presenter.getStats(range)
+        range = arguments?.getString(ARG_RANGE)?:"unknown_range"
+        if (modelFragment == null) presenter.getStats(range)
+        retryClicks.subscribe { presenter.getStats(range) }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
         presenter.detach()
     }
 
-    override fun onSuccess(result: StatsModel?) {
-        result?.let {
-            modelFragment = ModelFragmentStats.create(result)
-        }
-        super.onSuccess(result)
-    }
+    override fun initModelFragment(model: StatsModel) = ModelFragmentStats.create(model)
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onRefresh(event: RefreshEvent) = presenter.getStats(range)
+
 }
