@@ -15,6 +15,8 @@ import kotlinx.android.synthetic.main.layout_stats_state_error.*
 
 class FragmentErrorState : Fragment() {
 
+    val TAG = "fragment_error_state"
+
     private val publishSubject = PublishSubject.create<Any>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?

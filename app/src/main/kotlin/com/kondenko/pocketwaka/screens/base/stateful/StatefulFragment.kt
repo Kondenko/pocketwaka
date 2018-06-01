@@ -29,17 +29,18 @@ abstract class StatefulFragment<M : Parcelable> : LogFragment(), StatefulView<M>
     protected var modelFragment: ModelFragment<M>? = null
 
     override fun onSuccess(result: M?) {
-        if (result == null) {
-            emptyFragment.show()
+        if (result != null) {
+            if (modelFragment != null) modelFragment!!.show(ModelFragment.TAG)
+            else errorFragment.show(errorFragment.TAG)
         } else {
-            (modelFragment?:errorFragment).show()
+            emptyFragment.show(emptyFragment.TAG)
         }
     }
 
     override fun onError(throwable: Throwable?, messageStringRes: Int?) {
         Timber.e(throwable)
         messageStringRes?.let { errorFragment.setMessage(activity!!.getString(messageStringRes)) }
-        errorFragment.show()
+        errorFragment.show(errorFragment.TAG)
     }
 
     override fun onRefresh() {
@@ -47,14 +48,17 @@ abstract class StatefulFragment<M : Parcelable> : LogFragment(), StatefulView<M>
     }
 
     override fun setLoading(isLoading: Boolean) {
-        if (isLoading) loadingFragment.show()
+        if (isLoading) loadingFragment.show(loadingFragment.TAG)
     }
 
-    private fun Fragment.show() {
-        this@StatefulFragment.childFragmentManager.transaction {
-            setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-            replace(containerId, this@show)
+    private fun Fragment.show(tag: String) {
+        if (this@StatefulFragment.childFragmentManager.findFragmentByTag(tag) == null) {
+            this@StatefulFragment.childFragmentManager.transaction {
+                setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                replace(containerId, this@show, tag)
+            }
         }
     }
+
 
 }

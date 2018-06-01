@@ -27,25 +27,26 @@ class FragmentStatsHolder : StatefulFragment<StatsModel>(), StatsView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        containerId = R.id.stats_framelayout_container
         return inflater.inflate(R.layout.fragment_stats, container, false)
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         presenter.attach(this)
-        containerId = R.id.stats_framelayout_container
         val range = arguments?.getString(ARG_RANGE)
-        if (modelFragment == null && range != null) presenter.getStats(range)
+        if (range != null && modelFragment == null) presenter.getStats(range)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroyView() {
+        super.onDestroyView()
         presenter.detach()
     }
 
     override fun onSuccess(result: StatsModel?) {
-        result?.let { modelFragment = ModelFragmentStats.create(it) }
+        result?.let {
+            modelFragment = ModelFragmentStats.create(result)
+        }
         super.onSuccess(result)
     }
-
 }

@@ -19,6 +19,8 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), MainView {
 
+    private val tagStats = "stats"
+
     @Inject
     lateinit var presenter: MainActivityPresenter
 
@@ -52,12 +54,6 @@ class MainActivity : AppCompatActivity(), MainView {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun setFragment(fragment: Fragment) {
-        supportFragmentManager.transaction {
-            replace(R.id.container, fragment)
-        }
-    }
-
     override fun showLoginScreen() {
         val intent = Intent(this, AuthActivity::class.java)
         startActivity(intent)
@@ -66,7 +62,7 @@ class MainActivity : AppCompatActivity(), MainView {
 
     override fun showStats() {
         val stats = FragmentStats()
-        setFragment(stats)
+        setFragment(stats, tagStats)
     }
 
     override fun onError(throwable: Throwable?, messageStringRes: Int?) {
@@ -77,6 +73,14 @@ class MainActivity : AppCompatActivity(), MainView {
     override fun onLogout() {
         finish()
         startActivity(Intent(this, AuthActivity::class.java))
+    }
+
+    private fun setFragment(fragment: Fragment, tag: String) {
+        if (supportFragmentManager.findFragmentByTag(tag) == null) {
+            supportFragmentManager.transaction {
+                replace(R.id.container, fragment, tag)
+            }
+        }
     }
 
 }
