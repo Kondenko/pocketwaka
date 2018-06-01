@@ -11,6 +11,7 @@ ext {
             // Dependencies
             kotlin           : '1.2.41',
             supportLib       : '27.1.1',
+            lifecycle        : '1.1.1',
             constraintLayout : '1.0.2',
             smartTabLayout   : '1.6.1',
             rxKotlin         : '2.1.0',

@@ -108,9 +108,10 @@ dependencies {
     implementation constraintLayout
     implementation dagger
     implementation timber
+
     debugImplementation stetho
-    kapt daggerCompiler
-    kapt databindingCompiler
+
+    kapt compilers
 
     testImplementation testingDependencies
     kaptTest testingCompilerDependencies
