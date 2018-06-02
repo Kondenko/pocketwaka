@@ -43,7 +43,6 @@ class FragmentStatsHolder : StatefulFragment<StatsModel>(), StatsView {
         presenter.attach(this)
         range = arguments?.getString(ARG_RANGE)?:"unknown_range"
         if (modelFragment == null) presenter.getStats(range)
-        retryClicks.subscribe { presenter.getStats(range) }
     }
 
     override fun onStop() {

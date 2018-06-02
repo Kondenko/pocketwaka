@@ -10,8 +10,6 @@ import com.kondenko.pocketwaka.R
 
 class FragmentLoadingState : Fragment() {
 
-    val TAG = "fragment_loading_state"
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
             = inflater.inflate(R.layout.fragment_all_state_loading, container, false)
 

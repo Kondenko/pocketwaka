@@ -9,6 +9,7 @@ import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.SchedulerContainer
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @PerApp
@@ -31,7 +32,8 @@ class GetStats @Inject constructor(
                         it.languages?.map { StatsItem(it.hours, it.minutes, it.name, it.percent, it.totalSeconds) }?.provideColors(),
                         it.editors?.map { StatsItem(it.hours, it.minutes, it.name, it.percent, it.totalSeconds) }?.provideColors(),
                         it.operatingSystems?.map { StatsItem(it.hours, it.minutes, it.name, it.percent, it.totalSeconds) }?.provideColors(),
-                        it.range
+                        it.range,
+                        it.totalSeconds == 0
                 )
             }
 

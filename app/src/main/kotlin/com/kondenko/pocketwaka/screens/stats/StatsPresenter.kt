@@ -11,12 +11,14 @@ class StatsPresenter @Inject constructor(private val getStats: GetStats) : BaseP
     fun getStats(range: String) {
         view?.showLoading()
         getStats.execute(
-            range,
-            { stats -> view?.let {
-                if (stats.humanReadableDailyAverage == null || stats.humanReadableTotal == null) it.showEmptyState()
-                else it.showModel(stats)
-            } },
-            { error -> view?.showError(error) }
+                range,
+                { stats ->
+                    view?.let {
+                        if (stats.isEmpty) it.showEmptyState()
+                        else it.showModel(stats)
+                    }
+                },
+                { error -> view?.showError(error) }
         )
     }
 

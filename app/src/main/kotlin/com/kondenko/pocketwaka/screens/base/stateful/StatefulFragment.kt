@@ -6,7 +6,6 @@ import com.kondenko.pocketwaka.screens.base.stateful.states.FragmentEmptyState
 import com.kondenko.pocketwaka.screens.base.stateful.states.FragmentErrorState
 import com.kondenko.pocketwaka.screens.base.stateful.states.FragmentLoadingState
 import com.kondenko.pocketwaka.utils.transaction
-import io.reactivex.Observable
 import timber.log.Timber
 
 
@@ -19,9 +18,7 @@ abstract class StatefulFragment<M : Parcelable> : Fragment(), StatefulView<M> {
     }
 
     private val errorFragment by lazy {
-        val fragment = FragmentErrorState()
-        retryClicks.switchMap { fragment.retryClicks() }
-        fragment // return value
+       FragmentErrorState()
     }
 
     private val loadingFragment by lazy {
@@ -30,36 +27,33 @@ abstract class StatefulFragment<M : Parcelable> : Fragment(), StatefulView<M> {
 
     protected var modelFragment: ModelFragment<M>? = null
 
-    protected val retryClicks: Observable<Any> = Observable.never()
-
     abstract fun initModelFragment(model: M): ModelFragment<M>
 
     override fun showModel(model: M) {
         modelFragment = initModelFragment(model).apply {
-            this.show(ModelFragment.TAG)
+            this.show()
         }
     }
 
     override fun showError(throwable: Throwable?, messageStringRes: Int?) {
         Timber.e(throwable)
         messageStringRes?.let { errorFragment.setMessage(activity!!.getString(messageStringRes)) }
-        errorFragment.show(errorFragment.TAG)
+        errorFragment.show()
     }
 
     override fun showEmptyState() {
-        emptyFragment.show(emptyFragment.TAG)
+        emptyFragment.show()
     }
 
     override fun showLoading() {
-        loadingFragment.show(loadingFragment.TAG)
+        loadingFragment.show()
     }
 
-    private fun Fragment.show(tag: String) {
-        if (this@StatefulFragment.childFragmentManager.findFragmentByTag(tag) == null) {
-            this@StatefulFragment.childFragmentManager.transaction {
-                setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                replace(containerId, this@show, tag)
-            }
+    private fun Fragment.show() {
+        Timber.d("Showing fragment: $this")
+        this@StatefulFragment.childFragmentManager.transaction {
+            setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+            replace(containerId, this@show)
         }
     }
 

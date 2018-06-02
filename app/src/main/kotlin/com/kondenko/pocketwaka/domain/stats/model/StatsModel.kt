@@ -12,5 +12,6 @@ data class StatsModel(
         val languages: List<StatsItem>?,
         val editors: List<StatsItem>?,
         val operatingSystems: List<StatsItem>?,
-        val range: String?
+        val range: String?,
+        val isEmpty: Boolean
 ) : Parcelable
