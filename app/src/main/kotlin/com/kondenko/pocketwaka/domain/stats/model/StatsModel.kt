@@ -13,5 +13,6 @@ data class StatsModel(
         val editors: List<StatsItem>?,
         val operatingSystems: List<StatsItem>?,
         val range: String?,
+        val lastUpdated: Long,
         val isEmpty: Boolean
 ) : Parcelable

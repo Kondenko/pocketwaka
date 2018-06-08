@@ -19,6 +19,7 @@ import com.kondenko.pocketwaka.ui.OnScrollViewListener
 import kotlinx.android.synthetic.main.fragment_stats_data.*
 import kotlinx.android.synthetic.main.layout_stats_best_day.*
 import org.greenrobot.eventbus.EventBus
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -67,6 +68,7 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
     }
 
     override fun displayModel(model: StatsModel) {
+        Timber.d("Showing model $model")
         stats_textview_time_total.text = model.humanReadableTotal
         stats_textview_daily_average.text = model.humanReadableDailyAverage
         if (model.bestDay != null && model.bestDay.totalSeconds ?: 0 > 0) {

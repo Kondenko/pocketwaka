@@ -11,7 +11,7 @@
         android:id="@+id/stats_observablescrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".screens.stats.FragmentStatsHolder"
+        tools:context=".screens.stats.FragmentStatsTab"
         >
 
         <android.support.constraint.ConstraintLayout

@@ -36,11 +36,12 @@ class FragmentStats : Fragment() {
                         .addFragment(R.string.stats_tab_1_year, Const.STATS_RANGE_1_YEAR)
                         .create()
         )
+        stats_viewpager_content.offscreenPageLimit = 3
         stats_smarttablayout_ranges.setViewPager(stats_viewpager_content)
     }
 
     private fun FragmentPagerItems.Creator.addFragment(@StringRes title: Int, range: String)
-       = this.add(title, FragmentStatsHolder::class.java, Bundler().putString(FragmentStatsHolder.ARG_RANGE, range).get())
+       = this.add(title, FragmentStatsTab::class.java, Bundler().putString(FragmentStatsTab.ARG_RANGE, range).get())
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onTabsAnimationEvent(event: TabsAnimationEvent) {

@@ -1,30 +1,30 @@
 package com.kondenko.pocketwaka.screens.stats
 
-import com.kondenko.pocketwaka.dagger.PerApp
 import com.kondenko.pocketwaka.domain.stats.GetStats
 import com.kondenko.pocketwaka.screens.base.BasePresenter
+import timber.log.Timber
 import javax.inject.Inject
 
-@PerApp
 class StatsPresenter @Inject constructor(private val getStats: GetStats) : BasePresenter<StatsView>() {
 
     fun getStats(range: String) {
-        view?.showLoading()
-        getStats.execute(
-                range,
-                { stats ->
-                    view?.let {
+        view?.let {
+            Timber.d("Loading stats for $range")
+            it.showLoading()
+            getStats.execute(
+                    range,
+                    { stats ->
                         if (stats.isEmpty) it.showEmptyState()
                         else it.showModel(stats)
-                    }
-                },
-                { error -> view?.showError(error) }
-        )
+                    },
+                    { error -> it.showError(error) }
+            )
+        }
     }
 
     override fun detach() {
-        super.detach()
         dispose(getStats)
+        super.detach()
     }
 
 }

@@ -8,12 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import com.jakewharton.rxbinding2.view.RxView
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.events.RefreshEvent
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.layout_stats_state_error.*
-import org.greenrobot.eventbus.EventBus
 
 
 class FragmentErrorState : Fragment() {
+
+    private val publishSubject = PublishSubject.create<Any>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
             = inflater.inflate(R.layout.layout_stats_state_error, container, false)
@@ -21,14 +23,14 @@ class FragmentErrorState : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        RxView.clicks(button_errorstate_retry)
-                .subscribe {
-                    EventBus.getDefault().post(RefreshEvent)
-                }
+        RxView.clicks(button_errorstate_retry).subscribeWith(publishSubject)
     }
 
     fun setMessage(message: CharSequence) {
         textivew_errorstate_message.text = message
     }
+
+    fun retryClicks(): Observable<Any> = publishSubject
+
 
 }

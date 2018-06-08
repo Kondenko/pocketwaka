@@ -9,7 +9,6 @@ import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.SchedulerContainer
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @PerApp
@@ -33,9 +32,23 @@ class GetStats @Inject constructor(
                         it.editors?.map { StatsItem(it.hours, it.minutes, it.name, it.percent, it.totalSeconds) }?.provideColors(),
                         it.operatingSystems?.map { StatsItem(it.hours, it.minutes, it.name, it.percent, it.totalSeconds) }?.provideColors(),
                         it.range,
+                        System.currentTimeMillis(),
                         it.totalSeconds == 0
                 )
             }
+            /*
+            .map {
+                if (BuildConfig.DEBUG) {
+                    val random = Random().nextInt(3)
+                    when (random) {
+                        1 -> throw RuntimeException("Intended error")
+                        2 -> it.copy(isEmpty = true)
+                        else -> it
+                    }
+                } else it
+            }
+            */
+
 
     private fun List<StatsItem>.provideColors(): List<StatsItem> {
         val colors = colorProvider.provideColors(this)
