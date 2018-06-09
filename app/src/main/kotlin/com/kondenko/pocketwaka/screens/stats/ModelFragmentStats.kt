@@ -11,35 +11,26 @@ import com.kondenko.pocketwaka.domain.stats.model.BestDay
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.events.TabsAnimationEvent
-import com.kondenko.pocketwaka.screens.base.stateful.ARG_MODEL
 import com.kondenko.pocketwaka.screens.base.stateful.ModelFragment
+import com.kondenko.pocketwaka.screens.base.stateful.states.ViewState
 import com.kondenko.pocketwaka.ui.CardStats
 import com.kondenko.pocketwaka.ui.ObservableScrollView
 import com.kondenko.pocketwaka.ui.OnScrollViewListener
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_stats_data.*
 import kotlinx.android.synthetic.main.layout_stats_best_day.*
 import org.greenrobot.eventbus.EventBus
-import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 
 class ModelFragmentStats : ModelFragment<StatsModel>() {
 
-    companion object {
-
-        fun create(model: StatsModel): ModelFragment<StatsModel> {
-            val fragment = ModelFragmentStats()
-            val bundle = Bundle()
-            bundle.putParcelable(ARG_MODEL, model)
-            fragment.arguments = bundle
-            return fragment
-        }
-
-    }
-
-
     private var shadowAnimationNeeded = true
+
+    private val viewStateSubject = PublishSubject.create<ViewState>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_stats_data, container, false)
@@ -47,8 +38,7 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        model = arguments!!.getParcelable(ARG_MODEL)
-        displayModel(model)
+        viewStateSubject.onNext(ViewState.Visible)
         // Make the tabs "float" over the other views
         stats_observablescrollview.setOnScrollListener(object : OnScrollViewListener {
             override fun onScrollChanged(scrollView: ObservableScrollView, x: Int, y: Int, oldX: Int, oldY: Int) {
@@ -67,17 +57,28 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
         })
     }
 
-    override fun displayModel(model: StatsModel) {
-        Timber.d("Showing model $model")
-        stats_textview_time_total.text = model.humanReadableTotal
-        stats_textview_daily_average.text = model.humanReadableDailyAverage
-        if (model.bestDay != null && model.bestDay.totalSeconds ?: 0 > 0) {
-            bestday_textview_time.text = model.bestDay.getHumanReadableTime()
-            bestday_textview_date.text = model.bestDay.date
-        } else {
-            bestday_constraintlayout_container?.visibility = View.GONE
-        }
-        addStatsCards(model)
+    override fun onDestroyView() {
+        viewStateSubject.onNext(ViewState.Destroyed)
+        super.onDestroyView()
+    }
+
+    override fun subscribeToModelChanges(modelObservable: Observable<StatsModel>) {
+        viewStateSubject
+                .takeWhile { it === ViewState.Visible }
+                .flatMap { modelObservable }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe { model ->
+                    stats_textview_time_total.text = model.humanReadableTotal
+                    stats_textview_daily_average.text = model.humanReadableDailyAverage
+                    if (model.bestDay != null && model.bestDay.totalSeconds ?: 0 > 0) {
+                        bestday_textview_time.text = model.bestDay.getHumanReadableTime()
+                        bestday_textview_date.text = model.bestDay.date
+                    } else {
+                        bestday_constraintlayout_container?.visibility = View.GONE
+                    }
+                    addStatsCards(model)
+                }
     }
 
     private fun addStatsCards(stats: StatsModel) {

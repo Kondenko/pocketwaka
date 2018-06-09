@@ -1,14 +1,18 @@
 package com.kondenko.pocketwaka.screens.base.stateful
 
+import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
 import com.kondenko.pocketwaka.screens.base.stateful.states.FragmentEmptyState
 import com.kondenko.pocketwaka.screens.base.stateful.states.FragmentErrorState
 import com.kondenko.pocketwaka.screens.base.stateful.states.FragmentLoadingState
 import com.kondenko.pocketwaka.utils.transaction
+import io.reactivex.subjects.BehaviorSubject
 
 
-abstract class StatefulFragment<M : Parcelable> : Fragment(), StatefulView<M> {
+abstract class StatefulFragment<M : Parcelable>(private val modelFragment: ModelFragment<M>) : Fragment(), StatefulView<M> {
+
+    private val ARG_MODEL = "ARG_MODEL"
 
     protected var containerId: Int = 0
 
@@ -22,14 +26,29 @@ abstract class StatefulFragment<M : Parcelable> : Fragment(), StatefulView<M> {
         FragmentLoadingState()
     }
 
-    protected var modelFragment: ModelFragment<M>? = null
+    private val modelSubject = BehaviorSubject.create<M>()
 
-    abstract fun initModelFragment(model: M): ModelFragment<M>
+    init {
+        modelSubject
+                .distinctUntilChanged()
+                .doOnNext {
+                    arguments?.putParcelable(ARG_MODEL, it)
+                    modelFragment.show()
+                }
+                .doOnError {
+                    showError(it)
+                }
+                .subscribe()
+        modelFragment.subscribeToModelChanges(modelSubject.share())
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        savedInstanceState?.getParcelable<M>(ARG_MODEL)?.let(modelSubject::onNext)
+    }
 
     override fun showModel(model: M) {
-        modelFragment = initModelFragment(model).apply {
-            this.show()
-        }
+        modelSubject.onNext(model)
     }
 
     override fun showError(throwable: Throwable?, messageStringRes: Int?) {
@@ -53,6 +72,5 @@ abstract class StatefulFragment<M : Parcelable> : Fragment(), StatefulView<M> {
             replace(containerId, this@show)
         }
     }
-
 
 }

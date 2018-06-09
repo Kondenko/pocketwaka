@@ -16,7 +16,7 @@ import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
 
 
-class FragmentStatsTab : StatefulFragment<StatsModel>(), StatsView {
+class FragmentStatsTab : StatefulFragment<StatsModel>(ModelFragmentStats()), StatsView {
 
     companion object {
         const val ARG_RANGE = "range"
@@ -26,8 +26,6 @@ class FragmentStatsTab : StatefulFragment<StatsModel>(), StatsView {
 
     @Inject
     lateinit var presenter: StatsPresenter
-
-    private var awaitingUpdate = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +43,7 @@ class FragmentStatsTab : StatefulFragment<StatsModel>(), StatsView {
         EventBus.getDefault().register(this)
         presenter.attach(this)
         range = arguments?.getString(ARG_RANGE)
-        if (modelFragment == null || awaitingUpdate) updateData()
+        updateData()
         retryClicks().subscribe { updateData() }
     }
 
@@ -58,18 +56,12 @@ class FragmentStatsTab : StatefulFragment<StatsModel>(), StatsView {
     private fun updateData() {
         range?.let {
             presenter.getStats(it)
-            awaitingUpdate = false
         }
     }
 
-    override fun initModelFragment(model: StatsModel) = ModelFragmentStats.create(model)
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRefresh(event: RefreshEvent) {
-        awaitingUpdate = true
         updateData()
     }
-
-    override fun toString() = "StatsFragment($range)"
 
 }
