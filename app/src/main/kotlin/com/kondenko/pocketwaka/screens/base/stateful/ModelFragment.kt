@@ -11,6 +11,8 @@ import io.reactivex.subjects.PublishSubject
 
 abstract class ModelFragment<M : Parcelable> : Fragment() {
 
+    val TAG = "ModelFragment"
+
     private val viewStateSubject = PublishSubject.create<ViewState>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

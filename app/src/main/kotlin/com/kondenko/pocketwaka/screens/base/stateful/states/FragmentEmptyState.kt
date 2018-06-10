@@ -16,6 +16,8 @@ import kotlinx.android.synthetic.main.layout_stats_state_empty.*
 
 class FragmentEmptyState : Fragment() {
 
+    val TAG = "FragmentEmptyState"
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.layout_stats_state_empty, container, false)

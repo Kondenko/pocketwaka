@@ -53,23 +53,30 @@ abstract class StatefulFragment<M : Parcelable>(private val modelFragment: Model
 
     override fun showError(throwable: Throwable?, messageStringRes: Int?) {
         messageStringRes?.let { errorFragment.setMessage(activity!!.getString(messageStringRes)) }
-        errorFragment.show()
+        errorFragment.show(errorFragment.TAG)
     }
 
     override fun showEmptyState() {
-        emptyFragment.show()
+        emptyFragment.show(emptyFragment.TAG)
     }
 
     override fun showLoading() {
-        loadingFragment.show()
+        loadingFragment.show(loadingFragment.TAG)
     }
 
     protected fun retryClicks() = errorFragment.retryClicks()
 
-    private fun Fragment.show() {
-        this@StatefulFragment.childFragmentManager.transaction {
-            setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-            replace(containerId, this@show)
+    /**
+     * Replace the fragment with the new fragment if they differ.
+     *
+     * @param tag the unique string for each fragment type. Its nullablility is a workaround because the ModelFragment's view is null after a manual update.
+     */
+    private fun Fragment.show(tag: String? = null) {
+        if (this@StatefulFragment.childFragmentManager.findFragmentByTag(tag) == null || tag == null) {
+            this@StatefulFragment.childFragmentManager.transaction {
+                setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                replace(containerId, this@show, tag)
+            }
         }
     }
 
