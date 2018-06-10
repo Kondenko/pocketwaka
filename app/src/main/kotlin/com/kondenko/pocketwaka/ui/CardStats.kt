@@ -3,6 +3,7 @@ package com.kondenko.pocketwaka.ui
 import android.content.Context
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.CardView
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -10,7 +11,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.api.model.stats.StatsItem
+import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.ui.onelinesegmentedchart.OneLineSegmentedChart
 import com.kondenko.pocketwaka.ui.onelinesegmentedchart.Segment
 import java.util.*
@@ -45,7 +46,7 @@ class CardStats(val context: Context, val type: Int, val data: List<StatsItem>) 
     fun getView() = card
 
     fun setupHeader(content: View) {
-        val header = content.findViewById(R.id.statsCardHeader) as TextView
+        val header = content.findViewById<TextView>(R.id.statsCardHeader) as TextView
         header.text = context.getString(when (type) {
             TYPE_PROJECTS -> R.string.stats_card_header_projects
             TYPE_EDITORS -> R.string.stats_card_header_editors
@@ -56,16 +57,18 @@ class CardStats(val context: Context, val type: Int, val data: List<StatsItem>) 
     }
 
     fun setupList(content: View) {
-        val list = content.findViewById(R.id.statsCardRecyclerView) as RecyclerView
+        val list = content.findViewById<RecyclerView>(R.id.statsCardRecyclerView)
         val adapter = CardStatsListAdapter(context, data)
         list.adapter = adapter
-        list.layoutManager = NonScrollableLinearLayoutManager(context)
+        list.layoutManager = object: LinearLayoutManager(context) {
+            override fun canScrollVertically() = false
+        }
     }
 
     fun setupChart(content: View) {
-        val chart = content.findViewById(R.id.chart) as OneLineSegmentedChart
+        val chart = content.findViewById<OneLineSegmentedChart>(R.id.chart)
         val segments = ArrayList<Segment>(data.size)
-        data.mapTo(segments) { Segment(it.percent.toFloat(), it.color, it.name) }
+        data.mapTo(segments) { Segment(it.percent!!.toFloat(), it.color, it.name) }
         chart.setSegments(segments)
     }
 

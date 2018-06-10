@@ -1,9 +1,12 @@
 package com.kondenko.pocketwaka
 
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
-class CustomRobolectricTestRunner : RobolectricTestRunner() {
+class CustomRobolectricTestRunner(clazz: Class<Any?>) : RobolectricTestRunner(clazz) {
 
-
+    override fun buildGlobalConfig() = Config.Builder.defaults()
+            .setManifest("app/src/main/AndroidManifest.xml")
+            .build()!!
 
 }

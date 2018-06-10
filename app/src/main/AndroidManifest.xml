@@ -15,17 +15,8 @@
         android:theme="@style/AppTheme"
         >
 
-        <activity android:name=".screens.activities.ResolverActivity"
-            android:theme="@android:style/Theme.NoDisplay"
-            android:label="@string/all_app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-
         <activity
-            android:name=".screens.activities.login.LoginActivity"
+            android:name=".screens.auth.AuthActivity"
             android:theme="@style/LoginActivityTheme"
             >
             <intent-filter>
@@ -34,13 +25,20 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data
-                    android:host="oauth2"
                     android:scheme="pocketwaka"
+                    android:host="oauth2"
                     />
             </intent-filter>
         </activity>
 
-        <activity android:name=".screens.activities.main.MainActivity">
+        <activity
+            android:name=".screens.main.MainActivity"
+            android:label="@string/all_app_name"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
 
     </application>

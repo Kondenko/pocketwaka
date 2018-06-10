@@ -4,36 +4,48 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    compileSdkVersion versions.androidCompileSdk
+    buildToolsVersion versions.androidBuildTools
 
     defaultConfig {
         applicationId "com.kondenko.pocketwaka"
 
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion versions.androidMinSdk
+        targetSdkVersion versions.androidTargetSdk
 
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
         vectorDrawables.useSupportLibrary = true
     }
 
+    signingConfigs {
+        config {
+            def props = new Properties()
+            props.load(new FileInputStream(rootProject.file("release.properties")))
 
-    dataBinding {
-        enabled = true
+            storeFile rootProject.file(props.keyStore)
+            keyAlias props.keyAlias
+            keyPassword props.keyPassword
+            storePassword props.storePassword
+        }
     }
 
     buildTypes {
         release {
+            signingConfig signingConfigs.config
             shrinkResources true
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            def configFiles = fileTree(dir: "./proguard", include: ["*.pro"]).asList()
+            configFiles.add(getDefaultProguardFile('proguard-android.txt'))
+            proguardFiles configFiles.toArray()
         }
         debug {
             shrinkResources false
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -44,25 +56,31 @@ android {
     }
 
     sourceSets {
+        File debugKaptFiles = file("$buildDir/generated/source/kapt/debug")
         main {
-            setRoot('src/main')
             java.srcDirs += 'src/main/kotlin'
-            java.srcDirs += [file("$buildDir/generated/source/kapt/debug")]
+        }
+        release {
+            java.srcDirs += [file("$buildDir/generated/source/kapt/release")]
+        }
+        debug {
+            java.srcDirs += 'src/debug/kotlin'
+            java.srcDirs += debugKaptFiles
         }
         test {
-            setRoot('src/test')
             java.srcDirs += 'src/test/kotlin'
             java.srcDirs += 'src/mock/kotlin'
             java.srcDirs += 'src/testUtils/kotlin'
-            java.srcDirs += [file("$buildDir/generated/source/kapt/debug")]
+            java.srcDirs += debugKaptFiles
         }
         androidTest {
-            setRoot('src/androidTest')
             java.srcDirs += 'src/androidTest/kotlin'
-            java.srcDirs += 'src/mock/kotlin'
-            java.srcDirs += 'src/testUtils/kotlin'
-            java.srcDirs += [file("$buildDir/generated/source/kapt/debug")]
+            java.srcDirs += debugKaptFiles
         }
+    }
+
+    androidExtensions {
+        experimental = true
     }
 
 }
@@ -81,61 +99,27 @@ kapt {
 
 dependencies {
 
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation support
+    implementation rx
+    implementation retrofit
+    implementation smartTabLayout
+    implementation kotlinLib
+    implementation eventBus
+    implementation constraintLayout
+    implementation dagger
+    implementation timber
 
-    kapt "com.android.databinding:compiler:$androidPluginVersion"
+    debugImplementation stetho
 
-    implementation "org.greenrobot:eventbus:$eventBusVersion"
+    kapt compilers
 
-    implementation "com.ogaclejapan.smarttablayout:library:$smartTabLayoutVersion@aar"
-    implementation "com.ogaclejapan.smarttablayout:utils-v4:$smartTabLayoutVersion@aar"
+    testImplementation testingDependencies
+    kaptTest testingCompilerDependencies
 
-    // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    androidTestImplementation androidTestingDependencies
+    kaptAndroidTest androidTestingCompilerDependencies
 
-    // Rx
-    implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
-    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
-
-    // Dagger 2
-    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
-    implementation "com.google.dagger:dagger:$daggerVersion"
-
-    // Support Library
-    implementation "com.android.support:support-v4:$supportLibVersion"
-    implementation "com.android.support:cardview-v7:$supportLibVersion"
-    implementation "com.android.support:appcompat-v7:$supportLibVersion"
-    implementation "com.android.support:design:$supportLibVersion"
-    implementation "com.android.support:customtabs:$supportLibVersion"
-    implementation "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
-
-    // Retrofit
-    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
-
-    // Testing
-    //  Unit testing
-    testImplementation "junit:junit:$junitVersion"
-
-    testImplementation "org.mockito:mockito-core:$mockitoVersion"
-    testImplementation "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion"
-
-    testImplementation "org.robolectric:robolectric:$robolectricVersion"
-
-    kaptTest "com.google.dagger:dagger-compiler:$daggerVersion"
-    kaptTest "com.google.dagger:dagger:$daggerVersion"
-
-    // Instrumented testing
-    androidTestImplementation "com.android.support:support-annotations:$supportLibVersion"
-    androidTestImplementation "com.android.support.test:runner:$supportTestVersion"
-    androidTestImplementation "com.android.support.test:rules:$supportTestVersion"
-
-    kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
-    kaptAndroidTest "com.google.dagger:dagger:$daggerVersion"
-
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation(androidTestingSupportDependencies, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
 }
