@@ -27,9 +27,11 @@ class AuthActivity : AppCompatActivity(), AuthView {
     @Inject
     lateinit var presenter: AuthPresenter
 
+    private var connection: CustomTabsServiceConnection? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        App.authComponent.inject(this)
+        App.instance.authComponent().inject(this)
         setContentView(R.layout.activity_login)
         findViewById<Button>(R.id.button_login).setOnClickListener { presenter.onLoginButtonClicked() }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -61,7 +63,7 @@ class AuthActivity : AppCompatActivity(), AuthView {
     }
 
     override fun openAuthUrl(url: String) {
-        val connection = object : CustomTabsServiceConnection() {
+        connection = object : CustomTabsServiceConnection() {
             override fun onCustomTabsServiceConnected(componentName: ComponentName, client: CustomTabsClient) {
                 client.warmup(0L) // This prevents backgrounding after redirection
                 val customTabsIntent = with(CustomTabsIntent.Builder()) {
@@ -89,4 +91,12 @@ class AuthActivity : AppCompatActivity(), AuthView {
         messageStringRes?.let { Toast.makeText(this, getString(messageStringRes), Toast.LENGTH_SHORT).show() }
     }
 
+    override fun onDestroy() {
+        connection?.let{
+            this.unbindService(it)
+            connection = null
+        }
+        App.instance.clearAuthComponent()
+        super.onDestroy()
+    }
 }

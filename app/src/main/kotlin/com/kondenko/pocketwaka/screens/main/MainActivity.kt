@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity(), MainView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        App.mainComponent.inject(this)
+        App.instance.mainComponent().inject(this)
         setContentView(R.layout.activity_main)
     }
 
@@ -81,6 +81,11 @@ class MainActivity : AppCompatActivity(), MainView {
                 replace(R.id.container, fragment, tag)
             }
         }
+    }
+
+    override fun onDestroy() {
+        App.instance.clearMainComponent()
+        super.onDestroy()
     }
 
 }

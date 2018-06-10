@@ -1,6 +1,6 @@
 package com.kondenko.pocketwaka.domain.main
 
-import com.kondenko.pocketwaka.dagger.PerApp
+import com.kondenko.pocketwaka.dagger.PerScreen
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
@@ -12,7 +12,7 @@ import javax.inject.Inject
 /**
  * Fetches access token.
  */
-@PerApp
+@PerScreen
 class GetStoredAccessToken
 @Inject constructor(
         schedulers: SchedulerContainer,

@@ -1,12 +1,12 @@
 package com.kondenko.pocketwaka.dagger.components
 
-import com.kondenko.pocketwaka.dagger.PerApp
+import com.kondenko.pocketwaka.dagger.PerScreen
 import com.kondenko.pocketwaka.dagger.modules.StatsModule
 import com.kondenko.pocketwaka.screens.stats.FragmentStatsTab
-import dagger.Component
+import dagger.Subcomponent
 
-@PerApp
-@Component(modules = arrayOf(StatsModule::class), dependencies = arrayOf(AppComponent::class))
+@PerScreen
+@Subcomponent(modules = [(StatsModule::class)])
 interface StatsComponent {
     fun inject(view: FragmentStatsTab)
 }

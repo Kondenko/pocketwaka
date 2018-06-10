@@ -29,7 +29,7 @@ class FragmentStatsTab : StatefulFragment<StatsModel>(ModelFragmentStats()), Sta
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        App.statsComponent.inject(this)
+        App.instance.statsComponent().inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -61,6 +61,11 @@ class FragmentStatsTab : StatefulFragment<StatsModel>(ModelFragmentStats()), Sta
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRefresh(event: RefreshEvent) {
         updateData()
+    }
+
+    override fun onDestroy() {
+        App.instance.clearStatsComponent()
+        super.onDestroy()
     }
 
 }

@@ -1,13 +1,13 @@
 package com.kondenko.pocketwaka.screens.auth
 
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.dagger.PerApp
+import com.kondenko.pocketwaka.dagger.PerScreen
 import com.kondenko.pocketwaka.domain.auth.GetAccessToken
 import com.kondenko.pocketwaka.domain.auth.GetAuthUrl
 import com.kondenko.pocketwaka.screens.base.BasePresenter
 import javax.inject.Inject
 
-@PerApp
+@PerScreen
 class AuthPresenter
 @Inject constructor(private val getAuthUrl: GetAuthUrl, private val getAccessToken: GetAccessToken)
     : BasePresenter<AuthView>() {

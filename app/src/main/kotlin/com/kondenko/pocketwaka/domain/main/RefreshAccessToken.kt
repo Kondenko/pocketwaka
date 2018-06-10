@@ -1,6 +1,7 @@
 package com.kondenko.pocketwaka.domain.main
 
 import com.kondenko.pocketwaka.Const
+import com.kondenko.pocketwaka.dagger.PerScreen
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
@@ -17,6 +18,7 @@ import javax.inject.Inject
 /**
  * Refreshes AccessToken if the old one is expired.
  */
+@PerScreen
 class RefreshAccessToken
 @Inject constructor(
         schedulers: SchedulerContainer,

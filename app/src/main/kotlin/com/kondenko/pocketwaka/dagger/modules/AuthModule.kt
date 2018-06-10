@@ -1,5 +1,6 @@
 package com.kondenko.pocketwaka.dagger.modules
 
+import com.kondenko.pocketwaka.dagger.PerApp
 import com.kondenko.pocketwaka.dagger.qualifiers.Auth
 import com.kondenko.pocketwaka.data.auth.repository.EncryptedKeysRepository
 import com.kondenko.pocketwaka.data.auth.service.AccessTokenService
@@ -7,21 +8,20 @@ import com.kondenko.pocketwaka.utils.Encryptor
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
-import javax.inject.Singleton
 
 @Module
 class AuthModule {
 
     @Provides
-    @Singleton
+    @PerApp
     fun provideEncryptor(): Encryptor = Encryptor()
 
     @Provides
-    @Singleton
+    @PerApp
     fun provideEncryptedKeysRepository(): EncryptedKeysRepository = EncryptedKeysRepository()
 
     @Provides
-    @Singleton
+    @PerApp
     fun provideAuthService(@Auth retrofit: Retrofit): AccessTokenService {
         return retrofit.create(AccessTokenService::class.java)
     }

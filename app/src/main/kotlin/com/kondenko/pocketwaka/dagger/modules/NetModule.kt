@@ -2,6 +2,7 @@ package com.kondenko.pocketwaka.dagger.modules
 
 import android.content.Context
 import com.kondenko.pocketwaka.Const
+import com.kondenko.pocketwaka.dagger.PerApp
 import com.kondenko.pocketwaka.dagger.qualifiers.Api
 import com.kondenko.pocketwaka.dagger.qualifiers.Auth
 import com.kondenko.pocketwaka.dagger.qualifiers.Ui
@@ -18,31 +19,30 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
-import javax.inject.Singleton
 
 @Module
 class NetModule {
 
     @Provides
-    @Singleton
+    @PerApp
     @Worker
     fun provideWorkerScheduler(): Scheduler = Schedulers.io()
 
     @Provides
-    @Singleton
+    @PerApp
     @Ui
     fun provideUiScheduler(): Scheduler = AndroidSchedulers.mainThread()
 
     @Provides
-    @Singleton
+    @PerApp
     fun provideCallAdapterFactory(): RxJava2CallAdapterFactory = RxJava2CallAdapterFactory.create()
 
     @Provides
-    @Singleton
+    @PerApp
     fun provideGsonConverterFactory(): GsonConverterFactory = GsonConverterFactory.create()
 
     @Provides
-    @Singleton
+    @PerApp
     fun provideOHttpCache(context: Context): Cache {
         val cacheDirectory = File(context.cacheDir, "responses")
         val cacheSize: Long = 1024 * 512 // 512 Kb
@@ -50,11 +50,11 @@ class NetModule {
     }
 
     @Provides
-    @Singleton
+    @PerApp
     fun provideCacheInterceptor(context: Context): CacheInterceptor = CacheInterceptor(context)
 
     @Provides
-    @Singleton
+    @PerApp
     fun provideHttpClient(cache: Cache, cacheInterceptor: CacheInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
                 .cache(cache)
@@ -63,7 +63,7 @@ class NetModule {
     }
 
     @Provides
-    @Singleton
+    @PerApp
     fun provideRetrofitBuilder(callAdapterFactory: RxJava2CallAdapterFactory, converterFactory: GsonConverterFactory, okHttpClient: OkHttpClient): Retrofit.Builder {
         return Retrofit.Builder()
                 .client(okHttpClient)
@@ -72,12 +72,12 @@ class NetModule {
     }
 
     @Provides
-    @Singleton
+    @PerApp
     @Auth
     fun provideRetrofitForAuthentication(builder: Retrofit.Builder): Retrofit = builder.baseUrl(Const.BASE_URL).build()
 
     @Provides
-    @Singleton
+    @PerApp
     @Api
     fun provideRetrofitForApi(builder: Retrofit.Builder): Retrofit = builder.baseUrl(Const.URL_API).build()
 
