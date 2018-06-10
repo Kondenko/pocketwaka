@@ -30,7 +30,6 @@ class FragmentStatsTab : StatefulFragment<StatsModel>(ModelFragmentStats()), Sta
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.statsComponent.inject(this)
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
