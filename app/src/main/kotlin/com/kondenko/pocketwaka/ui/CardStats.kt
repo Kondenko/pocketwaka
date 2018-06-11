@@ -16,16 +16,9 @@ import com.kondenko.pocketwaka.ui.onelinesegmentedchart.OneLineSegmentedChart
 import com.kondenko.pocketwaka.ui.onelinesegmentedchart.Segment
 import java.util.*
 
-class CardStats(val context: Context, val type: Int, val data: List<StatsItem>) {
+class CardStats(val context: Context, val title: String, val data: List<StatsItem>) {
 
-    private var card: CardView = CardView(context)
-
-    companion object {
-        val TYPE_PROJECTS = 0
-        val TYPE_EDITORS = 1
-        val TYPE_LANGUAGES = 2
-        val TYPE_OPERATING_SYSTEMS = 3
-    }
+    private val card = CardView(context)
 
     init {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -46,14 +39,8 @@ class CardStats(val context: Context, val type: Int, val data: List<StatsItem>) 
     fun getView() = card
 
     fun setupHeader(content: View) {
-        val header = content.findViewById<TextView>(R.id.statsCardHeader) as TextView
-        header.text = context.getString(when (type) {
-            TYPE_PROJECTS -> R.string.stats_card_header_projects
-            TYPE_EDITORS -> R.string.stats_card_header_editors
-            TYPE_LANGUAGES -> R.string.stats_card_header_languages
-            TYPE_OPERATING_SYSTEMS -> R.string.stats_card_header_operating_systems
-            else -> throw IllegalArgumentException("Cannot resolve card type. Make sure you are using ${javaClass.simpleName}.TYPE_ constants.")
-        })
+        val header = content.findViewById<TextView>(R.id.statsCardHeader)
+        header.text = title
     }
 
     fun setupList(content: View) {

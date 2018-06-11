@@ -73,15 +73,15 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
 
     private fun getAvailableCards(stats: StatsModel): ArrayList<CardStats> {
         val cards = ArrayList<CardStats>()
-        cards.addIfNotEmpty(stats.projects, CardStats.TYPE_PROJECTS)
-        cards.addIfNotEmpty(stats.editors, CardStats.TYPE_EDITORS)
-        cards.addIfNotEmpty(stats.languages, CardStats.TYPE_LANGUAGES)
-        cards.addIfNotEmpty(stats.operatingSystems, CardStats.TYPE_OPERATING_SYSTEMS)
+        cards.addIfNotEmpty(stats.projects, getString(R.string.stats_card_header_projects))
+        cards.addIfNotEmpty(stats.editors, getString(R.string.stats_card_header_editors))
+        cards.addIfNotEmpty(stats.languages, getString(R.string.stats_card_header_languages))
+        cards.addIfNotEmpty(stats.operatingSystems, getString(R.string.stats_card_header_operating_systems))
         return cards
     }
 
-    private fun ArrayList<CardStats>.addIfNotEmpty(dataArray: List<StatsItem>?, type: Int) {
-        if (dataArray != null && dataArray.isNotEmpty()) this.add(CardStats(context!!, type, dataArray))
+    private fun ArrayList<CardStats>.addIfNotEmpty(dataArray: List<StatsItem>?, title: String) {
+        if (dataArray != null && dataArray.isNotEmpty()) this.add(CardStats(context!!, title, dataArray))
     }
 
     fun BestDay.getHumanReadableTime(): String {
