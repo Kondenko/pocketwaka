@@ -15,8 +15,8 @@ import com.kondenko.pocketwaka.screens.base.stateful.ModelFragment
 import com.kondenko.pocketwaka.ui.CardStats
 import com.kondenko.pocketwaka.ui.ObservableScrollView
 import com.kondenko.pocketwaka.ui.OnScrollViewListener
+import com.kondenko.pocketwaka.utils.elevation
 import kotlinx.android.synthetic.main.fragment_stats_data.*
-import kotlinx.android.synthetic.main.layout_stats_best_day.*
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -32,6 +32,7 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        stats_group_bestday.elevation(2f)
         // Make the tabs "float" over the other views
         stats_observablescrollview.setOnScrollListener(object : OnScrollViewListener {
             override fun onScrollChanged(scrollView: ObservableScrollView, x: Int, y: Int, oldX: Int, oldY: Int) {
@@ -57,7 +58,7 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
             bestday_textview_time.text = model.bestDay.getHumanReadableTime()
             bestday_textview_date.text = model.bestDay.date
         } else {
-            bestday_constraintlayout_container?.visibility = View.GONE
+            stats_group_bestday.visibility = View.GONE
         }
         addStatsCards(model)
     }
