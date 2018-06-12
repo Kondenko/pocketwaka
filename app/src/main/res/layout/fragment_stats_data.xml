@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     >
 
     <com.kondenko.pocketwaka.ui.ObservableScrollView
@@ -15,6 +15,7 @@
         >
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/stats_constraintlayout_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
@@ -32,11 +33,12 @@
                 style="@style/CardView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_marginBottom="4dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="24dp"
                 android:background="@android:color/white"
-                app:layout_constraintBottom_toTopOf="@+id/stats_linearlayout_cards"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -192,22 +194,6 @@
                 tools:layout_editor_absoluteY="81dp"
                 />
 
-            <LinearLayout
-                android:id="@+id/stats_linearlayout_cards"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_all_card_inner"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/stats_cardview_bestday"
-                app:layout_constraintVertical_bias="0.5"
-                tools:background="@android:color/darker_gray"
-                tools:layout_height="400dp"
-                />
-
             <android.support.constraint.Guideline
                 android:id="@+id/guideline_best_day"
                 android:layout_width="wrap_content"
@@ -215,7 +201,6 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_begin="67dp"
                 />
-
 
         </android.support.constraint.ConstraintLayout>
 

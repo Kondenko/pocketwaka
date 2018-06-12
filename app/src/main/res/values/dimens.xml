@@ -6,6 +6,8 @@
     <dimen name="margin_all_vertical_small">8dp</dimen>
 
     <dimen name="margin_all_card_inner">8dp</dimen>
+    <dimen name="margin_all_card_outer_vertical">4dp</dimen>
+    <dimen name="margin_all_card_outer_horizontal">8dp</dimen>
 
     <dimen name="height_main_bottom_navigation">56dp</dimen>
 
@@ -47,7 +49,7 @@
     <dimen name="card_stats_bar_height">16dp</dimen>
     <dimen name="card_stats_bar_corner_radius">90dp</dimen>
     <dimen name="card_stats_bar_margin_top">16dp</dimen>
-    <dimen name="card_stats_bar_margin_bottom">7dp</dimen>
+    <dimen name="card_stats_bar_margin_bottom">8dp</dimen>
 
     <dimen name="height_stats_card_item">48dp</dimen>
     <dimen name="padding_left_stats_card_item_text">30dp</dimen>

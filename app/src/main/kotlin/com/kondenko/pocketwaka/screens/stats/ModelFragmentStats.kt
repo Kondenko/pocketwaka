@@ -2,6 +2,8 @@ package com.kondenko.pocketwaka.screens.stats
 
 
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
+import android.support.constraint.ConstraintSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_stats_data.*
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 
 class ModelFragmentStats : ModelFragment<StatsModel>() {
@@ -64,10 +67,38 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
     }
 
     private fun addStatsCards(stats: StatsModel) {
-        if (stats_linearlayout_cards.childCount == 0) {
-            val cards = getAvailableCards(stats)
-            for (card in cards) {
-                stats_linearlayout_cards.addView(card.getView())
+        val cards = getAvailableCards(stats)
+        var prevViewId = R.id.stats_cardview_bestday
+        cards.forEachIndexed { index, card ->
+            if (index == 0) {
+                val cs = ConstraintSet()
+                with(cs) {
+                    clone(stats_constraintlayout_content)
+                    connect(R.id.stats_cardview_bestday, ConstraintSet.BOTTOM, card.view.id, ConstraintSet.TOP)
+                    applyTo(stats_constraintlayout_content)
+                }
+            }
+            val nextViewId = if (index < cards.size - 1) cards[index + 1].view.id else ConstraintSet.PARENT_ID
+            val nextViewSide = if (nextViewId == ConstraintSet.PARENT_ID) ConstraintSet.BOTTOM else ConstraintSet.TOP
+            addCardView(prevViewId, nextViewId, card.view, nextViewSide)
+            prevViewId = card.view.id
+        }
+    }
+
+    private fun addCardView(prevViewId: Int, nextViewId: Int, view: View, nextViewSide: Int) {
+        if (stats_constraintlayout_content.findViewById<View>(view.id) == null) {
+            view.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+            stats_constraintlayout_content.addView(view)
+            val constraintSet = ConstraintSet()
+            with(constraintSet) {
+                val marginVertical = resources.getDimension(R.dimen.margin_all_card_outer_vertical).roundToInt()
+                val marginHorizontal = resources.getDimension(R.dimen.margin_all_card_outer_horizontal).roundToInt()
+                clone(stats_constraintlayout_content)
+                connect(view.id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, marginHorizontal)
+                connect(view.id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, marginHorizontal)
+                connect(view.id, ConstraintSet.TOP, prevViewId, ConstraintSet.BOTTOM, marginVertical)
+                connect(view.id, ConstraintSet.BOTTOM, nextViewId, nextViewSide, marginVertical)
+                applyTo(stats_constraintlayout_content)
             }
         }
     }
@@ -82,10 +113,14 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
     }
 
     private fun ArrayList<CardStats>.addIfNotEmpty(dataArray: List<StatsItem>?, title: String) {
-        if (dataArray != null && dataArray.isNotEmpty()) this.add(CardStats(context!!, title, dataArray))
+        if (dataArray != null && dataArray.isNotEmpty()) {
+            val card = CardStats(context!!, title, dataArray)
+            card.view.id = card.hashCode()
+            this.add(card)
+        }
     }
 
-    fun BestDay.getHumanReadableTime(): String {
+    private fun BestDay.getHumanReadableTime(): String {
         val pattern = context!!.getString(R.string.stats_time_format)
         val hours = TimeUnit.SECONDS.toHours(totalSeconds?.toLong() ?: 0)
         val minutes = TimeUnit.SECONDS.toMinutes(totalSeconds?.toLong() ?: 0) - TimeUnit.HOURS.toMinutes(hours)

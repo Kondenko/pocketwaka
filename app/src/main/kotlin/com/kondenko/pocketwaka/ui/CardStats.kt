@@ -18,45 +18,59 @@ import java.util.*
 
 class CardStats(val context: Context, val title: String, val data: List<StatsItem>) {
 
-    private val card = CardView(context)
+    val view = CardView(context)
 
     init {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
-        val content = inflater.inflate(R.layout.view_card_stats_content, card, true)
+        val content = inflater.inflate(R.layout.view_card_stats_content, view, true)
 
         params.gravity = Gravity.CENTER_VERTICAL
-        card.useCompatPadding = true
-        card.setPadding(8, 8, 8, 8)
-        card.layoutParams = params
-        ViewCompat.setElevation(card, 2f)
+        view.useCompatPadding = true
+        view.setPadding(8, 8, 8, 8)
+        view.layoutParams = params
+        ViewCompat.setElevation(view, 2f)
 
         setupHeader(content)
         setupList(content)
         setupChart(content)
     }
 
-    fun getView() = card
-
-    fun setupHeader(content: View) {
+    private fun setupHeader(content: View) {
         val header = content.findViewById<TextView>(R.id.statsCardHeader)
         header.text = title
     }
 
-    fun setupList(content: View) {
+    private fun setupList(content: View) {
         val list = content.findViewById<RecyclerView>(R.id.statsCardRecyclerView)
         val adapter = CardStatsListAdapter(context, data)
         list.adapter = adapter
-        list.layoutManager = object: LinearLayoutManager(context) {
+        list.layoutManager = object : LinearLayoutManager(context) {
             override fun canScrollVertically() = false
         }
     }
 
-    fun setupChart(content: View) {
+    private fun setupChart(content: View) {
         val chart = content.findViewById<OneLineSegmentedChart>(R.id.chart)
         val segments = ArrayList<Segment>(data.size)
         data.mapTo(segments) { Segment(it.percent!!.toFloat(), it.color, it.name) }
         chart.setSegments(segments)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as CardStats
+        if (title != other.title) return false
+        if (data != other.data) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = title.hashCode()
+        result = 31 * result + data.hashCode()
+        return result
+    }
+
 
 }
