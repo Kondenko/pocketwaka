@@ -9,11 +9,10 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.events.RefreshEvent
 import com.kondenko.pocketwaka.screens.auth.AuthActivity
 import com.kondenko.pocketwaka.screens.stats.FragmentStats
 import com.kondenko.pocketwaka.utils.transaction
-import org.greenrobot.eventbus.EventBus
+import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
 
@@ -23,6 +22,8 @@ class MainActivity : AppCompatActivity(), MainView {
 
     @Inject
     lateinit var presenter: MainActivityPresenter
+
+    private val refreshEvents = PublishSubject.create<Any>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity(), MainView {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.action_logout -> presenter.logout()
-            R.id.action_refresh -> EventBus.getDefault().post(RefreshEvent)
+            R.id.action_refresh -> refreshEvents.onNext(Any())
         }
         return super.onOptionsItemSelected(item)
     }
@@ -61,8 +62,9 @@ class MainActivity : AppCompatActivity(), MainView {
     }
 
     override fun showStats() {
-        val stats = FragmentStats()
-        setFragment(stats, tagStats)
+        val statsFragment = FragmentStats()
+        statsFragment.subscribeToRefreshEvents(refreshEvents)
+        setFragment(statsFragment, tagStats)
     }
 
     override fun showError(throwable: Throwable?, messageStringRes: Int?) {

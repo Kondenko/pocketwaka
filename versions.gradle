@@ -21,7 +21,6 @@ ext {
             rxJava           : '2.1.1',
             rxBinding        : '2.0.0',
             gson             : '2.8.1',
-            eventBus         : '3.0.0',
             junit            : '4.12',
             timber           : '4.5.1',
             stetho           : '1.5.0',

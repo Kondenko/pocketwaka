@@ -104,7 +104,6 @@ dependencies {
     implementation retrofit
     implementation smartTabLayout
     implementation kotlinLib
-    implementation eventBus
     implementation constraintLayout
     implementation dagger
     implementation timber

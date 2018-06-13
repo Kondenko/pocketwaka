@@ -10,19 +10,19 @@ import com.kondenko.pocketwaka.utils.transaction
 import io.reactivex.subjects.BehaviorSubject
 
 
-abstract class StatefulFragment<M : Parcelable>(private val modelFragment: ModelFragment<M>) : Fragment(), StatefulView<M> {
+abstract class StatefulFragment<M : Parcelable>(protected val modelFragment: ModelFragment<M>) : Fragment(), StatefulView<M> {
 
     private val ARG_MODEL = "ARG_MODEL"
 
     protected var containerId: Int = 0
 
-    private val errorFragment = FragmentErrorState()
+    protected val errorFragment = FragmentErrorState()
 
-    private val emptyFragment by lazy {
+    protected val emptyFragment by lazy {
         FragmentEmptyState()
     }
 
-    private val loadingFragment by lazy {
+    protected val loadingFragment by lazy {
         FragmentLoadingState()
     }
 

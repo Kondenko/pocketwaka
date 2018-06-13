@@ -52,8 +52,6 @@ ext {
 
     dagger = "com.google.dagger:dagger:${versions.dagger}"
 
-    eventBus = "org.greenrobot:eventbus:${versions.eventBus}"
-
     constraintLayout = "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
 
     timber = "com.jakewharton.timber:timber:${versions.timber}"

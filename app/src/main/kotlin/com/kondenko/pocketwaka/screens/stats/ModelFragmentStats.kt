@@ -12,14 +12,11 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.BestDay
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
-import com.kondenko.pocketwaka.events.TabsAnimationEvent
 import com.kondenko.pocketwaka.screens.base.stateful.ModelFragment
 import com.kondenko.pocketwaka.ui.CardStats
-import com.kondenko.pocketwaka.ui.ObservableScrollView
-import com.kondenko.pocketwaka.ui.OnScrollViewListener
 import com.kondenko.pocketwaka.utils.elevation
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_stats_data.*
-import org.greenrobot.eventbus.EventBus
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
@@ -29,6 +26,8 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
 
     private var shadowAnimationNeeded = true
 
+    val scrollDirection: PublishSubject<ScrollingEvent> = PublishSubject.create<ScrollingEvent>()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_stats_data, container, false)
     }
@@ -37,23 +36,21 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
         super.onViewCreated(view, savedInstanceState)
         stats_group_bestday.elevation(2f)
         // Make the tabs "float" over the other views
-        stats_observablescrollview.setOnScrollListener(object : OnScrollViewListener {
-            override fun onScrollChanged(scrollView: ObservableScrollView, x: Int, y: Int, oldX: Int, oldY: Int) {
-                if (y >= 10) {
-                    if (shadowAnimationNeeded) {
-                        stats_view_shadow?.animate()?.alpha(Const.MAX_SHADOW_OPACITY)
-                        EventBus.getDefault().post(TabsAnimationEvent(false))
-                    }
-                    shadowAnimationNeeded = false
-                } else {
-                    stats_view_shadow?.animate()?.alpha(0f)
-                    EventBus.getDefault().post(TabsAnimationEvent(true))
-                    shadowAnimationNeeded = true
+        stats_observablescrollview.scrolls.subscribe {
+            if (it.y >= 10) {
+                if (shadowAnimationNeeded) {
+                    stats_view_shadow?.animate()?.alpha(Const.MAX_SHADOW_OPACITY)
+                    scrollDirection.onNext(ScrollingEvent(false))
                 }
+                shadowAnimationNeeded = false
+            } else {
+                stats_view_shadow?.animate()?.alpha(0f)
+                scrollDirection.onNext(ScrollingEvent(true))
+                shadowAnimationNeeded = true
             }
-        })
+        }
     }
- 
+
     override fun onModelChanged(model: StatsModel) {
         stats_textview_time_total.text = model.humanReadableTotal
         stats_textview_daily_average.text = model.humanReadableDailyAverage
