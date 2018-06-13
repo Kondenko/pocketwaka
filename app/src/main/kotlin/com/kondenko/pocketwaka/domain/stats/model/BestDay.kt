@@ -5,6 +5,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class BestDay(
-        val date: String?,
-        val totalSeconds: Int?
+        val date: String,
+        val time: String
 ) : Parcelable

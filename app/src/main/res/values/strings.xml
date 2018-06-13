@@ -47,8 +47,16 @@
     <string name="stats_card_header_languages">Languages</string>
     <string name="stats_card_header_operating_systems">Operating systems</string>
 
-    <string name="stats_time_format" formatted="false">%d hrs %d mins</string>
-    <!--<string name="stats_card_less_than">Less than</string>-->
+    <plurals name="stats_time_format_hours" formatted="false">
+        <item quantity="one">%d hr</item>
+        <item quantity="other">%d hrs</item>
+    </plurals>
+    <plurals name="stats_time_format_minutes" formatted="false">
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d mins</item>
+    </plurals>
+
+
     <string name="stats_card_less_than">&lt;</string>
     <string name="stats_card_less_than_format" formatted="false">%s  %s</string>
     <string name="stats_card_percent_format_int" formatted="false">%.0f%%</string>

@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.domain.stats.model.BestDay
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.stateful.ModelFragment
@@ -18,7 +17,6 @@ import com.kondenko.pocketwaka.utils.elevation
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_stats_data.*
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 
@@ -54,9 +52,9 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
     override fun onModelChanged(model: StatsModel) {
         stats_textview_time_total.text = model.humanReadableTotal
         stats_textview_daily_average.text = model.humanReadableDailyAverage
-        if (model.bestDay != null && model.bestDay.totalSeconds ?: 0 > 0) {
-            bestday_textview_time.text = model.bestDay.getHumanReadableTime()
+        if (model.bestDay != null) {
             bestday_textview_date.text = model.bestDay.date
+            bestday_textview_time.text = model.bestDay.time
         } else {
             stats_group_bestday.visibility = View.GONE
         }
@@ -117,12 +115,6 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
         }
     }
 
-    private fun BestDay.getHumanReadableTime(): String {
-        val pattern = context!!.getString(R.string.stats_time_format)
-        val hours = TimeUnit.SECONDS.toHours(totalSeconds?.toLong() ?: 0)
-        val minutes = TimeUnit.SECONDS.toMinutes(totalSeconds?.toLong() ?: 0) - TimeUnit.HOURS.toMinutes(hours)
-        return String.format(pattern, hours, minutes)
-    }
 
 
 }
