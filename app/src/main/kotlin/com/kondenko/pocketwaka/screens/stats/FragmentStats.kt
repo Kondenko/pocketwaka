@@ -46,7 +46,6 @@ class FragmentStats : Fragment() {
                         .create()
         )
         stats_viewpager_content.adapter = adapter
-        stats_viewpager_content.offscreenPageLimit = 3
         stats_smarttablayout_ranges.setViewPager(stats_viewpager_content)
         stats_viewpager_content.post {
             onFragmentSelected(adapter.getPage(stats_viewpager_content.currentItem) as FragmentStatsTab)
