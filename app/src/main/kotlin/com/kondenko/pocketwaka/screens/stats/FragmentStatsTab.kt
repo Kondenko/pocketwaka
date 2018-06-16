@@ -10,6 +10,7 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.stateful.StatefulFragment
 import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
 
@@ -34,10 +35,12 @@ class FragmentStatsTab : StatefulFragment<StatsModel>(ModelFragmentStats()), Sta
         return inflater.inflate(R.layout.fragment_stats, container, false)
     }
 
+    fun isScrollviewOnTop() = (modelFragment as ModelFragmentStats).isScrollviewOnTop()
+
     fun scrollDirection() = (modelFragment as ModelFragmentStats).scrollDirection
 
-    fun subscribeToRefreshEvents(refreshEvents: Observable<Any>) {
-        refreshEvents.subscribe {
+    fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Disposable {
+        return refreshEvents.subscribe {
             updateData()
         }
     }

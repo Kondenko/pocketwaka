@@ -1,3 +1,6 @@
 package com.kondenko.pocketwaka.screens.stats
 
-class ScrollingEvent(val up: Boolean)
+sealed class ScrollingDirection {
+    object Up : ScrollingDirection()
+    object Down: ScrollingDirection()
+}

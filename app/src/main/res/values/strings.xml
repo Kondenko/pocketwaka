@@ -57,10 +57,7 @@
     </plurals>
 
 
-    <string name="stats_card_less_than">&lt;</string>
-    <string name="stats_card_less_than_format" formatted="false">%s  %s</string>
+    <string name="stats_card_less_than_1_percent" formatted="false">&lt; 1%</string>
     <string name="stats_card_percent_format_int" formatted="false">%.0f%%</string>
-    <string name="stats_card_percent_format_one_digit" formatted="false">%.1f%%</string>
-    <string name="stats_card_percent_format_two_digit" formatted="false">%.2f%%</string>
 
 </resources>

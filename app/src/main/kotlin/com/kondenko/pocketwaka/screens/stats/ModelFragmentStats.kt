@@ -7,7 +7,6 @@ import android.support.constraint.ConstraintSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
@@ -24,7 +23,7 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
 
     private var shadowAnimationNeeded = true
 
-    val scrollDirection: PublishSubject<ScrollingEvent> = PublishSubject.create<ScrollingEvent>()
+    val scrollDirection: PublishSubject<ScrollingDirection> = PublishSubject.create<ScrollingDirection>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_stats_data, container, false)
@@ -33,21 +32,20 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         stats_group_bestday.elevation(2f)
-        // Make the tabs "float" over the other views
         stats_observablescrollview.scrolls.subscribe {
             if (it.y >= 10) {
                 if (shadowAnimationNeeded) {
-                    stats_view_shadow?.animate()?.alpha(Const.MAX_SHADOW_OPACITY)
-                    scrollDirection.onNext(ScrollingEvent(false))
+                    scrollDirection.onNext(ScrollingDirection.Down)
                 }
                 shadowAnimationNeeded = false
             } else {
-                stats_view_shadow?.animate()?.alpha(0f)
-                scrollDirection.onNext(ScrollingEvent(true))
+                scrollDirection.onNext(ScrollingDirection.Up)
                 shadowAnimationNeeded = true
             }
         }
     }
+
+    fun isScrollviewOnTop() = stats_observablescrollview?.scrollY?:0 == 0
 
     override fun onModelChanged(model: StatsModel) {
         stats_textview_time_total.text = model.humanReadableTotal
@@ -114,7 +112,6 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
             this.add(card)
         }
     }
-
 
 
 }

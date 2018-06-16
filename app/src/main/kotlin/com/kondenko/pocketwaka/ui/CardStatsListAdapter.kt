@@ -3,17 +3,13 @@ package com.kondenko.pocketwaka.ui
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
-import com.kondenko.pocketwaka.utils.SpanFormatter
 
 class CardStatsListAdapter(val context: Context, val dataset: List<StatsItem>) : RecyclerView.Adapter<CardStatsListAdapter.ViewHolder>() {
 
@@ -42,27 +38,8 @@ class CardStatsListAdapter(val context: Context, val dataset: List<StatsItem>) :
         if (percent > 1) {
             textView?.text = String.format(context.getString(R.string.stats_card_percent_format_int) as String, percent)
         } else {
-            val percentValue = 1f
-            // Colors
-            val colorPrimary = ContextCompat.getColor(context, R.color.color_text_black_secondary)
-            val colorSecondary = ContextCompat.getColor(context, R.color.color_text_black_pale)
-            // Strings
-            val stringLessThan = context.getString(R.string.stats_card_less_than)
-            val stringPercent = String.format(context.getString(R.string.stats_card_percent_format_int) as String, percentValue)
-            // Spannable strings
-            val spannableLessThan = SpannableString(stringLessThan)
-            val spannablePercent = SpannableString(stringPercent)
-            spannableLessThan.setSpan(ForegroundColorSpan(colorSecondary), 0, stringLessThan.length, 0)
-            spannablePercent.setSpan(ForegroundColorSpan(colorPrimary), 0, stringPercent.length, 0)
-            // Resulting text
-            val formatLessThan: String = context.getString(R.string.stats_card_less_than_format)
-            textView?.text = SpanFormatter.format(formatLessThan, spannableLessThan, spannablePercent)
+            textView?.text = context.getString(R.string.stats_card_less_than_1_percent)
         }
-    }
-
-    private fun getPercent(percent: Double): String {
-        return if (percent < 1) String.format(context.getString(R.string.stats_card_percent_format_two_digit), percent)
-        else String.format(context.getString(R.string.stats_card_percent_format_int), percent)
     }
 
     override fun getItemCount(): Int = dataset.size

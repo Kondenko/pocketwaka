@@ -34,12 +34,11 @@ class MainActivity : AppCompatActivity(), MainView {
     override fun onStart() {
         super.onStart()
         presenter.attach(this)
-
     }
 
     override fun onStop() {
-        super.onStop()
         presenter.detach()
+        super.onStop()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -20,13 +20,19 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_stats_container.*
+import timber.log.Timber
 
 class FragmentStats : Fragment() {
 
     private val refreshEvents = PublishSubject.create<Any>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)
-            = inflater.inflate(R.layout.fragment_stats_container, container, false)
+    private var areTabsElevated = false
+
+    private var scrollSubscription: Disposable? = null
+
+    private var refreshSubscription: Disposable? = null
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) = inflater.inflate(R.layout.fragment_stats_container, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,12 +48,10 @@ class FragmentStats : Fragment() {
         stats_viewpager_content.adapter = adapter
         stats_viewpager_content.offscreenPageLimit = 3
         stats_smarttablayout_ranges.setViewPager(stats_viewpager_content)
-        for (position in 0 until adapter.count) {
-            val fragment = adapter.getPage(position) as FragmentStatsTab
-            fragment.subscribeToRefreshEvents(refreshEvents)
+        stats_viewpager_content.post {
+            onFragmentSelected(adapter.getPage(stats_viewpager_content.currentItem) as FragmentStatsTab)
         }
-        var currentSubscription: Disposable? = null
-        stats_smarttablayout_ranges.setOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+        stats_smarttablayout_ranges.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
             }
 
@@ -55,32 +59,50 @@ class FragmentStats : Fragment() {
             }
 
             override fun onPageSelected(position: Int) {
-                val fragment = adapter.getPage(position) as FragmentStatsTab
-                currentSubscription?.dispose()
-                currentSubscription = fragment.scrollDirection().subscribe { scrollDirection ->
-                    val colorGray = ContextCompat.getColor(context!!, R.color.color_background_gray)
-                    val colorPrimaryLight = ContextCompat.getColor(context!!, android.R.color.white)
-                    val colorAnim = ValueAnimator()
-                    with(colorAnim) {
-                        @Suppress("UsePropertyAccessSyntax")
-                        setDuration(Const.DEFAULT_ANIM_DURATION)
-                        setIntValues(if (scrollDirection.up) colorPrimaryLight else colorGray, if (scrollDirection.up) colorGray else colorPrimaryLight)
-                        setEvaluator(ArgbEvaluator())
-                        addUpdateListener { valueAnimator ->
-                            stats_smarttablayout_ranges.setBackgroundColor(valueAnimator.animatedValue as Int)
-                        }
-                        start()
-                    }
-                }
+                Timber.i("Selected page $position")
+                val selectedFragment = adapter.getPage(position) as FragmentStatsTab?
+                if (selectedFragment == null) Timber.d("$selectedFragment at position $position is null")
+                selectedFragment?.let { fragment -> onFragmentSelected(fragment) }
             }
         })
+    }
+
+    private fun onFragmentSelected(fragment: FragmentStatsTab) {
+        if (fragment.isScrollviewOnTop() && areTabsElevated) animateTabs(elevated = false)
+        else if (!fragment.isScrollviewOnTop() && !areTabsElevated) animateTabs(elevated = true)
+        refreshSubscription?.dispose()
+        scrollSubscription?.dispose()
+        refreshSubscription = fragment.subscribeToRefreshEvents(refreshEvents)
+        scrollSubscription = fragment.scrollDirection().subscribe { scrollDirection ->
+            animateTabs(elevated = scrollDirection === ScrollingDirection.Down)
+        }
+    }
+
+    private fun animateTabs(elevated: Boolean) {
+        areTabsElevated = elevated
+        // Tabs background color
+        val colorGray = ContextCompat.getColor(context!!, R.color.color_background_gray)
+        val colorPrimaryLight = ContextCompat.getColor(context!!, android.R.color.white)
+        val colorAnim = ValueAnimator()
+        stats_smarttablayout_ranges.background
+        with(colorAnim) {
+            @Suppress("UsePropertyAccessSyntax")
+            setDuration(Const.DEFAULT_ANIM_DURATION)
+            setIntValues(if (elevated) colorGray else colorPrimaryLight, if (elevated) colorPrimaryLight else colorGray)
+            setEvaluator(ArgbEvaluator())
+            addUpdateListener { valueAnimator ->
+                stats_smarttablayout_ranges.setBackgroundColor(valueAnimator.animatedValue as Int)
+            }
+            start()
+        }
+        // Custom tabs elevation
+        stats_view_shadow.animate().alpha(if (elevated) Const.MAX_SHADOW_OPACITY else 0f).start()
     }
 
     fun subscribeToRefreshEvents(refreshEvents: Observable<Any>) {
         refreshEvents.subscribeWith(this.refreshEvents)
     }
 
-    private fun FragmentPagerItems.Creator.addFragment(@StringRes title: Int, range: String)
-       = this.add(title, FragmentStatsTab::class.java, Bundler().putString(FragmentStatsTab.ARG_RANGE, range).get())
+    private fun FragmentPagerItems.Creator.addFragment(@StringRes title: Int, range: String) = this.add(title, FragmentStatsTab::class.java, Bundler().putString(FragmentStatsTab.ARG_RANGE, range).get())
 
 }
