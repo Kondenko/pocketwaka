@@ -1,7 +1,6 @@
 apply from: 'dependencies.gradle'
 
 buildscript {
-    ext.kotlin_version = '1.2.41'
     apply from: 'versions.gradle'
 
     repositories {
