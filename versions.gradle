@@ -3,9 +3,9 @@ ext {
     versions = [
             // Android
             androidMinSdk    : 17,
-            androidTargetSdk : 26,
-            androidCompileSdk: 26,
-            androidBuildTools: '27.0.3',
+            androidTargetSdk : 27,
+            androidCompileSdk: 27,
+            androidBuildTools: '28.0.0',
             androidPlugin    : '3.0.0',
             gradle           : '3.1.3',
             // Dependencies
