@@ -40,7 +40,8 @@ class AccessTokenRepository @Inject constructor(private val service: AccessToken
                             prefs.getString(KEY_SCOPE, null),
                             prefs.getString(KEY_TOKEN_TYPE, null),
                             prefs.getString(KEY_UID, null),
-                            prefs.getFloat(KEY_CREATED_AT, 0f))
+                            prefs.getFloat(KEY_CREATED_AT, 0f)
+                    )
             )
         }
     }
