@@ -16,13 +16,13 @@ abstract class StatefulFragment<M : Parcelable>(protected val modelFragment: Mod
 
     protected var containerId: Int = 0
 
-    protected val errorFragment = FragmentErrorState()
+    private val errorFragment = FragmentErrorState()
 
-    protected val emptyFragment by lazy {
+    private val emptyFragment by lazy {
         FragmentEmptyState()
     }
 
-    protected val loadingFragment by lazy {
+    private val loadingFragment by lazy {
         FragmentLoadingState()
     }
 

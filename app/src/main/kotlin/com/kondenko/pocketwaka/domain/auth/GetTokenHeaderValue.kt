@@ -5,6 +5,7 @@ import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.utils.Encryptor
 import com.kondenko.pocketwaka.utils.SchedulerContainer
+import io.reactivex.Single
 import javax.inject.Inject
 
 @PerScreen
@@ -17,7 +18,7 @@ class GetTokenHeaderValue
 
     private val HEADER_BEARER_VALUE_PREFIX = "Bearer"
 
-    override fun build(params: Nothing?)
+    override fun build(params: Nothing?): Single<String>
             = accessTokenRepository.getEncryptedTokenValue()
             .map { encryptor.decrypt(it) }
             .map { "$HEADER_BEARER_VALUE_PREFIX $it"}

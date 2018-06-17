@@ -1,7 +1,6 @@
 package com.kondenko.pocketwaka.domain.auth
 
 import com.kondenko.pocketwaka.Const
-import com.kondenko.pocketwaka.dagger.PerApp
 import com.kondenko.pocketwaka.dagger.PerScreen
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.utils.SchedulerContainer

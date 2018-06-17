@@ -1,6 +1,5 @@
 package com.kondenko.pocketwaka.domain.auth
 
-import com.kondenko.pocketwaka.dagger.PerApp
 import com.kondenko.pocketwaka.dagger.PerScreen
 import com.kondenko.pocketwaka.data.auth.repository.EncryptedKeysRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle

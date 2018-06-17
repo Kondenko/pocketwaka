@@ -11,7 +11,7 @@ abstract class UseCaseCompletable<PARAMS>(private val schedulers: SchedulerConta
 
     private var disposable: Disposable? = null
 
-    override abstract fun build(params: PARAMS?): Completable
+    abstract override fun build(params: PARAMS?): Completable
 
     override fun execute(params: PARAMS?, onSuccess: () -> Unit, onError: (Throwable) -> Unit): Completable {
         val single = build(params)

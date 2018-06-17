@@ -11,7 +11,7 @@ abstract class UseCaseSingle<PARAMS, RESULT>(private val schedulers: SchedulerCo
 
     private var disposable: Disposable? = null
 
-    override abstract fun build(params: PARAMS?): Single<RESULT>
+    abstract override fun build(params: PARAMS?): Single<RESULT>
 
     override fun execute(params: PARAMS?, onSuccess: (RESULT) -> Unit, onError: (Throwable) -> Unit): Single<RESULT> {
         val single = build(params)

@@ -11,28 +11,24 @@ import android.widget.TextView
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 
-class CardStatsListAdapter(val context: Context, val dataset: List<StatsItem>) : RecyclerView.Adapter<CardStatsListAdapter.ViewHolder>() {
+class CardStatsListAdapter(private val context: Context, private val items: List<StatsItem>) : RecyclerView.Adapter<CardStatsListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_card_stats, parent, false)
-        val viewHolder = ViewHolder(view)
-        return viewHolder
+        return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = dataset[position]
+        val item = items[position]
         val labelDrawable: Drawable? = context.resources?.getDrawable(R.drawable.stats_item_label)
         labelDrawable?.setColorFilter(item.color, PorterDuff.Mode.SRC_IN)
-        holder.labelColor?.background = labelDrawable
-        holder.header?.text = item.name
-//        holder?.percentage?.text = getPercent(item.percent)
+        holder.labelColor.background = labelDrawable
+        holder.header.text = item.name
         setPercent(holder.percentage, item.percent!!)
     }
 
     /**
-     * Set the percent value so that if it's less than 1% it looks like
-     * <pale>less than</pale> <formatted percent value>
-     *  E.g. "less than 0.1%@
+     * Set the percent value so that if it's less than 1% it looks like < 1%
      */
     private fun setPercent(textView: TextView?, percent: Double) {
         if (percent > 1) {
@@ -42,12 +38,12 @@ class CardStatsListAdapter(val context: Context, val dataset: List<StatsItem>) :
         }
     }
 
-    override fun getItemCount(): Int = dataset.size
+    override fun getItemCount(): Int = items.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var labelColor = itemView.findViewById<View>(R.id.labelColor)
-        var header = itemView.findViewById<TextView>(R.id.textItem)
-        var percentage = itemView.findViewById<TextView>(R.id.textPercent)
+        var labelColor: View = itemView.findViewById(R.id.labelColor)
+        var header: TextView = itemView.findViewById(R.id.textItem)
+        var percentage: TextView = itemView.findViewById(R.id.textPercent)
     }
 
 }

@@ -24,7 +24,7 @@ class GetStats @Inject constructor(
 
     private val timerSingle = Single.timer(100, TimeUnit.MILLISECONDS)
 
-    override fun build(range: String?) = getTokenHeader.build()
+    override fun build(range: String?): Single<StatsModel> = getTokenHeader.build()
             .flatMap { header -> statsRepository.getStats(header, range!!) }
             /*
             When the user tries to refresh the data it refreshes so quickly
@@ -55,19 +55,6 @@ class GetStats @Inject constructor(
                         it.totalSeconds == 0
                 )
             }
-            /*
-            .map {
-                if (BuildConfig.DEBUG) {
-                    val random = Random().nextInt(3)
-                    when (random) {
-                        1 -> throw RuntimeException("Intended error")
-                        2 -> it.copy(isEmpty = true)
-                        else -> it
-                    }
-                } else it
-            }
-            */
-
 
     private fun List<StatsItem>.provideColors(): List<StatsItem> {
         val colors = colorProvider.provideColors(this)

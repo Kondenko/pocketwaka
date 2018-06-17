@@ -1,12 +1,9 @@
 package com.kondenko.pocketwaka.data.stats.model
 
-import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
-
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.kondenko.pocketwaka.utils.ColorProvider
 
 class Stats : Parcelable {
 

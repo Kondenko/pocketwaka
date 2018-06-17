@@ -1,6 +1,5 @@
 package com.kondenko.pocketwaka.dagger.qualifiers
 
-import java.lang.annotation.Documented
 import javax.inject.Qualifier
 
 /**

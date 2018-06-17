@@ -18,11 +18,10 @@ class ColorProvider(val context: Context) {
         val predefinedColors = getPredefinedColors()
         val colors = ArrayList<Int>(n)
         items.forEachIndexed { i, item ->
-            val color: Int
-            if (i <= predefinedColors.size - 1) {
-                color = predefinedColors[i]
+            val color: Int = if (i <= predefinedColors.size - 1) {
+                predefinedColors[i]
             } else {
-                color = getRandomColor(item.name?.hashCode()?.toLong()?:0)
+                getRandomColor(item.name?.hashCode()?.toLong()?:0)
             }
             colors.add(color)
         }

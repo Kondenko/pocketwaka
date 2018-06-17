@@ -33,14 +33,14 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
         super.onViewCreated(view, savedInstanceState)
         stats_group_bestday.elevation(2f)
         stats_observablescrollview.scrolls.subscribe {
-            if (it.y >= 10) {
+            shadowAnimationNeeded = if (it.y >= 10) {
                 if (shadowAnimationNeeded) {
                     scrollDirection.onNext(ScrollingDirection.Down)
                 }
-                shadowAnimationNeeded = false
+                false
             } else {
                 scrollDirection.onNext(ScrollingDirection.Up)
-                shadowAnimationNeeded = true
+                true
             }
         }
     }

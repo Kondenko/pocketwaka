@@ -1,6 +1,5 @@
 package com.kondenko.pocketwaka.screens.main
 
-import com.kondenko.pocketwaka.dagger.PerApp
 import com.kondenko.pocketwaka.dagger.PerScreen
 import com.kondenko.pocketwaka.domain.main.CheckIfUserIsLoggedIn
 import com.kondenko.pocketwaka.domain.main.DeleteSavedToken

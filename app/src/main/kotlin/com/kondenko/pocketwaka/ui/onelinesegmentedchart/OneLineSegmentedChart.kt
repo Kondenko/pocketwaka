@@ -16,7 +16,7 @@ import java.util.*
  * @see Segment
  * @see <a href="http://stackoverflow.com/a/26201117">Stack overflow question</a> where the code for masking was taken from
  */
-class OneLineSegmentedChart(context: Context, val attrs: AttributeSet?) : View(context, attrs) {
+class OneLineSegmentedChart(context: Context, private val attrs: AttributeSet?) : View(context, attrs) {
 
     private val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val maskPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)

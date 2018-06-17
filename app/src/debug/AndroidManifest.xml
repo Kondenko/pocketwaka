@@ -6,8 +6,7 @@
     <application
         tools:replace="android:name"
         android:name=".DebugApp"
-        >
-
-    </application>
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning"
+        />
 
 </manifest>

@@ -3,14 +3,14 @@ package com.kondenko.pocketwaka.utils
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
+import android.os.Build
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
+import android.support.v4.view.ViewCompat
+import android.view.View
 import io.reactivex.Single
 import java.util.concurrent.TimeUnit
 
-/**
- * Extension functions.
- */
 
 fun currentTimeSec() = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()).toFloat()
 
@@ -21,6 +21,10 @@ fun isConnectionAvailable(context: Context): Boolean {
 
 fun <T> T?.singleOrErrorIfNull(exception: Throwable): Single<T> = this?.let { Single.just(it) } ?: Single.error(exception)
 
+/**
+ * Extension functions.
+ */
+
 inline fun SharedPreferences.edit(crossinline action: SharedPreferences.Editor.() -> Unit) {
     val editor = edit()
     editor.action()
@@ -29,4 +33,9 @@ inline fun SharedPreferences.edit(crossinline action: SharedPreferences.Editor.(
 
 inline fun FragmentManager.transaction(crossinline action: FragmentTransaction.() -> FragmentTransaction) {
     this.beginTransaction().action().commit()
+}
+
+fun View.elevation(elevation: Float) {
+    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) ViewCompat.setElevation(this, elevation)
+    else this.elevation = elevation
 }

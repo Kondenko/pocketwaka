@@ -25,9 +25,9 @@ class Encryptor {
             created_at = token.created_at
     )
 
-    fun encrypt(value: String) = Base64.encodeToString(value.toByteArray(), Base64.DEFAULT)
+    fun encrypt(value: String): String = Base64.encodeToString(value.toByteArray(), Base64.DEFAULT)
 
-    fun decrypt(value: String) = String(Base64.decode(value, Base64.DEFAULT))
+    fun decrypt(value: String): String = String(Base64.decode(value, Base64.DEFAULT))
 
 }
 

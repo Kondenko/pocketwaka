@@ -41,19 +41,19 @@ open class App : Application() {
     fun mainComponent(): MainComponent {
         return mainComponent.initIfNull(appComponent.plusMain(MainModule())) {
             mainComponent = it
-        }!!
+        }
     }
 
     fun statsComponent(): StatsComponent {
         return statsComponent.initIfNull(appComponent.plusStats(StatsModule())) {
             statsComponent = it
-        }!!
+        }
     }
 
     fun authComponent(): AuthComponent {
         return authComponent.initIfNull(appComponent.plusAuth()) {
             authComponent = it
-        }!!
+        }
     }
 
     fun clearMainComponent() {
@@ -68,9 +68,9 @@ open class App : Application() {
         statsComponent = null
     }
 
-    private fun <T> T.initIfNull(newValue: T, initFun: (T) -> Unit): T {
-        if (this == null) initFun(newValue)
-        return newValue
+    private fun <T> T?.initIfNull(value: T, initFun: (T) -> Unit): T {
+        if (this == null) initFun(value)
+        return value
     }
 
 }
