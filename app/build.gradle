@@ -113,9 +113,13 @@ dependencies {
     kapt compilers
 
     testImplementation testingDependencies
+
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: versions.mockito
+
     kaptTest testingCompilerDependencies
 
     androidTestImplementation androidTestingDependencies
+
     kaptAndroidTest androidTestingCompilerDependencies
 
     androidTestImplementation(androidTestingSupportDependencies, {
