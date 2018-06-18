@@ -5,7 +5,7 @@ import com.kondenko.pocketwaka.data.auth.model.AccessToken
 
 class Encryptor {
 
-    fun encryptToken(token: AccessToken) = token.copy(
+    fun encryptToken(token: AccessToken) = AccessToken(
             access_token = encrypt(token.access_token),
             expires_in = token.expires_in,
             refresh_token = encrypt(token.refresh_token),
@@ -15,7 +15,7 @@ class Encryptor {
             created_at = token.created_at
     )
 
-    fun decryptToken(token: AccessToken) = token.copy(
+    fun decryptToken(token: AccessToken) = AccessToken(
             access_token = decrypt(token.access_token),
             expires_in = token.expires_in,
             refresh_token = decrypt(token.refresh_token),
