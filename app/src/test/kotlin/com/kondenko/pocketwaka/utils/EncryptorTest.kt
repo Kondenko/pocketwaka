@@ -13,13 +13,19 @@ class EncryptorTest {
     private val encryptor = Encryptor()
 
     private val token = AccessToken("a", 1.0, "b", "c", "d", "e", 0f)
-    private val encryptedToken = encryptor.encryptToken(token)
-    private val decryptedToken = encryptor.decryptToken(encryptedToken)
 
     @Test
-    fun shouldEncryptCorrectly() = assertEquals(token, decryptedToken)
+    fun shouldEncryptCorrectly() {
+        val encryptedToken = encryptor.encryptToken(token)
+        assertNotEquals(token, encryptedToken)
+    }
 
     @Test
-    fun shouldDecryptCorrectly() = assertNotEquals(token, encryptedToken)
+    fun shouldDecryptCorrectly() {
+        val encryptedToken = encryptor.encryptToken(token)
+        val decryptedToken = encryptor.decryptToken(encryptedToken)
+        assertNotEquals(encryptedToken, decryptedToken)
+        assertEquals(token, decryptedToken)
+    }
 
 }

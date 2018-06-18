@@ -13,8 +13,11 @@ import javax.inject.Inject
  */
 @PerScreen
 class GetAppSecret
-@Inject constructor(schedulers: SchedulerContainer, private val encryptedKeysRepository: EncryptedKeysRepository, private val encryptor: Encryptor)
-    : UseCaseSingle<Unit?, String>(schedulers) {
+@Inject constructor(
+        schedulers: SchedulerContainer,
+        private val encryptedKeysRepository: EncryptedKeysRepository,
+        private val encryptor: Encryptor
+) : UseCaseSingle<Unit?, String>(schedulers) {
 
     override fun build(params: Unit?): Single<String> = encryptedKeysRepository.appSecret.map { encryptor.decrypt(it) }
 

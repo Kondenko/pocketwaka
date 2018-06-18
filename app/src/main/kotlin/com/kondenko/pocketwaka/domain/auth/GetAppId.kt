@@ -16,8 +16,8 @@ class GetAppId
 @Inject constructor(
         schedulers: SchedulerContainer,
         private val encryptedKeysRepository: EncryptedKeysRepository,
-        private val encryptor: Encryptor)
-    : UseCaseSingle<Nothing, String>(schedulers) {
+        private val encryptor: Encryptor
+) : UseCaseSingle<Nothing, String>(schedulers) {
 
     override fun build(params: Nothing?): Single<String> = encryptedKeysRepository.appId.map { encryptor.decrypt(it) }
 
