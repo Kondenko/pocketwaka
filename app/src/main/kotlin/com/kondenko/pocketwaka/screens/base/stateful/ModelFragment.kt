@@ -29,6 +29,7 @@ abstract class ModelFragment<M : Parcelable> : Fragment() {
         viewStateSubject
                 .takeWhile { it === ViewState.Visible }
                 .flatMap { modelObservable }
+                .retry()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onModelChanged)

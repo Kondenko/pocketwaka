@@ -13,10 +13,11 @@ abstract class UseCaseSingle<PARAMS, RESULT>(private val schedulers: SchedulerCo
 
     abstract override fun build(params: PARAMS?): Single<RESULT>
 
-    override fun execute(params: PARAMS?, onSuccess: (RESULT) -> Unit, onError: (Throwable) -> Unit): Single<RESULT> {
+    override fun execute(params: PARAMS?, onSuccess: (RESULT) -> Unit, onError: (Throwable) -> Unit, onFinish: () -> Unit): Single<RESULT> {
         val single = build(params)
                 .subscribeOn(schedulers.workerScheduler)
                 .observeOn(schedulers.uiScheduler)
+                .doFinally(onFinish)
         disposable = single.subscribe(onSuccess, onError)
         return single
     }

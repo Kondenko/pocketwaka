@@ -8,6 +8,7 @@ import com.kondenko.pocketwaka.screens.base.stateful.states.FragmentErrorState
 import com.kondenko.pocketwaka.screens.base.stateful.states.FragmentLoadingState
 import com.kondenko.pocketwaka.utils.transaction
 import io.reactivex.subjects.BehaviorSubject
+import timber.log.Timber
 
 
 abstract class StatefulFragment<M : Parcelable>(protected val modelFragment: ModelFragment<M>) : Fragment(), StatefulView<M> {
@@ -73,6 +74,7 @@ abstract class StatefulFragment<M : Parcelable>(protected val modelFragment: Mod
      */
     private fun Fragment.show(tag: String? = null) {
         if (this@StatefulFragment.childFragmentManager.findFragmentByTag(tag) == null || tag == null) {
+            Timber.i("Showing fragment with tag $tag")
             this@StatefulFragment.childFragmentManager.transaction {
                 setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 replace(containerId, this@show, tag)
