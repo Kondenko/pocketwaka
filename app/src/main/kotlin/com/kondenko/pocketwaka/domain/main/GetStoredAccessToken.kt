@@ -18,9 +18,9 @@ class GetStoredAccessToken
         schedulers: SchedulerContainer,
         private val accessTokenRepository: AccessTokenRepository,
         private val encryptor: Encryptor
-) : UseCaseSingle<String, AccessToken>(schedulers) {
+) : UseCaseSingle<Nothing, AccessToken>(schedulers) {
 
-    override fun build(code: String?): Single<AccessToken> {
+    override fun build(params: Nothing?): Single<AccessToken> {
         return accessTokenRepository.getEncryptedToken()
                 .map { encryptor.decryptToken(it) }
     }

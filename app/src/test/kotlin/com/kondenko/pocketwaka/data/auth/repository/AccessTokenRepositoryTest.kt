@@ -28,11 +28,15 @@ class AccessTokenRepositoryTest {
 
     @Test
     fun `should acquire new token`() {
+        val token:AccessToken = mock()
         whenever(accessTokenService.getAccessToken(anyString(), anyString(), anyString(), anyString(), anyString()))
-                .doReturn(Single.just(mock()))
-        val tokenSingle = accessTokenService.getAccessToken("string", "string", "string", "string", "string")
-        tokenSingle.test().assertNoErrors()
-        tokenSingle.test().assertComplete()
+                .doReturn(Single.just(token))
+        val tokenSingle = accessTokenRepository.getNewAccessToken("string", "string", "string", "string", "string")
+        with(tokenSingle.test()) {
+            assertNoErrors()
+            assertComplete()
+            assertValue(token)
+        }
     }
 
     @Test

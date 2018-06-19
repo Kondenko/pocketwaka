@@ -9,14 +9,17 @@ import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.SchedulerContainer
+import com.kondenko.pocketwaka.utils.TimeProvider
 import io.reactivex.Single
 import io.reactivex.rxkotlin.zipWith
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @PerScreen
-class GetStats @Inject constructor(
+class GetStats
+@Inject constructor(
         schedulers: SchedulerContainer,
+        private val timeProvider: TimeProvider,
         private val colorProvider: ColorProvider,
         private val getTokenHeader: GetTokenHeaderValue,
         private val statsRepository: StatsRepository
@@ -51,7 +54,7 @@ class GetStats @Inject constructor(
                         it.editors?.map { StatsItem(it.hours, it.minutes, it.name, it.percent, it.totalSeconds) }?.provideColors(),
                         it.operatingSystems?.map { StatsItem(it.hours, it.minutes, it.name, it.percent, it.totalSeconds) }?.provideColors(),
                         it.range,
-                        System.currentTimeMillis(),
+                        timeProvider.getCurrentTimeMillis(),
                         it.totalSeconds == 0
                 )
             }

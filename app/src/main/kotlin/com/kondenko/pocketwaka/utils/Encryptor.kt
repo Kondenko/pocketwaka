@@ -6,23 +6,23 @@ import com.kondenko.pocketwaka.data.auth.model.AccessToken
 class Encryptor {
 
     fun encryptToken(token: AccessToken) = AccessToken(
-            access_token = encrypt(token.access_token),
-            expires_in = token.expires_in,
-            refresh_token = encrypt(token.refresh_token),
+            accessToken = encrypt(token.accessToken),
+            expiresIn = token.expiresIn,
+            refreshToken = encrypt(token.refreshToken),
             scope = encrypt(token.scope),
-            token_type = encrypt(token.token_type),
+            tokenType = encrypt(token.tokenType),
             uid = encrypt(token.uid),
-            created_at = token.created_at
+            createdAt = token.createdAt
     )
 
     fun decryptToken(token: AccessToken) = AccessToken(
-            access_token = decrypt(token.access_token),
-            expires_in = token.expires_in,
-            refresh_token = decrypt(token.refresh_token),
+            accessToken = decrypt(token.accessToken),
+            expiresIn = token.expiresIn,
+            refreshToken = decrypt(token.refreshToken),
             scope = decrypt(token.scope),
-            token_type = decrypt(token.token_type),
+            tokenType = decrypt(token.tokenType),
             uid = decrypt(token.uid),
-            created_at = token.created_at
+            createdAt = token.createdAt
     )
 
     fun encrypt(value: String): String = Base64.encodeToString(value.toByteArray(), Base64.DEFAULT)

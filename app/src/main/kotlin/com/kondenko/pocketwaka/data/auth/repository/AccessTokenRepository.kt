@@ -25,7 +25,7 @@ class AccessTokenRepository @Inject constructor(private val service: AccessToken
             service.getAccessToken(id, secret, redirectUri, grantType, code)
 
 
-    fun getRefreshToken(clientId: String, clientSecret: String, redirectUri: String, grantType: String, refreshToken: String) =
+    fun getRefreshedAccessToken(clientId: String, clientSecret: String, redirectUri: String, grantType: String, refreshToken: String) =
             service.getRefreshToken(clientId, clientSecret, redirectUri, grantType, refreshToken)
 
 
@@ -52,11 +52,11 @@ class AccessTokenRepository @Inject constructor(private val service: AccessToken
 
     fun saveToken(token: AccessToken, createdAt: Float) {
         prefs.edit {
-            putString(KEY_ACCESS_TOKEN, token.access_token)
-            putFloat(KEY_EXPIRES_IN, token.expires_in.toFloat())
-            putString(KEY_REFRESH_TOKEN, token.refresh_token)
+            putString(KEY_ACCESS_TOKEN, token.accessToken)
+            putFloat(KEY_EXPIRES_IN, token.expiresIn.toFloat())
+            putString(KEY_REFRESH_TOKEN, token.refreshToken)
             putString(KEY_SCOPE, token.scope)
-            putString(KEY_TOKEN_TYPE, token.token_type)
+            putString(KEY_TOKEN_TYPE, token.tokenType)
             putString(KEY_UID, token.uid)
             putFloat(KEY_CREATED_AT, createdAt)
         }

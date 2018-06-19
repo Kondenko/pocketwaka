@@ -9,7 +9,7 @@ import com.kondenko.pocketwaka.domain.auth.GetAppId
 import com.kondenko.pocketwaka.domain.auth.GetAppSecret
 import com.kondenko.pocketwaka.utils.Encryptor
 import com.kondenko.pocketwaka.utils.SchedulerContainer
-import com.kondenko.pocketwaka.utils.currentTimeSec
+import com.kondenko.pocketwaka.utils.TimeProvider
 import io.reactivex.Single
 import io.reactivex.rxkotlin.zipWith
 import timber.log.Timber
@@ -22,6 +22,7 @@ import javax.inject.Inject
 class RefreshAccessToken
 @Inject constructor(
         schedulers: SchedulerContainer,
+        private val timeProvider: TimeProvider,
         private val encryptor: Encryptor,
         private val accessTokenRepository: AccessTokenRepository,
         private val getStoredAccessToken: GetStoredAccessToken,
@@ -29,27 +30,27 @@ class RefreshAccessToken
         private val getAppSecret: GetAppSecret
 ) : UseCaseSingle<Nothing, AccessToken>(schedulers) {
 
-    private val GRANT_TYPE_REFRESH_TOKEN = "refresh_token"
+    private val GRANT_TYPE_REFRESH_TOKEN = "refreshToken"
 
     override fun build(params: Nothing?): Single<AccessToken> {
         return getStoredAccessToken.build()
                 .flatMap { token ->
-                    if (!token.isValid()) {
+                    if (!token.isValid(timeProvider.getCurrentTimeSec())) {
                         Timber.i("Token has expired, updating")
-                        getAppId.build().zipWith(getAppSecret.build()) { id, secret ->
-                            accessTokenRepository.getRefreshToken().flatMap { refreshToken ->
-                                accessTokenRepository.getRefreshToken(id, secret, Const.AUTH_REDIRECT_URI, GRANT_TYPE_REFRESH_TOKEN, refreshToken)
-                            }
-                        }
-                                .flatMap { it }
-                                .map { encryptor.encryptToken(it) }
-                                .doOnSuccess { accessTokenRepository.saveToken(it, currentTimeSec()) }
+                        getAppId.build().zipWith(getAppSecret.build()) { id, secret -> accessTokenRepository.getRefreshToken()
+                                    .flatMap { refreshToken ->
+                                        accessTokenRepository.getRefreshedAccessToken(id, secret, Const.AUTH_REDIRECT_URI, GRANT_TYPE_REFRESH_TOKEN, refreshToken)
+                                    }}
+                                    .flatMap { it }
+                                    .doOnSuccess { newAccessToken ->
+                                        val encryptedToken = encryptor.encryptToken(newAccessToken)
+                                        accessTokenRepository.saveToken(encryptedToken, timeProvider.getCurrentTimeSec())
+                                    }
                     } else {
                         Timber.i("Token is valid, proceeding")
                         Single.just(token)
                     }
                 }
-
     }
 
 }

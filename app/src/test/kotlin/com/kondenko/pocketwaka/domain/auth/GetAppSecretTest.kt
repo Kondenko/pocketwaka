@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.domain.auth
 
 import com.kondenko.pocketwaka.data.auth.repository.EncryptedKeysRepository
-import com.kondenko.pocketwaka.testutils.getTestSchedulerContainer
+import com.kondenko.pocketwaka.testutils.testSchedulers
 import com.kondenko.pocketwaka.utils.Encryptor
 import com.nhaarman.mockito_kotlin.*
 import io.reactivex.Single
@@ -13,7 +13,7 @@ class GetAppSecretTest{
 
     private val encryptor: Encryptor = mock()
 
-    private val useCase = GetAppSecret(getTestSchedulerContainer(), encryptedKeysRepository, encryptor)
+    private val useCase = GetAppSecret(testSchedulers, encryptedKeysRepository, encryptor)
 
     @Test
     fun `should execute without errors`() {

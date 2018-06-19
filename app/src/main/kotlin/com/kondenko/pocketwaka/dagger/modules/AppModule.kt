@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.kondenko.pocketwaka.dagger.PerApp
+import com.kondenko.pocketwaka.utils.TimeProvider
 import dagger.Module
 import dagger.Provides
 
@@ -17,5 +18,9 @@ class AppModule(val context: Context) {
     @Provides
     @PerApp
     fun provideSharedPreferences(): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
+    @Provides
+    fun provideTimeProvider() = TimeProvider()
+
 
 }

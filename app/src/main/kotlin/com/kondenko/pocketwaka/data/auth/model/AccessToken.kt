@@ -1,16 +1,14 @@
 package com.kondenko.pocketwaka.data.auth.model
 
-import com.kondenko.pocketwaka.utils.currentTimeSec
-
 data class AccessToken(
-        var access_token: String,
-        var expires_in: Double,
-        var refresh_token: String,
+        var accessToken: String,
+        var expiresIn: Double,
+        var refreshToken: String,
         var scope: String,
-        var token_type: String,
+        var tokenType: String,
         var uid: String,
-        var created_at: Float) {
+        var createdAt: Float) {
 
-    fun isValid() = created_at + expires_in > currentTimeSec()
+    fun isValid(currentTimeSec: Float) = createdAt + expiresIn > currentTimeSec
 
 }

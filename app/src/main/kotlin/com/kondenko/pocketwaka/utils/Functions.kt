@@ -11,9 +11,6 @@ import android.view.View
 import io.reactivex.Single
 import java.util.concurrent.TimeUnit
 
-
-fun currentTimeSec() = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()).toFloat()
-
 fun isConnectionAvailable(context: Context): Boolean {
     val service = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     return service.activeNetworkInfo?.isConnectedOrConnecting?:false
