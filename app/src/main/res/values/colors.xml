@@ -4,19 +4,13 @@
     <color name="color_primary_dark">#28333c</color>
     <color name="color_accent">#2595ff</color>
     <color name="color_background_gray">#eceff1</color>
-    <color name="color_background_primary_light">#ffff</color>
-
-    <color name="color_bottom_nav_enabled">#54000000</color>
-    <color name="color_bottom_nav_disabled">#33000000</color>
 
     <color name="color_tab_text_default">@color/color_primary</color>
 
     <color name="color_text_black_primary">#DD000000</color>
     <color name="color_text_black_secondary">#89000000</color>
-    <color name="color_text_black_pale">#4C000000</color>
     <color name="color_text_white_primary">#FFFFFF</color>
 
-    <color name="color_statusbar">#00000000</color>
     <color name="color_login_shadow_start">#59000000</color>
 
     <array name="chart_colors">

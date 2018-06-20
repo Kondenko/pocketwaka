@@ -1,23 +1,15 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="margin_all_horizontal">16dp</dimen>
-    <dimen name="margin_all_horizontal_small">8dp</dimen>
-    <dimen name="margin_all_vertical">16dp</dimen>
     <dimen name="margin_all_vertical_small">8dp</dimen>
 
     <dimen name="margin_all_card_inner">8dp</dimen>
     <dimen name="margin_all_card_outer_vertical">4dp</dimen>
     <dimen name="margin_all_card_outer_horizontal">8dp</dimen>
 
-    <dimen name="height_main_bottom_navigation">56dp</dimen>
-
     <dimen name="height_all_button">36dp</dimen>
-
-    <item name="elevation_bottom_navigation" format="float" type="dimen">8</item>
 
     <!--Login-->
     <dimen name="height_login_shadow">8dp</dimen>
-    <item name="alpha_login_shadow" format="float" type="dimen">0.2</item>
 
     <!--Stats-->
     <dimen name="textsize_stats_header">16sp</dimen>
@@ -34,16 +26,13 @@
     <dimen name="height_stats_shadow">4dp</dimen>
 
     <dimen name="height_stats_bestday">112dp</dimen>
-    <dimen name="padding_stats_bestday_left">16dp</dimen>
-    <dimen name="margin_top_stats_bestday_img">16dp</dimen>
-    <dimen name="margin_right_stats_bestday_img">8dp</dimen>
     <item name="alpha_stats_bestday_img" format="float" type="dimen">0.6</item>
 
     <dimen name="textsize_stats_bestday_date">16sp</dimen>
     <dimen name="textsize_stats_bestday_time">24sp</dimen>
     <dimen name="textsize_stats_bestday_caption">14sp</dimen>
 
-    <dimen name="elevation_stats_bestday">4dp</dimen>
+    <dimen name="elevation_stats_bestday">2dp</dimen>
 
     <dimen name="padding_stats_card_inner">16dp</dimen>
     <dimen name="card_stats_bar_height">16dp</dimen>

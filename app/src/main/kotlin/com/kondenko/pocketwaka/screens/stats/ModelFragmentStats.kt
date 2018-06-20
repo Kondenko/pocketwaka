@@ -31,7 +31,7 @@ class ModelFragmentStats : ModelFragment<StatsModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        stats_group_bestday.elevation(2f)
+        stats_group_bestday.elevation(resources.getDimension(R.dimen.elevation_stats_bestday))
         stats_observablescrollview.scrolls.subscribe {
             shadowAnimationNeeded = if (it.y >= 10) {
                 if (shadowAnimationNeeded) {

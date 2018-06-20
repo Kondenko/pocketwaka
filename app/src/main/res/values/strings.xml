@@ -1,20 +1,12 @@
 <resources>
     <string name="all_app_name">PocketWaka</string>
 
-    <string name="all_action_retry">Retry</string>
     <string name="main_action_logout">Log out</string>
     <string name="main_action_refresh">Refresh</string>
 
 
     <string name="error_logging_in">Logging in failed</string>
     <string name="error_refreshing_token">Please log in again</string>
-    <string name="error_loading_stats">Can\'t load stats</string>
-
-
-    <string name="bottom_nav_menu_item_stats">Stats</string>
-    <string name="bottom_nav_menu_item_calendar">Calendar</string>
-    <string name="bottom_nav_menu_item_leaders">Leaders</string>
-
 
     <string name="error_state_title">Oh, no</string>
     <string name="error_state_subtitle">We couldn\'t get your stats</string>
@@ -31,7 +23,6 @@
     <string name="loginactivity_subtitle">Your coding activity, visualized</string>
 
 
-    <string name="stats_tab_today">Today</string>
     <string name="stats_tab_7_days">Week</string>
     <string name="stats_tab_30_days">Month</string>
     <string name="stats_tab_6_months">6 months</string>
