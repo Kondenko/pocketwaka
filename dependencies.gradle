@@ -1,13 +1,5 @@
 apply from: "versions.gradle"
 
-allprojects {
-    repositories {
-        jcenter()
-        google()
-        maven { url "https://maven.google.com" }
-    }
-}
-
 ext {
 
     support = [
@@ -57,6 +49,10 @@ ext {
     timber = "com.jakewharton.timber:timber:${versions.timber}"
 
     stetho = "com.facebook.stetho:stetho:${versions.stetho}"
+
+    firebaseCore = "com.google.firebase:firebase-core:${versions.firebaseCore}"
+
+    crashlyticsGoogle = "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
 
     testingDependencies = [
             "junit:junit:${versions.junit}",

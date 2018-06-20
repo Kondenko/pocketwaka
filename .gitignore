@@ -10,7 +10,6 @@ gradle/
 
 # Local configuration file (sdk path, etc)
 local.properties
-
 gradle.properties
 
 # Log Files
@@ -36,6 +35,8 @@ app/src/main/jni/*
 
 *.iml
 .DS_Store
+
+**/google-services.json
 
 release.properties
 

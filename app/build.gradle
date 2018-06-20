@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
 
 android {
 
@@ -99,14 +100,16 @@ kapt {
 
 dependencies {
 
+    implementation kotlinLib
     implementation support
+    implementation constraintLayout
     implementation rx
     implementation retrofit
-    implementation smartTabLayout
-    implementation kotlinLib
-    implementation constraintLayout
     implementation dagger
+    implementation smartTabLayout
     implementation timber
+    implementation firebaseCore
+    implementation crashlyticsGoogle
 
     debugImplementation stetho
 
@@ -126,3 +129,5 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }
+
+apply plugin: 'com.google.gms.google-services'
