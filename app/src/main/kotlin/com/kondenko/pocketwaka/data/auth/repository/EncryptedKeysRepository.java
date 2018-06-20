@@ -1,7 +1,8 @@
 package com.kondenko.pocketwaka.data.auth.repository;
 
 import io.reactivex.Single;
-import timber.log.Timber;
+
+import static com.kondenko.pocketwaka.utils.FunctionsKt.report;
 
 /**
  * Gets app ID and secret from native code
@@ -14,7 +15,7 @@ public class EncryptedKeysRepository {
         try {
             System.loadLibrary("keys");
         } catch (UnsatisfiedLinkError e) {
-            Timber.e(e, "Couldn't load native library: keys");
+            report(e, "Couldn't load native library: keys");
         }
     }
 

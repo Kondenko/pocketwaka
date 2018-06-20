@@ -9,6 +9,7 @@ import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.stateful.StatefulFragment
+import com.kondenko.pocketwaka.utils.report
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
@@ -33,6 +34,11 @@ class FragmentStatsTab : StatefulFragment<StatsModel>(ModelFragmentStats()), Sta
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         containerId = R.id.stats_framelayout_container
         return inflater.inflate(R.layout.fragment_stats, container, false)
+    }
+
+    override fun showError(throwable: Throwable?, messageStringRes: Int?) {
+        super.showError(throwable, messageStringRes)
+        throwable?.report()
     }
 
     fun isScrollviewOnTop() = (modelFragment as ModelFragmentStats).isScrollviewOnTop()

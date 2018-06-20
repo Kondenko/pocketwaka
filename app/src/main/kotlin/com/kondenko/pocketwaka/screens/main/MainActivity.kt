@@ -11,6 +11,7 @@ import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.screens.auth.AuthActivity
 import com.kondenko.pocketwaka.screens.stats.FragmentStats
+import com.kondenko.pocketwaka.utils.report
 import com.kondenko.pocketwaka.utils.transaction
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity(), MainView {
     }
 
     override fun showError(throwable: Throwable?, messageStringRes: Int?) {
-        throwable?.printStackTrace()
+        throwable?.report()
         Toast.makeText(this, R.string.error_refreshing_token, Toast.LENGTH_LONG).show()
     }
 

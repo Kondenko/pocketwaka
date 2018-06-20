@@ -12,13 +12,17 @@ import android.support.customtabs.CustomTabsServiceConnection
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.WindowManager
-import android.widget.Button
 import android.widget.Toast
+import com.crashlytics.android.Crashlytics
+import com.jakewharton.rxbinding2.view.RxView
 import com.kondenko.pocketwaka.App
+import com.kondenko.pocketwaka.BuildConfig
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.screens.main.MainActivity
+import com.kondenko.pocketwaka.utils.report
+import kotlinx.android.synthetic.main.activity_login.*
 import javax.inject.Inject
 
 
@@ -33,7 +37,14 @@ class AuthActivity : AppCompatActivity(), AuthView {
         super.onCreate(savedInstanceState)
         App.instance.authComponent().inject(this)
         setContentView(R.layout.activity_login)
-        findViewById<Button>(R.id.button_login).setOnClickListener { presenter.onLoginButtonClicked() }
+        RxView.clicks(button_login).subscribe { presenter.onLoginButtonClicked() }
+        if (BuildConfig.DEBUG) {
+            val clicksRequired = 3
+            RxView.longClicks(button_login)
+                    .doOnSubscribe { Toast.makeText(this, "Waiting for a test crash trigger ($clicksRequired long taps on th elogin button)", Toast.LENGTH_SHORT).show() }
+                    .buffer(clicksRequired)
+                    .subscribe { Crashlytics.getInstance().crash() }
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         }
@@ -87,12 +98,12 @@ class AuthActivity : AppCompatActivity(), AuthView {
     }
 
     override fun showError(throwable: Throwable?, @StringRes messageStringRes: Int?) {
-        throwable?.printStackTrace()
+        throwable?.report()
         messageStringRes?.let { Toast.makeText(this, getString(messageStringRes), Toast.LENGTH_SHORT).show() }
     }
 
     override fun onDestroy() {
-        connection?.let{
+        connection?.let {
             this.unbindService(it)
             connection = null
         }

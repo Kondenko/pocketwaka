@@ -8,8 +8,9 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.ViewCompat
 import android.view.View
+import com.crashlytics.android.Crashlytics
 import io.reactivex.Single
-import java.util.concurrent.TimeUnit
+import timber.log.Timber
 
 fun isConnectionAvailable(context: Context): Boolean {
     val service = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -35,4 +36,12 @@ inline fun FragmentManager.transaction(crossinline action: FragmentTransaction.(
 fun View.elevation(elevation: Float) {
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) ViewCompat.setElevation(this, elevation)
     else this.elevation = elevation
+}
+
+/**
+ * Prints log output and sends a report to crashlyics about the given exception
+ */
+fun Throwable.report(message: String? = null) {
+    Timber.e(this, message?:this.message)
+    Crashlytics.logException(this)
 }
