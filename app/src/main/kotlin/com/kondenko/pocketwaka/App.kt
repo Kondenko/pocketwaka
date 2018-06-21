@@ -25,7 +25,7 @@ open class App : Application() {
 
     private var mainComponent: MainComponent? = null
 
-    private var statsComponent: StatsComponent? = null
+    protected var statsComponent: StatsComponent? = null
 
     private var authComponent: AuthComponent? = null
 
@@ -44,7 +44,7 @@ open class App : Application() {
         }
     }
 
-    fun statsComponent(): StatsComponent {
+    open fun statsComponent(): StatsComponent {
         return statsComponent.initIfNull(appComponent.plusStats(StatsModule())) {
             statsComponent = it
         }
@@ -68,7 +68,7 @@ open class App : Application() {
         statsComponent = null
     }
 
-    private fun <T> T?.initIfNull(value: T, initFun: (T) -> Unit): T {
+   protected fun <T> T?.initIfNull(value: T, initFun: (T) -> Unit): T {
         if (this == null) initFun(value)
         return value
     }

@@ -48,6 +48,9 @@ android {
             shrinkResources false
             minifyEnabled false
         }
+        debugMock {
+            initWith debug
+        }
     }
 
     externalNativeBuild {
@@ -58,6 +61,7 @@ android {
 
     sourceSets {
         File debugKaptFiles = file("$buildDir/generated/source/kapt/debug")
+
         main {
             java.srcDirs += 'src/main/kotlin'
         }
@@ -68,9 +72,13 @@ android {
             java.srcDirs += 'src/debug/kotlin'
             java.srcDirs += debugKaptFiles
         }
+        debugMock {
+            java.srcDirs += 'src/debug/kotlin'
+            java.srcDirs += 'src/debugMock/kotlin'
+            java.srcDirs += debugKaptFiles
+        }
         test {
             java.srcDirs += 'src/test/kotlin'
-            java.srcDirs += 'src/mock/kotlin'
             java.srcDirs += 'src/testUtils/kotlin'
             java.srcDirs += debugKaptFiles
         }
@@ -112,6 +120,7 @@ dependencies {
     implementation crashlyticsGoogle
 
     debugImplementation stetho
+    debugMockImplementation stetho
 
     kapt compilers
 

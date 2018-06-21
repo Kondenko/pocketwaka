@@ -41,7 +41,6 @@ class AuthActivity : AppCompatActivity(), AuthView {
         if (BuildConfig.DEBUG) {
             val clicksRequired = 3
             RxView.longClicks(button_login)
-                    .doOnSubscribe { Toast.makeText(this, "Waiting for a test crash trigger ($clicksRequired long taps on th elogin button)", Toast.LENGTH_SHORT).show() }
                     .buffer(clicksRequired)
                     .subscribe { Crashlytics.getInstance().crash() }
         }
