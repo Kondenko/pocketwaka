@@ -1,7 +1,6 @@
 package com.kondenko.pocketwaka.domain.auth
 
 import com.kondenko.pocketwaka.Const
-import com.kondenko.pocketwaka.dagger.PerScreen
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
@@ -10,14 +9,11 @@ import com.kondenko.pocketwaka.utils.SchedulerContainer
 import com.kondenko.pocketwaka.utils.TimeProvider
 import io.reactivex.Single
 import io.reactivex.rxkotlin.zipWith
-import javax.inject.Inject
 
 /**
  * Fetches access token.
  */
-@PerScreen
-class GetAccessToken
-@Inject constructor(
+class GetAccessToken(
         schedulers: SchedulerContainer,
         private val timeProvider: TimeProvider,
         private val encryptor: Encryptor,

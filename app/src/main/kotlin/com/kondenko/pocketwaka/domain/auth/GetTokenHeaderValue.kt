@@ -1,16 +1,14 @@
 package com.kondenko.pocketwaka.domain.auth
 
-import com.kondenko.pocketwaka.dagger.PerScreen
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.utils.Encryptor
 import com.kondenko.pocketwaka.utils.SchedulerContainer
 import io.reactivex.Single
-import javax.inject.Inject
 
-@PerScreen
+
 class GetTokenHeaderValue
-@Inject constructor(
+(
         schedulers: SchedulerContainer,
         private val encryptor: Encryptor,
         private val accessTokenRepository: AccessTokenRepository

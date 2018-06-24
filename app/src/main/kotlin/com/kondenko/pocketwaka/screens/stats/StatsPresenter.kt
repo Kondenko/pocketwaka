@@ -2,9 +2,8 @@ package com.kondenko.pocketwaka.screens.stats
 
 import com.kondenko.pocketwaka.domain.stats.GetStats
 import com.kondenko.pocketwaka.screens.base.BasePresenter
-import javax.inject.Inject
 
-class StatsPresenter @Inject constructor(private val getStats: GetStats) : BasePresenter<StatsView>() {
+class StatsPresenter(private val getStats: GetStats) : BasePresenter<StatsView>() {
 
     private var isLoading = false
 

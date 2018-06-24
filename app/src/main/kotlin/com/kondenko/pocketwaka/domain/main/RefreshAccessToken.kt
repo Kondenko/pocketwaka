@@ -1,7 +1,6 @@
 package com.kondenko.pocketwaka.domain.main
 
 import com.kondenko.pocketwaka.Const
-import com.kondenko.pocketwaka.dagger.PerScreen
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
@@ -13,14 +12,13 @@ import com.kondenko.pocketwaka.utils.TimeProvider
 import io.reactivex.Single
 import io.reactivex.rxkotlin.zipWith
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * Refreshes AccessToken if the old one is expired.
  */
-@PerScreen
+
 class RefreshAccessToken
-@Inject constructor(
+(
         schedulers: SchedulerContainer,
         private val timeProvider: TimeProvider,
         private val encryptor: Encryptor,

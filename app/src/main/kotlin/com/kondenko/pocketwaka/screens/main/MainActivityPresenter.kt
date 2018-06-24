@@ -1,15 +1,12 @@
 package com.kondenko.pocketwaka.screens.main
 
-import com.kondenko.pocketwaka.dagger.PerScreen
 import com.kondenko.pocketwaka.domain.main.CheckIfUserIsLoggedIn
 import com.kondenko.pocketwaka.domain.main.DeleteSavedToken
 import com.kondenko.pocketwaka.domain.main.RefreshAccessToken
 import com.kondenko.pocketwaka.screens.base.BasePresenter
-import javax.inject.Inject
 
-@PerScreen
-class MainActivityPresenter
-@Inject constructor(
+
+class MainActivityPresenter(
         private val checkIfUserIsLoggedIn: CheckIfUserIsLoggedIn,
         private val deleteSavedToken: DeleteSavedToken,
         private val refreshAccessToken: RefreshAccessToken

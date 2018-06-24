@@ -1,6 +1,5 @@
 package com.kondenko.pocketwaka.domain.stats
 
-import com.kondenko.pocketwaka.dagger.PerScreen
 import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
@@ -13,11 +12,10 @@ import com.kondenko.pocketwaka.utils.TimeProvider
 import io.reactivex.Single
 import io.reactivex.rxkotlin.zipWith
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
-@PerScreen
+
 class GetStats
-@Inject constructor(
+(
         schedulers: SchedulerContainer,
         private val timeProvider: TimeProvider,
         private val colorProvider: ColorProvider,

@@ -113,7 +113,7 @@ dependencies {
     implementation constraintLayout
     implementation rx
     implementation retrofit
-    implementation dagger
+    implementation koin
     implementation smartTabLayout
     implementation timber
     implementation firebaseCore
@@ -122,21 +122,27 @@ dependencies {
     debugImplementation stetho
     debugMockImplementation stetho
 
-    kapt compilers
-
     testImplementation testingDependencies
 
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: versions.mockito
 
-    kaptTest testingCompilerDependencies
-
     androidTestImplementation androidTestingDependencies
-
-    kaptAndroidTest androidTestingCompilerDependencies
 
     androidTestImplementation(androidTestingSupportDependencies, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+}
+
+buildscript {
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        classpath "org.jetbrains.kotlin:kotlin-android-extensions:${versions.kotlin}"
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'

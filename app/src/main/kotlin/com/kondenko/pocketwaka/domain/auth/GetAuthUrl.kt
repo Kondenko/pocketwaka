@@ -1,18 +1,16 @@
 package com.kondenko.pocketwaka.domain.auth
 
 import com.kondenko.pocketwaka.Const
-import com.kondenko.pocketwaka.dagger.PerScreen
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.utils.SchedulerContainer
 import io.reactivex.Single
-import javax.inject.Inject
 
 /**
  * Fetches access token.
  */
-@PerScreen
+
 class GetAuthUrl
-@Inject constructor(schedulers: SchedulerContainer, private val getAppId: GetAppId) : UseCaseSingle<Nothing?, String>(schedulers) {
+(schedulers: SchedulerContainer, private val getAppId: GetAppId) : UseCaseSingle<Nothing?, String>(schedulers) {
 
     private val urlAuth = "${Const.BASE_URL}oauth/authorize" // Used to authenticate a user
 

@@ -12,35 +12,33 @@ import android.support.customtabs.CustomTabsServiceConnection
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.Toast
 import com.crashlytics.android.Crashlytics
 import com.jakewharton.rxbinding2.view.RxView
-import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.BuildConfig
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.screens.main.MainActivity
 import com.kondenko.pocketwaka.utils.report
-import kotlinx.android.synthetic.main.activity_login.*
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 
 class AuthActivity : AppCompatActivity(), AuthView {
 
-    @Inject
-    lateinit var presenter: AuthPresenter
+    private val presenter: AuthPresenter by inject()
 
     private var connection: CustomTabsServiceConnection? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        App.instance.authComponent().inject(this)
         setContentView(R.layout.activity_login)
-        RxView.clicks(button_login).subscribe { presenter.onLoginButtonClicked() }
+        val buttonLogin = findViewById<Button>(R.id.button_login)
+        RxView.clicks(buttonLogin).subscribe { presenter.onLoginButtonClicked() }
         if (BuildConfig.DEBUG) {
             val clicksRequired = 3
-            RxView.longClicks(button_login)
+            RxView.longClicks(buttonLogin)
                     .buffer(clicksRequired)
                     .subscribe { Crashlytics.getInstance().crash() }
         }
@@ -106,7 +104,6 @@ class AuthActivity : AppCompatActivity(), AuthView {
             this.unbindService(it)
             connection = null
         }
-        App.instance.clearAuthComponent()
         super.onDestroy()
     }
 }

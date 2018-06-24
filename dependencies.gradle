@@ -36,13 +36,10 @@ ext {
             "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
     ]
 
-    compilers = [
-            "com.google.dagger:dagger-compiler:${versions.dagger}",
-            "com.android.databinding:compiler:${versions.androidPlugin}"
-//            "android.arch.lifecycle:compiler:${versions.lifecycle}"
+    koin = [
+            "org.koin:koin-core:${versions.koin}",
+            "org.koin:koin-android:${versions.koin}"
     ]
-
-    dagger = "com.google.dagger:dagger:${versions.dagger}"
 
     constraintLayout = "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
 
@@ -55,26 +52,17 @@ ext {
     crashlyticsGoogle = "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
 
     testingDependencies = [
+            "org.koin:koin-test:${versions.koin}",
             "junit:junit:${versions.junit}",
             "org.mockito:mockito-core:${versions.mockito}",
             "com.nhaarman:mockito-kotlin:${versions.mockitoKotlin}",
             "org.robolectric:robolectric:${versions.robolectric}"
     ]
 
-    testingCompilerDependencies = [
-            "com.google.dagger:dagger:${versions.dagger}",
-            "com.google.dagger:dagger-compiler:${versions.dagger}"
-    ]
-
     androidTestingDependencies = [
             "com.android.support:support-annotations:${versions.supportLib}",
             "com.android.support.test:runner:${versions.supportTest}",
             "com.android.support.test:rules:${versions.supportTest}"
-    ]
-
-    androidTestingCompilerDependencies = [
-            "com.google.dagger:dagger:${versions.dagger}",
-            "com.google.dagger:dagger-compiler:${versions.dagger}"
     ]
 
     androidTestingSupportDependencies = [

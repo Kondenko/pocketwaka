@@ -1,17 +1,14 @@
 package com.kondenko.pocketwaka.data.auth.repository
 
 import android.content.SharedPreferences
-import com.kondenko.pocketwaka.dagger.PerScreen
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.data.auth.service.AccessTokenService
 import com.kondenko.pocketwaka.utils.edit
 import com.kondenko.pocketwaka.utils.singleOrErrorIfNull
 import io.reactivex.Completable
 import io.reactivex.Single
-import javax.inject.Inject
 
-@PerScreen
-class AccessTokenRepository @Inject constructor(private val service: AccessTokenService, private val prefs: SharedPreferences) {
+class AccessTokenRepository(private val service: AccessTokenService, private val prefs: SharedPreferences) {
 
     private val KEY_ACCESS_TOKEN = "access_token"
     private val KEY_EXPIRES_IN = "expires_in"

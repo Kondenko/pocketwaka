@@ -7,28 +7,25 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.screens.auth.AuthActivity
 import com.kondenko.pocketwaka.screens.stats.FragmentStats
 import com.kondenko.pocketwaka.utils.report
 import com.kondenko.pocketwaka.utils.transaction
 import io.reactivex.subjects.PublishSubject
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 
 class MainActivity : AppCompatActivity(), MainView {
 
     private val tagStats = "stats"
 
-    @Inject
-    lateinit var presenter: MainActivityPresenter
+    private val presenter: MainActivityPresenter by inject()
 
     private val refreshEvents = PublishSubject.create<Any>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        App.instance.mainComponent().inject(this)
         setContentView(R.layout.activity_main)
     }
 
@@ -83,11 +80,6 @@ class MainActivity : AppCompatActivity(), MainView {
                 replace(R.id.container, fragment, tag)
             }
         }
-    }
-
-    override fun onDestroy() {
-        App.instance.clearMainComponent()
-        super.onDestroy()
     }
 
 }

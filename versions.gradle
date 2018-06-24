@@ -17,7 +17,7 @@ ext {
             rxAndroid        : '2.0.1',
             rxKotlin         : '2.1.0',
             rxBinding        : '2.0.0',
-            dagger           : '2.11',
+            koin             : '0.9.3',
             retrofit         : '2.3.0',
             gson             : '2.8.1',
             smartTabLayout   : '1.6.1',
