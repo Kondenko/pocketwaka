@@ -11,7 +11,7 @@ import timber.log.Timber
 class MockStatsService(val context: Context, val gson: Gson) : StatsService {
 
     override fun getCurrentUserStats(tokenHeaderValue: String, range: String): Single<StatsDataWrapper> {
-        val filename = "mocks/stats-only-time.json"
+        val filename = "mocks/stats-full.json"
         Timber.i("Loading mock data from assets/$range")
         val stats = gson.fromJson<StatsDataWrapper>(getJsonAsset(context, filename), StatsDataWrapper::class.java)
         return stats.toSingle()

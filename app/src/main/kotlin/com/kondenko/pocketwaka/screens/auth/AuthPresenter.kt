@@ -6,9 +6,7 @@ import com.kondenko.pocketwaka.domain.auth.GetAuthUrl
 import com.kondenko.pocketwaka.screens.base.BasePresenter
 
 
-class AuthPresenter
-(private val getAuthUrl: GetAuthUrl, private val getAccessToken: GetAccessToken)
-    : BasePresenter<AuthView>() {
+class AuthPresenter(private val getAuthUrl: GetAuthUrl, private val getAccessToken: GetAccessToken) : BasePresenter<AuthView>() {
 
     fun onLoginButtonClicked() {
         getAuthUrl.execute(
