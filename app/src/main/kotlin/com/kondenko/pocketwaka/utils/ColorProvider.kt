@@ -3,14 +3,12 @@ package com.kondenko.pocketwaka.utils
 import android.content.Context
 import android.graphics.Color
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.dagger.PerScreen
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import java.util.*
-import javax.inject.Inject
 
-@PerScreen
+
 class ColorProvider
-@Inject constructor(val context: Context) {
+(val context: Context) {
 
     private val saturation = 0.65f
 

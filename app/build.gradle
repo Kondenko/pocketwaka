@@ -48,7 +48,7 @@ android {
             shrinkResources false
             minifyEnabled false
         }
-        debugMock {
+        mock {
             initWith debug
         }
     }
@@ -72,9 +72,9 @@ android {
             java.srcDirs += 'src/debug/kotlin'
             java.srcDirs += debugKaptFiles
         }
-        debugMock {
+        mock {
             java.srcDirs += 'src/debug/kotlin'
-            java.srcDirs += 'src/debugMock/kotlin'
+            java.srcDirs += 'src/mock/kotlin'
             java.srcDirs += debugKaptFiles
         }
         test {
@@ -113,30 +113,36 @@ dependencies {
     implementation constraintLayout
     implementation rx
     implementation retrofit
-    implementation dagger
+    implementation koin
     implementation smartTabLayout
     implementation timber
     implementation firebaseCore
     implementation crashlyticsGoogle
 
     debugImplementation stetho
-    debugMockImplementation stetho
-
-    kapt compilers
+    mockImplementation stetho
 
     testImplementation testingDependencies
 
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: versions.mockito
 
-    kaptTest testingCompilerDependencies
-
     androidTestImplementation androidTestingDependencies
-
-    kaptAndroidTest androidTestingCompilerDependencies
 
     androidTestImplementation(androidTestingSupportDependencies, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+}
+
+buildscript {
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        classpath "org.jetbrains.kotlin:kotlin-android-extensions:${versions.kotlin}"
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -5,14 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.kondenko.pocketwaka.App
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.stateful.StatefulFragment
 import com.kondenko.pocketwaka.utils.report
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 
 class FragmentStatsTab : StatefulFragment<StatsModel>(ModelFragmentStats()), StatsView {
@@ -23,13 +22,7 @@ class FragmentStatsTab : StatefulFragment<StatsModel>(ModelFragmentStats()), Sta
 
     private var range: String? = null
 
-    @Inject
-    lateinit var presenter: StatsPresenter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        App.instance.statsComponent().inject(this)
-    }
+    val presenter: StatsPresenter by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         containerId = R.id.stats_framelayout_container
@@ -68,11 +61,6 @@ class FragmentStatsTab : StatefulFragment<StatsModel>(ModelFragmentStats()), Sta
         range?.let {
             presenter.getStats(it)
         }
-    }
-
-    override fun onDestroy() {
-        App.instance.clearStatsComponent()
-        super.onDestroy()
     }
 
 }
