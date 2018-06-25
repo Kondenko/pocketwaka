@@ -48,7 +48,7 @@ android {
             shrinkResources false
             minifyEnabled false
         }
-        debugMock {
+        mock {
             initWith debug
         }
     }
@@ -72,9 +72,9 @@ android {
             java.srcDirs += 'src/debug/kotlin'
             java.srcDirs += debugKaptFiles
         }
-        debugMock {
+        mock {
             java.srcDirs += 'src/debug/kotlin'
-            java.srcDirs += 'src/debugMock/kotlin'
+            java.srcDirs += 'src/mock/kotlin'
             java.srcDirs += debugKaptFiles
         }
         test {
@@ -120,7 +120,7 @@ dependencies {
     implementation crashlyticsGoogle
 
     debugImplementation stetho
-    debugMockImplementation stetho
+    mockImplementation stetho
 
     testImplementation testingDependencies
 

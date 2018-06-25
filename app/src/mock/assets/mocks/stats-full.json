@@ -1,0 +1,723 @@
+{
+  "data": {
+    "best_day": {
+      "created_at": "2018-06-21T00:08:51Z",
+      "date": "06/19/2018",
+      "id": "91902d91-eab7-4a59-a172-5632d5fe900b",
+      "modified_at": null,
+      "total_seconds": 22084
+    },
+    "categories": [
+      {
+        "digital": "29:42",
+        "hours": 29,
+        "minutes": 42,
+        "name": "Coding",
+        "percent": 100.0,
+        "text": "29 hrs 42 mins",
+        "total_seconds": 106954
+      }
+    ],
+    "created_at": "2018-06-21T00:08:29Z",
+    "daily_average": 15257,
+    "days_including_holidays": 7,
+    "days_minus_holidays": 7,
+    "dependencies": [
+      {
+        "digital": "18:52",
+        "hours": 18,
+        "minutes": 52,
+        "name": "com.kondenko",
+        "percent": 18.44,
+        "text": "18 hrs 52 mins",
+        "total_seconds": 67935
+      },
+      {
+        "digital": "14:17",
+        "hours": 14,
+        "minutes": 17,
+        "name": "io.reactivex",
+        "percent": 13.97,
+        "text": "14 hrs 17 mins",
+        "total_seconds": 51474
+      },
+      {
+        "digital": "6:59",
+        "hours": 6,
+        "minutes": 59,
+        "name": "org.junit",
+        "percent": 6.83,
+        "text": "6 hrs 59 mins",
+        "total_seconds": 25149
+      },
+      {
+        "digital": "6:25",
+        "hours": 6,
+        "minutes": 25,
+        "name": "android.os",
+        "percent": 6.27,
+        "text": "6 hrs 25 mins",
+        "total_seconds": 23110
+      },
+      {
+        "digital": "6:11",
+        "hours": 6,
+        "minutes": 11,
+        "name": "android.view",
+        "percent": 6.06,
+        "text": "6 hrs 11 mins",
+        "total_seconds": 22309
+      },
+      {
+        "digital": "6:11",
+        "hours": 6,
+        "minutes": 11,
+        "name": "android.support",
+        "percent": 6.05,
+        "text": "6 hrs 11 mins",
+        "total_seconds": 22298
+      },
+      {
+        "digital": "6:09",
+        "hours": 6,
+        "minutes": 9,
+        "name": "com.nhaarman",
+        "percent": 6.02,
+        "text": "6 hrs 9 mins",
+        "total_seconds": 22162
+      },
+      {
+        "digital": "4:49",
+        "hours": 4,
+        "minutes": 49,
+        "name": "javax.inject",
+        "percent": 4.72,
+        "text": "4 hrs 49 mins",
+        "total_seconds": 17390
+      },
+      {
+        "digital": "4:35",
+        "hours": 4,
+        "minutes": 35,
+        "name": "kotlinx.android",
+        "percent": 4.49,
+        "text": "4 hrs 35 mins",
+        "total_seconds": 16542
+      },
+      {
+        "digital": "4:06",
+        "hours": 4,
+        "minutes": 6,
+        "name": "android.content",
+        "percent": 4.01,
+        "text": "4 hrs 6 mins",
+        "total_seconds": 14773
+      },
+      {
+        "digital": "3:16",
+        "hours": 3,
+        "minutes": 16,
+        "name": "com.ogaclejapan",
+        "percent": 3.2,
+        "text": "3 hrs 16 mins",
+        "total_seconds": 11805
+      },
+      {
+        "digital": "3:09",
+        "hours": 3,
+        "minutes": 9,
+        "name": "android.animation",
+        "percent": 3.09,
+        "text": "3 hrs 9 mins",
+        "total_seconds": 11390
+      },
+      {
+        "digital": "3:05",
+        "hours": 3,
+        "minutes": 5,
+        "name": "org.mockito",
+        "percent": 3.02,
+        "text": "3 hrs 5 mins",
+        "total_seconds": 11136
+      },
+      {
+        "digital": "2:50",
+        "hours": 2,
+        "minutes": 50,
+        "name": "timber.log",
+        "percent": 2.78,
+        "text": "2 hrs 50 mins",
+        "total_seconds": 10236
+      },
+      {
+        "digital": "1:03",
+        "hours": 1,
+        "minutes": 3,
+        "name": "dagger.Module",
+        "percent": 1.03,
+        "text": "1 hr 3 mins",
+        "total_seconds": 3787
+      },
+      {
+        "digital": "1:02",
+        "hours": 1,
+        "minutes": 2,
+        "name": "android.net",
+        "percent": 1.02,
+        "text": "1 hr 2 mins",
+        "total_seconds": 3750
+      },
+      {
+        "digital": "1:02",
+        "hours": 1,
+        "minutes": 2,
+        "name": "dagger.Provides",
+        "percent": 1.02,
+        "text": "1 hr 2 mins",
+        "total_seconds": 3742
+      },
+      {
+        "digital": "1:01",
+        "hours": 1,
+        "minutes": 1,
+        "name": "android.widget",
+        "percent": 1.0,
+        "text": "1 hr 1 min",
+        "total_seconds": 3693
+      },
+      {
+        "digital": "0:57",
+        "hours": 0,
+        "minutes": 57,
+        "name": "kotlin.math",
+        "percent": 0.93,
+        "text": "57 mins",
+        "total_seconds": 3421
+      },
+      {
+        "digital": "0:40",
+        "hours": 0,
+        "minutes": 40,
+        "name": "retrofit2.Retrofit",
+        "percent": 0.67,
+        "text": "40 mins",
+        "total_seconds": 2458
+      },
+      {
+        "digital": "0:31",
+        "hours": 0,
+        "minutes": 31,
+        "name": "com.crashlytics",
+        "percent": 0.52,
+        "text": "31 mins",
+        "total_seconds": 1904
+      },
+      {
+        "digital": "0:29",
+        "hours": 0,
+        "minutes": 29,
+        "name": "com.jakewharton",
+        "percent": 0.48,
+        "text": "29 mins",
+        "total_seconds": 1750
+      },
+      {
+        "digital": "0:29",
+        "hours": 0,
+        "minutes": 29,
+        "name": "okhttp3.Cache",
+        "percent": 0.47,
+        "text": "29 mins",
+        "total_seconds": 1747
+      },
+      {
+        "digital": "0:29",
+        "hours": 0,
+        "minutes": 29,
+        "name": "okhttp3.OkHttpClient",
+        "percent": 0.47,
+        "text": "29 mins",
+        "total_seconds": 1747
+      },
+      {
+        "digital": "0:29",
+        "hours": 0,
+        "minutes": 29,
+        "name": "retrofit2.adapter",
+        "percent": 0.47,
+        "text": "29 mins",
+        "total_seconds": 1747
+      },
+      {
+        "digital": "0:29",
+        "hours": 0,
+        "minutes": 29,
+        "name": "retrofit2.converter",
+        "percent": 0.47,
+        "text": "29 mins",
+        "total_seconds": 1747
+      },
+      {
+        "digital": "0:29",
+        "hours": 0,
+        "minutes": 29,
+        "name": "android.app",
+        "percent": 0.47,
+        "text": "29 mins",
+        "total_seconds": 1744
+      },
+      {
+        "digital": "0:21",
+        "hours": 0,
+        "minutes": 21,
+        "name": "android.util",
+        "percent": 0.36,
+        "text": "21 mins",
+        "total_seconds": 1314
+      },
+      {
+        "digital": "0:17",
+        "hours": 0,
+        "minutes": 17,
+        "name": "android.graphics",
+        "percent": 0.28,
+        "text": "17 mins",
+        "total_seconds": 1048
+      },
+      {
+        "digital": "0:16",
+        "hours": 0,
+        "minutes": 16,
+        "name": "android.preference",
+        "percent": 0.26,
+        "text": "16 mins",
+        "total_seconds": 966
+      },
+      {
+        "digital": "0:10",
+        "hours": 0,
+        "minutes": 10,
+        "name": "retrofit2.http",
+        "percent": 0.18,
+        "text": "10 mins",
+        "total_seconds": 646
+      },
+      {
+        "digital": "0:07",
+        "hours": 0,
+        "minutes": 7,
+        "name": "kotlin.jvm",
+        "percent": 0.13,
+        "text": "7 mins",
+        "total_seconds": 464
+      },
+      {
+        "digital": "0:06",
+        "hours": 0,
+        "minutes": 6,
+        "name": "App",
+        "percent": 0.11,
+        "text": "6 mins",
+        "total_seconds": 402
+      },
+      {
+        "digital": "0:06",
+        "hours": 0,
+        "minutes": 6,
+        "name": "vue",
+        "percent": 0.11,
+        "text": "6 mins",
+        "total_seconds": 402
+      },
+      {
+        "digital": "0:06",
+        "hours": 0,
+        "minutes": 6,
+        "name": "vue-analytics",
+        "percent": 0.11,
+        "text": "6 mins",
+        "total_seconds": 402
+      },
+      {
+        "digital": "0:05",
+        "hours": 0,
+        "minutes": 5,
+        "name": "org.robolectric",
+        "percent": 0.1,
+        "text": "5 mins",
+        "total_seconds": 352
+      },
+      {
+        "digital": "0:05",
+        "hours": 0,
+        "minutes": 5,
+        "name": "vue-scrollto",
+        "percent": 0.09,
+        "text": "5 mins",
+        "total_seconds": 335
+      },
+      {
+        "digital": "0:03",
+        "hours": 0,
+        "minutes": 3,
+        "name": "android.text",
+        "percent": 0.06,
+        "text": "3 mins",
+        "total_seconds": 222
+      },
+      {
+        "digital": "0:03",
+        "hours": 0,
+        "minutes": 3,
+        "name": "radonsoft.mireaassistant",
+        "percent": 0.05,
+        "text": "3 mins",
+        "total_seconds": 196
+      },
+      {
+        "digital": "0:02",
+        "hours": 0,
+        "minutes": 2,
+        "name": "com.facebook",
+        "percent": 0.03,
+        "text": "2 mins",
+        "total_seconds": 120
+      },
+      {
+        "digital": "0:01",
+        "hours": 0,
+        "minutes": 1,
+        "name": "okhttp3.Interceptor",
+        "percent": 0.02,
+        "text": "1 min",
+        "total_seconds": 79
+      },
+      {
+        "digital": "0:01",
+        "hours": 0,
+        "minutes": 1,
+        "name": "okhttp3.Response",
+        "percent": 0.02,
+        "text": "1 min",
+        "total_seconds": 79
+      },
+      {
+        "digital": "0:01",
+        "hours": 0,
+        "minutes": 1,
+        "name": "android.internal",
+        "percent": 0.02,
+        "text": "1 min",
+        "total_seconds": 69
+      },
+      {
+        "digital": "0:01",
+        "hours": 0,
+        "minutes": 1,
+        "name": "android.annotation",
+        "percent": 0.02,
+        "text": "1 min",
+        "total_seconds": 69
+      },
+      {
+        "digital": "0:01",
+        "hours": 0,
+        "minutes": 1,
+        "name": "android.hardware",
+        "percent": 0.02,
+        "text": "1 min",
+        "total_seconds": 69
+      },
+      {
+        "digital": "0:01",
+        "hours": 0,
+        "minutes": 1,
+        "name": "google.android",
+        "percent": 0.02,
+        "text": "1 min",
+        "total_seconds": 69
+      },
+      {
+        "digital": "0:01",
+        "hours": 0,
+        "minutes": 1,
+        "name": "kondenko.pocketwaka",
+        "percent": 0.02,
+        "text": "1 min",
+        "total_seconds": 62
+      },
+      {
+        "digital": "0:00",
+        "hours": 0,
+        "minutes": 0,
+        "name": "com.google",
+        "percent": 0.01,
+        "text": "0 secs",
+        "total_seconds": 23
+      },
+      {
+        "digital": "0:00",
+        "hours": 0,
+        "minutes": 0,
+        "name": "junit.Assert",
+        "percent": 0.0,
+        "text": "0 secs",
+        "total_seconds": 16
+      },
+      {
+        "digital": "0:00",
+        "hours": 0,
+        "minutes": 0,
+        "name": "dagger.Component",
+        "percent": 0.0,
+        "text": "0 secs",
+        "total_seconds": 7
+      },
+      {
+        "digital": "0:00",
+        "hours": 0,
+        "minutes": 0,
+        "name": "dagger.internal",
+        "percent": 0.0,
+        "text": "0 secs",
+        "total_seconds": 1
+      },
+      {
+        "digital": "0:00",
+        "hours": 0,
+        "minutes": 0,
+        "name": "dagger.MembersInjector",
+        "percent": 0.0,
+        "text": "0 secs",
+        "total_seconds": 1
+      },
+      {
+        "digital": "0:00",
+        "hours": 0,
+        "minutes": 0,
+        "name": "jni.h",
+        "percent": 0.0,
+        "text": "0 secs",
+        "total_seconds": 0
+      }
+    ],
+    "editors": [
+      {
+        "digital": "24:23",
+        "hours": 24,
+        "minutes": 23,
+        "name": "AndroidStudio",
+        "percent": 82.09,
+        "text": "24 hrs 23 mins",
+        "total_seconds": 87798
+      },
+      {
+        "digital": "5:19",
+        "hours": 5,
+        "minutes": 19,
+        "name": "VS Code",
+        "percent": 17.91,
+        "text": "5 hrs 19 mins",
+        "total_seconds": 19157
+      }
+    ],
+    "end": "2018-06-20T20:59:59Z",
+    "holidays": 0,
+    "human_readable_daily_average": "4 hrs 14 mins",
+    "human_readable_total": "29 hrs 39 mins",
+    "id": "2639faef-e825-4869-a161-57bc608b0a58",
+    "is_already_updating": false,
+    "is_coding_activity_visible": false,
+    "is_other_usage_visible": false,
+    "is_stuck": false,
+    "is_up_to_date": true,
+    "languages": [
+      {
+        "digital": "20:45",
+        "hours": 20,
+        "minutes": 45,
+        "name": "Kotlin",
+        "percent": 69.86,
+        "text": "20 hrs 45 mins",
+        "total_seconds": 74714
+      },
+      {
+        "digital": "5:11",
+        "hours": 5,
+        "minutes": 11,
+        "name": "Vue.js",
+        "percent": 17.49,
+        "text": "5 hrs 11 mins",
+        "total_seconds": 18704
+      },
+      {
+        "digital": "2:29",
+        "hours": 2,
+        "minutes": 29,
+        "name": "Groovy",
+        "percent": 8.37,
+        "text": "2 hrs 29 mins",
+        "total_seconds": 8954
+      },
+      {
+        "digital": "0:31",
+        "hours": 0,
+        "minutes": 31,
+        "name": "XML",
+        "percent": 1.77,
+        "text": "31 mins",
+        "total_seconds": 1895
+      },
+      {
+        "digital": "0:18",
+        "hours": 0,
+        "minutes": 18,
+        "name": "Java",
+        "percent": 1.06,
+        "text": "18 mins",
+        "total_seconds": 1131
+      },
+      {
+        "digital": "0:10",
+        "hours": 0,
+        "minutes": 10,
+        "name": "Properties",
+        "percent": 0.57,
+        "text": "10 mins",
+        "total_seconds": 613
+      },
+      {
+        "digital": "0:06",
+        "hours": 0,
+        "minutes": 6,
+        "name": "JavaScript",
+        "percent": 0.39,
+        "text": "6 mins",
+        "total_seconds": 413
+      },
+      {
+        "digital": "0:04",
+        "hours": 0,
+        "minutes": 4,
+        "name": "Git Config",
+        "percent": 0.26,
+        "text": "4 mins",
+        "total_seconds": 279
+      },
+      {
+        "digital": "0:02",
+        "hours": 0,
+        "minutes": 2,
+        "name": "Other",
+        "percent": 0.11,
+        "text": "2 mins",
+        "total_seconds": 122
+      },
+      {
+        "digital": "0:00",
+        "hours": 0,
+        "minutes": 0,
+        "name": "JSON",
+        "percent": 0.05,
+        "text": "0 secs",
+        "total_seconds": 55
+      },
+      {
+        "digital": "0:00",
+        "hours": 0,
+        "minutes": 0,
+        "name": "SCSS",
+        "percent": 0.04,
+        "text": "0 secs",
+        "total_seconds": 39
+      },
+      {
+        "digital": "0:00",
+        "hours": 0,
+        "minutes": 0,
+        "name": "Git",
+        "percent": 0.01,
+        "text": "0 secs",
+        "total_seconds": 15
+      },
+      {
+        "digital": "0:00",
+        "hours": 0,
+        "minutes": 0,
+        "name": "Text",
+        "percent": 0.01,
+        "text": "0 secs",
+        "total_seconds": 8
+      },
+      {
+        "digital": "0:00",
+        "hours": 0,
+        "minutes": 0,
+        "name": "C",
+        "percent": 0.0,
+        "text": "0 secs",
+        "total_seconds": 0
+      }
+    ],
+    "modified_at": "2018-06-21T00:08:51Z",
+    "operating_systems": [
+      {
+        "digital": "24:23",
+        "hours": 24,
+        "minutes": 23,
+        "name": "Windows",
+        "percent": 82.09,
+        "text": "24 hrs 23 mins",
+        "total_seconds": 87798
+      },
+      {
+        "digital": "5:19",
+        "hours": 5,
+        "minutes": 19,
+        "name": "Linux",
+        "percent": 17.91,
+        "text": "5 hrs 19 mins",
+        "total_seconds": 19157
+      }
+    ],
+    "project": null,
+    "projects": [
+      {
+        "digital": "24:20",
+        "hours": 24,
+        "minutes": 20,
+        "name": "PocketWaka",
+        "percent": 81.91,
+        "text": "24 hrs 20 mins",
+        "total_seconds": 87602
+      },
+      {
+        "digital": "5:19",
+        "hours": 5,
+        "minutes": 19,
+        "name": "cv-kondenko",
+        "percent": 17.91,
+        "text": "5 hrs 19 mins",
+        "total_seconds": 19157
+      },
+      {
+        "digital": "0:03",
+        "hours": 0,
+        "minutes": 3,
+        "name": "MIREAAssistant",
+        "percent": 0.18,
+        "text": "3 mins",
+        "total_seconds": 196
+      }
+    ],
+    "range": "last_7_days",
+    "start": "2018-06-13T21:00:00Z",
+    "status": "ok",
+    "timeout": 15,
+    "timezone": "Europe/Moscow",
+    "total_seconds": 106798,
+    "user_id": "0974f3f9-7f4e-4ccf-91bd-f4176dc3c94e",
+    "username": "kondenko",
+    "writes_only": false
+  }
+}
