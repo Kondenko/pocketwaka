@@ -30,11 +30,11 @@ ext {
             crashlytics      : '2.9.4',
 
             junit            : '4.12',
-            supportTest      : '0.5',
+            supportTest      : '1.0.2',
             mockito          : '2.19.0',
             mockitoKotlin    : '1.5.0',
             robolectric      : '3.2.2',
-            espresso         : '2.2.2'
+            espresso         : '3.0.2'
     ]
 
 }

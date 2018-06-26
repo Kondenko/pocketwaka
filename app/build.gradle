@@ -84,6 +84,7 @@ android {
         }
         androidTest {
             java.srcDirs += 'src/androidTest/kotlin'
+            java.srcDirs += 'src/uiTestUtils/kotlin'
             java.srcDirs += debugKaptFiles
         }
     }
@@ -120,15 +121,14 @@ dependencies {
     implementation crashlyticsGoogle
 
     debugImplementation stetho
+
     mockImplementation stetho
 
-    testImplementation testingDependencies
-
+    testImplementation testDependencies
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: versions.mockito
 
-    androidTestImplementation androidTestingDependencies
-
-    androidTestImplementation(androidTestingSupportDependencies, {
+    androidTestImplementation androidTestDependencies
+    androidTestImplementation(androidTestSupportDependencies, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }
