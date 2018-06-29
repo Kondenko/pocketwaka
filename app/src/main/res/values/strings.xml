@@ -1,5 +1,5 @@
 <resources>
-    <string name="all_app_name">PocketWaka</string>
+    <string name="all_app_name" translatable="false">PocketWaka</string>
 
     <string name="main_action_logout">Log out</string>
     <string name="main_action_refresh">Refresh</string>
@@ -19,7 +19,7 @@
 
 
     <string name="loginactivity_sign_in">Log in</string>
-    <string name="loginactivity_title">PocketWaka</string>
+    <string name="loginactivity_title" translatable="false">PocketWaka</string>
     <string name="loginactivity_subtitle">Your coding activity, visualized</string>
 
 
@@ -48,7 +48,7 @@
     </plurals>
 
 
-    <string name="stats_card_less_than_1_percent" formatted="false">&lt; 1%</string>
-    <string name="stats_card_percent_format_int" formatted="false">%.0f%%</string>
+    <string name="stats_card_less_than_1_percent" formatted="false" translatable="false">&lt; 1%</string>
+    <string name="stats_card_percent_format_int" formatted="false" translatable="false">%.0f%%</string>
 
 </resources>
