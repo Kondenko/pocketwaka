@@ -3,7 +3,8 @@ package com.kondenko.pocketwaka
 import android.app.Application
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
-import com.kondenko.pocketwaka.di.modulesList
+import com.kondenko.pocketwaka.di.TimberLogger
+import com.kondenko.pocketwaka.di.getModulesList
 import io.fabric.sdk.android.Fabric
 import org.koin.android.ext.android.startKoin
 
@@ -17,7 +18,7 @@ open class App : Application() {
             build()
         }
         Fabric.with(this, Crashlytics.Builder().core(crashlytics).build())
-        startKoin(this, modulesList(this))
+        startKoin(this, getModulesList(this), logger = TimberLogger())
     }
 
 }

@@ -13,7 +13,7 @@ class KoinDryRun : KoinTest {
 
     @Test
     fun testDi() {
-        startKoin(modulesList(RuntimeEnvironment.application))
+        startKoin(getModulesList(RuntimeEnvironment.application))
         dryRun()
     }
 
