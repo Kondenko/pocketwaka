@@ -22,7 +22,7 @@ class FragmentStatsTab : StatefulFragment<StatsModel>(ModelFragmentStats()), Sta
 
     private var range: String? = null
 
-    val presenter: StatsPresenter by inject()
+    private val presenter: StatsPresenter by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         containerId = R.id.stats_framelayout_container

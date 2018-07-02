@@ -14,8 +14,7 @@ import io.reactivex.rxkotlin.zipWith
 import java.util.concurrent.TimeUnit
 
 
-class GetStats
-(
+class GetStats(
         schedulers: SchedulerContainer,
         private val timeProvider: TimeProvider,
         private val colorProvider: ColorProvider,
@@ -33,20 +32,20 @@ class GetStats
             We add a tiny delay to the loading process so users
             actually see that the loading happens.
             */
-            .zipWith(timerSingle.apply { repeat() }) { stats, time -> stats }
+            .zipWith(timerSingle.apply { repeat() }) { stats, _ -> stats }
             .map { it.stats }
             .map {
-                val bestDayUi = it.bestDay?.let {
+                val bestDayModel = it.bestDay?.let {
                     // Introducing these constants to ensure the needed values' immutability
                     val date = it.date
                     val timeSec = it.totalSeconds
-                    if (date != null && timeSec != null) BestDay(date, secondsToDate(timeSec))
+                    if (date != null && timeSec != null) BestDay(date, secondsToHumanReadableTime(timeSec))
                     else null
                 }
                 StatsModel(
-                        bestDayUi,
-                        it.humanReadableDailyAverage,
-                        it.humanReadableTotal,
+                        bestDayModel,
+                        secondsToHumanReadableTime(it.dailyAverage?:0),
+                        secondsToHumanReadableTime(it.totalSeconds?:0),
                         it.projects?.map { StatsItem(it.hours, it.minutes, it.name, it.percent, it.totalSeconds) }?.provideColors(),
                         it.languages?.map { StatsItem(it.hours, it.minutes, it.name, it.percent, it.totalSeconds) }?.provideColors(),
                         it.editors?.map { StatsItem(it.hours, it.minutes, it.name, it.percent, it.totalSeconds) }?.provideColors(),
@@ -63,11 +62,11 @@ class GetStats
         return this
     }
 
-    private fun secondsToDate(totalSeconds: Int): String {
+    private fun secondsToHumanReadableTime(totalSeconds: Int): String {
         val hours = TimeUnit.SECONDS.toHours(totalSeconds.toLong())
         val minutes = TimeUnit.SECONDS.toMinutes(totalSeconds.toLong()) - TimeUnit.HOURS.toMinutes(hours)
-        val templateHours = statsRepository.getBestDayHoursTemplate(hours.toInt())
-        val templateMinutes = statsRepository.getBestDayMinutesTemplate(minutes.toInt())
+        val templateHours = statsRepository.getHoursTemplate(hours.toInt())
+        val templateMinutes = statsRepository.getMinutesTemplate(minutes.toInt())
         val timeBuilder = StringBuilder()
         if (hours > 0) timeBuilder.append(templateHours.format(hours)).append(' ')
         if (minutes > 0) timeBuilder.append(templateMinutes.format(minutes))

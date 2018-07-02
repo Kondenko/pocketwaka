@@ -45,4 +45,7 @@
     <dimen name="padding_right_stats_card_item_text">16dp</dimen>
     <dimen name="size_stats_card_item_label">18dp</dimen>
 
+    <!--Error state-->
+    <dimen name="padding_error_retry_button_horizontal">16dp</dimen>
+
 </resources>

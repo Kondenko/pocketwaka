@@ -10,12 +10,13 @@ import io.reactivex.subjects.PublishSubject
 /**
  * ScrollView with scrolling callbacks.
  */
-@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-class ObservableScrollView(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : ScrollView(context, attrs, defStyleAttr, defStyleRes) {
+class ObservableScrollView : ScrollView{
 
-    constructor(context: Context, attrs: AttributeSet) : this(context, attrs, 0)
+    @JvmOverloads
+    constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : super(context, attrs, defStyleAttr)
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     val scrolls: PublishSubject<ScrollEvent> = PublishSubject.create<ScrollEvent>()
 

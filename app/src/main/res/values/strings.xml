@@ -42,6 +42,7 @@
         <item quantity="one">%d hr</item>
         <item quantity="other">%d hrs</item>
     </plurals>
+
     <plurals name="stats_time_format_minutes" formatted="false">
         <item quantity="one">%d min</item>
         <item quantity="other">%d mins</item>

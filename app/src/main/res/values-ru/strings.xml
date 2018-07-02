@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="all_app_name">PocketWaka</string>
     <string name="main_action_logout">Выйти</string>
     <string name="main_action_refresh">Обновить</string>
     <string name="error_logging_in">Вход не выполнен</string>
@@ -13,7 +12,7 @@
     <string name="empty_state_text">Установите плагины для ваших редакторов и продолжайте работать</string>
     <string name="empty_state_action">Найти плагины</string>
     <string name="loginactivity_sign_in">Войти</string>
-    <string name="loginactivity_subtitle">Мы визуализируем ваше рабочее время</string>
+    <string name="loginactivity_subtitle">Визуализируем ваше рабочее время</string>
     <string name="stats_tab_7_days">Неделя</string>
     <string name="stats_tab_30_days">Месяц</string>
     <string name="stats_tab_6_months">Полгода</string>
@@ -27,16 +26,15 @@
     <string name="stats_card_header_languages">Языки</string>
     <string name="stats_card_header_operating_systems">Операционные системы</string>
     <plurals name="stats_time_format_hours" formatted="false">
-        <item quantity="one">%d час</item>
-        <item quantity="few">%d часа</item>
-        <item quantity="many">%d часов</item>
-        <item quantity="other">%d часов</item>
+        <item quantity="one">%d ч.</item>
+        <item quantity="few">%d ч.</item>
+        <item quantity="many">%d ч.</item>
+        <item quantity="other">%d ч.</item>
     </plurals>
     <plurals name="stats_time_format_minutes" formatted="false">
-        <item quantity="one">%d минута</item>
-        <item quantity="few">%d минуты</item>
-        <item quantity="many">%d минут</item>
-        <item quantity="other">%d минут</item>
+        <item quantity="one">%d мин.</item>
+        <item quantity="few">%d мин.</item>
+        <item quantity="many">%d мин.</item>
+        <item quantity="other">%d мин.</item>
     </plurals>
-
 </resources>

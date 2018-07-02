@@ -14,14 +14,12 @@ class StatsPresenter(private val getStats: GetStats) : BasePresenter<StatsView>(
             view.showLoading()
             getStats.execute(
                     range,
-                    { stats ->
+                    onSuccess = { stats ->
                         if (stats.isEmpty) view.showEmptyState()
                         else view.showModel(stats)
                     },
-                    { error -> view.showError(error) },
-                    {
-                        isLoading = false
-                    }
+                    onError = { view.showError(it) },
+                    onFinish = { isLoading = false }
             )
         }
     }

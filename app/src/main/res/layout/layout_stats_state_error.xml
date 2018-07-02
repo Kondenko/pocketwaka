@@ -1,10 +1,29 @@
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                             xmlns:app="http://schemas.android.com/apk/res-auto"
-                                             xmlns:tools="http://schemas.android.com/tools"
-                                             android:layout_width="match_parent"
-                                             android:layout_height="match_parent"
-                                             tools:context=".screens.base.stateful.states.FragmentErrorState"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".screens.base.stateful.states.FragmentErrorState"
     >
+
+    <Button
+        android:id="@+id/button_errorstate_retry"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_all_button"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:paddingStart="@dimen/padding_error_retry_button_horizontal"
+        android:paddingEnd="@dimen/padding_error_retry_button_horizontal"
+        android:background="@color/color_accent"
+        android:text="@string/error_state_action"
+        android:textColor="@color/color_text_white_primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/textivew_errorstate_message"
+        app:layout_constraintRight_toRightOf="@+id/textivew_errorstate_message"
+        app:layout_constraintTop_toBottomOf="@+id/textivew_errorstate_message"
+        />
 
     <TextView
         android:id="@+id/textivew_errorstate_title"
@@ -25,26 +44,10 @@
         android:layout_marginTop="16dp"
         android:text="@string/error_state_subtitle"
         android:textAppearance="@style/TextAppearance.App.State.Any.Subtitle"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintLeft_toLeftOf="@+id/textivew_errorstate_title"
         app:layout_constraintRight_toRightOf="@+id/textivew_errorstate_title"
         app:layout_constraintTop_toBottomOf="@+id/textivew_errorstate_title"
-        app:layout_constraintHorizontal_bias="0.503"
-        />
-
-    <Button
-        android:id="@+id/button_errorstate_retry"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/height_all_button"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/color_accent"
-        android:text="@string/error_state_action"
-        android:textColor="@color/color_text_white_primary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@+id/textivew_errorstate_message"
-        app:layout_constraintRight_toRightOf="@+id/textivew_errorstate_message"
-        app:layout_constraintTop_toBottomOf="@+id/textivew_errorstate_message"
         />
 
     <ImageView
