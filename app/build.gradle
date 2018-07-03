@@ -1,66 +1,148 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-
+apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    compileSdkVersion versions.androidCompileSdk
+    buildToolsVersion versions.androidBuildTools
+
     defaultConfig {
         applicationId "com.kondenko.pocketwaka"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+
+        minSdkVersion versions.androidMinSdk
+        targetSdkVersion versions.androidTargetSdk
+
+        versionCode versions.code
+        versionName "${versions.appMajor}.${versions.appMinor}.${versions.appPatch}"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        vectorDrawables.useSupportLibrary = true
     }
-    dataBinding {
-        enabled = true
+
+    signingConfigs {
+        config {
+            def props = new Properties()
+            props.load(new FileInputStream(rootProject.file("release.properties")))
+
+            storeFile rootProject.file(props.keyStore)
+            keyAlias props.keyAlias
+            keyPassword props.keyPassword
+            storePassword props.storePassword
+        }
     }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.config
+            shrinkResources true
+            minifyEnabled true
+            def configFiles = fileTree(dir: "./proguard", include: ["*.pro"]).asList()
+            configFiles.add(getDefaultProguardFile('proguard-android.txt'))
+            proguardFiles configFiles.toArray()
+        }
+        debug {
+            shrinkResources false
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        mock {
+            initWith debug
+        }
+    }
+
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/Android.mk'
+        }
+    }
+
+    sourceSets {
+        File debugKaptFiles = file("$buildDir/generated/source/kapt/debug")
+
+        main {
+            java.srcDirs += 'src/main/kotlin'
+        }
+        release {
+            java.srcDirs += [file("$buildDir/generated/source/kapt/release")]
+        }
+        debug {
+            java.srcDirs += 'src/debug/kotlin'
+            java.srcDirs += debugKaptFiles
+        }
+        mock {
+            java.srcDirs += 'src/debug/kotlin'
+            java.srcDirs += 'src/mock/kotlin'
+            java.srcDirs += debugKaptFiles
+        }
+        test {
+            java.srcDirs += 'src/test/kotlin'
+            java.srcDirs += 'src/testUtils/kotlin'
+            java.srcDirs += debugKaptFiles
+        }
+        androidTest {
+            java.srcDirs += 'src/androidTest/kotlin'
+            java.srcDirs += debugKaptFiles
+        }
+    }
+
+    androidExtensions {
+        experimental = true
+    }
+
+}
+
+afterEvaluate {
+    android.sourceSets.all { sourceSet ->
+        if (!sourceSet.name.startsWith("test")) {
+            sourceSet.kotlin.setSrcDirs([])
         }
     }
 }
 
 kapt {
-    generateStubs = true
+    generateStubs = false
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+
+    implementation kotlinLib
+    implementation support
+    implementation constraintLayout
+    implementation rx
+    implementation retrofit
+    implementation koin
+    implementation smartTabLayout
+    implementation timber
+    implementation firebaseCore
+    implementation crashlyticsGoogle
+
+    debugImplementation stetho
+    mockImplementation stetho
+
+    testImplementation testingDependencies
+
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: versions.mockito
+
+    androidTestImplementation androidTestingDependencies
+
+    androidTestImplementation(androidTestingSupportDependencies, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
-    kapt "com.android.databinding:compiler:$androidPluginVersion"
-
-    // Kotlin
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-
-    // Rx
-    compile "io.reactivex:rxkotlin:$rxKotlinVersion"
-    compile "io.reactivex:rxandroid:$rxAdnroidVersion"
-
-    // Dagger 2
-    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
-    compile "com.google.dagger:dagger:$daggerVersion"
-
-    // Support Library
-    compile "com.android.support:appcompat-v7:$supportLibVersion"
-    compile "com.android.support:design:$supportLibVersion"
-    compile "com.android.support:customtabs:$supportLibVersion"
-    compile "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
-
-    // Retrofit
-    compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
-    compile "com.squareup.retrofit2:converter-gson:$retrofitVersion"
-    compile "com.squareup.retrofit2:adapter-rxjava:$retrofitVersion"
-
-
-    testCompile "junit:junit:$junitVersion"
-    compile 'javax.annotation:jsr250-api:1.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
 }
+
+buildscript {
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        classpath "org.jetbrains.kotlin:kotlin-android-extensions:${versions.kotlin}"
+    }
+}
+
+apply plugin: 'com.google.gms.google-services'

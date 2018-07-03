@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#35434f</color>
-    <color name="colorPrimaryDark">#28333c</color>
-    <color name="colorAccent">#2595ff</color>
+    <color name="color_primary">#35434f</color>
+    <color name="color_primary_dark">#28333c</color>
+    <color name="color_accent">#2595ff</color>
+    <color name="color_background_gray">#eceff1</color>
+
+    <color name="color_tab_text_default">@color/color_primary</color>
+
+    <color name="color_text_black_primary">#DD000000</color>
+    <color name="color_text_black_secondary">#89000000</color>
+    <color name="color_text_white_primary">#FFFFFF</color>
+
+    <color name="color_login_shadow_start">#59000000</color>
+
+    <array name="chart_colors">
+        <!--<item name="chart_blue">#4da2db</item>-->
+        <item name="chart_blue">@color/color_accent</item>
+        <item name="chart_red">#ff6a59</item>
+        <item name="chart_yellow">#f2ef55</item>
+        <item name="chart_purple">#9b59b6</item>
+        <item name="chart_green">#59ff9e</item>
+        <item name="chart_orange">#ff8859</item>
+    </array>
+
 </resources>

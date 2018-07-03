@@ -1,0 +1,68 @@
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".screens.base.stateful.states.FragmentErrorState"
+    >
+
+    <Button
+        android:id="@+id/button_errorstate_retry"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_all_button"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:paddingStart="@dimen/padding_error_retry_button_horizontal"
+        android:paddingEnd="@dimen/padding_error_retry_button_horizontal"
+        android:background="@color/color_accent"
+        android:text="@string/error_state_action"
+        android:textColor="@color/color_text_white_primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/textivew_errorstate_message"
+        app:layout_constraintRight_toRightOf="@+id/textivew_errorstate_message"
+        app:layout_constraintTop_toBottomOf="@+id/textivew_errorstate_message"
+        />
+
+    <TextView
+        android:id="@+id/textivew_errorstate_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/error_state_title"
+        android:textAppearance="@style/TextAppearance.App.State.Any.Title"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintLeft_toLeftOf="@+id/imageview_errorstate_image"
+        app:layout_constraintRight_toRightOf="@+id/imageview_errorstate_image"
+        app:layout_constraintTop_toBottomOf="@+id/imageview_errorstate_image"
+        />
+
+    <TextView
+        android:id="@+id/textivew_errorstate_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/error_state_subtitle"
+        android:textAppearance="@style/TextAppearance.App.State.Any.Subtitle"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintLeft_toLeftOf="@+id/textivew_errorstate_title"
+        app:layout_constraintRight_toRightOf="@+id/textivew_errorstate_title"
+        app:layout_constraintTop_toBottomOf="@+id/textivew_errorstate_title"
+        />
+
+    <ImageView
+        android:id="@+id/imageview_errorstate_image"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:adjustViewBounds="true"
+        android:cropToPadding="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/state_error_img"
+        />
+
+</android.support.constraint.ConstraintLayout>

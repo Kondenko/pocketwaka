@@ -1,0 +1,44 @@
+ext {
+
+    versions = [
+            code             : 1,
+            appMajor         : 1,
+            appMinor         : 0,
+            appPatch         : 0,
+            // Android
+            androidMinSdk    : 17,
+            androidTargetSdk : 27,
+            androidCompileSdk: 27,
+            androidBuildTools: '28.0.0',
+            androidPlugin    : '3.0.0',
+            gradle           : '3.1.3',
+            // Dependencies
+            kotlin           : '1.2.50',
+            supportLib       : '27.1.1',
+            lifecycle        : '1.1.1',
+            constraintLayout : '1.1.1',
+            rxJava           : '2.1.1',
+            rxAndroid        : '2.0.1',
+            rxKotlin         : '2.1.0',
+            rxBinding        : '2.0.0',
+            koin             : '0.9.3',
+            retrofit         : '2.3.0',
+            gson             : '2.8.1',
+            smartTabLayout   : '1.6.1',
+            timber           : '4.5.1',
+            stetho           : '1.5.0',
+
+            firebaseCore     : '16.0.0',
+            googleServices   : '4.0.0',
+            fabric           : '1.25.4',
+            crashlytics      : '2.9.4',
+
+            junit            : '4.12',
+            supportTest      : '0.5',
+            mockito          : '2.19.0',
+            mockitoKotlin    : '1.5.0',
+            robolectric      : '3.2.2',
+            espresso         : '2.2.2'
+    ]
+
+}

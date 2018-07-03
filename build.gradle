@@ -1,42 +1,44 @@
-ext {
-    // Versions
-    minSdkVersion = 16
-    targetSdkVersion = 25
-    compileSdkVersion = 25
-    buildToolsVersion = '25.0.0'
-
-
-    rxKotlinVersion = '0.60.0'
-    rxAdnroidVersion = '1.2.1'
-    retrofitVersion = '2.1.0'
-    daggerVersion = '2.8'
-    supportLibVersion = '25.1.0'
-    constraintLayoutVersion = '1.0.0-beta4'
-    junitVersion = '4.12'
-}
+apply from: 'dependencies.gradle'
 
 buildscript {
-    ext.androidPluginVersion = '2.3.0-beta1'
-    ext.aptVersion = '1.8'
-    ext.kotlinVersion = '1.0.6'
+    apply from: 'versions.gradle'
 
     repositories {
         jcenter()
+        google()
+        maven {
+            url 'https://maven.fabric.io/public'
+        }
     }
+
     dependencies {
-        classpath "com.android.tools.build:gradle:$androidPluginVersion"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlinVersion"
+        classpath "com.android.tools.build:gradle:${versions.gradle}"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        classpath "org.jetbrains.kotlin:kotlin-android-extensions:${versions.kotlin}"
+        classpath "com.google.gms:google-services:${versions.googleServices}"
+        classpath "io.fabric.tools:gradle:${versions.fabric}"
     }
 }
 
 allprojects {
     repositories {
         jcenter()
+        google()
+        maven { url "https://maven.google.com" }
+    }
+}
+
+subprojects {
+    configurations.all {
+        resolutionStrategy {
+            forcedModules = [
+                    "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}",
+                    "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
+            ]
+        }
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-

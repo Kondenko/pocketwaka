@@ -1,16 +1,51 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="margin_all_vertical_small">8dp</dimen>
 
-    <dimen name="bottom_nav_height">56dp</dimen>
+    <dimen name="margin_all_card_inner">8dp</dimen>
+    <dimen name="margin_all_card_outer_vertical">4dp</dimen>
+    <dimen name="margin_all_card_outer_horizontal">8dp</dimen>
 
-    <dimen name="text_view_height">48dp</dimen>
+    <dimen name="height_all_button">36dp</dimen>
 
-    <dimen name="button_height">36dp</dimen>
-    <dimen name="button_padding_side">16dp</dimen>
+    <!--Login-->
+    <dimen name="height_login_shadow">8dp</dimen>
 
-    <dimen name="size_logo">120dp</dimen>
+    <!--Stats-->
+    <dimen name="textsize_stats_header">16sp</dimen>
+    <dimen name="textsize_stats_info">20sp</dimen> <!-- Total and average time -->
 
+    <dimen name="height_stats_tab_bar">56dp</dimen>
+    <dimen name="width_stats_tab_min">110dp</dimen>
+
+    <dimen name="height_stats_tab_indicator">36dp</dimen>
+    <dimen name="width_stats_tab_indicator">90dp</dimen>
+
+    <dimen name="textsize_stats_tabs">14dp</dimen>
+
+    <dimen name="height_stats_shadow">4dp</dimen>
+
+    <dimen name="height_stats_bestday">112dp</dimen>
+    <item name="alpha_stats_bestday_img" format="float" type="dimen">0.6</item>
+
+    <dimen name="textsize_stats_bestday_date">16sp</dimen>
+    <dimen name="textsize_stats_bestday_time">24sp</dimen>
+    <dimen name="textsize_stats_bestday_caption">14sp</dimen>
+
+    <dimen name="elevation_stats_bestday">2dp</dimen>
+
+    <dimen name="padding_stats_card_inner">16dp</dimen>
+    <dimen name="card_stats_bar_height">16dp</dimen>
+    <dimen name="card_stats_bar_corner_radius">90dp</dimen>
+    <dimen name="card_stats_bar_margin_top">16dp</dimen>
+    <dimen name="card_stats_bar_margin_bottom">8dp</dimen>
+
+    <dimen name="height_stats_card_item">48dp</dimen>
+    <dimen name="padding_left_stats_card_item_text">30dp</dimen>
+    <dimen name="padding_right_stats_card_item_text">16dp</dimen>
+    <dimen name="size_stats_card_item_label">18dp</dimen>
+
+    <!--Error state-->
+    <dimen name="padding_error_retry_button_horizontal">16dp</dimen>
 
 </resources>

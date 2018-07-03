@@ -1,32 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    android:id="@+id/activity_main"
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-<RelativeLayout
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_background_gray"
     tools:context="com.kondenko.pocketwaka.screens.main.MainActivity"
-    >
-
-
-    <FrameLayout
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-
-    <android.support.design.widget.BottomNavigationView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_nav_height"
-        android:layout_alignParentBottom="true"
-        app:itemBackground="@color/colorPrimary"
-        app:itemIconTint="@color/colorAccent"
-        app:itemTextColor="@android:color/white"
-        app:menu="@menu/bottom_nav_menu"
-        android:id="@+id/bottomNavigationView"/>
-
-</RelativeLayout>
-</layout>
+    android:id="@+id/container" />
