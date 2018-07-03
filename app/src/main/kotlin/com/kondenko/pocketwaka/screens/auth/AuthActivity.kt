@@ -22,6 +22,7 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.screens.main.MainActivity
 import com.kondenko.pocketwaka.utils.report
+import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.inject
 
 
@@ -34,11 +35,10 @@ class AuthActivity : AppCompatActivity(), AuthView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        val buttonLogin = findViewById<Button>(R.id.button_login)
-        RxView.clicks(buttonLogin).subscribe { presenter.onLoginButtonClicked() }
+        RxView.clicks(button_login).subscribe { presenter.onLoginButtonClicked() }
         if (BuildConfig.DEBUG) {
             val clicksRequired = 3
-            RxView.longClicks(buttonLogin)
+            RxView.longClicks(button_login)
                     .buffer(clicksRequired)
                     .subscribe { Crashlytics.getInstance().crash() }
         }

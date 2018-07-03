@@ -102,10 +102,6 @@ afterEvaluate {
     }
 }
 
-kapt {
-    generateStubs = false
-}
-
 dependencies {
 
     implementation kotlinLib
