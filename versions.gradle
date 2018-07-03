@@ -1,7 +1,7 @@
 ext {
 
     versions = [
-            code             : 3,
+            code             : 4,
             appMajor         : 1,
             appMinor         : 0,
             appPatch         : 0,
