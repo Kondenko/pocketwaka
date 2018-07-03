@@ -15,8 +15,8 @@ android {
         minSdkVersion versions.androidMinSdk
         targetSdkVersion versions.androidTargetSdk
 
-        versionCode 1
-        versionName "1.0"
+        versionCode versions.code
+        versionName "${versions.appMajor}.${versions.appMinor}.${versions.appPatch}"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
