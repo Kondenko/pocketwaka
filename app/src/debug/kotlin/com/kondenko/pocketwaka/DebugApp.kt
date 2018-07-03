@@ -1,6 +1,5 @@
 package com.kondenko.pocketwaka
 
-import com.crashlytics.android.Crashlytics
 import com.facebook.stetho.Stetho
 import timber.log.Timber
 

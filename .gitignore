@@ -1,3 +1,8 @@
+# Release files
+**/release/
+*.apk
+
+
 # Generated files
 bin/
 gen/
@@ -30,7 +35,6 @@ captures/
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 
-# Application API key
 app/src/main/jni/*
 
 *.iml
