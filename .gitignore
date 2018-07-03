@@ -1,7 +1,18 @@
 # Release files
-**/release/
-*.apk
+**/release/output.json
 
+# Proguard files
+**/proguard/
+
+# Built application files
+*.apk
+*.ap_
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java class files
+*.class
 
 # Generated files
 bin/
