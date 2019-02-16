@@ -3,19 +3,26 @@ package com.kondenko.pocketwaka.screens.base.stateful
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
+import android.view.View
 import com.kondenko.pocketwaka.screens.base.stateful.states.FragmentEmptyState
 import com.kondenko.pocketwaka.screens.base.stateful.states.FragmentErrorState
 import com.kondenko.pocketwaka.screens.base.stateful.states.FragmentLoadingState
 import com.kondenko.pocketwaka.utils.transaction
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 
+private const val argModel = "model"
+
 abstract class StatefulFragment<M : Parcelable>(protected val modelFragment: ModelFragment<M>) : Fragment(), StatefulView<M> {
 
-    private val ARG_MODEL = "ARG_MODEL"
-
     protected var containerId: Int = 0
+
+    private val modelSubject = BehaviorSubject.create<M>()
 
     private val errorFragment = FragmentErrorState()
 
@@ -27,25 +34,24 @@ abstract class StatefulFragment<M : Parcelable>(protected val modelFragment: Mod
         FragmentLoadingState()
     }
 
-    private val modelSubject = BehaviorSubject.create<M>()
-
     init {
         modelSubject
                 .distinctUntilChanged()
-                .doOnNext {
-                    arguments?.putParcelable(ARG_MODEL, it)
-                    modelFragment.show()
-                }
-                .doOnError {
-                    showError(it)
-                }
-                .subscribe()
+                .subscribeBy(
+                        onNext = {
+                            arguments?.putParcelable(argModel, it)
+                            modelFragment.show()
+                        },
+                        onError = {
+                            showError(it)
+                        }
+                )
         modelFragment.subscribeToModelChanges(modelSubject.share())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.getParcelable<M>(ARG_MODEL)?.let(modelSubject::onNext)
+        savedInstanceState?.getParcelable<M>(argModel)?.let(modelSubject::onNext)
     }
 
     override fun showModel(model: M) {
