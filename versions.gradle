@@ -1,10 +1,10 @@
 ext {
 
     versions = [
-            code             : 4,
+            code             : 5,
             appMajor         : 1,
             appMinor         : 0,
-            appPatch         : 0,
+            appPatch         : 1,
 
             // Android
             androidMinSdk    : 17,
