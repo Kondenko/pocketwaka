@@ -48,7 +48,7 @@ captures/
 
 app/src/main/jni/*
 
-*.iml
+**/*.iml
 .DS_Store
 
 **/google-services.json
