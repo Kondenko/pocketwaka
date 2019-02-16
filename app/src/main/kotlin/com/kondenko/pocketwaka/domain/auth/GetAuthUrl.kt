@@ -17,7 +17,7 @@ class GetAuthUrl
     private val responseType = "code"
 
     override fun build(params: Nothing?): Single<String> {
-        val scopes = arrayOf("email", "read_logged_time", "read_stats", "read_teams").joinToString(",")
+        val scopes = arrayOf("email", "read_logged_time", "read_stats").joinToString(",")
         return getAppId.build()
                 .map { id -> "$urlAuth?client_id=$id&response_type=$responseType&redirect_uri=${Const.AUTH_REDIRECT_URI}&scope=$scopes&force_approve=true" }
                 .map { it.trimMargin() }

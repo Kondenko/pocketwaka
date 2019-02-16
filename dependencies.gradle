@@ -2,6 +2,10 @@ apply from: "versions.gradle"
 
 ext {
 
+    kotlinLib = [
+            "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}",
+            "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
+    ]
     support = [
             "com.android.support:support-v4:${versions.supportLib}",
             "com.android.support:appcompat-v7:${versions.supportLib}",
@@ -31,10 +35,6 @@ ext {
             "com.ogaclejapan.smarttablayout:utils-v4:${versions.smartTabLayout}@aar"
     ]
 
-    kotlinLib = [
-            "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}",
-            "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
-    ]
 
     koin = [
             "org.koin:koin-core:${versions.koin}",
