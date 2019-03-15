@@ -10,6 +10,5 @@ class StatsItem(
         val minutes: Int?,
         val name: String?,
         val percent: Double?,
-        val totalSeconds: Int?,
         var color: Int = Color.TRANSPARENT
 ) : Parcelable
