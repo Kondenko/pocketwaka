@@ -1,10 +1,10 @@
 ext {
 
     versions = [
-            code             : 4,
+            code             : 6,
             appMajor         : 1,
             appMinor         : 0,
-            appPatch         : 0,
+            appPatch         : 1,
 
             // Android
             androidMinSdk    : 17,
@@ -12,7 +12,7 @@ ext {
             androidCompileSdk: 28,
             androidBuildTools: '28.0.3',
             androidPlugin    : '3.0.0',
-            gradle           : '3.3.1',
+            gradle           : '3.3.2',
 
             // Dependencies
             kotlin           : '1.3.21',

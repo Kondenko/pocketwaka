@@ -12,6 +12,7 @@ import com.kondenko.pocketwaka.utils.TimeProvider
 import io.reactivex.Single
 import io.reactivex.rxkotlin.zipWith
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 
 class GetStats(
@@ -38,21 +39,21 @@ class GetStats(
                 val bestDayModel = it.bestDay?.let {
                     // Introducing these constants to ensure the needed values' immutability
                     val date = it.date
-                    val timeSec = it.totalSeconds
+                    val timeSec = it.totalSeconds?.roundToInt()
                     if (date != null && timeSec != null) BestDay(date, secondsToHumanReadableTime(timeSec))
                     else null
                 }
                 StatsModel(
                         bestDayModel,
                         secondsToHumanReadableTime(it.dailyAverage?:0),
-                        secondsToHumanReadableTime(it.totalSeconds?:0),
-                        it.projects?.map { StatsItem(it.hours, it.minutes, it.name, it.percent, it.totalSeconds) }?.provideColors(),
-                        it.languages?.map { StatsItem(it.hours, it.minutes, it.name, it.percent, it.totalSeconds) }?.provideColors(),
-                        it.editors?.map { StatsItem(it.hours, it.minutes, it.name, it.percent, it.totalSeconds) }?.provideColors(),
-                        it.operatingSystems?.map { StatsItem(it.hours, it.minutes, it.name, it.percent, it.totalSeconds) }?.provideColors(),
+                        secondsToHumanReadableTime((it.totalSeconds?:0.0).roundToInt()),
+                        it.projects?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }?.provideColors(),
+                        it.languages?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }?.provideColors(),
+                        it.editors?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }?.provideColors(),
+                        it.operatingSystems?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }?.provideColors(),
                         it.range,
                         timeProvider.getCurrentTimeMillis(),
-                        it.totalSeconds == 0
+                        it.totalSeconds == 0.0
                 )
             }
 
@@ -63,6 +64,7 @@ class GetStats(
     }
 
     private fun secondsToHumanReadableTime(totalSeconds: Int): String {
+        // TODO Format using DateUtil
         val hours = TimeUnit.SECONDS.toHours(totalSeconds.toLong())
         val minutes = TimeUnit.SECONDS.toMinutes(totalSeconds.toLong()) - TimeUnit.HOURS.toMinutes(hours)
         val templateHours = statsRepository.getHoursTemplate(hours.toInt())
