@@ -12,6 +12,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.rxkotlin.toSingle
 import org.junit.Test
 
+
 class GetStatsTest {
 
     private val timeProvider: TimeProvider = mock()
@@ -22,14 +23,14 @@ class GetStatsTest {
 
     private val statsRepository: StatsRepository = mock()
 
-    private val useCase = GetStats(testSchedulers, timeProvider , colorProvider, getTokenHeader, statsRepository)
+    private val getStats = GetStats(testSchedulers, timeProvider , colorProvider, getTokenHeader, statsRepository)
 
     @Test
     fun `should fetch token first`() {
         val header = "foo"
         val range = "bar"
         whenever(getTokenHeader.build()).doReturn(header.toSingle())
-        useCase.execute(range)
+        getStats.execute(range)
         val order = inOrder(getTokenHeader, statsRepository)
         order.verify(getTokenHeader).build()
         order.verify(statsRepository).getStats(header, range)

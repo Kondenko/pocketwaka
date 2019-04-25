@@ -1,5 +1,6 @@
 package com.kondenko.pocketwaka.domain.stats
 
+import com.kondenko.pocketwaka.data.stats.model.StatsDataWrapper
 import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
@@ -25,37 +26,40 @@ class GetStats(
 
     private val timerSingle = Single.timer(100, TimeUnit.MILLISECONDS)
 
-    override fun build(range: String?): Single<StatsModel> = getTokenHeader.build()
-            .flatMap { header -> statsRepository.getStats(header, range!!) }
-            /*
-            When the user tries to refresh the data it refreshes so quickly
-            that the progress bar doesn't have the time to be shown and hidden again.
-            We add a tiny delay to the loading process so users
-            actually see that the loading happens.
-            */
-            .zipWith(timerSingle.apply { repeat() }) { stats, _ -> stats }
-            .map { it.stats }
-            .map {
-                val bestDayModel = it.bestDay?.let {
-                    // Introducing these constants to ensure the needed values' immutability
-                    val date = it.date
-                    val timeSec = it.totalSeconds?.roundToInt()
-                    if (date != null && timeSec != null) BestDay(date, secondsToHumanReadableTime(timeSec))
-                    else null
-                }
-                StatsModel(
-                        bestDayModel,
-                        secondsToHumanReadableTime(it.dailyAverage?:0),
-                        secondsToHumanReadableTime((it.totalSeconds?:0.0).roundToInt()),
-                        it.projects?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }?.provideColors(),
-                        it.languages?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }?.provideColors(),
-                        it.editors?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }?.provideColors(),
-                        it.operatingSystems?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }?.provideColors(),
-                        it.range,
-                        timeProvider.getCurrentTimeMillis(),
-                        it.totalSeconds == 0.0
-                )
-            }
+    override fun build(range: String?): Single<StatsModel> =
+            getTokenHeader.build()
+                    .flatMap { header -> statsRepository.getStats(header, range!!) }
+                    /*
+                    When the user tries to refresh the data it refreshes so quickly
+                    that the progress bar doesn't have the time to be shown and hidden again.
+                    We add a tiny delay to the loading process so users
+                    actually see that the loading happens.
+                    */
+                    .zipWith(timerSingle.apply { repeat() }) { stats, _ -> stats }
+                    .map(this::toDomainModel)
+
+    private fun toDomainModel(wrapper: StatsDataWrapper): StatsModel {
+        val stats = wrapper.stats
+        val bestDayModel = stats.bestDay?.let {
+            // Introducing these constants to ensure the needed values' immutability
+            val date = it.date
+            val timeSec = it.totalSeconds?.roundToInt()
+            if (date != null && timeSec != null) BestDay(date, secondsToHumanReadableTime(timeSec))
+            else null
+        }
+        return StatsModel(
+                bestDayModel,
+                secondsToHumanReadableTime(stats.dailyAverage ?: 0),
+                secondsToHumanReadableTime((stats.totalSeconds ?: 0.0).roundToInt()),
+                stats.projects?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }?.provideColors(),
+                stats.languages?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }?.provideColors(),
+                stats.editors?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }?.provideColors(),
+                stats.operatingSystems?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }?.provideColors(),
+                stats.range,
+                timeProvider.getCurrentTimeMillis(),
+                stats.totalSeconds == 0.0
+        )
+    }
 
     private fun List<StatsItem>.provideColors(): List<StatsItem> {
         val colors = colorProvider.provideColors(this)
