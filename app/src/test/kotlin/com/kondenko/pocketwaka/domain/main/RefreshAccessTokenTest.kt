@@ -93,7 +93,7 @@ class RefreshAccessTokenTest {
         whenever(invalidToken.isValid(anyFloat())).doReturn(false)
         whenever(getAppId.build()).doReturn(appId.toSingle())
         whenever(getAppSecret.build()).doReturn(appSecret.toSingle())
-        whenever(accessTokenRepository.getRefreshToken()).doReturn(refreshToken.toSingle())
+        whenever(invalidToken.refreshToken).doReturn(refreshToken)
         whenever(encryptor.encryptToken(newToken)).doReturn(encryptedNewToken)
         whenever(accessTokenRepository.getRefreshedAccessToken(eq(appId), eq(appSecret), anyString(), anyString(), eq(refreshToken))).doReturn(newToken.toSingle())
 
@@ -102,7 +102,6 @@ class RefreshAccessTokenTest {
         verify(getAppId).build()
         verify(getAppSecret).build()
         val inOrder = inOrder(accessTokenRepository, encryptor)
-        inOrder.verify(accessTokenRepository).getRefreshToken()
         inOrder.verify(accessTokenRepository).getRefreshedAccessToken(eq(appId), eq(appSecret), anyString(), anyString(), eq(refreshToken))
         inOrder.verify(encryptor).encryptToken(newToken)
         inOrder.verify(accessTokenRepository).saveToken(encryptedNewToken, currentTime)
