@@ -4,10 +4,7 @@ import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.testutils.testSchedulers
 import com.kondenko.pocketwaka.utils.Encryptor
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import io.reactivex.rxkotlin.toSingle
 import org.junit.Test
 
@@ -27,7 +24,7 @@ class GetStoredAccessTokenTest {
         whenever(encryptor.decryptToken(encryptedToken)).doReturn(decryptedToken)
         val single = usecase.execute()
         verify(repository).getEncryptedToken()
-        verify(encryptor.decryptToken(encryptedToken))
+        verify(encryptor).decryptToken(eq(encryptedToken))
         with(single.test()) {
             assertSubscribed()
             assertNoErrors()
