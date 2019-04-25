@@ -19,7 +19,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 
 
-
 object NetModule {
 
     fun create(appContext: Context) = applicationContext {
@@ -27,22 +26,24 @@ object NetModule {
         bean(Ui) { AndroidSchedulers.mainThread() }
         bean { SchedulerContainer(uiScheduler = get(Ui), workerScheduler = get(Worker)) }
         bean { RxJava2CallAdapterFactory.create() }
-        bean {  GsonConverterFactory.create() }
+        bean { GsonConverterFactory.create() }
         bean {
             val cacheDirectory = File(appContext.cacheDir, "responses")
             val cacheSize: Long = 1024 * 512 // 512 Kb
             Cache(cacheDirectory, cacheSize)
         }
-        bean { CacheInterceptor(appContext)  }
-        bean { OkHttpClient.Builder()
-                .cache(get())
-                .addInterceptor(get() as CacheInterceptor)
-                .build()
+        bean { CacheInterceptor(appContext) }
+        bean {
+            OkHttpClient.Builder()
+                    .cache(get())
+                    .addInterceptor(get() as CacheInterceptor)
+                    .build()
         }
-        bean { Retrofit.Builder()
-                .client(get())
-                .addCallAdapterFactory(get() as RxJava2CallAdapterFactory)
-                .addConverterFactory(get() as GsonConverterFactory)
+        bean {
+            Retrofit.Builder()
+                    .client(get())
+                    .addCallAdapterFactory(get() as RxJava2CallAdapterFactory)
+                    .addConverterFactory(get() as GsonConverterFactory)
         }
         bean(Auth) { get<Retrofit.Builder>().baseUrl(Const.BASE_URL).build() }
         bean(Api) { get<Retrofit.Builder>().baseUrl(Const.URL_API).build() }

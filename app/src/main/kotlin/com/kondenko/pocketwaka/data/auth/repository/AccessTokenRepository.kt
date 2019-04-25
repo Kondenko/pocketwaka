@@ -28,7 +28,7 @@ class AccessTokenRepository(private val service: AccessTokenService, private val
 
     fun getEncryptedToken(): Single<AccessToken> {
         return isTokenSaved().flatMap { isSaved ->
-            if (!isSaved) Single.error(NullPointerException("Access Token is not acquired yet"))
+            if (!isSaved) Single.error(NullPointerException("Access Token has not been acquired yet"))
             else Single.just(
                     AccessToken(
                             prefs.getString(KEY_ACCESS_TOKEN, null),

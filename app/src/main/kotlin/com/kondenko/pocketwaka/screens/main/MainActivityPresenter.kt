@@ -4,6 +4,7 @@ import com.kondenko.pocketwaka.domain.main.CheckIfUserIsLoggedIn
 import com.kondenko.pocketwaka.domain.main.DeleteSavedToken
 import com.kondenko.pocketwaka.domain.main.RefreshAccessToken
 import com.kondenko.pocketwaka.screens.base.BasePresenter
+import timber.log.Timber
 
 
 class MainActivityPresenter(
@@ -21,7 +22,9 @@ class MainActivityPresenter(
         checkIfUserIsLoggedIn.execute(
                 onSuccess = { isLoggedIn ->
                     if (isLoggedIn) {
-                        refreshAccessToken.execute()
+                        refreshAccessToken.execute(
+                                onSuccess = { Timber.i("Access token refreshed") },
+                                onError = { Timber.e(it, "Error refreshing access token") })
                         view?.showStats()
                     } else {
                         view?.showLoginScreen()

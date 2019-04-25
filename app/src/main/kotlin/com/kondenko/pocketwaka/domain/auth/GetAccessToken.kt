@@ -9,6 +9,7 @@ import com.kondenko.pocketwaka.utils.SchedulerContainer
 import com.kondenko.pocketwaka.utils.TimeProvider
 import io.reactivex.Single
 import io.reactivex.rxkotlin.zipWith
+import timber.log.Timber
 
 /**
  * Fetches access token.
@@ -28,6 +29,7 @@ class GetAccessToken(
         return getAppId.build().zipWith(getAppSecret.build())
         { id, secret -> accessTokenRepository.getNewAccessToken(id, secret, Const.AUTH_REDIRECT_URI, GRANT_TYPE_AUTH_CODE, code!!) }
                 .flatMap { it }
+                .doOnSuccess { Timber.i("Saved access token: $it") }
                 .map { encryptor.encryptToken(it) }
                 .doOnSuccess { accessTokenRepository.saveToken(it, timeProvider.getCurrentTimeSec()) }
     }
