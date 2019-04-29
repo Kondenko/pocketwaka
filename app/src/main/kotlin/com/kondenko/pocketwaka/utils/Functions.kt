@@ -4,10 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Build
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
-import android.support.v4.view.ViewCompat
 import android.view.View
+import androidx.core.view.ViewCompat
 import com.crashlytics.android.Crashlytics
 import io.reactivex.Single
 import timber.log.Timber
@@ -29,7 +27,7 @@ inline fun SharedPreferences.edit(crossinline action: SharedPreferences.Editor.(
     editor.apply()
 }
 
-inline fun FragmentManager.transaction(crossinline action: FragmentTransaction.() -> FragmentTransaction) {
+inline fun androidx.fragment.app.FragmentManager.transaction(crossinline action: androidx.fragment.app.FragmentTransaction.() -> androidx.fragment.app.FragmentTransaction) {
     this.beginTransaction().action().commit()
 }
 

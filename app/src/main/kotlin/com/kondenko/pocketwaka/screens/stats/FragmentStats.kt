@@ -4,13 +4,11 @@ package com.kondenko.pocketwaka.screens.stats
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.os.Bundle
-import android.support.annotation.StringRes
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.ogaclejapan.smarttablayout.utils.v4.Bundler
@@ -22,7 +20,7 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_stats_container.*
 import timber.log.Timber
 
-class FragmentStats : Fragment() {
+class FragmentStats : androidx.fragment.app.Fragment() {
 
     private val refreshEvents = PublishSubject.create<Any>()
 
@@ -51,7 +49,7 @@ class FragmentStats : Fragment() {
         stats_viewpager_content.post {
             onFragmentSelected(adapter.getPage(stats_viewpager_content.currentItem) as FragmentStatsTab)
         }
-        stats_smarttablayout_ranges.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        stats_smarttablayout_ranges.setOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
             }
 

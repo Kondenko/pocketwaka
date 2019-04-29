@@ -9,13 +9,13 @@
     tools:context=".screens.stats.FragmentStatsTab"
     >
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/stats_constraintlayout_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/stats_group_bestday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -188,7 +188,7 @@
             />
 
 
-        <android.support.constraint.Guideline
+        <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelineCenterVertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -198,7 +198,7 @@
             tools:layout_editor_absoluteY="81dp"
             />
 
-        <android.support.constraint.Guideline
+        <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_best_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -206,6 +206,6 @@
             app:layout_constraintGuide_begin="67dp"
             />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.kondenko.pocketwaka.ui.ObservableScrollView>

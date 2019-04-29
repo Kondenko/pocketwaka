@@ -2,14 +2,13 @@ package com.kondenko.pocketwaka.screens.base.stateful
 
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.v4.app.Fragment
 import android.view.View
 import com.kondenko.pocketwaka.screens.base.stateful.states.ViewState
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 
-abstract class ModelFragment<M : Parcelable> : Fragment() {
+abstract class ModelFragment<M : Parcelable> : androidx.fragment.app.Fragment() {
 
     val TAG = "ModelFragment"
 

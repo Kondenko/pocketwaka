@@ -25,7 +25,7 @@
         app:corner_radius="@dimen/card_stats_bar_corner_radius"
         />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/statsCardRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

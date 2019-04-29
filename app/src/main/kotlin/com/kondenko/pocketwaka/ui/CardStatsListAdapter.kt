@@ -3,7 +3,6 @@ package com.kondenko.pocketwaka.ui
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import android.widget.TextView
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 
-class CardStatsListAdapter(private val context: Context, private val items: List<StatsItem>) : RecyclerView.Adapter<CardStatsListAdapter.ViewHolder>() {
+class CardStatsListAdapter(private val context: Context, private val items: List<StatsItem>) : androidx.recyclerview.widget.RecyclerView.Adapter<CardStatsListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_card_stats, parent, false)
@@ -40,7 +39,7 @@ class CardStatsListAdapter(private val context: Context, private val items: List
 
     override fun getItemCount(): Int = items.size
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         var labelColor: View = itemView.findViewById(R.id.labelColor)
         var header: TextView = itemView.findViewById(R.id.textItem)
         var percentage: TextView = itemView.findViewById(R.id.textPercent)

@@ -3,18 +3,17 @@ package com.kondenko.pocketwaka.screens.base.stateful.states
 
 import android.net.Uri
 import android.os.Bundle
-import android.support.customtabs.CustomTabsIntent
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
 import com.jakewharton.rxbinding2.view.RxView
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import kotlinx.android.synthetic.main.layout_stats_state_empty.*
 
-class FragmentEmptyState : Fragment() {
+class FragmentEmptyState : androidx.fragment.app.Fragment() {
 
     val TAG = "FragmentEmptyState"
 

@@ -7,15 +7,15 @@ ext {
             "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
     ]
     support = [
-            "com.android.support:support-v4:${versions.supportLib}",
-            "com.android.support:appcompat-v7:${versions.supportLib}",
-            "com.android.support:design:${versions.supportLib}",
-            "com.android.support:cardview-v7:${versions.supportLib}",
-            "com.android.support:customtabs:${versions.supportLib}"
+            "androidx.legacy:legacy-support-v4:${versions.androidx}",
+            "androidx.appcompat:appcompat:${versions.androidx}",
+            "com.google.android.material:material:${versions.androidx}",
+            "androidx.cardview:cardview:${versions.androidx}",
+            "androidx.browser:browser:${versions.androidx}"
     ]
 
     archComponents = [
-            "android.arch.lifecycle:extensions:${versions.lifecycle}"
+            "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
     ]
 
     rx = [
@@ -41,7 +41,7 @@ ext {
             "org.koin:koin-android:${versions.koin}"
     ]
 
-    constraintLayout = "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
+    constraintLayout = "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
 
     timber = "com.jakewharton.timber:timber:${versions.timber}"
 
@@ -60,13 +60,13 @@ ext {
     ]
 
     androidTestingDependencies = [
-            "com.android.support:support-annotations:${versions.supportLib}",
-            "com.android.support.test:runner:${versions.supportTest}",
-            "com.android.support.test:rules:${versions.supportTest}"
+            "androidx.annotation:annotation:${versions.androidx}",
+            "androidx.test:runner:${versions.androidxTest}",
+            "androidx.test:rules:${versions.androidxTest}"
     ]
 
     androidTestingSupportDependencies = [
-            "com.android.support.test.espresso:espresso-core:${versions.espresso}"
+            "androidx.test.espresso:espresso-core:${versions.espresso}"
     ]
 
 }
