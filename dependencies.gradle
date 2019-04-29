@@ -45,7 +45,7 @@ ext {
 
     timber = "com.jakewharton.timber:timber:${versions.timber}"
 
-    stetho = "com.facebook.stetho:stetho:${versions.stetho}"
+    lottie = "com.airbnb.android:lottie:${versions.lottie}"
 
     firebaseCore = "com.google.firebase:firebase-core:${versions.firebaseCore}"
 
