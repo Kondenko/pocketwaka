@@ -20,7 +20,7 @@
 
     <string name="loginactivity_sign_in">Log in</string>
     <string name="loginactivity_title" translatable="false">PocketWaka</string>
-    <string name="loginactivity_subtitle">Your coding activity, visualized</string>
+    <string name="loginactivity_subtitle">Get insights on your\ncoding productivity</string>
 
 
     <string name="stats_tab_7_days">Week</string>

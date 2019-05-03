@@ -2,8 +2,9 @@
 <resources>
     <color name="color_primary">#35434f</color>
     <color name="color_primary_dark">#28333c</color>
+    <color name="color_primary_dark_text">#DE28333C</color>
     <color name="color_accent">#2595ff</color>
-    <color name="color_background_gray">#eceff1</color>
+    <color name="color_background_gray">#F5F9FF</color>
 
     <color name="color_tab_text_default">@color/color_primary</color>
 
