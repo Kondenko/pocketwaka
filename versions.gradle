@@ -7,7 +7,7 @@ ext {
             appPatch         : 1,
 
             // Android
-            androidMinSdk    : 17,
+            androidMinSdk    : 21,
             androidTargetSdk : 28,
             androidCompileSdk: 28,
             androidBuildTools: '28.0.3',
