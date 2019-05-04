@@ -28,17 +28,17 @@ class CardStats(val context: Context, val title: String, val data: List<StatsIte
         view.layoutParams = params
         ViewCompat.setElevation(view, 2f)
 
-        setupHeader(content)
-        setupList(content)
-        setupChart(content)
+        setHeader(content)
+        setList(content)
+        setChart(content)
     }
 
-    private fun setupHeader(content: View) {
+    private fun setHeader(content: View) {
         val header = content.findViewById<TextView>(R.id.statsCardHeader)
         header.text = title
     }
 
-    private fun setupList(content: View) {
+    private fun setList(content: View) {
         val list = content.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.statsCardRecyclerView)
         val adapter = CardStatsListAdapter(context, data)
         list.adapter = adapter
@@ -47,7 +47,7 @@ class CardStats(val context: Context, val title: String, val data: List<StatsIte
         }
     }
 
-    private fun setupChart(content: View) {
+    private fun setChart(content: View) {
         val chart = content.findViewById<OneLineSegmentedChart>(R.id.chart)
         val segments = ArrayList<Segment>(data.size)
         data.mapTo(segments) { Segment(it.percent!!.toFloat(), it.color, it.name) }
@@ -68,6 +68,5 @@ class CardStats(val context: Context, val title: String, val data: List<StatsIte
         result = 31 * result + data.hashCode()
         return result
     }
-
 
 }

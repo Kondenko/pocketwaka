@@ -1,6 +1,5 @@
 package com.kondenko.pocketwaka.screens.auth
 
-import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.auth.GetAccessToken
 import com.kondenko.pocketwaka.domain.auth.GetAuthUrl
 import com.kondenko.pocketwaka.screens.base.BasePresenter
@@ -16,10 +15,11 @@ class AuthPresenter(private val getAuthUrl: GetAuthUrl, private val getAccessTok
     }
 
     fun getToken(code: String) {
+        view?.showLoading()
         getAccessToken.execute(
                 params = code,
                 onSuccess = { token -> view?.onGetTokenSuccess(token) },
-                onError = { view?.showError(it, R.string.error_logging_in) }
+                onError = { view?.showError(it) }
         )
     }
 

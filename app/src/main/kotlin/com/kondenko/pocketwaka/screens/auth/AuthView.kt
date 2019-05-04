@@ -9,4 +9,6 @@ interface AuthView : BaseView {
 
     fun onGetTokenSuccess(token: AccessToken)
 
+    fun showLoading()
+
 }

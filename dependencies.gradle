@@ -6,6 +6,11 @@ ext {
             "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}",
             "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
     ]
+
+    androidKtx = [
+            "androidx.core:core-ktx:${versions.ktx}"
+    ]
+
     support = [
             "androidx.legacy:legacy-support-v4:${versions.androidx}",
             "androidx.appcompat:appcompat:${versions.androidx}",

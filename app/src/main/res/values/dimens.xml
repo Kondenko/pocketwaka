@@ -9,7 +9,7 @@
     <dimen name="height_all_button">36dp</dimen>
 
     <!--Login-->
-    <dimen name="height_login_shadow">8dp</dimen>
+    <dimen name="size_login_loading_dot">6dp</dimen>
 
     <!--Stats-->
     <dimen name="textsize_stats_header">16sp</dimen>

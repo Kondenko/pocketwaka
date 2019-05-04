@@ -109,6 +109,7 @@ kapt {
 dependencies {
 
     implementation kotlinLib
+    implementation androidKtx
     implementation support
     implementation constraintLayout
     implementation rx
