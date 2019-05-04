@@ -1,5 +1,19 @@
 <resources>
 
+    <style name="TextAppearance.App.Login.Subhead" parent="TextAppearance.AppCompat.Subhead">
+        <item name="android:textColor">@color/color_primary_dark</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TextAppearance.App.Login.Subhead.Error" parent="TextAppearance.App.Login.Subhead">
+        <item name="android:textColor">@color/color_text_error</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+
     <style name="TextAppearance.App.State.Any.Title" parent="TextAppearance.AppCompat.Display1">
         <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
