@@ -41,7 +41,7 @@ class OneLineSegmentedChart(context: Context, private val attrs: AttributeSet? =
             val attributes = context.obtainStyledAttributes(attrs, R.styleable.OneLineSegmentedChart, 0, 0)
             barWidth = attributes.getDimension(R.styleable.OneLineSegmentedChart_bar_width, barWidth)
             cornerRadius = attributes.getDimension(R.styleable.OneLineSegmentedChart_corner_radius, cornerRadius)
-            sortDescending = attributes.getBoolean(R.styleable.OneLineSegmentedChart_sortDescending, sortDescending)
+            sortDescending = attributes.getBoolean(R.styleable.OneLineSegmentedChart_sort_descending, sortDescending)
             attributes.recycle()
         }
 

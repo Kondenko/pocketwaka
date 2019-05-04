@@ -21,7 +21,6 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.screens.main.MainActivity
 import com.kondenko.pocketwaka.ui.ButtonStateWrapper
-import com.kondenko.pocketwaka.ui.LoadingView
 import com.kondenko.pocketwaka.utils.report
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.inject
@@ -44,7 +43,8 @@ class AuthActivity : AppCompatActivity(), AuthView {
         getDrawable(R.drawable.loading_dot)?.let { dot ->
             loadingButtonStateWrapper = ButtonStateWrapper.wrap(
                     buttonLogin,
-                    LoadingView(this, dot, dotsNumber),
+//                    LoadingView(this),
+                    null,
                     getString(R.string.loginactivity_subtitle_error_action)
             )
         }
