@@ -63,26 +63,31 @@ android {
         File debugKaptFiles = file("$buildDir/generated/source/kapt/debug")
 
         main {
+            ext.enableCrashlytics = false
             java.srcDirs += 'src/main/kotlin'
         }
         release {
             java.srcDirs += [file("$buildDir/generated/source/kapt/release")]
         }
         debug {
+            ext.enableCrashlytics = false
             java.srcDirs += 'src/debug/kotlin'
             java.srcDirs += debugKaptFiles
         }
         mock {
+            ext.enableCrashlytics = false
             java.srcDirs += 'src/debug/kotlin'
             java.srcDirs += 'src/mock/kotlin'
             java.srcDirs += debugKaptFiles
         }
         test {
+            ext.enableCrashlytics = false
             java.srcDirs += 'src/test/kotlin'
             java.srcDirs += 'src/testUtils/kotlin'
             java.srcDirs += debugKaptFiles
         }
         androidTest {
+            ext.enableCrashlytics = false
             java.srcDirs += 'src/androidTest/kotlin'
             java.srcDirs += debugKaptFiles
         }
