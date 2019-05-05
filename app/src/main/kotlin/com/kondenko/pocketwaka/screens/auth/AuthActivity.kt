@@ -35,8 +35,6 @@ class AuthActivity : AppCompatActivity(), AuthView {
 
     private var connection: CustomTabsServiceConnection? = null
 
-    private val dotsNumber = 3
-
     private lateinit var loadingButtonStateWrapper: ButtonStateWrapper
 
     @SuppressLint("CheckResult")
@@ -46,7 +44,7 @@ class AuthActivity : AppCompatActivity(), AuthView {
         getDrawable(R.drawable.loading_dot)?.let { dot ->
             val loadingViewPadding = resources.getDimension(R.dimen.padding_login_loading_view_side).roundToInt()
             val loadingView = LoadingView(this).apply {
-                dotsNumber = dotsNumber
+                dotsNumber = 3
                 dotDrawable = dot
                 dotMargin = resources.getDimension(R.dimen.margin_login_loading_view_dot).roundToInt()
                 updatePadding(left = loadingViewPadding, right = loadingViewPadding)
@@ -56,8 +54,11 @@ class AuthActivity : AppCompatActivity(), AuthView {
                     loadingView,
                     getString(R.string.loginactivity_subtitle_error_action)
             )
+            loadingButtonStateWrapper.setDefault()
         }
-        RxView.clicks(buttonLogin).subscribe { presenter.onLoginButtonClicked() }
+        RxView.clicks(buttonLogin)
+                .filter { buttonLogin.isClickable } // for some reason setClickable(false) isn't enough
+                .subscribe { presenter.onLoginButtonClicked() }
         if (BuildConfig.DEBUG) {
             val clicksRequired = 3
             RxView.longClicks(buttonLogin)

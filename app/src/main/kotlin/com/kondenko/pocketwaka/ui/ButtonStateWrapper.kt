@@ -57,7 +57,7 @@ class ButtonStateWrapper
         Timber.d("Default state set")
         button.text = text
         loadingView?.isGone = true
-        button.isClickable = false
+        button.isClickable = true
         isDefault = true
         isLoading = false
         isError = false
@@ -77,7 +77,7 @@ class ButtonStateWrapper
         Timber.d("Error state set")
         button.text = retryText
         loadingView?.isGone = true
-        button.isClickable = false
+        button.isClickable = true
         isDefault = false
         isLoading = false
         isError = true
