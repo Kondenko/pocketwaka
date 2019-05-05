@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Build
+import android.util.TypedValue
 import android.view.View
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.FragmentManager
 import com.crashlytics.android.Crashlytics
 import io.reactivex.Single
 import timber.log.Timber
@@ -27,9 +29,14 @@ inline fun SharedPreferences.edit(crossinline action: SharedPreferences.Editor.(
     editor.apply()
 }
 
-inline fun androidx.fragment.app.FragmentManager.transaction(crossinline action: androidx.fragment.app.FragmentTransaction.() -> androidx.fragment.app.FragmentTransaction) {
+inline fun FragmentManager.transaction(crossinline action: androidx.fragment.app.FragmentTransaction.() -> androidx.fragment.app.FragmentTransaction) {
     this.beginTransaction().action().commit()
 }
+
+/**
+ * Update a view's dimension so it matches the device's density
+ */
+fun Context.adjustForDensity(value: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, resources.displayMetrics)
 
 fun View.elevation(elevation: Float) {
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) ViewCompat.setElevation(this, elevation)

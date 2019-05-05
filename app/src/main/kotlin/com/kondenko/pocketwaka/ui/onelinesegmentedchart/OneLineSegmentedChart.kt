@@ -3,9 +3,9 @@ package com.kondenko.pocketwaka.ui.onelinesegmentedchart
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.View
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.utils.adjustForDensity
 import java.util.*
 
 /**
@@ -32,7 +32,7 @@ class OneLineSegmentedChart(context: Context, private val attrs: AttributeSet? =
 
     init {
         // Defaults
-        barWidth = adjustForDensity(18f)
+        barWidth = context.adjustForDensity(18f)
         cornerRadius = 0f
         sortDescending = true
 
@@ -45,8 +45,8 @@ class OneLineSegmentedChart(context: Context, private val attrs: AttributeSet? =
             attributes.recycle()
         }
 
-        cornerRadius = adjustForDensity(cornerRadius)
-        barWidth = adjustForDensity(barWidth)
+        cornerRadius = context.adjustForDensity(cornerRadius)
+        barWidth = context.adjustForDensity(barWidth)
 
         maskPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
         setWillNotDraw(false)
@@ -123,14 +123,9 @@ class OneLineSegmentedChart(context: Context, private val attrs: AttributeSet? =
      * @param valueName what value to log if the check is not passed
      */
     private fun safeSet(value: Float, valueName: String): Float {
-        if (value > 0) return adjustForDensity(value)
+        if (value > 0) return context.adjustForDensity(value)
         else throw IllegalArgumentException("$valueName can't be less than 0")
     }
-
-    /**
-     * Update a view's dimension so it matches the device's density
-     */
-    private fun adjustForDensity(v: Float) = (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, v, context.resources.displayMetrics))
 
     fun addSegment(segment: Segment) {
         segments.add(segment)
