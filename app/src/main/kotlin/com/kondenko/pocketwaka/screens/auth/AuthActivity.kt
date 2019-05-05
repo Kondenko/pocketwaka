@@ -21,6 +21,7 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.screens.main.MainActivity
 import com.kondenko.pocketwaka.ui.ButtonStateWrapper
+import com.kondenko.pocketwaka.ui.LoadingView
 import com.kondenko.pocketwaka.utils.report
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.inject
@@ -28,11 +29,11 @@ import org.koin.android.ext.android.inject
 
 class AuthActivity : AppCompatActivity(), AuthView {
 
-    private val dotsNumber = 3
-
     private val presenter: AuthPresenter by inject()
 
     private var connection: CustomTabsServiceConnection? = null
+
+    private val dotsNumber = 3
 
     private lateinit var loadingButtonStateWrapper: ButtonStateWrapper
 
@@ -43,11 +44,14 @@ class AuthActivity : AppCompatActivity(), AuthView {
         getDrawable(R.drawable.loading_dot)?.let { dot ->
             loadingButtonStateWrapper = ButtonStateWrapper.wrap(
                     buttonLogin,
-//                    LoadingView(this),
-                    null,
+                    LoadingView(this).apply {
+                        setDotsNumber(dotsNumber)
+                        setDotDrawable(dot)
+                    },
                     getString(R.string.loginactivity_subtitle_error_action)
             )
         }
+        loadingButtonStateWrapper.setLoading()
         RxView.clicks(buttonLogin).subscribe { presenter.onLoginButtonClicked() }
         if (BuildConfig.DEBUG) {
             val clicksRequired = 3

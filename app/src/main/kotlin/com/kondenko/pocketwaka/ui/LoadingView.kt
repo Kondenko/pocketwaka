@@ -28,12 +28,12 @@ class LoadingView @JvmOverloads constructor(
     private var dotDrawable: Drawable
 
     // From the original position to the upmost position
-    private val travelDistanceUpper = 8f // context.adjustForDensity(8f)
+    private val travelDistanceUpper = 8f
 
     // From the original position to the downmost position
-    private val travelDistanceLower = 2f // context.adjustForDensity(2f)
+    private val travelDistanceLower = 2f
 
-    private val overshootDownToOrig = 1f // context.adjustForDensity(1f)
+    private val overshootDownToOrig = 1f
 
     // From the original position to the upmost position
     private val travelDurationOrigToUp = 120L
@@ -48,6 +48,8 @@ class LoadingView @JvmOverloads constructor(
 
     private val animDuration = travelDurationOrigToUp + travelDurationUpToDown + travelDurationDownToOrig
 
+    private var isAnimating = false
+
     var animationsOffsetMs = 10
 
     init {
@@ -60,13 +62,26 @@ class LoadingView @JvmOverloads constructor(
         orientation = HORIZONTAL
         gravity = Gravity.CENTER
         construct()
-        startAnimation()
+    }
+
+    private fun construct() {
+        children.forEach { removeView(it) }
+        weightSum = dotsNumber.toFloat()
+        for (i in 1..dotsNumber) {
+            addView(ImageView(context).apply {
+                setImageDrawable(dotDrawable)
+                layoutParams = LayoutParams(dotDrawable.intrinsicWidth, dotDrawable.intrinsicHeight, 1f)
+            })
+        }
+        if (!isAnimating) startAnimation()
+
     }
 
     private fun startAnimation() {
         children.forEachIndexed { index, dot ->
             dot.doAnimation(index)
         }
+        isAnimating = true
     }
 
     @Suppress("UsePropertyAccessSyntax")
@@ -74,8 +89,6 @@ class LoadingView @JvmOverloads constructor(
         fun yAnimator(distance: Float, setup: ObjectAnimator.() -> Unit = {}): ObjectAnimator {
             return ObjectAnimator.ofFloat(this, View.TRANSLATION_Y, distance).apply(setup)
         }
-
-        val set = AnimatorSet()
 
         val origToUp = yAnimator(-travelDistanceUpper) {
             duration = travelDurationOrigToUp
@@ -97,7 +110,7 @@ class LoadingView @JvmOverloads constructor(
         val delay = dotIndex * animDuration + animationsOffsetMs
         val repeatDelay = (dotsNumber - 1).coerceAtLeast(1) * animDuration - animDuration
 
-        with(set) {
+        with(AnimatorSet()) {
             playSequentially(origToUp, upToDown, downToOrig, overshootDown)
             setDuration(animDuration)
             setStartDelay(delay)
@@ -117,17 +130,6 @@ class LoadingView @JvmOverloads constructor(
     fun setDotDrawable(drawable: Drawable) {
         dotDrawable = drawable
         construct()
-    }
-
-    private fun construct() {
-        children.forEach { removeView(it) }
-        weightSum = dotsNumber.toFloat()
-        for (i in 1..dotsNumber) {
-            addView(ImageView(context).apply {
-                setImageDrawable(dotDrawable)
-                layoutParams = LayoutParams(dotDrawable.intrinsicWidth, dotDrawable.intrinsicHeight, 1f)
-            })
-        }
     }
 
 }

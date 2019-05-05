@@ -4,7 +4,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.FrameLayout
+import android.widget.RelativeLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import timber.log.Timber
@@ -17,7 +17,7 @@ class ButtonStateWrapper
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0,
         defStyleRes: Int = 0
-) : FrameLayout(button.context, attrs, defStyleAttr, defStyleRes) {
+) : RelativeLayout(button.context, attrs, defStyleAttr, defStyleRes) {
 
     companion object {
 
@@ -39,14 +39,19 @@ class ButtonStateWrapper
         private set
 
     init {
-        layoutParams = LayoutParams(button.layoutParams)
         button.post {
+            layoutParams = LayoutParams(button.layoutParams)
             x = button.x
             y = button.y
             (button.parent as ViewGroup).let {
                 it.removeView(button)
                 it.addView(this)
                 addView(button)
+                button.z = 0f
+            }
+            loadingView?.let {
+                addView(it, button.layoutParams)
+                it.z = 1f
             }
         }
     }
