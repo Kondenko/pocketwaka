@@ -65,7 +65,7 @@ class LoadingView @JvmOverloads constructor(
     }
 
     private fun construct() {
-        children.forEach { removeView(it) }
+        removeAllViews()
         weightSum = dotsNumber.toFloat()
         for (i in 1..dotsNumber) {
             addView(ImageView(context).apply {
