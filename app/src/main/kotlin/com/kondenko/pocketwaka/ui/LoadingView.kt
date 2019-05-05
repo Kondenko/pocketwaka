@@ -15,7 +15,6 @@ import androidx.annotation.IntRange
 import androidx.core.animation.doOnEnd
 import androidx.core.view.children
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.utils.adjustForDensity
 
 class LoadingView @JvmOverloads constructor(
         context: Context,
@@ -29,10 +28,12 @@ class LoadingView @JvmOverloads constructor(
     private var dotDrawable: Drawable
 
     // From the original position to the upmost position
-    private val travelDistanceUpper = context.adjustForDensity(4f)
+    private val travelDistanceUpper = 8f // context.adjustForDensity(8f)
 
     // From the original position to the downmost position
-    private val travelDistanceLower = context.adjustForDensity(2f)
+    private val travelDistanceLower = 2f // context.adjustForDensity(2f)
+
+    private val overshootDownToOrig = 1f // context.adjustForDensity(1f)
 
     // From the original position to the upmost position
     private val travelDurationOrigToUp = 120L
@@ -43,7 +44,11 @@ class LoadingView @JvmOverloads constructor(
     // From the downmost position to the original position
     private val travelDurationDownToOrig = 40L
 
+    private val travelDurationDownOvershoot = 10L
+
     private val animDuration = travelDurationOrigToUp + travelDurationUpToDown + travelDurationDownToOrig
+
+    var animationsOffsetMs = 10
 
     init {
         with(context.obtainStyledAttributes(attrs, R.styleable.LoadingView, defStyleAttr, defStyleRes)) {
@@ -66,29 +71,38 @@ class LoadingView @JvmOverloads constructor(
 
     @Suppress("UsePropertyAccessSyntax")
     private fun View.doAnimation(@IntRange(from = 0) dotIndex: Int) {
-        fun yAnimator(distance: Float) = ObjectAnimator.ofFloat(this, View.TRANSLATION_Y, distance)
+        fun yAnimator(distance: Float, setup: ObjectAnimator.() -> Unit = {}): ObjectAnimator {
+            return ObjectAnimator.ofFloat(this, View.TRANSLATION_Y, distance).apply(setup)
+        }
 
         val set = AnimatorSet()
-        val origToUp = yAnimator(-travelDistanceUpper).apply {
-            duration = travelDurationOrigToUp
-            interpolator = AccelerateInterpolator()
-        }
-        val upToDown = yAnimator(travelDistanceUpper + travelDistanceLower).apply {
+
+        val origToUp = yAnimator(-travelDistanceUpper) {
             duration = travelDurationOrigToUp
             interpolator = DecelerateInterpolator()
         }
-        val downToOrig = yAnimator(-travelDistanceLower).apply {
+        val upToDown = yAnimator(travelDistanceUpper + travelDistanceLower) {
             duration = travelDurationOrigToUp
             interpolator = AccelerateInterpolator()
         }
-        val delay = dotIndex * animDuration
+        val downToOrig = yAnimator(-travelDistanceLower + overshootDownToOrig) {
+            duration = travelDurationOrigToUp - travelDurationDownOvershoot
+            interpolator = DecelerateInterpolator()
+        }
+        val overshootDown = yAnimator(overshootDownToOrig) {
+            duration = travelDurationDownToOrig / 4
+            interpolator = AccelerateInterpolator()
+        }
+
+        val delay = dotIndex * animDuration + animationsOffsetMs
+        val repeatDelay = (dotsNumber - 1).coerceAtLeast(1) * animDuration - animDuration
+
         with(set) {
-            play(origToUp).before(upToDown).before(downToOrig)
-            playSequentially(origToUp, upToDown, downToOrig)
+            playSequentially(origToUp, upToDown, downToOrig, overshootDown)
             setDuration(animDuration)
             setStartDelay(delay)
             doOnEnd {
-                setStartDelay((dotsNumber - 1).coerceAtLeast(1) * animDuration)
+                setStartDelay(repeatDelay)
                 start()
             }
             start()
