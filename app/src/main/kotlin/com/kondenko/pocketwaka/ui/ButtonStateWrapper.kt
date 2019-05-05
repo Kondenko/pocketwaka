@@ -20,11 +20,9 @@ class ButtonStateWrapper
 ) : RelativeLayout(button.context, attrs, defStyleAttr, defStyleRes) {
 
     companion object {
-
         fun wrap(button: Button, loadingView: View? = null, retryText: CharSequence? = null): ButtonStateWrapper {
             return ButtonStateWrapper(button, loadingView, retryText)
         }
-
     }
 
     private val text = button.text
@@ -47,11 +45,10 @@ class ButtonStateWrapper
                 it.removeView(button)
                 it.addView(this)
                 addView(button)
-                button.z = 0f
             }
             loadingView?.let {
                 addView(it, button.layoutParams)
-                it.z = 1f
+                it.z = 100f
             }
         }
     }

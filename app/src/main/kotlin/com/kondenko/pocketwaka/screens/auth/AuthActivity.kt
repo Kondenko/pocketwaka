@@ -12,6 +12,7 @@ import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsServiceConnection
 import androidx.core.content.ContextCompat
+import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
 import com.crashlytics.android.Crashlytics
 import com.jakewharton.rxbinding2.view.RxView
@@ -25,6 +26,7 @@ import com.kondenko.pocketwaka.ui.LoadingView
 import com.kondenko.pocketwaka.utils.report
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.inject
+import kotlin.math.roundToInt
 
 
 class AuthActivity : AppCompatActivity(), AuthView {
@@ -42,16 +44,19 @@ class AuthActivity : AppCompatActivity(), AuthView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         getDrawable(R.drawable.loading_dot)?.let { dot ->
+            val loadingViewPadding = resources.getDimension(R.dimen.padding_login_loading_view_side).roundToInt()
+            val loadingView = LoadingView(this).apply {
+                dotsNumber = dotsNumber
+                dotDrawable = dot
+                dotMargin = resources.getDimension(R.dimen.margin_login_loading_view_dot).roundToInt()
+                updatePadding(left = loadingViewPadding, right = loadingViewPadding)
+            }
             loadingButtonStateWrapper = ButtonStateWrapper.wrap(
                     buttonLogin,
-                    LoadingView(this).apply {
-                        setDotsNumber(dotsNumber)
-                        setDotDrawable(dot)
-                    },
+                    loadingView,
                     getString(R.string.loginactivity_subtitle_error_action)
             )
         }
-        loadingButtonStateWrapper.setLoading()
         RxView.clicks(buttonLogin).subscribe { presenter.onLoginButtonClicked() }
         if (BuildConfig.DEBUG) {
             val clicksRequired = 3

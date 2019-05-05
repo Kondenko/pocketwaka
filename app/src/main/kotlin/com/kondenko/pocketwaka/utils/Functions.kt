@@ -38,6 +38,11 @@ inline fun FragmentManager.transaction(crossinline action: androidx.fragment.app
  */
 fun Context.adjustForDensity(value: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, resources.displayMetrics)
 
+/**
+ * Update a view's dimension so it matches the device's density
+ */
+fun Context.adjustForDensity(value: Int) = adjustForDensity(value.toFloat())
+
 fun View.elevation(elevation: Float) {
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) ViewCompat.setElevation(this, elevation)
     else this.elevation = elevation

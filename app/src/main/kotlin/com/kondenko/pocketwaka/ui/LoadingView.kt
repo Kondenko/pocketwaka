@@ -15,6 +15,9 @@ import androidx.annotation.IntRange
 import androidx.core.animation.doOnEnd
 import androidx.core.view.children
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.utils.IllegalViewUsageException
+import com.kondenko.pocketwaka.utils.adjustForDensity
+import kotlin.math.roundToInt
 
 class LoadingView @JvmOverloads constructor(
         context: Context,
@@ -23,17 +26,31 @@ class LoadingView @JvmOverloads constructor(
         defStyleRes: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr, defStyleRes) {
 
-    private var dotsNumber: Int
+    var dotsNumber: Int = 3
+        set(value) {
+            field = value
+            construct()
+        }
 
-    private var dotDrawable: Drawable
+    var dotDrawable: Drawable? = context.getDrawable(R.drawable.loading_dot)
+        set(value) {
+            field = value
+            construct()
+        }
+
+    var dotMargin: Int = 2
+        set(value) {
+            field = context.adjustForDensity(value).roundToInt()
+            construct()
+        }
 
     // From the original position to the upmost position
-    private val travelDistanceUpper = 8f
+    private val travelDistanceUpper = 6f
 
     // From the original position to the downmost position
-    private val travelDistanceLower = 2f
+    private val travelDistanceLower = 1f
 
-    private val overshootDownToOrig = 1f
+    private val overshootDownToOrig = 0.5f
 
     // From the original position to the upmost position
     private val travelDurationOrigToUp = 120L
@@ -46,17 +63,15 @@ class LoadingView @JvmOverloads constructor(
 
     private val travelDurationDownOvershoot = 10L
 
-    private val animDuration = travelDurationOrigToUp + travelDurationUpToDown + travelDurationDownToOrig
+    private val animDuration = calculateAnimDuration()
 
-    private var isAnimating = false
-
-    var animationsOffsetMs = 10
+    private val animationsOffsetMs = 10
 
     init {
         with(context.obtainStyledAttributes(attrs, R.styleable.LoadingView, defStyleAttr, defStyleRes)) {
             dotsNumber = getInteger(R.styleable.LoadingView_dots_number, 3)
-            dotDrawable = getDrawable(R.styleable.LoadingView_dot_drawable)
-                    ?: context.getDrawable(R.drawable.loading_dot)!!
+            dotMargin = getInteger(R.styleable.LoadingView_dot_margin, dotMargin)
+            getDrawable(R.styleable.LoadingView_dot_drawable)?.let { dotDrawable = it }
             recycle()
         }
         orientation = HORIZONTAL
@@ -65,23 +80,24 @@ class LoadingView @JvmOverloads constructor(
     }
 
     private fun construct() {
+        val finalDotDrawable = dotDrawable ?: throw IllegalViewUsageException("Dot drawable must be set")
         removeAllViews()
         weightSum = dotsNumber.toFloat()
         for (i in 1..dotsNumber) {
             addView(ImageView(context).apply {
-                setImageDrawable(dotDrawable)
-                layoutParams = LayoutParams(dotDrawable.intrinsicWidth, dotDrawable.intrinsicHeight, 1f)
+                setImageDrawable(finalDotDrawable)
+                layoutParams = LayoutParams(finalDotDrawable.intrinsicWidth, finalDotDrawable.intrinsicHeight, 1f).apply {
+                    setMargins(dotMargin, 0, dotMargin, 0)
+                }
             })
         }
-        if (!isAnimating) startAnimation()
-
+        startAnimation()
     }
 
-    private fun startAnimation() {
+    fun startAnimation() {
         children.forEachIndexed { index, dot ->
             dot.doAnimation(index)
         }
-        isAnimating = true
     }
 
     @Suppress("UsePropertyAccessSyntax")
@@ -122,14 +138,6 @@ class LoadingView @JvmOverloads constructor(
         }
     }
 
-    fun setDotsNumber(number: Int) {
-        dotsNumber = number
-        construct()
-    }
-
-    fun setDotDrawable(drawable: Drawable) {
-        dotDrawable = drawable
-        construct()
-    }
+    private fun calculateAnimDuration() = travelDurationOrigToUp + travelDurationUpToDown + travelDurationDownToOrig
 
 }

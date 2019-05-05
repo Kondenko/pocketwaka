@@ -8,5 +8,6 @@
     <declare-styleable name="LoadingView">
         <attr name="dots_number" format="integer"/>
         <attr name="dot_drawable" format="reference"/>
+        <attr name="dot_margin" format="integer"/>
     </declare-styleable>
 </resources>
