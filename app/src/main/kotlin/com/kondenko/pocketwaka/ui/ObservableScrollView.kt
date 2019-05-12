@@ -2,9 +2,9 @@ package com.kondenko.pocketwaka.ui
 
 import android.content.Context
 import android.os.Build
-import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.widget.ScrollView
+import androidx.annotation.RequiresApi
 import io.reactivex.subjects.PublishSubject
 
 /**

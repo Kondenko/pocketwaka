@@ -2,7 +2,6 @@
 <resources>
     <string name="main_action_logout">Выйти</string>
     <string name="main_action_refresh">Обновить</string>
-    <string name="error_logging_in">Вход не выполнен</string>
     <string name="error_refreshing_token">Пожалуйста, войдите снова</string>
     <string name="error_state_title">Упс</string>
     <string name="error_state_subtitle">Не получилось загрузить данные</string>
@@ -12,7 +11,7 @@
     <string name="empty_state_text">Установите плагины для ваших редакторов и продолжайте работать</string>
     <string name="empty_state_action">Найти плагины</string>
     <string name="loginactivity_sign_in">Войти</string>
-    <string name="loginactivity_subtitle">Визуализируем ваше рабочее время</string>
+    <string name="loginactivity_subtitle_default">Визуализируем ваше рабочее время</string>
     <string name="stats_tab_7_days">Неделя</string>
     <string name="stats_tab_30_days">Месяц</string>
     <string name="stats_tab_6_months">Полгода</string>
@@ -37,4 +36,7 @@
         <item quantity="many">%d мин.</item>
         <item quantity="other">%d мин.</item>
     </plurals>
+    <string name="loginactivity_subtitle_error">Ошибка входа</string>
+    <string name="loginactivity_subtitle_loading">Входим в приложение</string>
+    <string name="loginactivity_subtitle_error_action">Войти</string>
 </resources>

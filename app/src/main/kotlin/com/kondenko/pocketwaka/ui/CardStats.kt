@@ -1,15 +1,12 @@
 package com.kondenko.pocketwaka.ui
 
 import android.content.Context
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.core.view.ViewCompat
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.ui.onelinesegmentedchart.OneLineSegmentedChart
@@ -18,7 +15,7 @@ import java.util.*
 
 class CardStats(val context: Context, val title: String, val data: List<StatsItem>) {
 
-    val view = CardView(context)
+    val view = androidx.cardview.widget.CardView(context)
 
     init {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -31,26 +28,26 @@ class CardStats(val context: Context, val title: String, val data: List<StatsIte
         view.layoutParams = params
         ViewCompat.setElevation(view, 2f)
 
-        setupHeader(content)
-        setupList(content)
-        setupChart(content)
+        setHeader(content)
+        setList(content)
+        setChart(content)
     }
 
-    private fun setupHeader(content: View) {
+    private fun setHeader(content: View) {
         val header = content.findViewById<TextView>(R.id.statsCardHeader)
         header.text = title
     }
 
-    private fun setupList(content: View) {
-        val list = content.findViewById<RecyclerView>(R.id.statsCardRecyclerView)
+    private fun setList(content: View) {
+        val list = content.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.statsCardRecyclerView)
         val adapter = CardStatsListAdapter(context, data)
         list.adapter = adapter
-        list.layoutManager = object : LinearLayoutManager(context) {
+        list.layoutManager = object : androidx.recyclerview.widget.LinearLayoutManager(context) {
             override fun canScrollVertically() = false
         }
     }
 
-    private fun setupChart(content: View) {
+    private fun setChart(content: View) {
         val chart = content.findViewById<OneLineSegmentedChart>(R.id.chart)
         val segments = ArrayList<Segment>(data.size)
         data.mapTo(segments) { Segment(it.percent!!.toFloat(), it.color, it.name) }
@@ -71,6 +68,5 @@ class CardStats(val context: Context, val title: String, val data: List<StatsIte
         result = 31 * result + data.hashCode()
         return result
     }
-
 
 }

@@ -5,13 +5,16 @@
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
-        <item name="android:windowBackground">@color/color_primary</item>
+        <item name="android:windowBackground">@color/color_background_gray</item>
+        <item name="android:statusBarColor">@color/color_background_gray</item>
     </style>
 
-    <style name="LoginActivityTheme" parent="@style/Theme.AppCompat.NoActionBar" >
+    <style name="LoginActivityTheme" parent="@style/Theme.MaterialComponents.Light.NoActionBar" >
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
 </resources>

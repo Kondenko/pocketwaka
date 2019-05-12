@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.ui.onelinesegmentedchart
 
-import android.support.annotation.ColorInt
-import android.support.annotation.FloatRange
+import androidx.annotation.ColorInt
+import androidx.annotation.FloatRange
 
 /**
  * Represents a data element that is placed in [OneLineSegmentedChart]

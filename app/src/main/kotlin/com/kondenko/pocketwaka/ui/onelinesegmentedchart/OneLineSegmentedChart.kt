@@ -3,9 +3,9 @@ package com.kondenko.pocketwaka.ui.onelinesegmentedchart
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.View
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.utils.adjustForDensity
 import java.util.*
 
 /**
@@ -16,7 +16,7 @@ import java.util.*
  * @see Segment
  * @see <a href="http://stackoverflow.com/a/26201117">Stack overflow question</a> where the code for masking was taken from
  */
-class OneLineSegmentedChart(context: Context, private val attrs: AttributeSet?) : View(context, attrs) {
+class OneLineSegmentedChart(context: Context, private val attrs: AttributeSet? = null) : View(context, attrs) {
 
     private val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val maskPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
@@ -30,11 +30,9 @@ class OneLineSegmentedChart(context: Context, private val attrs: AttributeSet?) 
     private var sortDescending: Boolean
     private var barTop: Float = 0f
 
-    constructor(ctx: Context) : this(ctx, null)
-
     init {
         // Defaults
-        barWidth = adjustForDensity(18f)
+        barWidth = context.adjustForDensity(18f)
         cornerRadius = 0f
         sortDescending = true
 
@@ -43,12 +41,12 @@ class OneLineSegmentedChart(context: Context, private val attrs: AttributeSet?) 
             val attributes = context.obtainStyledAttributes(attrs, R.styleable.OneLineSegmentedChart, 0, 0)
             barWidth = attributes.getDimension(R.styleable.OneLineSegmentedChart_bar_width, barWidth)
             cornerRadius = attributes.getDimension(R.styleable.OneLineSegmentedChart_corner_radius, cornerRadius)
-            sortDescending = attributes.getBoolean(R.styleable.OneLineSegmentedChart_sortDescending, sortDescending)
+            sortDescending = attributes.getBoolean(R.styleable.OneLineSegmentedChart_sort_descending, sortDescending)
             attributes.recycle()
         }
 
-        cornerRadius = adjustForDensity(cornerRadius)
-        barWidth = adjustForDensity(barWidth)
+        cornerRadius = context.adjustForDensity(cornerRadius)
+        barWidth = context.adjustForDensity(barWidth)
 
         maskPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
         setWillNotDraw(false)
@@ -125,14 +123,9 @@ class OneLineSegmentedChart(context: Context, private val attrs: AttributeSet?) 
      * @param valueName what value to log if the check is not passed
      */
     private fun safeSet(value: Float, valueName: String): Float {
-        if (value > 0) return adjustForDensity(value)
+        if (value > 0) return context.adjustForDensity(value)
         else throw IllegalArgumentException("$valueName can't be less than 0")
     }
-
-    /**
-     * Update a view's dimension so it matches the device's density
-     */
-    private fun adjustForDensity(v: Float) = (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, v, context.resources.displayMetrics))
 
     fun addSegment(segment: Segment) {
         segments.add(segment)

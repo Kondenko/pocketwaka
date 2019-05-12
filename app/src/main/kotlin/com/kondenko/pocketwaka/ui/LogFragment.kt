@@ -2,7 +2,6 @@ package com.kondenko.pocketwaka.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,7 @@ import timber.log.Timber
 /**
  * Created by Kondenko on 02.11.2017.
  */
-open class LogFragment : Fragment() {
+open class LogFragment : androidx.fragment.app.Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -59,7 +58,7 @@ open class LogFragment : Fragment() {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun onAttachFragment(childFragment: Fragment?) {
+    override fun onAttachFragment(childFragment: androidx.fragment.app.Fragment?) {
         super.onAttachFragment(childFragment)
         Timber.i("onAttachFragment($childFragment: Fragment?)")
     }

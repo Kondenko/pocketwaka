@@ -2,11 +2,10 @@ package com.kondenko.pocketwaka.screens.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.screens.auth.AuthActivity
 import com.kondenko.pocketwaka.screens.stats.FragmentStats
@@ -74,7 +73,7 @@ class MainActivity : AppCompatActivity(), MainView {
         startActivity(Intent(this, AuthActivity::class.java))
     }
 
-    private fun setFragment(fragment: Fragment, tag: String) {
+    private fun setFragment(fragment: androidx.fragment.app.Fragment, tag: String) {
         if (supportFragmentManager.findFragmentByTag(tag) == null) {
             supportFragmentManager.transaction {
                 replace(R.id.container, fragment, tag)
