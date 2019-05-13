@@ -43,7 +43,8 @@ ext {
 
     koin = [
             "org.koin:koin-core:${versions.koin}",
-            "org.koin:koin-android:${versions.koin}"
+            "org.koin:koin-android:${versions.koin}",
+            "org.koin:koin-androidx-viewmodel:${versions.koin}"
     ]
 
     constraintLayout = "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
