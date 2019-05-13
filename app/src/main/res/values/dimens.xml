@@ -22,7 +22,7 @@
     <dimen name="height_stats_tab_bar">56dp</dimen>
     <dimen name="width_stats_tab_min">110dp</dimen>
 
-    <dimen name="height_stats_tab_indicator">36dp</dimen>
+    <dimen name="height_stats_tab_indicator">4dp</dimen>
     <dimen name="width_stats_tab_indicator">90dp</dimen>
 
     <dimen name="textsize_stats_tabs">14dp</dimen>

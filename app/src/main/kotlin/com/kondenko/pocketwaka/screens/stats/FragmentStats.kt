@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.ogaclejapan.smarttablayout.utils.v4.Bundler
@@ -50,17 +51,10 @@ class FragmentStats : Fragment() {
         stats_viewpager_content.post {
             onFragmentSelected(adapter.getPage(stats_viewpager_content.currentItem) as FragmentStatsTab)
         }
-        stats_smarttablayout_ranges.setOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {
-            }
-
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-            }
-
+        stats_smarttablayout_ranges.setOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
-                Timber.i("Selected page $position")
                 val selectedFragment = adapter.getPage(position) as FragmentStatsTab?
-                if (selectedFragment == null) Timber.d("$selectedFragment at position $position is null")
+                if (selectedFragment == null) Timber.e("$selectedFragment at position $position is null")
                 selectedFragment?.let { fragment -> onFragmentSelected(fragment) }
             }
         })

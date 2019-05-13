@@ -28,7 +28,7 @@ ext {
             rxBinding        : '2.2.0',
             retrofit         : '2.5.0',
             gson             : '2.8.1',
-            smartTabLayout   : '1.6.1',
+            smartTabLayout   : '2.0.0',
             timber           : '4.7.1',
             lottie           : '3.0.1',
 
