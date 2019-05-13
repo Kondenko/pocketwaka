@@ -20,9 +20,9 @@
         android:text="@string/error_state_action"
         android:textColor="@color/color_text_white_primary"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@+id/textivew_errorstate_message"
-        app:layout_constraintRight_toRightOf="@+id/textivew_errorstate_message"
-        app:layout_constraintTop_toBottomOf="@+id/textivew_errorstate_message"
+        app:layout_constraintLeft_toLeftOf="@+id/textview_errorstate_message"
+        app:layout_constraintRight_toRightOf="@+id/textview_errorstate_message"
+        app:layout_constraintTop_toBottomOf="@+id/textview_errorstate_message"
         />
 
     <TextView
@@ -38,7 +38,7 @@
         />
 
     <TextView
-        android:id="@+id/textivew_errorstate_message"
+        android:id="@+id/textview_errorstate_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

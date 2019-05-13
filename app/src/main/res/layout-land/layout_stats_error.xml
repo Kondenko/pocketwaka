@@ -21,7 +21,7 @@
         />
 
     <TextView
-        android:id="@+id/textivew_errorstate_message"
+        android:id="@+id/textview_errorstate_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -45,7 +45,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textivew_errorstate_message"
+        app:layout_constraintTop_toBottomOf="@+id/textview_errorstate_message"
         app:layout_constraintVertical_bias="0.481"
         />
 

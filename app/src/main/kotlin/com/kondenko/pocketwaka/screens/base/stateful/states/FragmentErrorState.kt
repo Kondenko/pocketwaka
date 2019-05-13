@@ -9,7 +9,7 @@ import com.jakewharton.rxbinding2.view.RxView
 import com.kondenko.pocketwaka.R
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.layout_stats_state_error.*
+import kotlinx.android.synthetic.main.layout_stats_error.*
 
 
 class FragmentErrorState : androidx.fragment.app.Fragment() {
@@ -19,7 +19,7 @@ class FragmentErrorState : androidx.fragment.app.Fragment() {
     private val publishSubject = PublishSubject.create<Any>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-            = inflater.inflate(R.layout.layout_stats_state_error, container, false)
+            = inflater.inflate(R.layout.layout_stats_error, container, false)
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -28,7 +28,7 @@ class FragmentErrorState : androidx.fragment.app.Fragment() {
     }
 
     fun setMessage(message: CharSequence) {
-        textivew_errorstate_message.text = message
+        textview_errorstate_message.text = message
     }
 
     fun retryClicks(): Observable<Any> = publishSubject

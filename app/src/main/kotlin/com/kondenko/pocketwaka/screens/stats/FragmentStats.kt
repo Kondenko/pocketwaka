@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.ogaclejapan.smarttablayout.utils.v4.Bundler
@@ -20,7 +21,7 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_stats_container.*
 import timber.log.Timber
 
-class FragmentStats : androidx.fragment.app.Fragment() {
+class FragmentStats : Fragment() {
 
     private val refreshEvents = PublishSubject.create<Any>()
 
@@ -72,7 +73,7 @@ class FragmentStats : androidx.fragment.app.Fragment() {
         scrollSubscription?.dispose()
         refreshSubscription = fragment.subscribeToRefreshEvents(refreshEvents)
         scrollSubscription = fragment.scrollDirection().subscribe { scrollDirection ->
-            animateTabs(elevated = scrollDirection === ScrollingDirection.Down)
+            animateTabs(elevated = scrollDirection === ScrollDirection.Down)
         }
     }
 

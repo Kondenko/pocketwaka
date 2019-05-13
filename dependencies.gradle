@@ -20,7 +20,8 @@ ext {
     ]
 
     archComponents = [
-            "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
+            "androidx.lifecycle:lifecycle-extensions-ktx:${versions.lifecycle}",
+            "androidx.lifecycle:lifecycle-reactivestreams-ktx:${versions.lifecycle}",
     ]
 
     rx = [

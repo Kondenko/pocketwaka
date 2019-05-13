@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                             xmlns:app="http://schemas.android.com/apk/res-auto"
-                                             xmlns:tools="http://schemas.android.com/tools"
-                                             android:layout_width="match_parent"
-                                             android:layout_height="match_parent"
-                                             android:layout_gravity="center_vertical"
-                                             android:gravity="center_horizontal"
-                                             android:orientation="vertical"
-                                             tools:context=".screens.base.stateful.states.FragmentErrorState"
-                                             tools:layout_editor_absoluteX="0dp"
-                                             tools:layout_editor_absoluteY="81dp"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".screens.base.stateful.states.FragmentErrorState"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
 
     <ImageView
         android:id="@+id/imageview_emptystate_image"
@@ -24,8 +23,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/state_empty_img"
-        />
+        app:srcCompat="@drawable/state_empty_img" />
 
     <TextView
         android:id="@+id/textview_emptystate_title"
@@ -36,8 +34,7 @@
         android:textAppearance="@style/TextAppearance.App.State.Any.Title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageview_emptystate_image"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/imageview_emptystate_image" />
 
     <TextView
         android:id="@+id/textview_emptystate_subtitle"
@@ -49,8 +46,7 @@
         android:textAppearance="@style/TextAppearance.App.State.Any.Subtitle"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview_emptystate_title"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/textview_emptystate_title" />
 
     <TextView
         android:id="@+id/textview_emptystate_text"
@@ -63,8 +59,7 @@
         android:textAppearance="@style/TextAppearance.App.State.Any.Text"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview_emptystate_subtitle"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/textview_emptystate_subtitle" />
 
 
     <Button
@@ -79,8 +74,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textview_emptystate_text"
-        app:layout_constraintVertical_bias="0.506"
-        >
+        app:layout_constraintVertical_bias="0.506">
 
     </Button>
 
