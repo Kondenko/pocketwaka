@@ -39,4 +39,5 @@
     <string name="loginactivity_subtitle_error">Ошибка входа</string>
     <string name="loginactivity_subtitle_loading">Входим в приложение</string>
     <string name="loginactivity_subtitle_error_action">Войти</string>
+    <string name="screen_stats">Статистика</string>
 </resources>

@@ -1,9 +1,10 @@
 <resources>
     <string name="all_app_name" translatable="false">PocketWaka</string>
 
+    <string name="screen_stats">Your stats</string>
+
     <string name="main_action_logout">Log out</string>
     <string name="main_action_refresh">Refresh</string>
-
 
     <string name="error_refreshing_token">Please log in again</string>
 
