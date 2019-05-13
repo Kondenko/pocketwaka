@@ -1,20 +1,20 @@
 package com.kondenko.pocketwaka.di
 
+import androidx.test.core.app.ApplicationProvider
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.standalone.StandAloneContext.startKoin
+import org.koin.dsl.koinApplication
 import org.koin.test.KoinTest
-import org.koin.test.dryRun
+import org.koin.test.check.checkModules
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 
 @RunWith(RobolectricTestRunner::class)
 class KoinDryRun : KoinTest {
 
     @Test
     fun testDi() {
-        startKoin(getModulesList(RuntimeEnvironment.application))
-        dryRun()
+        koinApplication { modules(getModuleList(ApplicationProvider.getApplicationContext())) }
+                .checkModules()
     }
 
 }

@@ -10,22 +10,22 @@ import com.kondenko.pocketwaka.domain.auth.GetAppSecret
 import com.kondenko.pocketwaka.domain.auth.GetAuthUrl
 import com.kondenko.pocketwaka.screens.auth.AuthPresenter
 import com.kondenko.pocketwaka.utils.Encryptor
-import org.koin.dsl.module.applicationContext
+import com.kondenko.pocketwaka.utils.extensions.create
+import org.koin.dsl.module
 import retrofit2.Retrofit
 
 object AuthModule {
 
-    fun create() = applicationContext {
-        bean { Encryptor() }
-        bean { EncryptedKeysRepository() }
-        bean { get<Retrofit>(Auth).create(AccessTokenService::class.java) }
-        bean { EncryptedKeysRepository() }
-        bean { AccessTokenRepository(get(), get()) }
+    fun create() = module {
+        single { Encryptor() }
+        single { EncryptedKeysRepository() }
+        single { get<Retrofit>(Auth).create<AccessTokenService>() }
+        single { AccessTokenRepository(get(), get()) }
         factory { GetAuthUrl(get(), get()) }
         factory { GetAppId(get(), get(), get()) }
         factory { GetAppSecret(get(), get(), get()) }
         factory { GetAccessToken(get(), get(), get(), get(), get(),get()) }
-        bean { AuthPresenter(get() as GetAuthUrl, get() as GetAccessToken) }
+        single { AuthPresenter(get() as GetAuthUrl, get() as GetAccessToken) }
     }
 
 }
