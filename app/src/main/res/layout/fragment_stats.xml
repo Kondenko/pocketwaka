@@ -7,24 +7,28 @@
         android:id="@+id/layout_data"
         layout="@layout/layout_stats_data"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
     <include
         android:id="@+id/layout_empty"
         layout="@layout/layout_stats_empty"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
     <include
         android:id="@+id/layout_error"
         layout="@layout/layout_stats_error"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
     <include
         android:id="@+id/layout_loading"
         layout="@layout/layout_all_state_loading"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
 </FrameLayout>

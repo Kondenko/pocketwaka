@@ -13,7 +13,7 @@
         android:id="@+id/action_refresh"
         android:title="@string/main_action_refresh"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/main_ic_refresh_white_24dp"
+        android:icon="@drawable/main_ic_refresh_24dp"
         />
 
 
