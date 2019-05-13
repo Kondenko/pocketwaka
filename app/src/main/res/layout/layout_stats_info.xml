@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/materialCardView"
+    style="@style/CardView.Light"
+    android:layout_width="match_parent"
+    android:layout_height="96dp"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/stats_textview_header_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/stats_header_total"
+            android:textAppearance="@style/TextAppearance.App.Stats.Header"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintLeft_toLeftOf="@+id/stats_textview_time_total"
+            app:layout_constraintRight_toRightOf="@+id/stats_textview_time_total"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="spread" />
+
+        <TextView
+            android:id="@+id/stats_textview_header_avg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stats_header_daily_average"
+            android:textAppearance="@style/TextAppearance.App.Stats.Header"
+            app:layout_constraintBaseline_toBaselineOf="@+id/stats_textview_header_total"
+            app:layout_constraintEnd_toEndOf="@+id/stats_textview_daily_average"
+            app:layout_constraintStart_toStartOf="@+id/stats_textview_daily_average" />
+
+        <TextView
+            android:id="@+id/stats_textview_time_total"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="32dp"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.App.Stats.TotalInfo"
+            app:layout_constraintBottom_toTopOf="@+id/stats_cardview_bestday"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/stats_textview_header_total"
+            tools:text="28 hrs 57 mins" />
+
+        <TextView
+            android:id="@+id/stats_textview_daily_average"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.App.Stats.TotalInfo"
+            app:layout_constraintBaseline_toBaselineOf="@+id/stats_textview_time_total"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="@+id/guidelineCenterVertical"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            tools:text="4 hrs 8 mins" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@drawable/all_divider_vertical"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintGuide_percent="0.5"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="@dimen/width_all_divider_vertical"
+            android:layout_height="0dp"
+            android:background="@drawable/all_divider_vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="@id/guideline"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

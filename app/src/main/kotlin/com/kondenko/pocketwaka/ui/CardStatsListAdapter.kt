@@ -13,7 +13,7 @@ import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 class CardStatsListAdapter(private val context: Context, private val items: List<StatsItem>) : androidx.recyclerview.widget.RecyclerView.Adapter<CardStatsListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_card_stats, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.item_stats_card, parent, false)
         return ViewHolder(view)
     }
 

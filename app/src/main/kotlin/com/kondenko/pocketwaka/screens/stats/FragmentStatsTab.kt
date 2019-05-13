@@ -31,6 +31,7 @@ import kotlinx.android.synthetic.main.fragment_stats.*
 import kotlinx.android.synthetic.main.layout_stats_data.*
 import kotlinx.android.synthetic.main.layout_stats_empty.*
 import kotlinx.android.synthetic.main.layout_stats_error.view.*
+import kotlinx.android.synthetic.main.layout_stats_info.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.math.roundToInt
