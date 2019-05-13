@@ -19,7 +19,8 @@
 
     <!--Stats-->
     <dimen name="textsize_stats_header">16sp</dimen>
-    <dimen name="textsize_stats_info">20sp</dimen> <!-- Total and average time -->
+    <dimen name="textsize_stats_info_number">25sp</dimen> <!-- Total and average time -->
+    <dimen name="textsize_stats_info_text">14sp</dimen>
 
     <dimen name="height_stats_tab_bar">56dp</dimen>
     <dimen name="width_stats_tab_min">110dp</dimen>

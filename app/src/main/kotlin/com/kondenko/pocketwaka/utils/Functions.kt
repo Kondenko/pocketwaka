@@ -63,3 +63,7 @@ fun Disposable?.attachToLifecycle(lifecycle: LifecycleOwner) {
         }
     })
 }
+
+operator fun <T : Comparable<T>> ClosedRange<T>.component1() = this.start
+
+operator fun <T : Comparable<T>> ClosedRange<T>.component2() = this.endInclusive

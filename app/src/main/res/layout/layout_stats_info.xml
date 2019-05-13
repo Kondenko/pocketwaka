@@ -46,7 +46,7 @@
             android:gravity="center"
             android:textAppearance="@style/TextAppearance.App.Stats.TotalInfo"
             app:layout_constraintBottom_toTopOf="@+id/stats_cardview_bestday"
-            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineCenterVertical"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/stats_textview_header_total"
@@ -63,13 +63,11 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/stats_textview_time_total"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="@+id/guidelineCenterVertical"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="@+id/guidelineCenterVertical"
             tools:text="4 hrs 8 mins" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
+            android:id="@+id/guidelineCenterVertical"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:background="@drawable/all_divider_vertical"
@@ -83,8 +81,8 @@
             android:layout_height="0dp"
             android:background="@drawable/all_divider_vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/guideline"
-            app:layout_constraintStart_toStartOf="@id/guideline"
+            app:layout_constraintEnd_toEndOf="@id/guidelineCenterVertical"
+            app:layout_constraintStart_toStartOf="@id/guidelineCenterVertical"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

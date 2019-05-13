@@ -35,14 +35,14 @@
     <style name="TextAppearance.App.Stats.Header" parent="TextAppearance.AppCompat">
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/color_accent</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">@dimen/textsize_stats_header</item>
     </style>
 
     <style name="TextAppearance.App.Stats.TotalInfo" parent="TextAppearance.AppCompat">
         <item name="android:gravity">center</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/color_text_black_primary</item>
-        <item name="android:textSize">@dimen/textsize_stats_info</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.05</item>
     </style>
 
     <style name="TextAppearance.App.Stats.BestDay.Date" parent="TextAppearance.AppCompat">

@@ -3,6 +3,11 @@ package com.kondenko.pocketwaka.screens.stats
 
 import android.net.Uri
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +24,8 @@ import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.ui.CardStats
 import com.kondenko.pocketwaka.ui.ObservableScrollView
 import com.kondenko.pocketwaka.utils.attachToLifecycle
+import com.kondenko.pocketwaka.utils.component1
+import com.kondenko.pocketwaka.utils.component2
 import com.kondenko.pocketwaka.utils.extensions.elevation
 import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.rxClicks
@@ -43,9 +50,7 @@ class FragmentStatsTab : Fragment() {
         const val ARG_RANGE = "range"
     }
 
-    private val vm: StatsViewModel by viewModel {
-        parametersOf(arguments?.getString(ARG_RANGE))
-    }
+    private val vm: StatsViewModel by viewModel { parametersOf(arguments?.getString(ARG_RANGE)) }
 
     private var shadowAnimationNeeded = true
 
@@ -102,8 +107,8 @@ class FragmentStatsTab : Fragment() {
 
     private fun onSuccess(model: StatsModel) {
         showFirstView(layout_data, layout_empty, layout_loading, layout_error)
-        stats_textview_time_total.text = model.humanReadableTotal
-        stats_textview_daily_average.text = model.humanReadableDailyAverage
+        stats_textview_time_total.text = model.humanReadableTotal.timeToSpannable()
+        stats_textview_daily_average.text = model.humanReadableDailyAverage.timeToSpannable()
         if (model.bestDay != null) {
             bestday_textview_date.text = model.bestDay.date
             bestday_textview_time.text = model.bestDay.time
@@ -186,6 +191,35 @@ class FragmentStatsTab : Fragment() {
         return refreshEvents.subscribe {
             vm.update()
         }
+    }
+
+    private fun String?.timeToSpannable(): Spannable? {
+        val ctx = context
+        if (this == null || ctx == null) return null
+        val sb = SpannableStringBuilder(this)
+        // Set spans for regular text
+        sb.setSpan(AbsoluteSizeSpan(resources.getDimension(R.dimen.textsize_stats_info_text).roundToInt()), 0, length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        sb.setSpan(ForegroundColorSpan(ContextCompat.getColor(ctx, R.color.color_text_black_secondary)), 0, length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        // Find start and end indices of numbers
+        val numberRegex = "\\d+".toRegex()
+        val numberIndices = numberRegex.findAll(this).map { it.range }
+        // Highlight numbers with spans
+        for ((from, to) in numberIndices) {
+            val to = to + 1
+            sb.setSpan(
+                    AbsoluteSizeSpan(resources.getDimension(R.dimen.textsize_stats_info_number).roundToInt()),
+                    from,
+                    to,
+                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+            )
+            sb.setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(ctx, R.color.color_text_black_primary)),
+                    from,
+                    to,
+                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+            )
+        }
+        return sb
     }
 
 }
