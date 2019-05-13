@@ -7,19 +7,19 @@ import androidx.core.view.updateLayoutParams
 private data class InitialState(
         val width: Int,
         val height: Int,
-        val backgroundDrawable: Drawable,
+        val backgroundDrawable: Drawable?,
         val alpha: Float
 )
 
-class SkeletonOrchestrator(
+class Skeleton(
         vararg views: View,
-        private val skeletonWidth: Int,
-        private val skeletonHeight: Int,
         private val skeletonBackground: Drawable,
+        private val skeletonWidth: Int? = null,
+        private val skeletonHeight: Int? = null,
         private val animate: ((View) -> Unit)? = null
 ) {
 
-    private lateinit var initialStates: HashMap<View, InitialState>
+    private val initialStates = hashMapOf<View, InitialState>()
 
     init {
         views.forEach {
@@ -33,8 +33,8 @@ class SkeletonOrchestrator(
 
     private fun View.showSkeleton() {
         this.updateLayoutParams {
-            width = skeletonWidth
-            height = skeletonHeight
+            width = skeletonWidth?:width
+            height = skeletonHeight?:height
         }
         this.background = skeletonBackground
         animate?.invoke(this)
