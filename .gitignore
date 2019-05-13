@@ -56,3 +56,5 @@ app/src/main/jni/*
 release.properties
 
 projectFilesBackup*/
+
+**/PocketWaka.iml
