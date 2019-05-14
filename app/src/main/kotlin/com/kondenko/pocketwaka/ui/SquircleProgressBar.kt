@@ -11,7 +11,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import com.kondenko.pocketwaka.utils.applyMatrix
 import com.kondenko.pocketwaka.utils.createPath
-import kotlin.math.max
 
 class SquircleProgressBar
 @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
@@ -41,7 +40,10 @@ class SquircleProgressBar
         }
 
     val progressBarWidth: Float
-        get() = max(progress * width, radius * 1.5f)
+        get() {
+            val actualWidth = progress * width
+            return if (actualWidth > radius * 2f) actualWidth else progressBarHeight.toFloat()
+        }
 
     private var radius = getRadius(progressBarHeight)
 
