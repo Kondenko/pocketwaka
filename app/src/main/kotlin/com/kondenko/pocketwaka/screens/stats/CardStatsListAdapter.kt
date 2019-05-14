@@ -29,6 +29,8 @@ class CardStatsListAdapter(private val context: Context, private val items: List
         fun bind(item: StatsItem) {
             with(itemView) {
                 setPercent(textview_stats_item_percent, item.percent!!)
+                squircleProgressBar.color = item.color
+                squircleProgressBar.progress = item.percent.toFloat() / 100
             }
         }
 

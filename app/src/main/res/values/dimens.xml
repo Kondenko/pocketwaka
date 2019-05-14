@@ -47,7 +47,7 @@
     <dimen name="card_stats_bar_margin_top">16dp</dimen>
     <dimen name="card_stats_bar_margin_bottom">8dp</dimen>
 
-    <dimen name="height_stats_card_item">48dp</dimen>
+    <dimen name="height_stats_card_item">40dp</dimen>
     <dimen name="padding_left_stats_card_item_text">30dp</dimen>
     <dimen name="padding_right_stats_card_item_text">16dp</dimen>
     <dimen name="size_stats_card_item_label">18dp</dimen>

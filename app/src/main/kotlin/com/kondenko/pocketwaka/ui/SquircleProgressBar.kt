@@ -6,20 +6,23 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
-import android.widget.FrameLayout
+import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import com.kondenko.pocketwaka.utils.applyMatrix
 import com.kondenko.pocketwaka.utils.createPath
-import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
+import kotlin.math.max
 
 class SquircleProgressBar
-@JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
+@JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
-    @FloatRange(from = 0.0, to = 1.0)
     var progress = 0.5f
+        set(@FloatRange(from = 0.0, to = 1.0) value) {
+            field = value
+            invalidate()
+        }
 
     var text: String? = null
 
@@ -30,18 +33,27 @@ class SquircleProgressBar
             invalidate()
         }
 
-    var height = context.adjustForDensity(32)
+    var progressBarHeight: Int = 0
         set(value) {
             field = value
             radius = getRadius(value)
             invalidate()
         }
 
-    private var radius = getRadius(height)
+    val progressBarWidth: Float
+        get() = max(progress * width, radius * 2f)
+
+    private var radius = getRadius(progressBarHeight)
 
     init {
         setWillNotDraw(false)
         paint.color = color
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        setMeasuredDimension(widthMeasureSpec, heightMeasureSpec)
+        progressBarHeight = measuredHeight
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -67,10 +79,8 @@ class SquircleProgressBar
         return path
     }
 
-    private fun getX(y: Float) = if (y < 0) y else (y + progressToWidth() - radius * 2)
+    private fun getX(y: Float) = if (y < 0) y else (y + progressBarWidth - radius * 2)
 
-    private fun progressToWidth() = progress * measuredWidth
-
-    private fun getRadius(height: Float) = height.toInt() / 2
+    private fun getRadius(height: Int) = height / 2
 
 }
