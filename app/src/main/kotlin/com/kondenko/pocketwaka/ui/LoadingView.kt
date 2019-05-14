@@ -16,7 +16,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.view.children
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.utils.IllegalViewUsageException
-import com.kondenko.pocketwaka.utils.adjustForDensity
+import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import kotlin.math.roundToInt
 
 class LoadingView @JvmOverloads constructor(

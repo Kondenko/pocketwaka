@@ -3,7 +3,6 @@ package com.kondenko.pocketwaka.utils
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
-import android.util.TypedValue
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -34,16 +33,6 @@ inline fun SharedPreferences.edit(crossinline action: SharedPreferences.Editor.(
 inline fun FragmentManager.transaction(crossinline action: androidx.fragment.app.FragmentTransaction.() -> androidx.fragment.app.FragmentTransaction) {
     this.beginTransaction().action().commit()
 }
-
-/**
- * Update a view's dimension so it matches the device's density
- */
-fun Context.adjustForDensity(value: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, resources.displayMetrics)
-
-/**
- * Update a view's dimension so it matches the device's density
- */
-fun Context.adjustForDensity(value: Int) = adjustForDensity(value.toFloat())
 
 
 /**

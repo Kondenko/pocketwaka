@@ -1,6 +1,7 @@
 package com.kondenko.pocketwaka.di.modules
 
 import android.content.Context
+import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
 import com.kondenko.pocketwaka.data.stats.service.StatsService
 import com.kondenko.pocketwaka.di.Api
@@ -18,8 +19,20 @@ object StatsModule {
         single { get<Retrofit>(Api).create<StatsService>() }
         single { StatsRepository(context, get()) }
         single { ColorProvider(context) }
-        factory { GetTokenHeaderValue(get(), get(), get()) }
-        factory { GetStats(get(), get(), get(), get() as GetTokenHeaderValue, get()) }
+        single { DateFormatter(context) }
+        factory { GetTokenHeaderValue(
+                schedulers = get(),
+                encryptor = get(),
+                accessTokenRepository = get()
+        ) }
+        factory { GetStats(
+                schedulers = get(),
+                timeProvider = get(),
+                colorProvider = get(),
+                dateFormatter = get(),
+                getTokenHeader = get() as GetTokenHeaderValue,
+                statsRepository = get()
+        ) }
         viewModel { (range: String) -> StatsViewModel(range, get() as GetStats) }
     }
 }
