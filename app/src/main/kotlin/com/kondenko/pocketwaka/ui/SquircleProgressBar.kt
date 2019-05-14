@@ -19,16 +19,25 @@ class SquircleProgressBar
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     @FloatRange(from = 0.0, to = 1.0)
-    var progress = 0f
+    var progress = 0.5f
 
     var text: String? = null
 
-    @ColorInt
     var color: Int = Color.BLACK
+        set(@ColorInt value) {
+            field = value
+            paint.color = value
+            invalidate()
+        }
 
-    val height = context.adjustForDensity(32)
+    var height = context.adjustForDensity(32)
+        set(value) {
+            field = value
+            radius = getRadius(value)
+            invalidate()
+        }
 
-    val radius = height.toInt() / 2
+    private var radius = getRadius(height)
 
     init {
         setWillNotDraw(false)
@@ -58,6 +67,10 @@ class SquircleProgressBar
         return path
     }
 
-    private fun getX(y: Float) = if (y < 0) y else (y + measuredWidth - radius * 2)
+    private fun getX(y: Float) = if (y < 0) y else (y + progressToWidth() - radius * 2)
+
+    private fun progressToWidth() = progress * measuredWidth
+
+    private fun getRadius(height: Float) = height.toInt() / 2
 
 }
