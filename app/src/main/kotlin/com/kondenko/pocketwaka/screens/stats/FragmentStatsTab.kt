@@ -26,15 +26,16 @@ import com.kondenko.pocketwaka.ui.ObservableScrollView
 import com.kondenko.pocketwaka.utils.attachToLifecycle
 import com.kondenko.pocketwaka.utils.component1
 import com.kondenko.pocketwaka.utils.component2
-import com.kondenko.pocketwaka.utils.extensions.elevation
 import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.rxClicks
+import com.kondenko.pocketwaka.utils.extensions.setGone
 import com.kondenko.pocketwaka.utils.extensions.showFirstView
 import com.kondenko.pocketwaka.utils.report
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_stats.*
+import kotlinx.android.synthetic.main.layout_stats_best_day.view.*
 import kotlinx.android.synthetic.main.layout_stats_data.*
 import kotlinx.android.synthetic.main.layout_stats_empty.*
 import kotlinx.android.synthetic.main.layout_stats_error.view.*
@@ -77,8 +78,6 @@ class FragmentStatsTab : Fragment() {
     fun scrollDirection(): Observable<ScrollDirection> = scrollDirection
 
     private fun setupUi(view: View) {
-        stats_group_bestday.elevation(resources.getDimension(R.dimen.elevation_stats_bestday))
-
         view.button_errorstate_retry.rxClicks().subscribe {
             vm.update()
         }.attachToLifecycle(viewLifecycleOwner)
@@ -110,10 +109,10 @@ class FragmentStatsTab : Fragment() {
         stats_textview_time_total.text = model.humanReadableTotal.timeToSpannable()
         stats_textview_daily_average.text = model.humanReadableDailyAverage.timeToSpannable()
         if (model.bestDay != null) {
-            bestday_textview_date.text = model.bestDay.date
-            bestday_textview_time.text = model.bestDay.time
+            stats_best_day.bestday_textview_date.text = model.bestDay.date
+            stats_best_day.bestday_textview_time.text = model.bestDay.time
         } else {
-            stats_group_bestday.visibility = View.GONE
+            stats_best_day.setGone()
         }
         addStatsCards(model)
     }
@@ -133,13 +132,13 @@ class FragmentStatsTab : Fragment() {
 
     private fun addStatsCards(stats: StatsModel) {
         val cards = getAvailableCards(stats)
-        var prevViewId = R.id.stats_cardview_bestday
+        var prevViewId = R.id.stats_best_day
         cards.forEachIndexed { index, card ->
             if (index == 0) {
                 val cs = ConstraintSet()
                 with(cs) {
                     clone(stats_constraintlayout_content)
-                    connect(R.id.stats_cardview_bestday, ConstraintSet.BOTTOM, card.view.id, ConstraintSet.TOP)
+                    connect(R.id.stats_best_day, ConstraintSet.BOTTOM, card.view.id, ConstraintSet.TOP)
                     applyTo(stats_constraintlayout_content)
                 }
             }

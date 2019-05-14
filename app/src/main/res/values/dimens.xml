@@ -33,7 +33,7 @@
     <dimen name="height_stats_shadow">4dp</dimen>
 
     <dimen name="height_stats_bestday">112dp</dimen>
-    <item name="alpha_stats_bestday_img" format="float" type="dimen">0.6</item>
+    <dimen name="padding_stats_bestday_vertical">16dp</dimen>
 
     <dimen name="textsize_stats_bestday_date">16sp</dimen>
     <dimen name="textsize_stats_bestday_time">24sp</dimen>

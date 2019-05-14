@@ -11,118 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/stats_group_bestday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="stats_cardview_bestday,besttday_textview_header,bestday_imageview_illustration,bestday_textview_caption,bestday_textview_time,bestday_textview_date" />
-
-        <View
-            android:id="@+id/stats_cardview_bestday"
-            style="@style/CardView.Light"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/height_stats_bestday"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="4dp"
-            android:background="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_stats_info" />
-
-        <ImageView
-            android:id="@+id/bestday_imageview_illustration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:alpha="@dimen/alpha_stats_bestday_img"
-            android:foregroundGravity="right"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:scaleType="fitEnd"
-            android:src="@drawable/stats_img_bestday"
-            app:layout_constraintBottom_toBottomOf="@+id/stats_cardview_bestday"
-            app:layout_constraintEnd_toEndOf="@id/stats_cardview_bestday"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintLeft_toLeftOf="@+id/stats_cardview_bestday"
-            app:layout_constraintRight_toRightOf="@+id/stats_cardview_bestday"
-            app:layout_constraintStart_toStartOf="@id/stats_cardview_bestday"
-            app:layout_constraintTop_toTopOf="@+id/stats_cardview_bestday" />
-
-        <TextView
-            android:id="@+id/besttday_textview_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/stats_header_best_day"
-            android:textAppearance="@style/TextAppearance.App.Stats.Header"
-            app:layout_constraintBaseline_toBaselineOf="@+id/bestday_textview_date"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="@+id/stats_cardview_bestday"
-            app:layout_constraintRight_toLeftOf="@+id/bestday_textview_date" />
-
-        <TextView
-            android:id="@+id/bestday_textview_caption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/stats_caption_best_day"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Caption"
-            app:layout_constraintBottom_toBottomOf="@+id/stats_cardview_bestday"
-            app:layout_constraintEnd_toEndOf="@+id/bestday_textview_time"
-            app:layout_constraintLeft_toLeftOf="@+id/stats_cardview_bestday"
-            app:layout_constraintRight_toRightOf="@+id/stats_cardview_bestday"
-            app:layout_constraintStart_toStartOf="@+id/bestday_textview_time"
-            app:layout_constraintTop_toBottomOf="@+id/bestday_textview_time" />
-
-        <TextView
-            android:id="@+id/bestday_textview_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Time"
-            app:layout_constraintBottom_toTopOf="@+id/bestday_textview_caption"
-            app:layout_constraintLeft_toLeftOf="@+id/stats_cardview_bestday"
-            app:layout_constraintRight_toRightOf="@+id/stats_cardview_bestday"
-            app:layout_constraintTop_toBottomOf="@+id/bestday_textview_date"
-            tools:text="8 hrs 8 mins" />
-
-        <TextView
-            android:id="@+id/bestday_textview_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Date"
-            app:layout_constraintBottom_toTopOf="@+id/bestday_textview_time"
-            app:layout_constraintEnd_toEndOf="@+id/bestday_textview_time"
-            app:layout_constraintHorizontal_bias="0.49"
-            app:layout_constraintLeft_toLeftOf="@+id/stats_cardview_bestday"
-            app:layout_constraintRight_toRightOf="@+id/stats_cardview_bestday"
-            app:layout_constraintStart_toStartOf="@+id/bestday_textview_time"
-            app:layout_constraintTop_toTopOf="@+id/stats_cardview_bestday"
-            tools:text="12/08/2016" />
-
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineCenterVertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5"
-            tools:layout_editor_absoluteX="180dp"
-            tools:layout_editor_absoluteY="81dp" />
-
         <include
-            android:id="@+id/layout_stats_info"
+            android:id="@+id/stats_info"
             layout="@layout/layout_stats_info"
             android:layout_width="0dp"
             android:layout_height="96dp"
@@ -130,10 +20,22 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/stats_cardview_bestday"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/stats_best_day"
+            layout="@layout/layout_stats_best_day"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/stats_info" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
