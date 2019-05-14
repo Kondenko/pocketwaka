@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
@@ -19,7 +20,6 @@ class CardStatsListAdapter(private val context: Context, private val items: List
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(items[position])
-//        holder.header.text = item.name
     }
 
     override fun getItemCount(): Int = items.size
@@ -28,9 +28,19 @@ class CardStatsListAdapter(private val context: Context, private val items: List
 
         fun bind(item: StatsItem) {
             with(itemView) {
+                textview_stats_item_name.text = item.name
                 setPercent(textview_stats_item_percent, item.percent!!)
-                squircleProgressBar.color = item.color
-                squircleProgressBar.progress = item.percent.toFloat() / 100
+                progressbar_stats_item.color = item.color
+                progressbar_stats_item.progress = item.percent.toFloat() / 100
+                // Add text label
+                post {
+                    val isTextWiderThanProgress = progressbar_stats_item.progressBarWidth <= textview_stats_item_name.measuredWidth
+                    val isTextWiderThanProgressBar = progressbar_stats_item.width <= textview_stats_item_name.measuredWidth
+                    if (isTextWiderThanProgress /* && isTextWiderThanProgressBar */) {
+                        textview_stats_item_name.setTextColor(ContextCompat.getColor(context, R.color.color_stats_item_dark))
+                        textview_stats_item_name.x += progressbar_stats_item.progressBarWidth
+                    }
+                }
             }
         }
 

@@ -151,8 +151,7 @@ class FragmentStatsTab : Fragment() {
         if (stats_constraintlayout_content.findViewById<View>(view.id) == null) {
             view.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
             stats_constraintlayout_content.addView(view)
-            val constraintSet = ConstraintSet()
-            with(constraintSet) {
+            with(ConstraintSet()) {
                 val marginVertical = resources.getDimension(R.dimen.margin_all_card_outer_vertical).roundToInt()
                 val marginHorizontal = resources.getDimension(R.dimen.margin_all_card_outer_horizontal).roundToInt()
                 clone(stats_constraintlayout_content)

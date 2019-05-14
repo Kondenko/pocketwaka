@@ -42,10 +42,8 @@
     <dimen name="elevation_stats_bestday">2dp</dimen>
 
     <dimen name="padding_all_card_inner">16dp</dimen>
-    <dimen name="card_stats_bar_height">16dp</dimen>
-    <dimen name="card_stats_bar_corner_radius">90dp</dimen>
-    <dimen name="card_stats_bar_margin_top">16dp</dimen>
-    <dimen name="card_stats_bar_margin_bottom">8dp</dimen>
+    <dimen name="margin_card_stats_label_horizontal">8dp</dimen>
+    <dimen name="margin_card_stats_label_bottom">1dp</dimen>
 
     <dimen name="height_stats_card_item">40dp</dimen>
     <dimen name="padding_left_stats_card_item_text">30dp</dimen>

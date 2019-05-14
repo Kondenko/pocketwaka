@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintlayout_item_stats_card_root"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/height_stats_card_item"
-    >
+    android:layout_height="@dimen/height_stats_card_item">
+
+    <com.kondenko.pocketwaka.ui.SquircleProgressBar
+        android:id="@+id/progressbar_stats_item"
+        android:layout_width="0dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textview_stats_item_percent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/textview_stats_item_percent"
@@ -13,19 +22,25 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/squircleProgressBar"
+        app:layout_constraintEnd_toStartOf="@+id/progressbar_stats_item"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="100%" />
 
-    <com.kondenko.pocketwaka.ui.SquircleProgressBar
-        android:id="@+id/squircleProgressBar"
-        android:layout_width="0dp"
-        android:layout_height="28dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+    <TextView
+        android:id="@+id/textview_stats_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:paddingStart="@dimen/margin_card_stats_label_horizontal"
+        android:paddingEnd="@dimen/margin_card_stats_label_horizontal"
+        android:paddingBottom="@dimen/margin_card_stats_label_bottom"
+        android:textColor="@color/color_stats_item_light"
+        app:layout_constraintBottom_toBottomOf="@+id/progressbar_stats_item"
+        app:layout_constraintEnd_toEndOf="@+id/progressbar_stats_item"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textview_stats_item_percent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/progressbar_stats_item"
+        tools:text="PocketWaka" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

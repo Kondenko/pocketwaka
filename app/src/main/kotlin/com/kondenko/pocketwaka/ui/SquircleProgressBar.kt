@@ -41,7 +41,7 @@ class SquircleProgressBar
         }
 
     val progressBarWidth: Float
-        get() = max(progress * width, radius * 2f)
+        get() = max(progress * width, radius * 1.5f)
 
     private var radius = getRadius(progressBarHeight)
 
