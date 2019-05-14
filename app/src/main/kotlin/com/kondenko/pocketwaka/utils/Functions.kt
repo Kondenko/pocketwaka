@@ -2,6 +2,8 @@ package com.kondenko.pocketwaka.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Matrix
+import android.graphics.Path
 import android.net.ConnectivityManager
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
@@ -53,6 +55,16 @@ fun Disposable?.attachToLifecycle(lifecycle: LifecycleOwner) {
             this@attachToLifecycle?.dispose()
         }
     })
+}
+
+fun createPath(build: Path.() -> Unit): Path = Path().apply {
+    build()
+    close()
+}
+
+fun Path.applyMatrix(actions: Matrix.() -> Unit) = Matrix().also { matrix ->
+    matrix.actions()
+    transform(matrix)
 }
 
 operator fun <T : Comparable<T>> ClosedRange<T>.component1() = this.start

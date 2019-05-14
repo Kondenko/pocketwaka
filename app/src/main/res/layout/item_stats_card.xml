@@ -7,38 +7,21 @@
     android:layout_height="@dimen/height_stats_card_item"
     >
 
-    <View
-        android:id="@+id/labelColor"
-        android:layout_width="@dimen/size_stats_card_item_label"
-        android:layout_height="@dimen/size_stats_card_item_label"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-
     <TextView
-        android:id="@+id/textItem"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/padding_right_stats_card_item_text"
-        android:layout_marginStart="@dimen/padding_left_stats_card_item_text"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toRightOf="@+id/labelColor"
-        app:layout_constraintRight_toLeftOf="@+id/textPercent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.52"
-        tools:text="Android Studio"
-        />
-
-    <TextView
-        android:id="@+id/textPercent"
+        android:id="@+id/textview_stats_item_percent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/squircleProgressBar"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="100%"
-        />
+        tools:text="100%" />
+
+    <com.kondenko.pocketwaka.ui.SquircleProgressBar
+        android:id="@+id/squircleProgressBar"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textview_stats_item_percent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

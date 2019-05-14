@@ -1,35 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/padding_all_card_inner"
-    >
+    style="@style/App.CardView.Light"
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/statsCardHeader"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.App.Stats.Header"
-        />
+        android:orientation="vertical"
+        android:padding="@dimen/padding_all_card_inner">
 
-    <com.kondenko.pocketwaka.ui.onelinesegmentedchart.OneLineSegmentedChart
-        android:id="@+id/chart"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/card_stats_bar_height"
-        android:layout_marginTop="@dimen/card_stats_bar_margin_top"
-        android:layout_marginBottom="@dimen/card_stats_bar_margin_bottom"
-        app:bar_width="@dimen/card_stats_bar_height"
-        app:corner_radius="@dimen/card_stats_bar_corner_radius"
-        />
+        <TextView
+            android:id="@+id/statsCardHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.App.Stats.Header" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/statsCardRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/statsCardRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
 
-</LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

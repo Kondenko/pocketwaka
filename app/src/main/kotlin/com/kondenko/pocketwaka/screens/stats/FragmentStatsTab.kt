@@ -21,7 +21,6 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.State
-import com.kondenko.pocketwaka.ui.CardStats
 import com.kondenko.pocketwaka.ui.ObservableScrollView
 import com.kondenko.pocketwaka.utils.attachToLifecycle
 import com.kondenko.pocketwaka.utils.component1
