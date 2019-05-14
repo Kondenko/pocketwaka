@@ -133,10 +133,10 @@ class FragmentStatsTab : Fragment() {
         var prevViewId = R.id.stats_best_day
         cards.forEachIndexed { index, card ->
             if (index == 0) {
-                val cs = ConstraintSet()
-                with(cs) {
+                with(ConstraintSet()) {
                     clone(stats_constraintlayout_content)
-                    connect(R.id.stats_best_day, ConstraintSet.BOTTOM, card.view.id, ConstraintSet.TOP)
+                    val marginTop = (context?.resources?.getDimension(R.dimen.margin_all_card_outer_vertical)?.roundToInt()?:8)
+                    connect(R.id.stats_best_day, ConstraintSet.BOTTOM, card.view.id, ConstraintSet.TOP, marginTop)
                     applyTo(stats_constraintlayout_content)
                 }
             }

@@ -51,7 +51,6 @@
         <item quantity="other">%d mins</item>
     </plurals>
 
-
     <string name="stats_card_less_than_1_percent" formatted="false" translatable="false">&lt; 1%</string>
     <string name="stats_card_percent_format_int" formatted="false" translatable="false">%.0f%%</string>
 

@@ -12,6 +12,8 @@
 
     <dimen name="height_skeleton_text">12dp</dimen>
 
+    <dimen name="padding_all_card_inner">16dp</dimen>
+
     <!--Login-->
     <dimen name="size_login_loading_dot">6dp</dimen>
     <dimen name="padding_login_loading_view_side">30dp</dimen>
@@ -41,7 +43,7 @@
 
     <dimen name="elevation_stats_bestday">2dp</dimen>
 
-    <dimen name="padding_all_card_inner">16dp</dimen>
+    <dimen name="margin_card_stats_item_vertical">4dp</dimen>
     <dimen name="margin_card_stats_label_horizontal">8dp</dimen>
     <dimen name="margin_card_stats_label_bottom">1dp</dimen>
 

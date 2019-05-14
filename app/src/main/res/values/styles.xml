@@ -33,7 +33,7 @@
     </style>
 
     <style name="TextAppearance.App.Stats.Header" parent="TextAppearance.AppCompat">
-        <item name="android:gravity">center</item>
+        <item name="android:gravity">start</item>
         <item name="android:textColor">@color/color_accent</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">@dimen/textsize_stats_header</item>

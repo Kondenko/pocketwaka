@@ -9,12 +9,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
-import kotlinx.android.synthetic.main.item_stats_card.view.*
+import kotlinx.android.synthetic.main.item_stats_item.view.*
 
 class CardStatsListAdapter(private val context: Context, private val items: List<StatsItem>) : RecyclerView.Adapter<CardStatsListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_stats_card, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.item_stats_item, parent, false)
         return ViewHolder(view)
     }
 
