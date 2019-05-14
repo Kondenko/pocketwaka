@@ -9,10 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.utils.getStatuBarHeight
 import com.ogaclejapan.smarttablayout.utils.v4.Bundler
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
@@ -21,6 +23,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_stats_container.*
 import timber.log.Timber
+
 
 class FragmentStats : Fragment() {
 
@@ -32,11 +35,13 @@ class FragmentStats : Fragment() {
 
     private var refreshSubscription: Disposable? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
-            = inflater.inflate(R.layout.fragment_stats_container, container, false)
+    private var elevatedSurface: View? = null
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_stats_container, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        elevatedSurface = activity?.findViewById(R.id.view_main_elevated_surface)
         val adapter = FragmentPagerItemAdapter(
                 childFragmentManager,
                 FragmentPagerItems.with(activity)
@@ -58,6 +63,13 @@ class FragmentStats : Fragment() {
                 selectedFragment?.let { fragment -> onFragmentSelected(fragment) }
             }
         })
+        stats_smarttablayout_ranges.post {
+            elevatedSurface?.updateLayoutParams {
+                height = stats_smarttablayout_ranges
+                        .run { bottom + height + (activity?.getStatuBarHeight() ?: 24) }
+                        .toInt()
+            }
+        }
     }
 
     private fun onFragmentSelected(fragment: FragmentStatsTab) {
@@ -74,19 +86,21 @@ class FragmentStats : Fragment() {
     private fun animateTabs(elevated: Boolean) {
         areTabsElevated = elevated
         // Tabs background color
-        val colorGray = ContextCompat.getColor(context!!, R.color.color_background_gray)
-        val colorPrimaryLight = ContextCompat.getColor(context!!, android.R.color.white)
-        val colorAnim = ValueAnimator()
-        stats_smarttablayout_ranges.background
-        with(colorAnim) {
-            @Suppress("UsePropertyAccessSyntax")
-            setDuration(Const.DEFAULT_ANIM_DURATION)
-            setIntValues(if (elevated) colorGray else colorPrimaryLight, if (elevated) colorPrimaryLight else colorGray)
-            setEvaluator(ArgbEvaluator())
-            addUpdateListener { valueAnimator ->
-                stats_smarttablayout_ranges.setBackgroundColor(valueAnimator.animatedValue as Int)
+        elevatedSurface?.let {
+            val colorGray = ContextCompat.getColor(context!!, R.color.color_background_gray)
+            val colorPrimaryLight = ContextCompat.getColor(context!!, android.R.color.white)
+            val colorAnim = ValueAnimator()
+            it.background
+            with(colorAnim) {
+                @Suppress("UsePropertyAccessSyntax")
+                setDuration(Const.DEFAULT_ANIM_DURATION)
+                setIntValues(if (elevated) colorGray else colorPrimaryLight, if (elevated) colorPrimaryLight else colorGray)
+                setEvaluator(ArgbEvaluator())
+                addUpdateListener { valueAnimator ->
+                    it.setBackgroundColor(valueAnimator.animatedValue as Int)
+                }
+                start()
             }
-            start()
         }
         // Custom tabs elevation
         stats_view_shadow.animate().alpha(if (elevated) Const.MAX_SHADOW_OPACITY else 0f).start()

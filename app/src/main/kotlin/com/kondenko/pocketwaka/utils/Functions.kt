@@ -1,10 +1,10 @@
 package com.kondenko.pocketwaka.utils
 
-import android.content.Context
+import android.app.Activity
 import android.content.SharedPreferences
 import android.graphics.Matrix
 import android.graphics.Path
-import android.net.ConnectivityManager
+import android.graphics.Rect
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -17,16 +17,8 @@ import timber.log.Timber
 
 fun notNull(vararg values: Any?): Boolean = values.all { it != null }
 
-fun isConnectionAvailable(context: Context): Boolean {
-    val service = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    return service.activeNetworkInfo?.isConnectedOrConnecting?:false
-}
-
-fun <T> T?.singleOrErrorIfNull(exception: Throwable): Single<T> = this?.let { Single.just(it) } ?: Single.error(exception)
-
-/**
- * Extension functions.
- */
+fun <T> T?.singleOrErrorIfNull(exception: Throwable): Single<T> = this?.let { Single.just(it) }
+        ?: Single.error(exception)
 
 inline fun SharedPreferences.edit(crossinline action: SharedPreferences.Editor.() -> Unit) {
     val editor = edit()
@@ -38,12 +30,16 @@ inline fun FragmentManager.transaction(crossinline action: androidx.fragment.app
     this.beginTransaction().action().commit()
 }
 
+fun Activity?.getStatuBarHeight(): Int? = Rect().let {
+    this?.window?.decorView?.getWindowVisibleDisplayFrame(it) ?: return@let null
+    it.top
+}
 
 /**
  * Prints log output and sends a report to crashlyics about the given exception
  */
 fun Throwable.report(message: String? = null) {
-    Timber.e(this, message?:this.message)
+    Timber.e(this, message ?: this.message)
     Crashlytics.logException(this)
 }
 

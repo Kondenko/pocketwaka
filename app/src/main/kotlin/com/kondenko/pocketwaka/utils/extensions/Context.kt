@@ -1,6 +1,7 @@
 package com.kondenko.pocketwaka.utils.extensions
 
 import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Build
 import android.util.TypedValue
 import java.util.*
@@ -20,3 +21,8 @@ fun Context.adjustForDensity(value: Float) = TypedValue.applyDimension(TypedValu
  * Update a view's dimension so it matches the device's density
  */
 fun Context.adjustForDensity(value: Int) = adjustForDensity(value.toFloat())
+
+fun Context.isConnectionAvailable(): Boolean {
+    val service = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    return service.activeNetworkInfo?.isConnectedOrConnecting?:false
+}
