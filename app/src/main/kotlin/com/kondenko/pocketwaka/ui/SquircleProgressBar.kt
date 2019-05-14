@@ -28,7 +28,7 @@ class SquircleProgressBar
 
     val height = context.adjustForDensity(32)
 
-    val radius = 200
+    val radius = height.toInt() / 2
 
     init {
         setWillNotDraw(false)
