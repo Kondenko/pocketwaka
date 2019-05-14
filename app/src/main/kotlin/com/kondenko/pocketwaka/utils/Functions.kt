@@ -13,6 +13,8 @@ import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
 
+fun notNull(vararg values: Any?): Boolean = values.all { it != null }
+
 fun isConnectionAvailable(context: Context): Boolean {
     val service = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     return service.activeNetworkInfo?.isConnectedOrConnecting?:false

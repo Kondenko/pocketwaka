@@ -34,7 +34,7 @@
     <string name="stats_header_total">Total</string>
     <string name="stats_header_daily_average">Daily average</string>
     <string name="stats_header_best_day">Best day</string>
-    <string name="stats_caption_best_day">of coding activity</string>
+    <string name="stats_caption_best_day">%d%% greater than your average</string>
 
     <string name="stats_card_header_projects">Projects</string>
     <string name="stats_card_header_editors">Editors</string>

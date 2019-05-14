@@ -39,7 +39,7 @@
         <item name="android:textSize">@dimen/textsize_stats_header</item>
     </style>
 
-    <style name="TextAppearance.App.Stats.TotalInfo" parent="TextAppearance.AppCompat">
+    <style name="TextAppearance.App.Stats.Time" parent="TextAppearance.AppCompat">
         <item name="android:gravity">center</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:letterSpacing">0.05</item>
@@ -51,9 +51,8 @@
         <item name="android:textSize">@dimen/textsize_stats_bestday_date</item>
     </style>
 
-    <style name="TextAppearance.App.Stats.BestDay.Time" parent="TextAppearance.AppCompat">
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/color_text_black_primary</item>
+    <style name="TextAppearance.App.Stats.BestDay.Time" parent="TextAppearance.App.Stats.Time">
+        <item name="android:gravity">start</item>
         <item name="android:textSize">@dimen/textsize_stats_bestday_time</item>
     </style>
 

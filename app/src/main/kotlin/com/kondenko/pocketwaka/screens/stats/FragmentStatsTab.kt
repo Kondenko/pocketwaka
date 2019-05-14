@@ -108,12 +108,11 @@ class FragmentStatsTab : Fragment() {
         showFirstView(layout_data, layout_empty, layout_loading, layout_error)
         stats_textview_time_total.text = model.humanReadableTotal.timeToSpannable()
         stats_textview_daily_average.text = model.humanReadableDailyAverage.timeToSpannable()
-        if (model.bestDay != null) {
-            stats_best_day.bestday_textview_date.text = model.bestDay.date
-            stats_best_day.bestday_textview_time.text = model.bestDay.time
-        } else {
-            stats_best_day.setGone()
-        }
+        model.bestDay?.let {
+            stats_best_day.bestday_textview_date.text = it.date
+            stats_best_day.bestday_textview_time.text = it.time.timeToSpannable()
+            stats_best_day.bestday_textview_caption.text = getString(R.string.stats_caption_best_day, it.percentAboveAverage)
+        } ?: stats_best_day.setGone()
         addStatsCards(model)
     }
 
@@ -204,17 +203,17 @@ class FragmentStatsTab : Fragment() {
         val numberIndices = numberRegex.findAll(this).map { it.range }
         // Highlight numbers with spans
         for ((from, to) in numberIndices) {
-            val to = to + 1
+            val toActual = to + 1
             sb.setSpan(
                     AbsoluteSizeSpan(resources.getDimension(R.dimen.textsize_stats_info_number).roundToInt()),
                     from,
-                    to,
+                    toActual,
                     Spanned.SPAN_INCLUSIVE_EXCLUSIVE
             )
             sb.setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(ctx, R.color.color_text_black_primary)),
                     from,
-                    to,
+                    toActual,
                     Spanned.SPAN_INCLUSIVE_EXCLUSIVE
             )
         }
