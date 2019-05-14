@@ -35,10 +35,12 @@ class CardStatsListAdapter(private val context: Context, private val items: List
                 // Add text label
                 post {
                     val isTextWiderThanProgress = progressbar_stats_item.progressBarWidth <= textview_stats_item_name.measuredWidth
-                    val isTextWiderThanProgressBar = progressbar_stats_item.width <= textview_stats_item_name.measuredWidth
-                    if (isTextWiderThanProgress /* && isTextWiderThanProgressBar */) {
+                    if (isTextWiderThanProgress) {
+                        textview_stats_item_name.width = (progressbar_stats_item.measuredWidth - progressbar_stats_item.progressBarWidth).toInt()
                         textview_stats_item_name.setTextColor(ContextCompat.getColor(context, R.color.color_stats_item_dark))
                         textview_stats_item_name.x += progressbar_stats_item.progressBarWidth
+                    } else {
+                        textview_stats_item_name.width = progressbar_stats_item.progressBarWidth.toInt()
                     }
                 }
             }

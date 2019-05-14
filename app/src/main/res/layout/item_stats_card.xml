@@ -32,6 +32,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
+        android:lines="1"
+        android:ellipsize="end"
         android:paddingStart="@dimen/margin_card_stats_label_horizontal"
         android:paddingEnd="@dimen/margin_card_stats_label_horizontal"
         android:paddingBottom="@dimen/margin_card_stats_label_bottom"
