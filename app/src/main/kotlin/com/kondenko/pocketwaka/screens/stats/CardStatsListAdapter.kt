@@ -28,10 +28,10 @@ class CardStatsListAdapter(private val context: Context, private val items: List
 
         fun bind(item: StatsItem) {
             with(itemView) {
+                textview_stats_item_percent?.setPercent(item.percent!!)
                 textview_stats_item_name.text = item.name
-                setPercent(textview_stats_item_percent, item.percent!!)
                 progressbar_stats_item.color = item.color
-                progressbar_stats_item.progress = item.percent.toFloat() / 100
+                progressbar_stats_item.progress = (item.percent?.toFloat()?:0f) / 100
                 // Add text label
                 post {
                     val isTextWiderThanProgress = progressbar_stats_item.progressBarWidth <= textview_stats_item_name.measuredWidth
@@ -49,11 +49,11 @@ class CardStatsListAdapter(private val context: Context, private val items: List
         /**
          * Set the percent value so that if it's less than 1% it looks like < 1%
          */
-        private fun setPercent(textView: TextView?, percent: Double) {
-            if (percent > 1) {
-                textView?.text = String.format(context.getString(R.string.stats_card_percent_format_int) as String, percent)
+        private fun TextView.setPercent(percent: Double) {
+            text = if (percent > 1) {
+                String.format(context.getString(R.string.stats_card_percent_format_int) as String, percent)
             } else {
-                textView?.text = context.getString(R.string.stats_card_less_than_1_percent)
+                context.getString(R.string.stats_card_less_than_1_percent)
             }
         }
 
