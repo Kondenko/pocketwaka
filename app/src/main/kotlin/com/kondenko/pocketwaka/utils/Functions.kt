@@ -66,3 +66,11 @@ fun Path.applyMatrix(actions: Matrix.() -> Unit) = Matrix().also { matrix ->
 operator fun <T : Comparable<T>> ClosedRange<T>.component1() = this.start
 
 operator fun <T : Comparable<T>> ClosedRange<T>.component2() = this.endInclusive
+
+operator fun <T> List<T>.times(times: Int): List<T> {
+    val list = this.toMutableList()
+    for (i in (1 until times)) {
+        list.addAll(this)
+    }
+    return list
+}

@@ -12,6 +12,12 @@ package com.kondenko.pocketwaka.domain
 
     fun build(params: PARAMS? = null): CONTEXT
 
-    fun execute(params: PARAMS? = null, onSuccess: (RESULT) -> Unit = {}, onError: (Throwable) -> Unit = {}, onFinish: () -> Unit = {}): CONTEXT
+    fun execute(
+            params: PARAMS? = null,
+            onSuccess: (RESULT) -> Unit = {},
+            onError: (Throwable) -> Unit = {},
+            onFinish: () -> Unit = {},
+            andThen: (() -> CONTEXT)? = null
+    ): CONTEXT
 
 }

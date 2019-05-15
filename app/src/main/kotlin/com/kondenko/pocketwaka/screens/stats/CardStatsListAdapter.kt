@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
+import com.kondenko.pocketwaka.utils.extensions.setInvisible
 import kotlinx.android.synthetic.main.item_stats_item.view.*
 
 class CardStatsListAdapter(private val context: Context, private val items: List<StatsItem>) : RecyclerView.Adapter<CardStatsListAdapter.ViewHolder>() {
@@ -28,10 +29,12 @@ class CardStatsListAdapter(private val context: Context, private val items: List
 
         fun bind(item: StatsItem) {
             with(itemView) {
-                textview_stats_item_percent?.setPercent(item.percent!!)
+                textview_stats_item_percent?.apply {
+                    item.percent?.let { setPercent(it) } ?: setInvisible()
+                }
                 textview_stats_item_name.text = item.name
                 progressbar_stats_item.color = item.color
-                progressbar_stats_item.progress = (item.percent?.toFloat()?:0f) / 100
+                progressbar_stats_item.progress = (item.percent?.toFloat() ?: 0f) / 100
                 // Add text label
                 post {
                     val isTextWiderThanProgress = progressbar_stats_item.progressBarWidth <= textview_stats_item_name.measuredWidth
@@ -45,18 +48,17 @@ class CardStatsListAdapter(private val context: Context, private val items: List
                 }
             }
         }
+    }
 
-        /**
-         * Set the percent value so that if it's less than 1% it looks like < 1%
-         */
-        private fun TextView.setPercent(percent: Double) {
-            text = if (percent > 1) {
-                String.format(context.getString(R.string.stats_card_percent_format_int) as String, percent)
-            } else {
-                context.getString(R.string.stats_card_less_than_1_percent)
-            }
+    /**
+     * Set the percent value so that if it's less than 1% it looks like < 1%
+     */
+    private fun TextView.setPercent(percent: Double) {
+        text = if (percent > 1) {
+            String.format(context.getString(R.string.stats_card_percent_format_int) as String, percent)
+        } else {
+            context.getString(R.string.stats_card_less_than_1_percent)
         }
-
     }
 
 }

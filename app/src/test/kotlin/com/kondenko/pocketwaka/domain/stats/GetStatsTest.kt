@@ -1,5 +1,6 @@
 package com.kondenko.pocketwaka.domain.stats
 
+import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.testutils.testSchedulers
@@ -22,7 +23,9 @@ class GetStatsTest {
 
     private val statsRepository: StatsRepository = mock()
 
-    private val useCase = GetStats(testSchedulers, timeProvider , colorProvider, getTokenHeader, statsRepository)
+    private val dateFormatter: DateFormatter = mock()
+
+    private val useCase = GetStats(testSchedulers, timeProvider , colorProvider, dateFormatter, getTokenHeader, statsRepository)
 
     @Test
     fun `should fetch token first`() {

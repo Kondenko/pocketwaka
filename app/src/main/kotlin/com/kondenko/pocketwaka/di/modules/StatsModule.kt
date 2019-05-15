@@ -6,6 +6,7 @@ import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
 import com.kondenko.pocketwaka.data.stats.service.StatsService
 import com.kondenko.pocketwaka.di.Api
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
+import com.kondenko.pocketwaka.domain.stats.GetSkeletonStats
 import com.kondenko.pocketwaka.domain.stats.GetStats
 import com.kondenko.pocketwaka.screens.stats.StatsViewModel
 import com.kondenko.pocketwaka.utils.ColorProvider
@@ -20,20 +21,25 @@ object StatsModule {
         single { StatsRepository(context, get()) }
         single { ColorProvider(context) }
         single { DateFormatter(context) }
-        factory { GetTokenHeaderValue(
-                schedulers = get(),
-                encryptor = get(),
-                accessTokenRepository = get()
-        ) }
-        factory { GetStats(
-                schedulers = get(),
-                timeProvider = get(),
-                colorProvider = get(),
-                dateFormatter = get(),
-                getTokenHeader = get() as GetTokenHeaderValue,
-                statsRepository = get()
-        ) }
-        viewModel { (range: String) -> StatsViewModel(range, get() as GetStats) }
+        single { GetSkeletonStats(get()) }
+        factory {
+            GetTokenHeaderValue(
+                    schedulers = get(),
+                    encryptor = get(),
+                    accessTokenRepository = get()
+            )
+        }
+        factory {
+            GetStats(
+                    schedulers = get(),
+                    timeProvider = get(),
+                    colorProvider = get(),
+                    dateFormatter = get(),
+                    getTokenHeader = get() as GetTokenHeaderValue,
+                    statsRepository = get()
+            )
+        }
+        viewModel { (range: String) -> StatsViewModel(range, get() as GetStats, get()) }
     }
 }
 
