@@ -4,8 +4,10 @@ import android.content.res.TypedArray
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.StyleableRes
 import androidx.core.view.ViewCompat
+import androidx.core.view.children
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Completable
 
@@ -21,6 +23,17 @@ fun View.useAttributes(attrs: AttributeSet?, @StyleableRes styleable: IntArray, 
             recycle()
         }
     }
+}
+
+fun <T> ViewGroup.findViewsWithTag(id: Int, value: T): List<View> {
+    val childrenWithTag = mutableListOf<View>()
+    children.forEach {
+        if (it is ViewGroup) childrenWithTag += it.findViewsWithTag(id, value)
+        // Because getTag() returns String, that's why️
+        val areValuesEqual = it.getTag(id)?.toString() == value.toString()
+        if (areValuesEqual) childrenWithTag.add(it)
+    }
+    return childrenWithTag
 }
 
 fun View.rxClicks() = RxView.clicks(this)

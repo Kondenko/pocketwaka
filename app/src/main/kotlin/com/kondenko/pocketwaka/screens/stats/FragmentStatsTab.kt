@@ -1,6 +1,8 @@
 package com.kondenko.pocketwaka.screens.stats
 
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
@@ -23,6 +25,7 @@ import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.ui.ObservableScrollView
+import com.kondenko.pocketwaka.ui.Skeleton
 import com.kondenko.pocketwaka.utils.attachToLifecycle
 import com.kondenko.pocketwaka.utils.component1
 import com.kondenko.pocketwaka.utils.component2
@@ -54,6 +57,8 @@ class FragmentStatsTab : Fragment() {
     private var shadowAnimationNeeded = true
 
     private val scrollDirection = PublishSubject.create<ScrollDirection>()
+
+    private var skeleton: Skeleton? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -99,11 +104,12 @@ class FragmentStatsTab : Fragment() {
             val customTabsIntent = builder.build()
             customTabsIntent.launchUrl(context, Uri.parse(uri))
         }.attachToLifecycle(viewLifecycleOwner)
-
     }
 
     private fun showStats(model: StatsModel, isSkeletonData: Boolean = false) {
         stats_best_day.bestday_imageview_illustration.isVisible = !isSkeletonData
+        if (skeleton == null) setupSkeleton()
+        if (isSkeletonData) skeleton?.show() else skeleton?.hide()
         showFirstView(layout_data, layout_empty, layout_error)
         stats_textview_time_total.text = model.humanReadableTotal.timeToSpannable()
         stats_textview_daily_average.text = model.humanReadableDailyAverage.timeToSpannable()
@@ -115,6 +121,20 @@ class FragmentStatsTab : Fragment() {
             else bestday_textview_caption.setInvisible()
         } ?: stats_best_day.setGone()
         addStatsCards(model)
+    }
+
+    private fun setupSkeleton() {
+        val skeletonViews = (layout_data as ViewGroup).findViewsWithTag(
+                R.id.tag_has_skeleton_key,
+                resources.getBoolean(R.bool.tag_has_skeleton_value)
+        ).toTypedArray()
+        val skeletonDrawable = context?.getDrawable(R.drawable.all_skeleton_text)
+                ?: ColorDrawable(Color.TRANSPARENT)
+        skeleton = Skeleton(
+                *skeletonViews,
+                skeletonBackground = skeletonDrawable,
+                skeletonHeight = context?.resources?.getDimension(R.dimen.height_stats_skeleton_text)?.toInt()?:16
+        )
     }
 
     private fun onEmpty() {

@@ -1,4 +1,5 @@
 <resources>
+
     <string name="all_app_name" translatable="false">PocketWaka</string>
 
     <string name="screen_stats">Your stats</string>

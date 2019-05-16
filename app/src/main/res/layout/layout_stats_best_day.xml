@@ -2,7 +2,6 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/materialCardView2"
     style="@style/App.CardView.Light"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -48,6 +47,48 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+        <TextView
+            android:id="@+id/bestday_textview_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Date"
+            app:layout_constraintBottom_toTopOf="@+id/bestday_textview_time"
+            app:layout_constraintEnd_toEndOf="@+id/besttday_textview_header"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/besttday_textview_header"
+            app:layout_constraintTop_toBottomOf="@+id/besttday_textview_header"
+            tools:text="12/08/2016">
+
+            <tag
+                android:id="@id/tag_has_skeleton_key"
+                android:value="@bool/tag_has_skeleton_value" />
+
+        </TextView>
+
+
+        <TextView
+            android:id="@+id/bestday_textview_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Time"
+            app:layout_constraintBottom_toTopOf="@+id/bestday_textview_caption"
+            app:layout_constraintStart_toStartOf="@+id/bestday_textview_date"
+            app:layout_constraintTop_toBottomOf="@+id/bestday_textview_date"
+            tools:text="8 hrs 8 mins">
+
+
+            <tag
+                android:id="@id/tag_has_skeleton_key"
+                android:value="@bool/tag_has_skeleton_value" />
+
+        </TextView>
+
+
         <TextView
             android:id="@+id/bestday_textview_caption"
             android:layout_width="wrap_content"
@@ -62,33 +103,13 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="@+id/bestday_textview_time"
             app:layout_constraintTop_toBottomOf="@+id/bestday_textview_time"
-            tools:text="@string/stats_caption_best_day" />
+            tools:text="@string/stats_caption_best_day">
 
-        <TextView
-            android:id="@+id/bestday_textview_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Time"
-            app:layout_constraintBottom_toTopOf="@+id/bestday_textview_caption"
-            app:layout_constraintStart_toStartOf="@+id/bestday_textview_date"
-            app:layout_constraintTop_toBottomOf="@+id/bestday_textview_date"
-            tools:text="8 hrs 8 mins" />
+            <tag
+                android:id="@id/tag_has_skeleton_key"
+                android:value="@bool/tag_has_skeleton_value" />
 
-        <TextView
-            android:id="@+id/bestday_textview_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Date"
-            app:layout_constraintBottom_toTopOf="@+id/bestday_textview_time"
-            app:layout_constraintEnd_toEndOf="@+id/besttday_textview_header"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/besttday_textview_header"
-            app:layout_constraintTop_toBottomOf="@+id/besttday_textview_header"
-            tools:text="12/08/2016" />
+        </TextView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

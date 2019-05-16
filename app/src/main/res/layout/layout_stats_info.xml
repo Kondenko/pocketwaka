@@ -49,7 +49,12 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/stats_textview_header_total"
-            tools:text="28 hrs 57 mins" />
+            tools:text="28 hrs 57 mins">
+            <tag
+                android:id="@id/tag_has_skeleton_key"
+                android:value="@bool/tag_has_skeleton_value" />
+        </TextView>
+
 
         <TextView
             android:id="@+id/stats_textview_daily_average"
@@ -63,7 +68,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guidelineCenterVertical"
-            tools:text="4 hrs 8 mins" />
+            tools:text="4 hrs 8 mins">
+            <tag
+                android:id="@id/tag_has_skeleton_key"
+                android:value="@bool/tag_has_skeleton_value" />
+        </TextView>
+
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelineCenterVertical"
