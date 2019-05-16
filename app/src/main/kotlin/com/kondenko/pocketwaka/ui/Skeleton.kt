@@ -39,19 +39,17 @@ class Skeleton(
     fun hide() = initialStates.keys.forEach { it.hideSkeleton() }
 
     private fun View.showSkeleton() {
-        post {
-            val dimenWidth = (getTag(R.id.tag_skeleton_width_key) as String?)?.toInt()
-            val finalWidth = context.adjustForDensity(dimenWidth)?.roundToInt().let {
-                if (it == null || it < 0) width else it
-            }
-            this.updateLayoutParams {
-                width = finalWidth
-                height = skeletonHeight ?: height
-            }
-            transform?.invoke(this, true)
-            background = skeletonBackground
-            (this as? TextView)?.text = null
+        val dimenWidth = (getTag(R.id.tag_skeleton_width_key) as String?)?.toInt()
+        val finalWidth = context.adjustForDensity(dimenWidth)?.roundToInt().let {
+            if (it == null || it < 0) width else it
         }
+        this.updateLayoutParams {
+            width = finalWidth
+            height = skeletonHeight ?: height
+        }
+        transform?.invoke(this, true)
+        background = skeletonBackground
+        (this as? TextView)?.text = null
     }
 
     private fun View.hideSkeleton() = initialStates[this]?.let {

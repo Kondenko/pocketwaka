@@ -7,9 +7,15 @@ import com.kondenko.pocketwaka.domain.stats.GetSkeletonStats
 import com.kondenko.pocketwaka.domain.stats.GetStats
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.State
-import com.kondenko.pocketwaka.utils.disposeAll
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 
 class StatsViewModel(private val range: String, private val getStats: GetStats, private val getSkeletonStats: GetSkeletonStats) : ViewModel() {
+
+    private val disposables = CompositeDisposable()
 
     private val statsData = MutableLiveData<State<StatsModel>>()
 
@@ -20,27 +26,27 @@ class StatsViewModel(private val range: String, private val getStats: GetStats, 
     fun state(): LiveData<State<StatsModel>> = statsData
 
     fun update() {
-        getSkeletonStats.execute(
-                onSuccess = { statsData.value = State.Loading(it) },
-                andThen = {
-                    getStats.execute(
-                            range,
-                            onSuccess = { stats ->
-                                if (stats.isEmpty) statsData.value = State.Empty
-                                else statsData.value = State.Success(stats)
-                            },
-                            onError = {
-                                statsData.value = State.Failure(it)
-                            }
-                    )
-                }
-        )
+        disposables += getSkeletonStats
+                .build()
+                .doOnSuccess { statsData.postValue(State.Loading(it)) }
+                .flatMap { getStats.build(range) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(
+                        onSuccess = { stats ->
+                            if (stats.isEmpty) statsData.value = State.Empty
+                            else statsData.value = State.Success(stats)
+                        },
+                        onError = {
+                            statsData.value = State.Failure(it)
+                        }
+                )
     }
 
 
     override fun onCleared() {
         super.onCleared()
-        disposeAll(getStats, getSkeletonStats)
+        disposables.dispose()
     }
 
 
