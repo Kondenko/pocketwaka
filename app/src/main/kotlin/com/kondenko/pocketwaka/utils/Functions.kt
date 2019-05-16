@@ -17,6 +17,8 @@ import timber.log.Timber
 
 fun notNull(vararg values: Any?): Boolean = values.all { it != null }
 
+fun Float.negateIfTrue(condition: Boolean) = if (condition) -this else this
+
 fun <T> T?.singleOrErrorIfNull(exception: Throwable): Single<T> = this?.let { Single.just(it) }
         ?: Single.error(exception)
 

@@ -20,7 +20,13 @@
     <dimen name="margin_login_loading_view_dot">2dp</dimen>
 
     <!--Stats-->
-    <dimen name="height_stats_skeleton_text">16dp</dimen>
+
+    <dimen name="height_stats_skeleton_text">11dp</dimen>
+
+    <item name="width_stats_skeleton_text_info" type="integer">88</item>
+    <item name="width_stats_skeleton_text_best_day_date" type="integer">88</item>
+    <item name="width_stats_skeleton_text_best_day_time" type="integer">112</item>
+    <item name="width_stats_skeleton_text_best_day_caption" type="integer">156</item>
 
     <dimen name="textsize_stats_header">16sp</dimen>
     <dimen name="textsize_stats_info_number">25sp</dimen> <!-- Total and average time -->

@@ -29,11 +29,13 @@
             android:id="@+id/stats_textview_header_avg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:text="@string/stats_header_daily_average"
             android:textAppearance="@style/TextAppearance.App.Stats.Header"
             app:layout_constraintBaseline_toBaselineOf="@+id/stats_textview_header_total"
-            app:layout_constraintEnd_toEndOf="@+id/stats_textview_daily_average"
-            app:layout_constraintStart_toStartOf="@+id/stats_textview_daily_average" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guidelineCenterVertical" />
 
         <TextView
             android:id="@+id/stats_textview_time_total"
@@ -51,8 +53,8 @@
             app:layout_constraintTop_toBottomOf="@+id/stats_textview_header_total"
             tools:text="28 hrs 57 mins">
             <tag
-                android:id="@id/tag_has_skeleton_key"
-                android:value="@bool/tag_has_skeleton_value" />
+                android:id="@id/tag_skeleton_width_key"
+                android:value="@integer/width_stats_skeleton_text_info" />
         </TextView>
 
 
@@ -66,12 +68,12 @@
             android:textAppearance="@style/TextAppearance.App.Stats.Time"
             app:layout_constraintBaseline_toBaselineOf="@+id/stats_textview_time_total"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guidelineCenterVertical"
             tools:text="4 hrs 8 mins">
+
             <tag
-                android:id="@id/tag_has_skeleton_key"
-                android:value="@bool/tag_has_skeleton_value" />
+                android:id="@id/tag_skeleton_width_key"
+                android:value="@integer/width_stats_skeleton_text_info" />
         </TextView>
 
 

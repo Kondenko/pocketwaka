@@ -40,6 +40,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:text="@string/stats_header_best_day"
+            android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.App.Stats.Header"
             app:layout_constraintBottom_toTopOf="@+id/bestday_textview_date"
             app:layout_constraintEnd_toStartOf="@+id/bestday_imageview_illustration"
@@ -53,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textAlignment="center"
+            android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Date"
             app:layout_constraintBottom_toTopOf="@+id/bestday_textview_time"
             app:layout_constraintEnd_toEndOf="@+id/besttday_textview_header"
@@ -63,8 +64,8 @@
             tools:text="12/08/2016">
 
             <tag
-                android:id="@id/tag_has_skeleton_key"
-                android:value="@bool/tag_has_skeleton_value" />
+                android:id="@id/tag_skeleton_width_key"
+                android:value="@integer/width_stats_skeleton_text_best_day_date" />
 
         </TextView>
 
@@ -74,7 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textAlignment="center"
+            android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Time"
             app:layout_constraintBottom_toTopOf="@+id/bestday_textview_caption"
             app:layout_constraintStart_toStartOf="@+id/bestday_textview_date"
@@ -83,8 +84,8 @@
 
 
             <tag
-                android:id="@id/tag_has_skeleton_key"
-                android:value="@bool/tag_has_skeleton_value" />
+                android:id="@id/tag_skeleton_width_key"
+                android:value="@integer/width_stats_skeleton_text_best_day_time" />
 
         </TextView>
 
@@ -94,7 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:textAlignment="center"
+            android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Caption"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/bestday_textview_time"
@@ -106,8 +107,8 @@
             tools:text="@string/stats_caption_best_day">
 
             <tag
-                android:id="@id/tag_has_skeleton_key"
-                android:value="@bool/tag_has_skeleton_value" />
+                android:id="@id/tag_skeleton_width_key"
+                android:value="@integer/width_stats_skeleton_text_best_day_caption" />
 
         </TextView>
 

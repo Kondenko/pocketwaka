@@ -25,13 +25,14 @@ fun View.useAttributes(attrs: AttributeSet?, @StyleableRes styleable: IntArray, 
     }
 }
 
-fun <T> ViewGroup.findViewsWithTag(id: Int, value: T): List<View> {
+fun <T> ViewGroup.findViewsWithTag(id: Int, value: T? = null): List<View> {
     val childrenWithTag = mutableListOf<View>()
     children.forEach {
         if (it is ViewGroup) childrenWithTag += it.findViewsWithTag(id, value)
         // Because getTag() returns String, that's why️
-        val areValuesEqual = it.getTag(id)?.toString() == value.toString()
-        if (areValuesEqual) childrenWithTag.add(it)
+        val tag = it.getTag(id)
+        val areValuesEqual = value != null && tag == value
+        if (tag != null || areValuesEqual) childrenWithTag += it
     }
     return childrenWithTag
 }

@@ -26,11 +26,8 @@ import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.ui.ObservableScrollView
 import com.kondenko.pocketwaka.ui.Skeleton
-import com.kondenko.pocketwaka.utils.attachToLifecycle
-import com.kondenko.pocketwaka.utils.component1
-import com.kondenko.pocketwaka.utils.component2
+import com.kondenko.pocketwaka.utils.*
 import com.kondenko.pocketwaka.utils.extensions.*
-import com.kondenko.pocketwaka.utils.report
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
@@ -113,27 +110,37 @@ class FragmentStatsTab : Fragment() {
         showFirstView(layout_data, layout_empty, layout_error)
         stats_textview_time_total.text = model.humanReadableTotal.timeToSpannable()
         stats_textview_daily_average.text = model.humanReadableDailyAverage.timeToSpannable()
-        model.bestDay?.let {
-            bestday_textview_date.text = it.date
-            bestday_textview_time.text = it.time.timeToSpannable()
-            val caption = getString(R.string.stats_caption_best_day, it.percentAboveAverage)
-            if (it.percentAboveAverage > 0) bestday_textview_caption.text = caption
-            else bestday_textview_caption.setInvisible()
-        } ?: stats_best_day.setGone()
+        if (model.bestDay != null) {
+            bestday_textview_date.text = model.bestDay.date
+            bestday_textview_time.text = model.bestDay.time.timeToSpannable()
+            val caption = getString(R.string.stats_caption_best_day, model.bestDay.percentAboveAverage)
+            if (model.bestDay.percentAboveAverage > 0) bestday_textview_caption.text = caption
+            else if (!isSkeletonData) bestday_textview_caption.setInvisible()
+        } else if (!isSkeletonData) {
+            stats_best_day.setGone()
+        }
         addStatsCards(model)
     }
 
     private fun setupSkeleton() {
-        val skeletonViews = (layout_data as ViewGroup).findViewsWithTag(
-                R.id.tag_has_skeleton_key,
-                resources.getBoolean(R.bool.tag_has_skeleton_value)
-        ).toTypedArray()
+        val skeletonViews = (layout_data as ViewGroup)
+                .findViewsWithTag(R.id.tag_skeleton_width_key, null)
+                .toTypedArray()
         val skeletonDrawable = context?.getDrawable(R.drawable.all_skeleton_text)
                 ?: ColorDrawable(Color.TRANSPARENT)
+        // Move bestday_textview_time down a little bit so Best Day skeletons are evenly distributed
+        val yAbsoluteValue = 3f
+        val bestDayDateTransformation = { view: View, isSkeleton: Boolean ->
+            if (view.id == R.id.bestday_textview_time) {
+                view.translationY += (context?.adjustForDensity(yAbsoluteValue) ?: yAbsoluteValue).negateIfTrue(!isSkeleton)
+            }
+        }
         skeleton = Skeleton(
                 *skeletonViews,
                 skeletonBackground = skeletonDrawable,
-                skeletonHeight = context?.resources?.getDimension(R.dimen.height_stats_skeleton_text)?.toInt()?:16
+                skeletonHeight = context?.resources?.getDimension(R.dimen.height_stats_skeleton_text)?.toInt()
+                        ?: 16,
+                transform = bestDayDateTransformation
         )
     }
 

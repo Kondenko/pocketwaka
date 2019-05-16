@@ -3,6 +3,9 @@ package com.kondenko.pocketwaka.ui
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.core.view.updateLayoutParams
+import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
+import kotlin.math.roundToInt
 
 private data class InitialState(
         val width: Int,
@@ -16,7 +19,7 @@ class Skeleton(
         private val skeletonBackground: Drawable,
         private val skeletonWidth: Int? = null,
         private val skeletonHeight: Int? = null,
-        private val animate: ((View) -> Unit)? = null
+        private val transform: ((View, Boolean) -> Unit)? = null
 ) {
 
     private val initialStates = hashMapOf<View, InitialState>()
@@ -32,12 +35,13 @@ class Skeleton(
     fun hide() = initialStates.keys.forEach { it.hideSkeleton() }
 
     private fun View.showSkeleton() {
+        val dimenWidth = (getTag(R.id.tag_skeleton_width_key) as String).toInt()
         this.updateLayoutParams {
-            width = skeletonWidth?:width
-            height = skeletonHeight?:height
+            width = skeletonWidth ?: context.adjustForDensity(dimenWidth).roundToInt()
+            height = skeletonHeight ?: height
         }
         this.background = skeletonBackground
-        animate?.invoke(this)
+        transform?.invoke(this, true)
     }
 
     private fun View.hideSkeleton() = initialStates[this]?.let {
@@ -47,6 +51,7 @@ class Skeleton(
         }
         this.background = it.backgroundDrawable
         this.alpha = it.alpha
+        transform?.invoke(this, false)
     }
 
 }
