@@ -9,7 +9,7 @@ import com.kondenko.pocketwaka.domain.stats.model.BestDay
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.utils.ColorProvider
-import com.kondenko.pocketwaka.utils.SchedulerContainer
+import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.TimeProvider
 import com.kondenko.pocketwaka.utils.notNull
 import io.reactivex.Single
@@ -18,8 +18,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
 
-class GetStats(
-        schedulers: SchedulerContainer,
+class FetchStats(
+        schedulers: SchedulersContainer,
         private val timeProvider: TimeProvider,
         private val colorProvider: ColorProvider,
         private val dateFormatter: DateFormatter,

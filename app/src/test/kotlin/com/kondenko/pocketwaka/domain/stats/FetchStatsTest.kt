@@ -13,7 +13,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.rxkotlin.toSingle
 import org.junit.Test
 
-class GetStatsTest {
+class FetchStatsTest {
 
     private val timeProvider: TimeProvider = mock()
 
@@ -25,7 +25,7 @@ class GetStatsTest {
 
     private val dateFormatter: DateFormatter = mock()
 
-    private val useCase = GetStats(testSchedulers, timeProvider , colorProvider, dateFormatter, getTokenHeader, statsRepository)
+    private val useCase = FetchStats(testSchedulers, timeProvider, colorProvider, dateFormatter, getTokenHeader, statsRepository)
 
     @Test
     fun `should fetch token first`() {

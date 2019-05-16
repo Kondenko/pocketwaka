@@ -1,19 +1,19 @@
 package com.kondenko.pocketwaka.domain
 
 import com.kondenko.pocketwaka.utils.SchedulersContainer
-import io.reactivex.Single
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 
 /**
- * The base class for all UseCases that use [Single].
+ * The base class for all UseCases that use [Observable].
  */
-abstract class UseCaseSingle<PARAMS, RESULT>(private val schedulers: SchedulersContainer) : UseCase<PARAMS, RESULT, Single<RESULT>>, Disposable {
+abstract class UseCaseObservable<PARAMS, RESULT>(private val schedulers: SchedulersContainer) : UseCase<PARAMS, RESULT, Observable<RESULT>>, Disposable {
 
     private var disposable: Disposable? = null
 
-    abstract override fun build(params: PARAMS?): Single<RESULT>
+    abstract override fun build(params: PARAMS?): Observable<RESULT>
 
-    override fun execute(params: PARAMS?, onSuccess: (RESULT) -> Unit, onError: (Throwable) -> Unit, onFinish: () -> Unit): Single<RESULT> {
+    override fun execute(params: PARAMS?, onSuccess: (RESULT) -> Unit, onError: (Throwable) -> Unit, onFinish: () -> Unit): Observable<RESULT> {
         return build(params)
                 .subscribeOn(schedulers.workerScheduler)
                 .observeOn(schedulers.uiScheduler)

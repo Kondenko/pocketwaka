@@ -17,17 +17,21 @@ class GetStoredAccessTokenTest {
 
     private val repository: AccessTokenRepository = mock()
 
-    val usecase = GetStoredAccessToken(testSchedulers, repository, encryptor)
+    private val useCase = GetStoredAccessToken(testSchedulers, repository, encryptor)
 
     @Test
     fun `should decrypt access token`() {
         val encryptedToken: AccessToken = mock()
         val decryptedToken: AccessToken = mock()
+
         whenever(repository.getEncryptedToken()).doReturn(encryptedToken.toSingle())
         whenever(encryptor.decryptToken(encryptedToken)).doReturn(decryptedToken)
-        val single = usecase.execute()
+
+        val single = useCase.execute()
+
         verify(repository).getEncryptedToken()
         verify(encryptor.decryptToken(encryptedToken))
+
         with(single.test()) {
             assertSubscribed()
             assertNoErrors()

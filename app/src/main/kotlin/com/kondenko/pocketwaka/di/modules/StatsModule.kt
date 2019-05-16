@@ -6,8 +6,9 @@ import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
 import com.kondenko.pocketwaka.data.stats.service.StatsService
 import com.kondenko.pocketwaka.di.Api
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
-import com.kondenko.pocketwaka.domain.stats.GetSkeletonStats
-import com.kondenko.pocketwaka.domain.stats.GetStats
+import com.kondenko.pocketwaka.domain.stats.FetchStats
+import com.kondenko.pocketwaka.domain.stats.GetSkeletonPlaceholderData
+import com.kondenko.pocketwaka.domain.stats.GetStatsState
 import com.kondenko.pocketwaka.screens.stats.StatsViewModel
 import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.extensions.create
@@ -21,7 +22,7 @@ object StatsModule {
         single { StatsRepository(context, get()) }
         single { ColorProvider(context) }
         single { DateFormatter(context) }
-        single { GetSkeletonStats(get()) }
+        single { GetSkeletonPlaceholderData(get()) }
         factory {
             GetTokenHeaderValue(
                     schedulers = get(),
@@ -30,7 +31,7 @@ object StatsModule {
             )
         }
         factory {
-            GetStats(
+            FetchStats(
                     schedulers = get(),
                     timeProvider = get(),
                     colorProvider = get(),
@@ -39,7 +40,15 @@ object StatsModule {
                     statsRepository = get()
             )
         }
-        viewModel { (range: String) -> StatsViewModel(range, get() as GetStats, get()) }
+        factory {
+            GetStatsState(
+                    schedulers = get(),
+                    getSkeletonPlaceholderData = get(),
+                    fetchStats = get()
+            )
+        }
+        viewModel { (range: String) -> StatsViewModel(range, get() as GetStatsState) }
     }
+
 }
 

@@ -4,13 +4,13 @@ import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.domain.stats.model.BestDay
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
-import com.kondenko.pocketwaka.utils.SchedulerContainer
+import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.times
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toSingle
 
 
-class GetSkeletonStats(schedulers: SchedulerContainer) : UseCaseSingle<Nothing, StatsModel>(schedulers) {
+class GetSkeletonPlaceholderData(schedulers: SchedulersContainer) : UseCaseSingle<Nothing, StatsModel>(schedulers) {
 
     private val skeletonStatsCard = mutableListOf(StatsItem(null, null, null, null)) * 3
 

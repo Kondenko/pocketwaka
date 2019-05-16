@@ -7,7 +7,7 @@ import com.kondenko.pocketwaka.di.Auth
 import com.kondenko.pocketwaka.di.Ui
 import com.kondenko.pocketwaka.di.Worker
 import com.kondenko.pocketwaka.utils.CacheInterceptor
-import com.kondenko.pocketwaka.utils.SchedulerContainer
+import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Cache
@@ -24,7 +24,7 @@ object NetModule {
     fun create(appContext: Context) = module {
         single(Worker) { Schedulers.io() }
         single(Ui) { AndroidSchedulers.mainThread() }
-        single { SchedulerContainer(uiScheduler = get(Ui), workerScheduler = get(Worker)) }
+        single { SchedulersContainer(uiScheduler = get(Ui), workerScheduler = get(Worker)) }
         single { RxJava2CallAdapterFactory.create() }
         single {  GsonConverterFactory.create() }
         single {

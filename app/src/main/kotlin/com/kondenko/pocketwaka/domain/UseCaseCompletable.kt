@@ -1,25 +1,25 @@
 package com.kondenko.pocketwaka.domain
 
-import com.kondenko.pocketwaka.utils.SchedulerContainer
+import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 
 /**
  * The base class for all UseCases that use [Completable]
  */
-abstract class UseCaseCompletable<PARAMS>(private val schedulers: SchedulerContainer) : UseCase<PARAMS,Nothing, Completable>, Disposable {
+abstract class UseCaseCompletable<PARAMS>(private val schedulers: SchedulersContainer) : UseCase<PARAMS, Nothing, Completable>, Disposable {
 
     private var disposable: Disposable? = null
 
     abstract override fun build(params: PARAMS?): Completable
 
-    override fun execute(params: PARAMS?, onSuccess: (Nothing) -> Unit, onError: (Throwable) -> Unit, onFinish: () -> Unit, andThen: (() -> Completable)?): Completable {
-        val single = build(params)
+    override fun execute(params: PARAMS?, onSuccess: (Nothing) -> Unit, onError: (Throwable) -> Unit, onFinish: () -> Unit): Completable {
+        return build(params)
                 .subscribeOn(schedulers.workerScheduler)
                 .observeOn(schedulers.uiScheduler)
-                .andThen { andThen?.invoke() }
-        disposable = single.subscribe(onFinish, onError)
-        return single
+                .also {
+                    disposable = it.subscribe(onFinish, onError)
+                }
     }
 
     override fun dispose() {

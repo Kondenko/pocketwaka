@@ -3,7 +3,7 @@ package com.kondenko.pocketwaka.domain.auth
 import com.kondenko.pocketwaka.data.auth.repository.EncryptedKeysRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.utils.Encryptor
-import com.kondenko.pocketwaka.utils.SchedulerContainer
+import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.Single
 
 /**
@@ -11,7 +11,7 @@ import io.reactivex.Single
  */
 
 class GetAppSecret(
-        schedulers: SchedulerContainer,
+        schedulers: SchedulersContainer,
         private val encryptedKeysRepository: EncryptedKeysRepository,
         private val encryptor: Encryptor
 ) : UseCaseSingle<Unit?, String>(schedulers) {

@@ -2,7 +2,7 @@ package com.kondenko.pocketwaka.domain.auth
 
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.domain.UseCaseSingle
-import com.kondenko.pocketwaka.utils.SchedulerContainer
+import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.Single
 
 /**
@@ -10,7 +10,7 @@ import io.reactivex.Single
  */
 
 class GetAuthUrl
-(schedulers: SchedulerContainer, private val getAppId: GetAppId) : UseCaseSingle<Nothing?, String>(schedulers) {
+(schedulers: SchedulersContainer, private val getAppId: GetAppId) : UseCaseSingle<Nothing?, String>(schedulers) {
 
     private val urlAuth = "${Const.BASE_URL}oauth/authorize" // Used to authenticate a user
 

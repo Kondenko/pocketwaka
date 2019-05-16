@@ -7,7 +7,7 @@ import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.domain.auth.GetAppId
 import com.kondenko.pocketwaka.domain.auth.GetAppSecret
 import com.kondenko.pocketwaka.utils.Encryptor
-import com.kondenko.pocketwaka.utils.SchedulerContainer
+import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.TimeProvider
 import io.reactivex.Single
 import io.reactivex.rxkotlin.zipWith
@@ -19,7 +19,7 @@ import timber.log.Timber
 
 class RefreshAccessToken
 (
-        schedulers: SchedulerContainer,
+        schedulers: SchedulersContainer,
         private val timeProvider: TimeProvider,
         private val encryptor: Encryptor,
         private val accessTokenRepository: AccessTokenRepository,
