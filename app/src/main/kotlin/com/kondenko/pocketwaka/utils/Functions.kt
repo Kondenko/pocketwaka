@@ -48,8 +48,7 @@ fun Throwable.report(message: String? = null) {
 fun Disposable?.attachToLifecycle(lifecycle: LifecycleOwner) {
     lifecycle.lifecycle.addObserver(object : LifecycleObserver {
         @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-        fun dispose() {
-            Timber.d("Disposing $this")
+        fun onDestroy() {
             this@attachToLifecycle?.dispose()
         }
     })
