@@ -7,6 +7,7 @@ import com.kondenko.pocketwaka.domain.stats.GetSkeletonStats
 import com.kondenko.pocketwaka.domain.stats.GetStats
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.State
+import com.kondenko.pocketwaka.utils.disposeAll
 
 class StatsViewModel(private val range: String, private val getStats: GetStats, private val getSkeletonStats: GetSkeletonStats) : ViewModel() {
 
@@ -39,8 +40,7 @@ class StatsViewModel(private val range: String, private val getStats: GetStats, 
 
     override fun onCleared() {
         super.onCleared()
-        getStats.dispose()
-        getSkeletonStats.dispose()
+        disposeAll(getStats, getSkeletonStats)
     }
 
 

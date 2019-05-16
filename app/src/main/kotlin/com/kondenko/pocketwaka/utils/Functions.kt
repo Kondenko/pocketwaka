@@ -55,6 +55,8 @@ fun Disposable?.attachToLifecycle(lifecycle: LifecycleOwner) {
     })
 }
 
+fun disposeAll(vararg disposables: Disposable) = disposables.forEach(Disposable::dispose)
+
 fun createPath(build: Path.() -> Unit): Path = Path().apply {
     build()
     close()
