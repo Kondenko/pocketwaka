@@ -23,14 +23,21 @@
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:textAlignment="viewStart"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textview_stats_item_name"
+        app:layout_constraintBottom_toBottomOf="@+id/textview_stats_item"
         app:layout_constraintEnd_toStartOf="@+id/progressbar_stats_item"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="100%" />
+        app:layout_constraintTop_toTopOf="@+id/textview_stats_item"
+        tools:text="100%">
+
+        <tag
+            android:id="@id/tag_skeleton_width_key"
+            android:value="@integer/width_stats_skeleton_text_card_percent" />
+
+    </TextView>
 
     <TextView
-        android:id="@+id/textview_stats_item_name"
-        android:layout_width="wrap_content"
+        android:id="@+id/textview_stats_item"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
@@ -44,6 +51,11 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textview_stats_item_percent"
         app:layout_constraintTop_toTopOf="@+id/progressbar_stats_item"
-        tools:text="PocketWaka" />
+        tools:text="PocketWaka">
+
+        <tag android:id="@id/tag_skeleton_width_key"
+            android:value="@integer/width_all_skeleton_text_match_parent"/>
+
+    </TextView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

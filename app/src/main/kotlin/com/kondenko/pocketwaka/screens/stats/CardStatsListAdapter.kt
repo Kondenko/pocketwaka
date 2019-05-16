@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
+import com.kondenko.pocketwaka.ui.isSkeleton
 import com.kondenko.pocketwaka.utils.extensions.setInvisible
 import kotlinx.android.synthetic.main.item_stats_item.view.*
 
@@ -30,20 +31,21 @@ class CardStatsListAdapter(private val context: Context, private val items: List
         fun bind(item: StatsItem) {
             with(itemView) {
                 textview_stats_item_percent?.apply {
-                    item.percent?.let { setPercent(it) } ?: setInvisible()
+                    if (item.percent != null) setPercent(item.percent)
+                    else if (!isSkeleton()) setInvisible()
                 }
-                textview_stats_item_name.text = item.name
+                textview_stats_item.text = item.name
                 progressbar_stats_item.color = item.color
                 progressbar_stats_item.progress = (item.percent?.toFloat() ?: 0f) / 100
                 // Add text label
                 post {
-                    val isTextWiderThanProgress = progressbar_stats_item.progressBarWidth <= textview_stats_item_name.measuredWidth
-                    if (isTextWiderThanProgress) {
-                        textview_stats_item_name.width = (progressbar_stats_item.measuredWidth - progressbar_stats_item.progressBarWidth).toInt()
-                        textview_stats_item_name.setTextColor(ContextCompat.getColor(context, R.color.color_stats_item_dark))
-                        textview_stats_item_name.x += progressbar_stats_item.progressBarWidth
+                    val isTextWiderThanProgress = progressbar_stats_item.progressBarWidth <= textview_stats_item.measuredWidth
+                    if (isTextWiderThanProgress && !textview_stats_item.isSkeleton()) {
+                        textview_stats_item.width = (progressbar_stats_item.measuredWidth - progressbar_stats_item.progressBarWidth).toInt()
+                        textview_stats_item.setTextColor(ContextCompat.getColor(context, R.color.color_stats_item_dark))
+                        textview_stats_item.x += progressbar_stats_item.progressBarWidth
                     } else {
-                        textview_stats_item_name.width = progressbar_stats_item.progressBarWidth.toInt()
+                        textview_stats_item.width = progressbar_stats_item.progressBarWidth.toInt()
                     }
                 }
             }

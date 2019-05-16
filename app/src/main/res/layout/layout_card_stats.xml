@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/App.CardView.Light"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -12,15 +13,20 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/statsCardHeader"
+            android:id="@+id/textview_stats_card_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.App.Stats.Header" />
+            android:textAppearance="@style/TextAppearance.App.Stats.Header">
+            <tag
+                android:id="@id/tag_skeleton_width_key"
+                android:value="@integer/width_stats_skeleton_text_card_title" />
+        </TextView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_marginTop="16dp"
             android:id="@+id/statsCardRecyclerView"
             android:layout_width="match_parent"
+            tools:listitem="@layout/item_stats_item"
             android:layout_height="wrap_content" />
 
     </LinearLayout>

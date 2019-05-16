@@ -5,7 +5,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class StatsItem(
+data class StatsItem(
         val hours: Int?,
         val minutes: Int?,
         val name: String?,

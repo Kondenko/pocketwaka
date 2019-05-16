@@ -6,14 +6,14 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
-import kotlinx.android.synthetic.main.item_card_stats.view.*
+import kotlinx.android.synthetic.main.layout_card_stats.view.*
 
 class CardStats(val context: Context, val title: String, val data: List<StatsItem>) {
 
-    val view: View = LayoutInflater.from(context).inflate(R.layout.item_card_stats, null, true)
+    val view: View = LayoutInflater.from(context).inflate(R.layout.layout_card_stats, null, true)
 
     init {
-        view.statsCardHeader.text = title
+        view.textview_stats_card_title.text = title
         setList()
     }
 

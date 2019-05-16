@@ -22,7 +22,12 @@ fun Context.adjustForDensity(value: Float) = TypedValue.applyDimension(TypedValu
  */
 fun Context.adjustForDensity(value: Int) = adjustForDensity(value.toFloat())
 
+fun Context.adjustForDensity(value: Int?): Float? {
+    if (value == null) return null
+    return adjustForDensity(value.toFloat())
+}
+
 fun Context.isConnectionAvailable(): Boolean {
     val service = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    return service.activeNetworkInfo?.isConnectedOrConnecting?:false
+    return service.activeNetworkInfo?.isConnectedOrConnecting ?: false
 }

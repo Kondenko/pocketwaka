@@ -32,6 +32,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_stats.*
+import kotlinx.android.synthetic.main.layout_card_stats.*
 import kotlinx.android.synthetic.main.layout_stats_best_day.*
 import kotlinx.android.synthetic.main.layout_stats_best_day.view.*
 import kotlinx.android.synthetic.main.layout_stats_data.*
@@ -105,8 +106,6 @@ class FragmentStatsTab : Fragment() {
 
     private fun showStats(model: StatsModel, isSkeletonData: Boolean = false) {
         stats_best_day.bestday_imageview_illustration.isVisible = !isSkeletonData
-        if (skeleton == null) setupSkeleton()
-        if (isSkeletonData) skeleton?.show() else skeleton?.hide()
         showFirstView(layout_data, layout_empty, layout_error)
         stats_textview_time_total.text = model.humanReadableTotal.timeToSpannable()
         stats_textview_daily_average.text = model.humanReadableDailyAverage.timeToSpannable()
@@ -120,25 +119,31 @@ class FragmentStatsTab : Fragment() {
             stats_best_day.setGone()
         }
         addStatsCards(model)
+        statsCardRecyclerView.post {
+            if (skeleton == null) setupSkeleton()
+            if (isSkeletonData) skeleton?.show() else skeleton?.hide()
+        }
     }
 
     private fun setupSkeleton() {
-        val skeletonViews = (layout_data as ViewGroup)
-                .findViewsWithTag(R.id.tag_skeleton_width_key, null)
-                .toTypedArray()
-        val skeletonDrawable = context?.getDrawable(R.drawable.all_skeleton_text)
-                ?: ColorDrawable(Color.TRANSPARENT)
+        fun Float.adjustValue(isSkeleton: Boolean) = (context?.adjustForDensity(this) ?: this).negateIfTrue(!isSkeleton)
+
+        val skeletonDrawable = context?.getDrawable(R.drawable.all_skeleton_text) ?: ColorDrawable(Color.TRANSPARENT)
         // Move bestday_textview_time down a little bit so Best Day skeletons are evenly distributed
-        val yAbsoluteValue = 3f
         val bestDayDateTransformation = { view: View, isSkeleton: Boolean ->
-            if (view.id == R.id.bestday_textview_time) {
-                view.translationY += (context?.adjustForDensity(yAbsoluteValue) ?: yAbsoluteValue).negateIfTrue(!isSkeleton)
+            when (view.id) {
+                R.id.bestday_textview_time -> {
+                    view.translationY += 3f.adjustValue(isSkeleton)
+                }
+                R.id.textview_stats_item -> {
+                    view.translationX += 8f.adjustValue(isSkeleton)
+                }
             }
         }
         skeleton = Skeleton(
-                *skeletonViews,
+                layout_data as ViewGroup,
                 skeletonBackground = skeletonDrawable,
-                skeletonHeight = context?.resources?.getDimension(R.dimen.height_stats_skeleton_text)?.toInt()
+                skeletonHeight = context?.resources?.getDimension(R.dimen.height_all_skeleton_text)?.toInt()
                         ?: 16,
                 transform = bestDayDateTransformation
         )
