@@ -9,8 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="136dp"
+        android:layout_height="156dp"
         android:paddingTop="@dimen/padding_stats_bestday_vertical"
         android:paddingBottom="@dimen/padding_stats_bestday_vertical">
 
