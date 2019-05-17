@@ -15,8 +15,9 @@ abstract class BaseAdapter<T, VH : BaseAdapter<T, VH>.BaseViewHolder>(
 
     open var items: List<T> = items
         set(value) {
-            DiffUtil.calculateDiff(getDiffCallback(field, value))
+            val result = DiffUtil.calculateDiff(getDiffCallback(field, value))
             field = value
+            result.dispatchUpdatesTo(this)
         }
 
     @CallSuper
