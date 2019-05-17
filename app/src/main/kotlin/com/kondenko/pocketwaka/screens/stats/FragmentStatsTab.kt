@@ -89,7 +89,7 @@ class FragmentStatsTab : Fragment() {
             addOnScrollListener(object: RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    shadowAnimationNeeded = if (this@with.scrollY >= 10) {
+                    shadowAnimationNeeded = if (this@with.computeVerticalScrollOffset() >= 10) {
                         if (shadowAnimationNeeded) {
                             scrollDirection.onNext(ScrollDirection.Down)
                         }
