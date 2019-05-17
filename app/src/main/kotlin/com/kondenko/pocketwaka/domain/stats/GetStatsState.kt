@@ -2,6 +2,7 @@ package com.kondenko.pocketwaka.domain.stats
 
 import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
+import com.kondenko.pocketwaka.screens.base.ErrorType
 import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.Observable
@@ -26,7 +27,7 @@ class GetStatsState(
                             .map<State<StatsModel>> { State.Success(it) }
                 }
         return Observable.concat(loading, data)
-                .onErrorReturn { State.Failure(it) }
+                .onErrorReturn { State.Failure(ErrorType.Unknown(it)) }
                 .doOnNext { Timber.d("Stats state updated: ${it.javaClass}") }
     }
 

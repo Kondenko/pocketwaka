@@ -23,6 +23,7 @@ import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
+import com.kondenko.pocketwaka.screens.base.ErrorType
 import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.ui.ObservableScrollView
 import com.kondenko.pocketwaka.ui.Skeleton
@@ -69,7 +70,7 @@ class FragmentStatsTab : Fragment() {
         vm.state().observe(viewLifecycleOwner) { state ->
             when (state) {
                 is State.Success<StatsModel> -> showStats(state.data)
-                is State.Failure -> onError(state.error)
+                is State.Failure -> onError(state.errorType)
                 is State.Loading -> showStats(state.skeletonData, true)
                 State.Empty -> onEmpty()
             }
@@ -153,9 +154,14 @@ class FragmentStatsTab : Fragment() {
         showFirstView(layout_empty, layout_data, layout_error)
     }
 
-    private fun onError(throwable: Throwable?) {
-        showFirstView(layout_error, layout_empty, layout_data)
-        throwable?.report()
+    private fun onError(error: ErrorType) {
+        @Suppress("WhenWithOnlyElse") // will be extended in the future
+        when(error) {
+            else -> {
+                showFirstView(layout_error, layout_empty, layout_data)
+            }
+        }
+        error.exception?.report()
     }
 
     private fun addStatsCards(stats: StatsModel) {
