@@ -18,7 +18,7 @@
         android:paddingBottom="@dimen/padding_stats_bestday_vertical">
 
         <ImageView
-            android:id="@+id/bestday_imageview_illustration"
+            android:id="@+id/imageview_bestday_illustration"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
@@ -38,7 +38,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/besttday_textview_header"
+            android:id="@+id/textview_besttday_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -46,25 +46,25 @@
             android:text="@string/stats_header_best_day"
             android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.App.Stats.Header"
-            app:layout_constraintBottom_toTopOf="@+id/bestday_textview_date"
-            app:layout_constraintEnd_toStartOf="@+id/bestday_imageview_illustration"
+            app:layout_constraintBottom_toTopOf="@+id/textview_bestday_date"
+            app:layout_constraintEnd_toStartOf="@+id/imageview_bestday_illustration"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
 
         <TextView
-            android:id="@+id/bestday_textview_date"
+            android:id="@+id/textview_bestday_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Date"
-            app:layout_constraintBottom_toTopOf="@+id/bestday_textview_time"
-            app:layout_constraintEnd_toEndOf="@+id/besttday_textview_header"
+            app:layout_constraintBottom_toTopOf="@+id/textview_bestday_time"
+            app:layout_constraintEnd_toEndOf="@+id/textview_besttday_header"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/besttday_textview_header"
-            app:layout_constraintTop_toBottomOf="@+id/besttday_textview_header"
+            app:layout_constraintStart_toStartOf="@+id/textview_besttday_header"
+            app:layout_constraintTop_toBottomOf="@+id/textview_besttday_header"
             tools:text="12/08/2016">
 
             <tag
@@ -75,15 +75,15 @@
 
 
         <TextView
-            android:id="@+id/bestday_textview_time"
+            android:id="@+id/textview_bestday_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Time"
-            app:layout_constraintBottom_toTopOf="@+id/bestday_textview_caption"
-            app:layout_constraintStart_toStartOf="@+id/bestday_textview_date"
-            app:layout_constraintTop_toBottomOf="@+id/bestday_textview_date"
+            app:layout_constraintBottom_toTopOf="@+id/textview_bestday_caption"
+            app:layout_constraintStart_toStartOf="@+id/textview_bestday_date"
+            app:layout_constraintTop_toBottomOf="@+id/textview_bestday_date"
             tools:text="8 hrs 8 mins">
 
 
@@ -95,19 +95,19 @@
 
 
         <TextView
-            android:id="@+id/bestday_textview_caption"
+            android:id="@+id/textview_bestday_caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.App.Stats.BestDay.Caption"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/bestday_textview_time"
+            app:layout_constraintEnd_toEndOf="@+id/textview_bestday_time"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/bestday_textview_time"
-            app:layout_constraintTop_toBottomOf="@+id/bestday_textview_time"
+            app:layout_constraintStart_toStartOf="@+id/textview_bestday_time"
+            app:layout_constraintTop_toBottomOf="@+id/textview_bestday_time"
             tools:text="@string/stats_caption_best_day">
 
             <tag

@@ -143,7 +143,7 @@ class FragmentStatsTab : Fragment() {
         // Move bestday_textview_time down a little bit so Best Day skeletons are evenly distributed
         val bestDayDateTransformation = { view: View, isSkeleton: Boolean ->
             when (view.id) {
-                R.id.bestday_textview_time -> {
+                R.id.textview_bestday_time -> {
                     view.translationY += 3f.adjustValue(isSkeleton)
                 }
                 R.id.textview_stats_item -> {

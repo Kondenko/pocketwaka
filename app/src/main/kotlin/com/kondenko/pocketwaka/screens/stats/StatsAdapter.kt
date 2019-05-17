@@ -56,6 +56,17 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
         return ViewHolder(inflate(layoutId, parent))
     }
 
+    override fun getDiffCallback(oldList: List<StatsModel>, newList: List<StatsModel>): BaseDiffCallback<StatsModel> {
+        return BaseDiffCallback(oldList, newList, areContentsTheSame = { a, b ->
+            when (a) {
+                is StatsModel.Info -> b is StatsModel.Info
+                is StatsModel.Stats -> b is StatsModel.Stats
+                is StatsModel.BestDay -> b is StatsModel.Stats
+                else -> false
+            }
+        })
+    }
+
     inner class ViewHolder(val view: View) : BaseViewHolder(view) {
 
         override fun bind(item: StatsModel) {
@@ -67,16 +78,16 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
         }
 
         private fun View.renderInfo(model: StatsModel.Info) {
-            stats_textview_time_total.text = model.humanReadableTotal.timeToSpannable()
-            stats_textview_daily_average.text = model.humanReadableDailyAverage.timeToSpannable()
+            textview_stats_time_total.text = model.humanReadableTotal.timeToSpannable()
+            textview_stats_daily_average.text = model.humanReadableDailyAverage.timeToSpannable()
         }
 
         private fun View.renderBestDay(model: StatsModel.BestDay) {
-            bestday_textview_date.text = model.date
-            bestday_textview_time.text = model.time.timeToSpannable()
+            textview_bestday_date.text = model.date
+            textview_bestday_time.text = model.time.timeToSpannable()
             val caption = context.getString(R.string.stats_caption_best_day, model.percentAboveAverage)
-            if (model.percentAboveAverage > 0) bestday_textview_caption.text = caption
-            else if (!isSkeleton) bestday_textview_caption.setInvisible()
+            if (model.percentAboveAverage > 0) textview_bestday_caption.text = caption
+            else if (!isSkeleton) textview_bestday_caption.setInvisible()
         }
 
         private fun View.renderStats(model: StatsModel.Stats) {
