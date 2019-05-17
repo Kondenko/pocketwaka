@@ -5,6 +5,10 @@
     style="@style/App.CardView.Light"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/margin_stats_card_horizontal"
+    android:layout_marginTop="@dimen/margin_stats_card_vertical"
+    android:layout_marginEnd="@dimen/margin_stats_card_horizontal"
+    android:layout_marginBottom="@dimen/margin_stats_card_vertical"
     app:contentPadding="@dimen/padding_all_card_inner">
 
     <LinearLayout
@@ -17,17 +21,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.App.Stats.Header">
+
             <tag
                 android:id="@id/tag_skeleton_width_key"
                 android:value="@integer/width_stats_skeleton_text_card_title" />
         </TextView>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="16dp"
             android:id="@+id/statsCardRecyclerView"
             android:layout_width="match_parent"
-            tools:listitem="@layout/item_stats_item"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            tools:listitem="@layout/item_stats_item" />
 
     </LinearLayout>
 

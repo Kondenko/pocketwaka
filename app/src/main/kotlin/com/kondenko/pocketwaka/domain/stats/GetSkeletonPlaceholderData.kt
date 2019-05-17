@@ -16,8 +16,8 @@ class GetSkeletonPlaceholderData(schedulers: SchedulersContainer) : UseCaseSingl
     override fun build(params: Nothing?): Single<List<StatsModel>> = listOf(
             StatsModel.Info(null, null),
             StatsModel.BestDay("", "", 0),
-            StatsModel.Stats(skeletonStatsCard),
-            StatsModel.Stats(skeletonStatsCard)
+            StatsModel.Stats("", skeletonStatsCard),
+            StatsModel.Stats("", skeletonStatsCard)
     ).toSingle()
 
 }

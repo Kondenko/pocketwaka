@@ -5,6 +5,10 @@
     style="@style/App.CardView.Light"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/margin_stats_card_horizontal"
+    android:layout_marginTop="@dimen/margin_stats_card_vertical"
+    android:layout_marginEnd="@dimen/margin_stats_card_horizontal"
+    android:layout_marginBottom="@dimen/margin_stats_card_vertical"
     android:background="@android:color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout

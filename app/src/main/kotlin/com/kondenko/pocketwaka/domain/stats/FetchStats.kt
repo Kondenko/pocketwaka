@@ -54,10 +54,10 @@ class FetchStats(
                 )
         )
         list += stats.convertBestDay(stats.dailyAverage)
-        list += stats.projects?.toDomainModel()
-        list += stats.languages?.toDomainModel()
-        list += stats.editors?.toDomainModel()
-        list += stats.operatingSystems?.toDomainModel()
+        list += stats.projects?.toDomainModel(StatsRepository.StatsType.Projects)
+        list += stats.languages?.toDomainModel(StatsRepository.StatsType.Languages)
+        list += stats.editors?.toDomainModel(StatsRepository.StatsType.Editors)
+        list += stats.operatingSystems?.toDomainModel(StatsRepository.StatsType.OperatingSystems)
         list += StatsModel.Metadata(
                 lastUpdated = timeProvider.getCurrentTimeMillis(),
                 isEmpty = stats.totalSeconds == 0.0,
@@ -83,12 +83,12 @@ class FetchStats(
         return (bestDayTotalSec * 100 / dailyAverageSec - 100).toInt()
     }
 
-    private fun List<StatsItemDto>?.toDomainModel(): StatsModel.Stats? =
+    private fun List<StatsItemDto>?.toDomainModel(statsType: StatsRepository.StatsType): StatsModel.Stats? =
             this?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }
                     ?.apply {
                         zip(colorProvider.provideColors(this)) { item, color -> item.copy(color = color) }
                     }
-                    ?.let { StatsModel.Stats(it) }
+                    ?.let { StatsModel.Stats(statsRepository.getCardTitle(statsType), it) }
 
 
     private fun Long.secondsToHumanReadableTime(): String {

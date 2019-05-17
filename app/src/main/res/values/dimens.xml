@@ -30,6 +30,9 @@
     <item name="width_stats_skeleton_text_card_title" type="integer">64</item>
     <item name="width_stats_skeleton_text_card_percent" type="integer">28</item>
 
+    <dimen name="margin_stats_card_horizontal">8dp</dimen>
+    <dimen name="margin_stats_card_vertical">4dp</dimen>
+
     <dimen name="textsize_stats_header">16sp</dimen>
     <dimen name="textsize_stats_info_number">25sp</dimen> <!-- Total and average time -->
     <dimen name="textsize_stats_info_text">14sp</dimen>
