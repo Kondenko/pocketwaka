@@ -14,10 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
@@ -28,18 +25,16 @@ import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.ui.ObservableScrollView
 import com.kondenko.pocketwaka.ui.Skeleton
 import com.kondenko.pocketwaka.utils.*
-import com.kondenko.pocketwaka.utils.extensions.*
+import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
+import com.kondenko.pocketwaka.utils.extensions.observe
+import com.kondenko.pocketwaka.utils.extensions.rxClicks
+import com.kondenko.pocketwaka.utils.extensions.showFirstView
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_stats.*
-import kotlinx.android.synthetic.main.layout_card_stats.*
-import kotlinx.android.synthetic.main.layout_stats_best_day.*
-import kotlinx.android.synthetic.main.layout_stats_best_day.view.*
-import kotlinx.android.synthetic.main.layout_stats_data.*
 import kotlinx.android.synthetic.main.layout_stats_empty.*
 import kotlinx.android.synthetic.main.layout_stats_error.view.*
-import kotlinx.android.synthetic.main.layout_stats_info.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.math.roundToInt
@@ -69,7 +64,7 @@ class FragmentStatsTab : Fragment() {
         setupUi(view)
         vm.state().observe(viewLifecycleOwner) { state ->
             when (state) {
-                is State.Success<StatsModel> -> showStats(state.data)
+                is State.Success -> showStats(state.data)
                 is State.Failure -> onError(state.errorType)
                 is State.Loading -> showStats(state.skeletonData, true)
                 State.Empty -> onEmpty()
@@ -105,7 +100,8 @@ class FragmentStatsTab : Fragment() {
         }.attachToLifecycle(viewLifecycleOwner)
     }
 
-    private fun showStats(model: StatsModel, isSkeletonData: Boolean = false) {
+    private fun showStats(model: List<StatsModel>, isSkeletonData: Boolean = false) {
+/*
         stats_best_day.bestday_imageview_illustration.isVisible = !isSkeletonData
         showFirstView(layout_data, layout_empty, layout_error)
         stats_textview_time_total.text = model.humanReadableTotal.timeToSpannable()
@@ -124,6 +120,7 @@ class FragmentStatsTab : Fragment() {
             if (skeleton == null) setupSkeleton()
             if (isSkeletonData) skeleton?.show() else skeleton?.hide()
         }
+*/
     }
 
     private fun setupSkeleton() {
@@ -165,6 +162,7 @@ class FragmentStatsTab : Fragment() {
     }
 
     private fun addStatsCards(stats: StatsModel) {
+/*
         val cards = getAvailableCards(stats)
         var prevViewId = R.id.stats_best_day
         cards.forEachIndexed { index, card ->
@@ -182,9 +180,11 @@ class FragmentStatsTab : Fragment() {
             addCardView(prevViewId, nextViewId, card.view, nextViewSide)
             prevViewId = card.view.id
         }
+*/
     }
 
     private fun addCardView(prevViewId: Int, nextViewId: Int, view: View, nextViewSide: Int) {
+/*
         if (stats_constraintlayout_content.findViewById<View>(view.id) == null) {
             view.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
             stats_constraintlayout_content.addView(view)
@@ -199,14 +199,15 @@ class FragmentStatsTab : Fragment() {
                 applyTo(stats_constraintlayout_content)
             }
         }
+*/
     }
 
     private fun getAvailableCards(stats: StatsModel): ArrayList<CardStats> {
         val cards = ArrayList<CardStats>()
-        cards.addIfNotEmpty(stats.projects, getString(R.string.stats_card_header_projects))
-        cards.addIfNotEmpty(stats.editors, getString(R.string.stats_card_header_editors))
-        cards.addIfNotEmpty(stats.languages, getString(R.string.stats_card_header_languages))
-        cards.addIfNotEmpty(stats.operatingSystems, getString(R.string.stats_card_header_operating_systems))
+//        cards.addIfNotEmpty(stats.projects, getString(R.string.stats_card_header_projects))
+//        cards.addIfNotEmpty(stats.editors, getString(R.string.stats_card_header_editors))
+//        cards.addIfNotEmpty(stats.languages, getString(R.string.stats_card_header_languages))
+//        cards.addIfNotEmpty(stats.operatingSystems, getString(R.string.stats_card_header_operating_systems))
         return cards
     }
 

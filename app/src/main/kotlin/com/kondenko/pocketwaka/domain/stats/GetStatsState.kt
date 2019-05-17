@@ -13,18 +13,18 @@ class GetStatsState(
         private val schedulers: SchedulersContainer,
         private val getSkeletonPlaceholderData: GetSkeletonPlaceholderData,
         private val fetchStats: FetchStats
-) : UseCaseObservable<GetStatsState.Params, State<StatsModel>>(schedulers) {
+) : UseCaseObservable<GetStatsState.Params, State<List<StatsModel>>>(schedulers) {
 
     data class Params(val range: String, val refreshRateMin: Int)
 
-    override fun build(params: Params?): Observable<State<StatsModel>> {
+    override fun build(params: Params?): Observable<State<List<StatsModel>>> {
         if (params == null) return Observable.error(IllegalArgumentException("Params shouldn't be null"))
         val loading = getSkeletonPlaceholderData.build().toObservable().map { State.Loading(it) }
         val data = Observable.interval(0, params.refreshRateMin.toLong(), TimeUnit.MINUTES, schedulers.workerScheduler)
                 .flatMap {
                     fetchStats.build(params.range)
                             .toObservable()
-                            .map<State<StatsModel>> { State.Success(it) }
+                            .map<State<List<StatsModel>>> { State.Success(it) }
                 }
         return Observable.concat(loading, data)
                 .onErrorReturn { State.Failure(ErrorType.Unknown(it)) }

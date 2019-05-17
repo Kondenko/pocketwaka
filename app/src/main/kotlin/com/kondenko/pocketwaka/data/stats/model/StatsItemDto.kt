@@ -14,7 +14,7 @@ import com.google.gson.annotations.SerializedName
  *
  * @see com.kondenko.pocketwaka.ui.CardStatsListAdapter
  */
-open class StatsItem  {
+open class StatsItemDto  {
 
     @SerializedName("digital")
     @Expose

@@ -7,8 +7,7 @@ import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import java.util.*
 
 
-class ColorProvider
-(val context: Context) {
+class ColorProvider(val context: Context) {
 
     private val saturation = 0.65f
 

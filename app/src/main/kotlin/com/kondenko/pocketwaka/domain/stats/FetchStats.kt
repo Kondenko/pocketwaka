@@ -2,10 +2,10 @@ package com.kondenko.pocketwaka.domain.stats
 
 import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.stats.model.Stats
+import com.kondenko.pocketwaka.data.stats.model.StatsItemDto
 import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
-import com.kondenko.pocketwaka.domain.stats.model.BestDay
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.utils.ColorProvider
@@ -25,42 +25,54 @@ class FetchStats(
         private val dateFormatter: DateFormatter,
         private val getTokenHeader: GetTokenHeaderValue,
         private val statsRepository: StatsRepository
-) : UseCaseSingle<String, StatsModel>(schedulers) {
+) : UseCaseSingle<String, List<StatsModel>>(schedulers) {
 
     private val timerSingle = Single.timer(100, TimeUnit.MILLISECONDS)
 
-    override fun build(range: String?): Single<StatsModel> = getTokenHeader.build()
-            .flatMap { header -> statsRepository.getStats(header, range!!) }
-            /*
-            When the user tries to refresh the data it refreshes so quickly
-            that the progress bar doesn't have the time to be shown and hidden again.
-            We add a tiny delay to the loading process so users
-            actually see that the loading happens.
-            */
-            .zipWith(timerSingle.apply { repeat() }) { stats, _ -> stats }
-            .map { it.stats }
-            .map(::toDomainModel)
+    override fun build(range: String?): Single<List<StatsModel>> {
+        return getTokenHeader.build()
+                .flatMap { header -> statsRepository.getStats(header, range!!) }
+                /*
+                When the user tries to refresh the data it refreshes so quickly
+                that the progress bar doesn't have the time to be shown and hidden again.
+                We add a tiny delay to the loading process so users
+                actually see that the loading happens.
+                */
+                .zipWith(timerSingle.apply { repeat() }) { stats, _ -> stats }
+                .map { it.stats }
+                .map(this::toDomainModel)
+    }
 
-    private fun toDomainModel(stats: Stats) = StatsModel(
-            stats.convertBestDay(stats.dailyAverage),
-            stats.dailyAverage?.toLong()?.secondsToHumanReadableTime(),
-            stats.totalSeconds?.roundToLong()?.secondsToHumanReadableTime(),
-            stats.projects?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }?.provideColors(),
-            stats.languages?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }?.provideColors(),
-            stats.editors?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }?.provideColors(),
-            stats.operatingSystems?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }?.provideColors(),
-            stats.range,
-            timeProvider.getCurrentTimeMillis(),
-            stats.totalSeconds == 0.0
-    )
+    private fun toDomainModel(stats: Stats): List<StatsModel> {
+        operator fun MutableList<StatsModel>.plusAssign(item: StatsModel?) {
+            item?.let(this::add)
+        }
+        val list = mutableListOf<StatsModel>(
+                StatsModel.Info(
+                        stats.dailyAverage?.toLong()?.secondsToHumanReadableTime(),
+                        stats.totalSeconds?.roundToLong()?.secondsToHumanReadableTime()
+                )
+        )
+        list += stats.convertBestDay(stats.dailyAverage)
+        list += stats.projects?.toDomainModel()
+        list += stats.languages?.toDomainModel()
+        list += stats.editors?.toDomainModel()
+        list += stats.operatingSystems?.toDomainModel()
+        list += StatsModel.Metadata(
+                lastUpdated = timeProvider.getCurrentTimeMillis(),
+                isEmpty = stats.totalSeconds == 0.0,
+                range = stats.range
+        )
+        return list
+    }
 
-    private fun Stats.convertBestDay(dailyAverageSec: Int?): BestDay? = bestDay?.let { bestDay ->
+    private fun Stats.convertBestDay(dailyAverageSec: Int?): StatsModel.BestDay? = bestDay?.let { bestDay ->
         val date = bestDay.date?.let(dateFormatter::reformatBestDayDate)
         val timeSec = bestDay.totalSeconds?.roundToLong()
         val timeHumanReadable = timeSec?.secondsToHumanReadableTime()
         val percentAboveAverage = calculatePercentAboveAverage(timeSec, dailyAverageSec)
         if (notNull(date, timeHumanReadable, percentAboveAverage)) {
-            BestDay(date!!, timeHumanReadable!!, percentAboveAverage!!)
+            StatsModel.BestDay(date!!, timeHumanReadable!!, percentAboveAverage!!)
         } else {
             null
         }
@@ -71,9 +83,13 @@ class FetchStats(
         return (bestDayTotalSec * 100 / dailyAverageSec - 100).toInt()
     }
 
-    private fun List<StatsItem>.provideColors(): List<StatsItem> = apply {
-        zip(colorProvider.provideColors(this)) { item, color -> item.color = color }
-    }
+    private fun List<StatsItemDto>?.toDomainModel(): StatsModel.Stats? =
+            this?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }
+                    ?.apply {
+                        zip(colorProvider.provideColors(this)) { item, color -> item.copy(color = color) }
+                    }
+                    ?.let { StatsModel.Stats(it) }
+
 
     private fun Long.secondsToHumanReadableTime(): String {
         val hours = TimeUnit.SECONDS.toHours(this)
