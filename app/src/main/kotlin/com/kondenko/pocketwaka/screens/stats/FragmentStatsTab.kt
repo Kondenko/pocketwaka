@@ -111,6 +111,7 @@ class FragmentStatsTab : Fragment() {
 
     private fun onSuccess(model: List<StatsModel>, isSkeleton: Boolean = false) {
         showFirstView(layout_data, layout_empty, layout_error)
+        statsAdapter?.isSkeleton = isSkeleton
         if (!isSkeleton) skeleton.hide()
         skeleton.refreshViews()
         statsAdapter?.items = model

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.BaseAdapter
+import com.kondenko.pocketwaka.screens.base.BaseDiffCallback
 import com.kondenko.pocketwaka.utils.component1
 import com.kondenko.pocketwaka.utils.component2
 import com.kondenko.pocketwaka.utils.extensions.setInvisible
@@ -29,6 +30,8 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
 
     private val typeStats = 2
 
+    var isSkeleton = false
+
     override var items: List<StatsModel> = super.items
         set(value) =
             value.filterNot { it is StatsModel.Metadata }.let {
@@ -44,7 +47,7 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val layoutId = when(viewType) {
+        val layoutId = when (viewType) {
             typeInfo -> R.layout.layout_stats_info
             typeBestDay -> R.layout.layout_stats_best_day
             typeStats -> R.layout.layout_stats_card
@@ -56,7 +59,7 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
     inner class ViewHolder(val view: View) : BaseViewHolder(view) {
 
         override fun bind(item: StatsModel) {
-            when(item) {
+            when (item) {
                 is StatsModel.Info -> view.renderInfo(item)
                 is StatsModel.BestDay -> view.renderBestDay(item)
                 is StatsModel.Stats -> view.renderStats(item)
@@ -73,7 +76,7 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
             bestday_textview_time.text = model.time.timeToSpannable()
             val caption = context.getString(R.string.stats_caption_best_day, model.percentAboveAverage)
             if (model.percentAboveAverage > 0) bestday_textview_caption.text = caption
-            else bestday_textview_caption.setInvisible()
+            else if (!isSkeleton) bestday_textview_caption.setInvisible()
         }
 
         private fun View.renderStats(model: StatsModel.Stats) {
