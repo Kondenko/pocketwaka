@@ -46,7 +46,6 @@
             android:text="@string/stats_header_best_day"
             android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.App.Stats.Header"
-            app:layout_constraintBottom_toTopOf="@+id/textview_bestday_date"
             app:layout_constraintEnd_toStartOf="@+id/imageview_bestday_illustration"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

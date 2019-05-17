@@ -18,8 +18,6 @@ private data class InitialState(
         val backgroundDrawable: Drawable?
 )
 
-fun View.isSkeleton() = getTag(R.id.tag_skeleton_width_key) != null
-
 class Skeleton(
         private val root: ViewGroup,
         private val skeletonBackground: Drawable,

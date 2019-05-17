@@ -9,6 +9,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
@@ -57,14 +58,15 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
     }
 
     override fun getDiffCallback(oldList: List<StatsModel>, newList: List<StatsModel>): BaseDiffCallback<StatsModel> {
-        return BaseDiffCallback(oldList, newList, areContentsTheSame = { a, b ->
-            when (a) {
-                is StatsModel.Info -> b is StatsModel.Info
-                is StatsModel.Stats -> b is StatsModel.Stats
-                is StatsModel.BestDay -> b is StatsModel.Stats
-                else -> false
-            }
-        })
+//        val areContentsTheSame = { a, b ->
+//            when (a) {
+//                is StatsModel.Info -> b is StatsModel.Info
+//                is StatsModel.Stats -> b is StatsModel.Stats
+//                is StatsModel.BestDay -> b is StatsModel.Stats
+//                else -> false
+//            }
+//        }
+        return BaseDiffCallback(oldList, newList, { _, _ -> true }, { _, _ -> false })
     }
 
     inner class ViewHolder(val view: View) : BaseViewHolder(view) {
@@ -85,6 +87,7 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
         private fun View.renderBestDay(model: StatsModel.BestDay) {
             textview_bestday_date.text = model.date
             textview_bestday_time.text = model.time.timeToSpannable()
+            imageview_bestday_illustration.isVisible = !isSkeleton
             val caption = context.getString(R.string.stats_caption_best_day, model.percentAboveAverage)
             if (model.percentAboveAverage > 0) textview_bestday_caption.text = caption
             else if (!isSkeleton) textview_bestday_caption.setInvisible()
@@ -92,7 +95,9 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
 
         private fun View.renderStats(model: StatsModel.Stats) {
             textview_stats_card_title.text = model.cardTitle
-            view.statsCardRecyclerView.adapter = CardStatsListAdapter(context, model.items)
+            view.statsCardRecyclerView.adapter = CardStatsListAdapter(context, model.items).also {
+                it.isSkeleton = this@StatsAdapter.isSkeleton
+            }
             view.statsCardRecyclerView.layoutManager = object : LinearLayoutManager(context) {
                 override fun canScrollVertically() = false
             }
