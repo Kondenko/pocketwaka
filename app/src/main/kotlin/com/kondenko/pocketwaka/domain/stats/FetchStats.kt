@@ -47,6 +47,7 @@ class FetchStats(
         operator fun MutableList<StatsModel>.plusAssign(item: StatsModel?) {
             item?.let(this::add)
         }
+
         val list = mutableListOf<StatsModel>(
                 StatsModel.Info(
                         stats.dailyAverage?.toLong()?.secondsToHumanReadableTime(),
@@ -83,12 +84,12 @@ class FetchStats(
         return (bestDayTotalSec * 100 / dailyAverageSec - 100).toInt()
     }
 
-    private fun List<StatsItemDto>?.toDomainModel(statsType: StatsRepository.StatsType): StatsModel.Stats? =
-            this?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }
-                    ?.apply {
-                        zip(colorProvider.provideColors(this)) { item, color -> item.copy(color = color) }
-                    }
-                    ?.let { StatsModel.Stats(statsRepository.getCardTitle(statsType), it) }
+    private fun List<StatsItemDto>?.toDomainModel(statsType: StatsRepository.StatsType): StatsModel.Stats? {
+        val items = this?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }
+        return items
+                ?.zip(colorProvider.provideColors(items)) { item, color -> item.copy(color = color) }
+                ?.let { StatsModel.Stats(statsRepository.getCardTitle(statsType), it) }
+    }
 
 
     private fun Long.secondsToHumanReadableTime(): String {
