@@ -8,7 +8,6 @@ import androidx.core.view.updateLayoutParams
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import com.kondenko.pocketwaka.utils.extensions.findViewsWithTag
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 private data class InitialState(
@@ -51,7 +50,6 @@ class Skeleton(
         transform?.invoke(this, true)
         background = skeletonBackground
         (this as? TextView)?.text = null
-        Timber.d("Showing a skeleton for $this")
     }
 
     private fun View.hideSkeleton() = initialStates[this]?.let {

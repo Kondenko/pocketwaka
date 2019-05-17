@@ -76,7 +76,10 @@ class FragmentStatsTab : Fragment() {
         }
     }
 
-    fun scrollDirection(): Observable<ScrollDirection> = scrollDirection
+    override fun onResume() {
+        super.onResume()
+        updateAppBarElevation()
+    }
 
     private fun setupUi(view: View) {
 
@@ -106,33 +109,28 @@ class FragmentStatsTab : Fragment() {
         setupSkeleton()
     }
 
-    override fun onResume() {
-        super.onResume()
-        updateAppBarElevation()
-    }
-
-    private fun updateAppBarElevation() {
-        shadowAnimationNeeded = if ((layout_data as RecyclerView).computeVerticalScrollOffset() >= 10) {
-            if (shadowAnimationNeeded) {
-                scrollDirection.onNext(ScrollDirection.Down)
-            }
-            false
-        } else {
-            scrollDirection.onNext(ScrollDirection.Up)
-            true
-        }
-    }
-
     private fun onSuccess(model: List<StatsModel>, isSkeleton: Boolean = false) {
         showFirstView(layout_data, layout_empty, layout_error)
+        if (!isSkeleton) skeleton.hide()
+        skeleton.refreshViews()
         statsAdapter?.items = model
         layout_data.post {
-            skeleton.refreshViews()
-            skeleton.run {
-                if (isSkeleton) show()
-                else hide()
+            if (isSkeleton) skeleton.show()
+        }
+    }
+
+    private fun onEmpty() {
+        showFirstView(layout_empty, layout_data, layout_error)
+    }
+
+    private fun onError(error: ErrorType) {
+        @Suppress("WhenWithOnlyElse") // will be extended in the future
+        when (error) {
+            else -> {
+                showFirstView(layout_error, layout_empty, layout_data)
             }
         }
+        error.exception?.report()
     }
 
     private fun setupSkeleton() {
@@ -161,19 +159,19 @@ class FragmentStatsTab : Fragment() {
         )
     }
 
-    private fun onEmpty() {
-        showFirstView(layout_empty, layout_data, layout_error)
+    private fun updateAppBarElevation() {
+        shadowAnimationNeeded = if ((layout_data as RecyclerView).computeVerticalScrollOffset() >= 10) {
+            if (shadowAnimationNeeded) {
+                scrollDirection.onNext(ScrollDirection.Down)
+            }
+            false
+        } else {
+            scrollDirection.onNext(ScrollDirection.Up)
+            true
+        }
     }
 
-    private fun onError(error: ErrorType) {
-        @Suppress("WhenWithOnlyElse") // will be extended in the future
-        when (error) {
-            else -> {
-                showFirstView(layout_error, layout_empty, layout_data)
-            }
-        }
-        error.exception?.report()
-    }
+    fun scrollDirection(): Observable<ScrollDirection> = scrollDirection
 
     fun isScrollviewOnTop() = layout_data?.scrollY ?: 0 == 0
 
