@@ -34,7 +34,7 @@ class MainActivityPresenter(
     }
 
     fun logout() {
-        deleteSavedToken.execute(onSuccess = { view?.onLogout() })
+        deleteSavedToken.execute(onFinish = { view?.onLogout() })
     }
 
     override fun detach() {
