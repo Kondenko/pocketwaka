@@ -49,7 +49,7 @@ class FragmentStatsTab : Fragment() {
 
     private val scrollDirection = PublishSubject.create<ScrollDirection>()
 
-    private var skeleton: Skeleton? = null
+    private lateinit var skeleton: Skeleton
 
     private var statsAdapter: StatsAdapter? = null
 
@@ -68,9 +68,9 @@ class FragmentStatsTab : Fragment() {
         setupUi(view)
         vm.state().observe(viewLifecycleOwner) { state ->
             when (state) {
-                is State.Success -> showStats(state.data)
+                is State.Success -> onSuccess(state.data)
                 is State.Failure -> onError(state.errorType)
-                is State.Loading -> showStats(state.skeletonData)
+                is State.Loading -> onSuccess(state.skeletonData, true)
                 State.Empty -> onEmpty()
             }
         }
@@ -79,6 +79,7 @@ class FragmentStatsTab : Fragment() {
     fun scrollDirection(): Observable<ScrollDirection> = scrollDirection
 
     private fun setupUi(view: View) {
+
         view.button_errorstate_retry.rxClicks().subscribe {
             vm.update()
         }.attachToLifecycle(viewLifecycleOwner)
@@ -86,33 +87,52 @@ class FragmentStatsTab : Fragment() {
         with(layout_data as RecyclerView) {
             adapter = statsAdapter
             layoutManager = LinearLayoutManager(context)
-            addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    shadowAnimationNeeded = if (this@with.computeVerticalScrollOffset() >= 10) {
-                        if (shadowAnimationNeeded) {
-                            scrollDirection.onNext(ScrollDirection.Down)
-                        }
-                        false
-                    } else {
-                        scrollDirection.onNext(ScrollDirection.Up)
-                        true
-                    }
+                    updateAppBarElevation()
                 }
             })
-            button_emptystate_plugins.rxClicks().subscribe {
-                val uri = Const.URL_PLUGINS
-                val builder = CustomTabsIntent.Builder()
-                builder.setToolbarColor(ContextCompat.getColor(context!!, R.color.color_primary))
-                val customTabsIntent = builder.build()
-                customTabsIntent.launchUrl(context, Uri.parse(uri))
-            }.attachToLifecycle(viewLifecycleOwner)
+        }
+
+        button_emptystate_plugins.rxClicks().subscribe {
+            val uri = Const.URL_PLUGINS
+            val builder = CustomTabsIntent.Builder()
+            builder.setToolbarColor(ContextCompat.getColor(context!!, R.color.color_primary))
+            val customTabsIntent = builder.build()
+            customTabsIntent.launchUrl(context, Uri.parse(uri))
+        }.attachToLifecycle(viewLifecycleOwner)
+
+        setupSkeleton()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateAppBarElevation()
+    }
+
+    private fun updateAppBarElevation() {
+        shadowAnimationNeeded = if ((layout_data as RecyclerView).computeVerticalScrollOffset() >= 10) {
+            if (shadowAnimationNeeded) {
+                scrollDirection.onNext(ScrollDirection.Down)
+            }
+            false
+        } else {
+            scrollDirection.onNext(ScrollDirection.Up)
+            true
         }
     }
 
-    private fun showStats(model: List<StatsModel>) {
+    private fun onSuccess(model: List<StatsModel>, isSkeleton: Boolean = false) {
         showFirstView(layout_data, layout_empty, layout_error)
         statsAdapter?.items = model
+        layout_data.post {
+            skeleton.refreshViews()
+            skeleton.run {
+                if (isSkeleton) show()
+                else hide()
+            }
+        }
     }
 
     private fun setupSkeleton() {

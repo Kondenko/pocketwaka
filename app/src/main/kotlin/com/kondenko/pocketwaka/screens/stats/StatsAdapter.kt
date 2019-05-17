@@ -32,8 +32,8 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
     override var items: List<StatsModel> = super.items
         set(value) =
             value.filterNot { it is StatsModel.Metadata }.let {
-                super.items = it
                 field = it
+                super.items = it
             }
 
     override fun getItemViewType(position: Int): Int = when (items[position]) {

@@ -11,7 +11,6 @@ import androidx.core.view.children
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
-import timber.log.Timber
 
 fun View.elevation(elevation: Float) {
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) ViewCompat.setElevation(this, elevation)
@@ -30,14 +29,12 @@ fun View.useAttributes(attrs: AttributeSet?, @StyleableRes styleable: IntArray, 
 fun <T> ViewGroup.findViewsWithTag(id: Int, value: T? = null): List<View> {
     val childrenWithTag = mutableListOf<View>()
     children.forEach {
-        Timber.d("Looking for tags in $it")
         if (it is ViewGroup) {
             childrenWithTag += it.findViewsWithTag(id, value)
         }
         // Because getTag() returns String, that's why️
         val tag = it.getTag(id)
         val areValuesEqual = value != null && tag == value
-        Timber.d("tag == $tag")
         if (tag != null || areValuesEqual) childrenWithTag += it
     }
     return childrenWithTag

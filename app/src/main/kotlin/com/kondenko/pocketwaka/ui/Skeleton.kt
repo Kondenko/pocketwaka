@@ -8,6 +8,7 @@ import androidx.core.view.updateLayoutParams
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import com.kondenko.pocketwaka.utils.extensions.findViewsWithTag
+import timber.log.Timber
 import kotlin.math.roundToInt
 
 private data class InitialState(
@@ -20,17 +21,17 @@ private data class InitialState(
 fun View.isSkeleton() = getTag(R.id.tag_skeleton_width_key) != null
 
 class Skeleton(
-        root: ViewGroup,
+        private val root: ViewGroup,
         private val skeletonBackground: Drawable,
         private val skeletonHeight: Int? = null,
         private val transform: ((View, Boolean) -> Unit)? = null
 ) {
 
-    private val initialStates = hashMapOf<View, InitialState>()
+    private var initialStates: Map<View, InitialState> = emptyMap()
 
-    init {
-        root.findViewsWithTag(R.id.tag_skeleton_width_key, null).forEach {
-            initialStates[it] = InitialState((it as? TextView)?.text, it.width, it.height, it.background)
+    fun refreshViews() {
+        initialStates = root.findViewsWithTag(R.id.tag_skeleton_width_key, null).associateWith {
+            InitialState((it as? TextView)?.text, it.width, it.height, it.background)
         }
     }
 
@@ -50,6 +51,7 @@ class Skeleton(
         transform?.invoke(this, true)
         background = skeletonBackground
         (this as? TextView)?.text = null
+        Timber.d("Showing a skeleton for $this")
     }
 
     private fun View.hideSkeleton() = initialStates[this]?.let {
