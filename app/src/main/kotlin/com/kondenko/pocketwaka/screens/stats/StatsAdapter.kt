@@ -88,7 +88,7 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
     }
 
     private fun setupSkeleton(view: View): Skeleton {
-        fun Float.adjustValue() = (context.adjustForDensity(this)).negateIfTrue(!isSkeleton)
+        fun Float.adjustValue(isSkeleton: Boolean) = (context.adjustForDensity(this)).negateIfTrue(!isSkeleton)
 
         val skeletonDrawable = context.getDrawable(R.drawable.all_skeleton_text)
                 ?: ColorDrawable(Color.TRANSPARENT)
@@ -96,10 +96,10 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
         val bestDayDateTransformation = { v: View, isSkeleton: Boolean ->
             when (v.id) {
                 R.id.textview_bestday_time -> {
-                    v.translationY += 3f.adjustValue()
+                    v.translationY += 3f.adjustValue(isSkeleton)
                 }
                 R.id.textview_stats_item -> {
-                    v.translationX += 8f.adjustValue()
+                    v.translationX += 8f.adjustValue(isSkeleton)
                 }
             }
         }

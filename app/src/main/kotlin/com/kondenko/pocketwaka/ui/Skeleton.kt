@@ -30,31 +30,43 @@ class Skeleton(
         }
     }
 
-    fun show() = initialStates.keys.forEach { it.showSkeleton() }
+    private var isShown = false
 
-    fun hide() = initialStates.keys.forEach { it.hideSkeleton() }
+    fun show() {
+        if (!isShown) {
+            initialStates.keys.forEach { it.showSkeleton() }
+            isShown = true
+        }
+    }
+
+    fun hide() {
+        if (isShown) {
+            initialStates.keys.forEach { it.hideSkeleton() }
+            isShown = false
+        }
+    }
 
     private fun View.showSkeleton() {
         val dimenWidth = (getTag(R.id.tag_skeleton_width_key) as String?)?.toInt()
         val finalWidth = context.adjustForDensity(dimenWidth)?.roundToInt().let {
             if (it == null || it < 0) width else it
         }
-        transform?.invoke(this, true)
         this.updateLayoutParams {
             width = finalWidth
             height = skeletonHeight ?: height
         }
+        transform?.invoke(this, true)
         background = skeletonBackground
         (this as? TextView)?.text = null
         fadeIn()
     }
 
     private fun View.hideSkeleton() = initialStates[this]?.let {
-        transform?.invoke(this, false)
         updateLayoutParams {
             this.width = ViewGroup.LayoutParams.WRAP_CONTENT
             this.height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
+        transform?.invoke(this, false)
         background = it.backgroundDrawable
         (this as? TextView)?.text = it.text
         fadeIn()
