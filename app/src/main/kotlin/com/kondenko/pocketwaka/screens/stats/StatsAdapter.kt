@@ -100,6 +100,9 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
                 R.id.textview_stats_item -> {
                     v.translationX += 8f.adjustValue(isSkeleton)
                 }
+                R.id.textview_stats_card_title -> {
+                    v.translationY += 8f.adjustValue(isSkeleton)
+                }
             }
         }
         return Skeleton(
