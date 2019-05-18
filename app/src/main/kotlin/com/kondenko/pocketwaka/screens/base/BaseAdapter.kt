@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class BaseAdapter<T, VH : BaseAdapter<T, VH>.BaseViewHolder>(
@@ -14,10 +15,9 @@ abstract class BaseAdapter<T, VH : BaseAdapter<T, VH>.BaseViewHolder>(
 
     open var items: List<T> = items
         set(value) {
-//            val result = DiffUtil.calculateDiff(getDiffCallback(field, value), false)
+            val result = DiffUtil.calculateDiff(getDiffCallback(field, value), false)
             field = value
-            notifyDataSetChanged()
-//            result.dispatchUpdatesTo(this)
+            result.dispatchUpdatesTo(this)
         }
 
     @CallSuper

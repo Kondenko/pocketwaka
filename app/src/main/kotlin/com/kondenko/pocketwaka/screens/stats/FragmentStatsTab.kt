@@ -2,8 +2,6 @@ package com.kondenko.pocketwaka.screens.stats
 
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,13 +17,10 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.ErrorType
 import com.kondenko.pocketwaka.screens.base.State
-import com.kondenko.pocketwaka.ui.Skeleton
 import com.kondenko.pocketwaka.utils.attachToLifecycle
-import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.rxClicks
 import com.kondenko.pocketwaka.utils.extensions.showFirstView
-import com.kondenko.pocketwaka.utils.negateIfTrue
 import com.kondenko.pocketwaka.utils.report
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
@@ -35,7 +30,6 @@ import kotlinx.android.synthetic.main.layout_stats_empty.*
 import kotlinx.android.synthetic.main.layout_stats_error.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-
 
 class FragmentStatsTab : Fragment() {
 
@@ -48,8 +42,6 @@ class FragmentStatsTab : Fragment() {
     private var shadowAnimationNeeded = true
 
     private val scrollDirection = PublishSubject.create<ScrollDirection>()
-
-    private lateinit var skeleton: Skeleton
 
     private var statsAdapter: StatsAdapter? = null
 
@@ -88,6 +80,7 @@ class FragmentStatsTab : Fragment() {
         }.attachToLifecycle(viewLifecycleOwner)
 
         with(layout_data as RecyclerView) {
+            itemAnimator = null
             adapter = statsAdapter
             layoutManager = LinearLayoutManager(context)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -105,19 +98,12 @@ class FragmentStatsTab : Fragment() {
             val customTabsIntent = builder.build()
             customTabsIntent.launchUrl(context, Uri.parse(uri))
         }.attachToLifecycle(viewLifecycleOwner)
-
-        setupSkeleton()
     }
 
     private fun onSuccess(model: List<StatsModel>, isSkeleton: Boolean = false) {
         showFirstView(layout_data, layout_empty, layout_error)
-        statsAdapter?.isSkeleton = isSkeleton
-        if (!isSkeleton) skeleton.hide()
-        skeleton.refreshViews()
         statsAdapter?.items = model
-        layout_data.post {
-            if (isSkeleton) skeleton.show()
-        }
+        statsAdapter?.isSkeleton = isSkeleton
     }
 
     private fun onEmpty() {
@@ -132,32 +118,6 @@ class FragmentStatsTab : Fragment() {
             }
         }
         error.exception?.report()
-    }
-
-    private fun setupSkeleton() {
-        fun Float.adjustValue(isSkeleton: Boolean) = (context?.adjustForDensity(this)
-                ?: this).negateIfTrue(!isSkeleton)
-
-        val skeletonDrawable = context?.getDrawable(R.drawable.all_skeleton_text)
-                ?: ColorDrawable(Color.TRANSPARENT)
-        // Move bestday_textview_time down a little bit so Best Day skeletons are evenly distributed
-        val bestDayDateTransformation = { view: View, isSkeleton: Boolean ->
-            when (view.id) {
-                R.id.textview_bestday_time -> {
-                    view.translationY += 3f.adjustValue(isSkeleton)
-                }
-                R.id.textview_stats_item -> {
-                    view.translationX += 8f.adjustValue(isSkeleton)
-                }
-            }
-        }
-        skeleton = Skeleton(
-                layout_data as ViewGroup,
-                skeletonBackground = skeletonDrawable,
-                skeletonHeight = context?.resources?.getDimension(R.dimen.height_all_skeleton_text)?.toInt()
-                        ?: 16,
-                transform = bestDayDateTransformation
-        )
     }
 
     private fun updateAppBarElevation() {

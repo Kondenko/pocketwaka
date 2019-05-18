@@ -1,6 +1,8 @@
 package com.kondenko.pocketwaka.screens.stats
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -15,9 +17,12 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.BaseAdapter
 import com.kondenko.pocketwaka.screens.base.BaseDiffCallback
+import com.kondenko.pocketwaka.ui.Skeleton
 import com.kondenko.pocketwaka.utils.component1
 import com.kondenko.pocketwaka.utils.component2
+import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import com.kondenko.pocketwaka.utils.extensions.setInvisible
+import com.kondenko.pocketwaka.utils.negateIfTrue
 import kotlinx.android.synthetic.main.layout_stats_best_day.view.*
 import kotlinx.android.synthetic.main.layout_stats_card.view.*
 import kotlinx.android.synthetic.main.layout_stats_info.view.*
@@ -54,22 +59,60 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
             typeStats -> R.layout.layout_stats_card
             else -> throw IllegalArgumentException("Unknown view type $viewType")
         }
-        return ViewHolder(inflate(layoutId, parent))
+        val view = inflate(layoutId, parent)
+        return ViewHolder(view, setupSkeleton(view))
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        with(holder.skeleton) {
+            if (isSkeleton) {
+                super.onBindViewHolder(holder, position)
+                refreshViews()
+                show()
+            } else {
+                hide()
+                super.onBindViewHolder(holder, position)
+            }
+        }
     }
 
     override fun getDiffCallback(oldList: List<StatsModel>, newList: List<StatsModel>): BaseDiffCallback<StatsModel> {
-//        val areContentsTheSame = { a, b ->
-//            when (a) {
-//                is StatsModel.Info -> b is StatsModel.Info
-//                is StatsModel.Stats -> b is StatsModel.Stats
-//                is StatsModel.BestDay -> b is StatsModel.Stats
-//                else -> false
-//            }
-//        }
-        return BaseDiffCallback(oldList, newList, { _, _ -> true }, { _, _ -> false })
+        return BaseDiffCallback(oldList, newList, areItemsTheSame = { a, b ->
+            when (a) {
+                is StatsModel.Info -> b is StatsModel.Info
+                is StatsModel.Stats -> b is StatsModel.Stats
+                is StatsModel.BestDay -> b is StatsModel.Stats
+                else -> false
+            }
+        })
     }
 
-    inner class ViewHolder(val view: View) : BaseViewHolder(view) {
+    private fun setupSkeleton(view: View): Skeleton {
+        fun Float.adjustValue() = (context.adjustForDensity(this)).negateIfTrue(!isSkeleton)
+
+        val skeletonDrawable = context.getDrawable(R.drawable.all_skeleton_text)
+                ?: ColorDrawable(Color.TRANSPARENT)
+        // Move bestday_textview_time down a little bit so Best Day skeletons are evenly distributed
+        val bestDayDateTransformation = { v: View, isSkeleton: Boolean ->
+            when (v.id) {
+                R.id.textview_bestday_time -> {
+                    v.translationY += 3f.adjustValue()
+                }
+                R.id.textview_stats_item -> {
+                    v.translationX += 8f.adjustValue()
+                }
+            }
+        }
+        return Skeleton(
+                view as ViewGroup,
+                skeletonBackground = skeletonDrawable,
+                skeletonHeight = context.resources?.getDimension(R.dimen.height_all_skeleton_text)?.toInt()
+                        ?: 16,
+                transform = bestDayDateTransformation
+        )
+    }
+
+    inner class ViewHolder(val view: View, val skeleton: Skeleton) : BaseViewHolder(view) {
 
         override fun bind(item: StatsModel) {
             when (item) {
@@ -142,5 +185,6 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
         }
 
     }
+
 
 }
