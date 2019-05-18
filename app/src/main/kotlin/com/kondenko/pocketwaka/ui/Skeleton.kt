@@ -24,6 +24,8 @@ class Skeleton(
 
     private var initialStates: Map<View, InitialState> = emptyMap()
 
+    var animDuration: Long = 300
+
     fun refreshViews() {
         initialStates = root.findViewsWithTag(R.id.tag_skeleton_width_key, null).associateWith {
             InitialState((it as? TextView)?.text, it.background)
@@ -51,30 +53,36 @@ class Skeleton(
         val finalWidth = context.adjustForDensity(dimenWidth)?.roundToInt().let {
             if (it == null || it < 0) width else it
         }
-        this.updateLayoutParams {
-            width = finalWidth
-            height = skeletonHeight ?: height
+        animateIn {
+            this.updateLayoutParams {
+                width = finalWidth
+                height = skeletonHeight ?: height
+            }
+            transform?.invoke(this, true)
+            background = skeletonBackground
+            (this as? TextView)?.text = null
         }
-        transform?.invoke(this, true)
-        background = skeletonBackground
-        (this as? TextView)?.text = null
-        fadeIn()
     }
 
     private fun View.hideSkeleton() = initialStates[this]?.let {
-        updateLayoutParams {
-            this.width = ViewGroup.LayoutParams.WRAP_CONTENT
-            this.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        animateIn {
+            updateLayoutParams {
+                this.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                this.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
+            transform?.invoke(this, false)
+            background = it.backgroundDrawable
+            (this as? TextView)?.text = it.text
         }
-        transform?.invoke(this, false)
-        background = it.backgroundDrawable
-        (this as? TextView)?.text = it.text
-        fadeIn()
     }
 
-    private fun View.fadeIn() {
+    private fun View.animateIn(updateView: () -> Unit) {
         alpha = 0f
-        animate().alpha(1f).setDuration(300).start()
+        animate()
+                .withStartAction(updateView)
+                .alpha(1f)
+                .setDuration(if (!isShown) animDuration / 2 else animDuration)
+                .start()
     }
 
 }
