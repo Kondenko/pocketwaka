@@ -67,7 +67,6 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
         with(holder.skeleton) {
             if (isSkeleton) {
                 super.onBindViewHolder(holder, position)
-                refreshViews()
                 show()
             } else {
                 hide()

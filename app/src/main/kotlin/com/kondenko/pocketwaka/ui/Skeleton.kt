@@ -22,12 +22,10 @@ class Skeleton(
         private val transform: ((View, Boolean) -> Unit)? = null
 ) {
 
-    private var initialStates: Map<View, InitialState> = emptyMap()
-
     var animDuration: Long = 300
 
-    fun refreshViews() {
-        initialStates = root.findViewsWithTag(R.id.tag_skeleton_width_key, null).associateWith {
+    private val initialStates: Map<View, InitialState> by lazy {
+        root.findViewsWithTag(R.id.tag_skeleton_width_key, null).associateWith {
             InitialState((it as? TextView)?.text, it.background)
         }
     }
