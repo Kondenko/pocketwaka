@@ -32,7 +32,7 @@ inline fun FragmentManager.transaction(crossinline action: androidx.fragment.app
     this.beginTransaction().action().commit()
 }
 
-fun Activity?.getStatuBarHeight(): Int? = Rect().let {
+fun Activity?.getStatusBarHeight(): Int? = Rect().let {
     this?.window?.decorView?.getWindowVisibleDisplayFrame(it) ?: return@let null
     it.top
 }

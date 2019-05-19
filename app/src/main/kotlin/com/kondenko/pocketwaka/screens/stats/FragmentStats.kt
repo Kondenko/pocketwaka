@@ -14,7 +14,8 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.utils.getStatuBarHeight
+import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
+import com.kondenko.pocketwaka.utils.getStatusBarHeight
 import com.ogaclejapan.smarttablayout.utils.v4.Bundler
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
@@ -23,6 +24,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_stats_container.*
 import timber.log.Timber
+import kotlin.math.roundToInt
 
 
 class FragmentStats : Fragment() {
@@ -65,9 +67,12 @@ class FragmentStats : Fragment() {
         })
         stats_smarttablayout_ranges.post {
             elevatedSurface?.updateLayoutParams {
+                val statusbarHeight: Float = activity?.run {
+                    getStatusBarHeight()?.toFloat() ?: resources.getDimension(R.dimen.height_all_statusbar_fallback)
+                } ?: view.context.adjustForDensity(24)
                 height = stats_smarttablayout_ranges
-                        .run { bottom + height + (activity?.getStatuBarHeight() ?: 24) }
-                        .toInt()
+                        .run { bottom + height + statusbarHeight }
+                        .roundToInt()
             }
         }
     }
