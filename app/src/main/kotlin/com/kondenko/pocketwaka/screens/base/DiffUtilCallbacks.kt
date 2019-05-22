@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.DiffUtil
 open class BaseDiffCallback<T>(
         private val oldList: List<T>,
         private val newList: List<T>,
-        private val areItemsTheSame: (T, T) -> Boolean = { a, b -> a === b },
-        private val areContentsTheSame: (T, T) -> Boolean = { a, b -> a === b }
+        private val areItemsTheSame: (T, T) -> Boolean = { a, b -> a == b },
+        private val areContentsTheSame: (T, T) -> Boolean = { a, b -> a == b }
 ) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int = oldList.size
