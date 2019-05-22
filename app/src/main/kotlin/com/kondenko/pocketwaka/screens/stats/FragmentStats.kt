@@ -68,7 +68,8 @@ class FragmentStats : Fragment() {
         stats_smarttablayout_ranges.post {
             elevatedSurface?.updateLayoutParams {
                 val statusbarHeight: Float = activity?.run {
-                    getStatusBarHeight()?.toFloat() ?: resources.getDimension(R.dimen.height_all_statusbar_fallback)
+                    getStatusBarHeight()?.toFloat()
+                            ?: resources.getDimension(R.dimen.height_all_statusbar_fallback)
                 } ?: view.context.adjustForDensity(24)
                 height = stats_smarttablayout_ranges
                         .run { bottom + height + statusbarHeight }
@@ -91,24 +92,23 @@ class FragmentStats : Fragment() {
     private fun animateTabs(elevated: Boolean) {
         areTabsElevated = elevated
         // Tabs background color
+        @Suppress("UsePropertyAccessSyntax")
         elevatedSurface?.let {
-            val colorGray = ContextCompat.getColor(context!!, R.color.color_background_gray)
-            val colorPrimaryLight = ContextCompat.getColor(context!!, android.R.color.white)
+            val colorResting = ContextCompat.getColor(context!!, R.color.color_app_bar_resting)
+            val colorElevated = ContextCompat.getColor(context!!, R.color.color_app_bar_elevated)
             val colorAnim = ValueAnimator()
-            it.background
             with(colorAnim) {
-                @Suppress("UsePropertyAccessSyntax")
                 setDuration(Const.DEFAULT_ANIM_DURATION)
-                setIntValues(if (elevated) colorGray else colorPrimaryLight, if (elevated) colorPrimaryLight else colorGray)
+                setIntValues(if (elevated) colorResting else colorElevated, if (elevated) colorElevated else colorResting)
                 setEvaluator(ArgbEvaluator())
                 addUpdateListener { valueAnimator ->
                     it.setBackgroundColor(valueAnimator.animatedValue as Int)
                 }
                 start()
             }
+            // Custom tabs elevation
+            stats_view_shadow.animate().alpha(if (elevated) Const.MAX_SHADOW_OPACITY else 0f).start()
         }
-        // Custom tabs elevation
-        stats_view_shadow.animate().alpha(if (elevated) Const.MAX_SHADOW_OPACITY else 0f).start()
     }
 
     fun subscribeToRefreshEvents(refreshEvents: Observable<Any>) {

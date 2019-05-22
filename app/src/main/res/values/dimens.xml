@@ -47,7 +47,7 @@
 
     <dimen name="textsize_stats_tabs">14dp</dimen>
 
-    <dimen name="height_stats_shadow">4dp</dimen>
+    <dimen name="height_stats_shadow">6dp</dimen>
 
     <dimen name="height_stats_bestday">112dp</dimen>
     <dimen name="padding_stats_bestday_vertical">16dp</dimen>

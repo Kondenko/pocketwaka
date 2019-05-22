@@ -6,6 +6,9 @@
     <color name="color_accent">#2595ff</color>
     <color name="color_background_gray">#F5F9FF</color>
 
+    <color name="color_app_bar_resting">@color/color_background_gray</color>
+    <color name="color_app_bar_elevated">@android:color/white</color>
+
     <color name="color_tab_text_default">@color/color_primary</color>
 
     <color name="color_skeleton_text">#1435434F</color>
