@@ -78,6 +78,7 @@ class Skeleton(
         alpha = 0f
         animate()
                 .withStartAction(updateView)
+                .withLayer()
                 .alpha(1f)
                 .setDuration(if (!isShown) animDuration / 2 else animDuration)
                 .start()

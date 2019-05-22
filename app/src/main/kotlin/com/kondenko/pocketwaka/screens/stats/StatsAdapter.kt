@@ -80,7 +80,7 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
             when (a) {
                 is StatsModel.Info -> b is StatsModel.Info
                 is StatsModel.Stats -> b is StatsModel.Stats
-                is StatsModel.BestDay -> b is StatsModel.Stats
+                is StatsModel.BestDay -> b is StatsModel.BestDay
                 else -> false
             }
         })

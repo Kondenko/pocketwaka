@@ -15,11 +15,19 @@ class GetStatsState(
         private val fetchStats: FetchStats
 ) : UseCaseObservable<GetStatsState.Params, State<List<StatsModel>>>(schedulers) {
 
+    private val delayBetweenSkeletonAndActualUi: Long = 50
+
     data class Params(val range: String, val refreshRateMin: Int)
 
     override fun build(params: Params?): Observable<State<List<StatsModel>>> {
         if (params == null) return Observable.error(IllegalArgumentException("Params shouldn't be null"))
-        val loading = getSkeletonPlaceholderData.build().toObservable().map { State.Loading(it) }
+        val initialWait = Observable.timer(delayBetweenSkeletonAndActualUi, TimeUnit.MILLISECONDS)
+        val loading = getSkeletonPlaceholderData.build()
+                .toObservable()
+                .map { State.Loading(it) }
+                .flatMap { state ->
+                    initialWait.map { state }
+                }
         val data = Observable.interval(0, params.refreshRateMin.toLong(), TimeUnit.MINUTES, schedulers.workerScheduler)
                 .flatMap {
                     fetchStats.build(params.range)
