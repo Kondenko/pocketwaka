@@ -54,10 +54,10 @@ class FragmentStats : Fragment() {
                         .create()
         )
         stats_viewpager_content.adapter = adapter
-        stats_smarttablayout_ranges.setViewPager(stats_viewpager_content)
         stats_viewpager_content.post {
             onFragmentSelected(adapter.getPage(stats_viewpager_content.currentItem) as FragmentStatsTab)
         }
+        stats_smarttablayout_ranges.setViewPager(stats_viewpager_content)
         stats_smarttablayout_ranges.setOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 val selectedFragment = adapter.getPage(position) as FragmentStatsTab?
@@ -115,6 +115,8 @@ class FragmentStats : Fragment() {
         refreshEvents.subscribeWith(this.refreshEvents)
     }
 
-    private fun FragmentPagerItems.Creator.addFragment(@StringRes title: Int, range: String) = this.add(title, FragmentStatsTab::class.java, Bundler().putString(FragmentStatsTab.ARG_RANGE, range).get())
+    private fun FragmentPagerItems.Creator.addFragment(@StringRes title: Int, range: String): FragmentPagerItems.Creator {
+        return this.add(title, FragmentStatsTab::class.java, Bundler().putString(FragmentStatsTab.ARG_RANGE, range).get())
+    }
 
 }
