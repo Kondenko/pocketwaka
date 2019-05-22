@@ -24,12 +24,13 @@ import com.kondenko.pocketwaka.utils.extensions.showFirstView
 import com.kondenko.pocketwaka.utils.report
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_stats.*
 import kotlinx.android.synthetic.main.layout_stats_empty.*
 import kotlinx.android.synthetic.main.layout_stats_error.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import timber.log.Timber
 
 class FragmentStatsTab : Fragment() {
 
@@ -41,7 +42,7 @@ class FragmentStatsTab : Fragment() {
 
     private var shadowAnimationNeeded = true
 
-    private val scrollDirection = PublishSubject.create<ScrollDirection>()
+    private val scrollDirection = BehaviorSubject.create<ScrollDirection>()
 
     private var statsAdapter: StatsAdapter? = null
 
@@ -59,6 +60,7 @@ class FragmentStatsTab : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupUi(view)
         vm.state().observe(viewLifecycleOwner) { state ->
+            Timber.d("${arguments?.get(ARG_RANGE)} state updated: $state")
             when (state) {
                 is State.Success -> onSuccess(state.data)
                 is State.Failure -> onError(state.errorType)

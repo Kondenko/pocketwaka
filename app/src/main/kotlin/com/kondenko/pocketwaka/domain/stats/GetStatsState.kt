@@ -6,7 +6,6 @@ import com.kondenko.pocketwaka.screens.base.ErrorType
 import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.Observable
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class GetStatsState(
@@ -36,7 +35,6 @@ class GetStatsState(
                 }
         return Observable.concat(loading, data)
                 .onErrorReturn { State.Failure(ErrorType.Unknown(it)) }
-                .doOnNext { Timber.d("Stats state updated: ${it.javaClass}") }
     }
 
 }
