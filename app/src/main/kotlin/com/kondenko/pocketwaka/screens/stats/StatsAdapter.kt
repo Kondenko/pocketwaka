@@ -11,6 +11,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnNextLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kondenko.pocketwaka.R
@@ -28,15 +29,13 @@ import kotlinx.android.synthetic.main.layout_stats_card.view.*
 import kotlinx.android.synthetic.main.layout_stats_info.view.*
 import kotlin.math.roundToInt
 
-class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.ViewHolder>(context) {
+class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : BaseAdapter<StatsModel, StatsAdapter.ViewHolder>(context) {
 
     private val typeInfo = 0
 
     private val typeBestDay = 1
 
     private val typeStats = 2
-
-    var isSkeleton = false
 
     override var items: List<StatsModel> = super.items
         set(value) =
@@ -60,14 +59,14 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
             else -> throw IllegalArgumentException("Unknown view type $viewType")
         }
         val view = inflate(layoutId, parent)
-        return ViewHolder(view, setupSkeleton(view))
+        val skeleton = if (isSkeleton) setupSkeleton(view as ViewGroup) else null
+        return ViewHolder(view, skeleton)
     }
 
     override fun getDiffCallback(oldList: List<StatsModel>, newList: List<StatsModel>): BaseDiffCallback<StatsModel> {
         return BaseDiffCallback(oldList, newList, areItemsTheSame = { a, b ->
             when (a) {
                 is StatsModel.Info -> b is StatsModel.Info
-                is StatsModel.Stats -> b is StatsModel.Stats
                 is StatsModel.BestDay -> b is StatsModel.BestDay
                 else -> false
             }
@@ -102,21 +101,24 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
         )
     }
 
-    inner class ViewHolder(val view: View, private val skeleton: Skeleton) : BaseViewHolder(view) {
+    /**
+     * @param skeleton null if this adapter is not for showing skeletons
+     */
+    inner class ViewHolder(val view: View, private val skeleton: Skeleton? = null) : BaseViewHolder(view) {
 
         override fun bind(item: StatsModel) {
-            if (!isSkeleton) skeleton.hide()
+            skeleton?.hide()
             when (item) {
                 is StatsModel.Info -> view.renderInfo(item)
                 is StatsModel.BestDay -> view.renderBestDay(item)
                 is StatsModel.Stats -> view.renderStats(item)
             }
-            if (isSkeleton) skeleton.show()
         }
 
         private fun View.renderInfo(model: StatsModel.Info) {
             textview_stats_time_total.text = model.humanReadableTotal.timeToSpannable()
             textview_stats_daily_average.text = model.humanReadableDailyAverage.timeToSpannable()
+            skeleton?.show()
         }
 
         private fun View.renderBestDay(model: StatsModel.BestDay) {
@@ -126,15 +128,20 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
             val caption = context.getString(R.string.stats_caption_best_day, model.percentAboveAverage)
             if (model.percentAboveAverage > 0) textview_bestday_caption.text = caption
             else if (!isSkeleton) textview_bestday_caption.setInvisible()
+            skeleton?.show()
         }
 
         private fun View.renderStats(model: StatsModel.Stats) {
             textview_stats_card_title.text = model.cardTitle
-            view.statsCardRecyclerView.adapter = CardStatsListAdapter(context, model.items, skeleton).also {
-                it.isSkeleton = this@StatsAdapter.isSkeleton
-            }
-            view.statsCardRecyclerView.layoutManager = object : LinearLayoutManager(context) {
-                override fun canScrollVertically() = false
+            with(view.statsCardRecyclerView) {
+                layoutManager = object : LinearLayoutManager(context) {
+                    override fun canScrollVertically() = false
+                }
+                doOnNextLayout {
+                    skeleton?.addViews(this@renderStats as ViewGroup)
+                    skeleton?.show()
+                }
+                adapter = CardStatsListAdapter(context, model.items, isSkeleton)
             }
         }
 
@@ -177,6 +184,5 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
         }
 
     }
-
 
 }

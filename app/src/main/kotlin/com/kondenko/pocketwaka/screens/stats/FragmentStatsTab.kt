@@ -46,6 +46,10 @@ class FragmentStatsTab : Fragment() {
 
     private var statsAdapter: StatsAdapter? = null
 
+    private var skeletonAdapter: StatsAdapter? = null
+
+    private var recyclerViewStats: RecyclerView? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_stats, container, false)
@@ -53,7 +57,10 @@ class FragmentStatsTab : Fragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        statsAdapter = context?.let { StatsAdapter(context) }
+        context?.let {
+            statsAdapter = StatsAdapter(it)
+            skeletonAdapter = StatsAdapter(it, true)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -64,7 +71,7 @@ class FragmentStatsTab : Fragment() {
             when (state) {
                 is State.Success -> onSuccess(state.data)
                 is State.Failure -> onError(state.errorType)
-                is State.Loading -> onSuccess(state.skeletonData, true)
+                is State.Loading -> onLoading(state.skeletonData)
                 State.Empty -> onEmpty()
             }
         }
@@ -77,13 +84,12 @@ class FragmentStatsTab : Fragment() {
 
     private fun setupUi(view: View) {
 
-        view.button_errorstate_retry.rxClicks().subscribe {
-            vm.update()
-        }.attachToLifecycle(viewLifecycleOwner)
+        view.button_errorstate_retry.rxClicks()
+                .subscribe { vm.update() }
+                .attachToLifecycle(viewLifecycleOwner)
 
         with(layout_data as RecyclerView) {
             itemAnimator = null
-            adapter = statsAdapter
             layoutManager = LinearLayoutManager(context)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -91,6 +97,7 @@ class FragmentStatsTab : Fragment() {
                     updateAppBarElevation()
                 }
             })
+            recyclerViewStats = this
         }
 
         button_emptystate_plugins.rxClicks().subscribe {
@@ -102,10 +109,18 @@ class FragmentStatsTab : Fragment() {
         }.attachToLifecycle(viewLifecycleOwner)
     }
 
-    private fun onSuccess(model: List<StatsModel>, isSkeleton: Boolean = false) {
+    private fun onSuccess(model: List<StatsModel>) {
         showFirstView(layout_data, layout_empty, layout_error)
         statsAdapter?.items = model
-        statsAdapter?.isSkeleton = isSkeleton
+        recyclerViewStats?.adapter = statsAdapter
+    }
+
+    private fun onLoading(skeletonModel: List<StatsModel>) {
+        showFirstView(layout_data, layout_empty, layout_error)
+        skeletonAdapter?.let {
+            if (it.items.isEmpty()) it.items = skeletonModel
+            recyclerViewStats?.adapter = it
+        }
     }
 
     private fun onEmpty() {

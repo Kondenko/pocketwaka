@@ -8,6 +8,7 @@ import androidx.core.view.updateLayoutParams
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import com.kondenko.pocketwaka.utils.extensions.findViewsWithTag
+import timber.log.Timber
 import kotlin.math.roundToInt
 
 private data class InitialState(
@@ -16,7 +17,7 @@ private data class InitialState(
 )
 
 class Skeleton(
-        private val root: ViewGroup,
+        private val root: ViewGroup? = null,
         private val skeletonBackground: Drawable,
         private val skeletonHeight: Int? = null,
         private val transform: ((View, Boolean) -> Unit)? = null
@@ -24,33 +25,42 @@ class Skeleton(
 
     var animDuration: Long = 300
 
-    private var isShown = false
-
     private val initialStates: MutableMap<View, InitialState> by lazy { findViews(root) }
 
     fun addViews(root: ViewGroup) {
-        initialStates += findViews(root)
+        findViews(root).forEach { (view, state) ->
+            if (!initialStates.containsKey(view)) {
+                Timber.d("Adding $view")
+                initialStates[view] = state
+            }
+        }
     }
 
-    private fun findViews(root: ViewGroup) = root.findViewsWithTag(R.id.tag_skeleton_width_key, null)
-            .associateWith { InitialState((it as? TextView)?.text, it.background) }
-            .toMutableMap()
+    fun addView(view: View) {
+        if (view.getTag(R.id.tag_skeleton_width_key) != null) {
+            Timber.d("Adding $view")
+            initialStates[view] = view.getInitialState()
+        }
+    }
+
+    private fun findViews(root: ViewGroup?) =
+            root?.findViewsWithTag(R.id.tag_skeleton_width_key, null)
+                    ?.associateWith { it.getInitialState() }
+                    ?.toMutableMap()
+                    ?: mutableMapOf()
+
+    private fun View.getInitialState() = InitialState((this as? TextView)?.text, this.background)
 
     fun show() {
-        if (!isShown) {
-            initialStates.keys.forEach { it.showSkeleton() }
-            isShown = true
-        }
+        initialStates.keys.forEach { it.showSkeleton() }
     }
 
     fun hide() {
-        if (isShown) {
-            initialStates.keys.forEach { it.hideSkeleton() }
-            isShown = false
-        }
+        initialStates.keys.forEach { it.hideSkeleton() }
     }
 
     private fun View.showSkeleton() {
+        Timber.d("Showing a skeleton of $this")
         val dimenWidth = (getTag(R.id.tag_skeleton_width_key) as String?)?.toInt()
         val finalWidth = context.adjustForDensity(dimenWidth)?.roundToInt().let {
             if (it == null || it < 0) width else it
@@ -82,7 +92,6 @@ class Skeleton(
         alpha = 0f
         animate()
                 .withStartAction(updateView)
-                .withLayer()
                 .alpha(1f)
                 .setDuration(if (!isShown) animDuration / 2 else animDuration)
                 .start()
