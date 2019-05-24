@@ -24,13 +24,17 @@ class Skeleton(
 
     var animDuration: Long = 300
 
-    private val initialStates: Map<View, InitialState> by lazy {
-        root.findViewsWithTag(R.id.tag_skeleton_width_key, null).associateWith {
-            InitialState((it as? TextView)?.text, it.background)
-        }
+    private var isShown = false
+
+    private val initialStates: MutableMap<View, InitialState> by lazy { findViews(root) }
+
+    fun addViews(root: ViewGroup) {
+        initialStates += findViews(root)
     }
 
-    private var isShown = false
+    private fun findViews(root: ViewGroup) = root.findViewsWithTag(R.id.tag_skeleton_width_key, null)
+            .associateWith { InitialState((it as? TextView)?.text, it.background) }
+            .toMutableMap()
 
     fun show() {
         if (!isShown) {
