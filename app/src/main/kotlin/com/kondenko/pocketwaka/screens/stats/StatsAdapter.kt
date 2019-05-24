@@ -63,18 +63,6 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
         return ViewHolder(view, setupSkeleton(view))
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        with(holder.skeleton) {
-            if (isSkeleton) {
-                super.onBindViewHolder(holder, position)
-                show()
-            } else {
-                hide()
-                super.onBindViewHolder(holder, position)
-            }
-        }
-    }
-
     override fun getDiffCallback(oldList: List<StatsModel>, newList: List<StatsModel>): BaseDiffCallback<StatsModel> {
         return BaseDiffCallback(oldList, newList, areItemsTheSame = { a, b ->
             when (a) {
@@ -114,14 +102,16 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
         )
     }
 
-    inner class ViewHolder(val view: View, val skeleton: Skeleton) : BaseViewHolder(view) {
+    inner class ViewHolder(val view: View, private val skeleton: Skeleton) : BaseViewHolder(view) {
 
         override fun bind(item: StatsModel) {
+            if (!isSkeleton) skeleton.hide()
             when (item) {
                 is StatsModel.Info -> view.renderInfo(item)
                 is StatsModel.BestDay -> view.renderBestDay(item)
                 is StatsModel.Stats -> view.renderStats(item)
             }
+            if (isSkeleton) skeleton.show()
         }
 
         private fun View.renderInfo(model: StatsModel.Info) {
@@ -140,7 +130,7 @@ class StatsAdapter(context: Context) : BaseAdapter<StatsModel, StatsAdapter.View
 
         private fun View.renderStats(model: StatsModel.Stats) {
             textview_stats_card_title.text = model.cardTitle
-            view.statsCardRecyclerView.adapter = CardStatsListAdapter(context, model.items).also {
+            view.statsCardRecyclerView.adapter = CardStatsListAdapter(context, model.items, skeleton).also {
                 it.isSkeleton = this@StatsAdapter.isSkeleton
             }
             view.statsCardRecyclerView.layoutManager = object : LinearLayoutManager(context) {
