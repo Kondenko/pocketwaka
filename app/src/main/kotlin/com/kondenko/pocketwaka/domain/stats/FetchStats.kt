@@ -13,7 +13,6 @@ import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.TimeProvider
 import com.kondenko.pocketwaka.utils.notNull
 import io.reactivex.Single
-import io.reactivex.rxkotlin.zipWith
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
@@ -27,18 +26,9 @@ class FetchStats(
         private val statsRepository: StatsRepository
 ) : UseCaseSingle<String, List<StatsModel>>(schedulers) {
 
-    private val timerSingle = Single.timer(100, TimeUnit.MILLISECONDS)
-
     override fun build(range: String?): Single<List<StatsModel>> {
         return getTokenHeader.build()
                 .flatMap { header -> statsRepository.getStats(header, range!!) }
-                /*
-                When the user tries to refresh the data it refreshes so quickly
-                that the progress bar doesn't have the time to be shown and hidden again.
-                We add a tiny delay to the loading process so users
-                actually see that the loading happens.
-                */
-                .zipWith(timerSingle.apply { repeat() }) { stats, _ -> stats }
                 .map { it.stats }
                 .map(this::toDomainModel)
     }

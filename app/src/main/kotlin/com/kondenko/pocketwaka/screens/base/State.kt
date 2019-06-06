@@ -10,6 +10,7 @@ sealed class State<out T> {
 
 sealed class ErrorType(val exception: Throwable? = null, val message: String? = null) {
     object NoNetwork : ErrorType()
+    object UnknownRange : ErrorType()
     object Timeout : ErrorType()
     class Unknown(error: Throwable, message: String? = null) : ErrorType(error, message)
 }
