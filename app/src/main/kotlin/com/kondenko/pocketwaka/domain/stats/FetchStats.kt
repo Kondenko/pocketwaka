@@ -2,38 +2,38 @@ package com.kondenko.pocketwaka.domain.stats
 
 import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.stats.model.Stats
-import com.kondenko.pocketwaka.data.stats.model.StatsItemDto
 import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
-import com.kondenko.pocketwaka.domain.UseCaseSingle
+import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.SchedulersContainer
-import com.kondenko.pocketwaka.utils.TimeProvider
 import com.kondenko.pocketwaka.utils.notNull
-import io.reactivex.Single
+import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
 
 class FetchStats(
         schedulers: SchedulersContainer,
-        private val timeProvider: TimeProvider,
         private val colorProvider: ColorProvider,
         private val dateFormatter: DateFormatter,
         private val getTokenHeader: GetTokenHeaderValue,
         private val statsRepository: StatsRepository
-) : UseCaseSingle<String, List<StatsModel>>(schedulers) {
+) : UseCaseObservable<String, List<StatsModel>>(schedulers) {
 
-    override fun build(range: String?): Single<List<StatsModel>> {
+    override fun build(range: String?): Observable<List<StatsModel>> {
         return getTokenHeader.build()
-                .flatMap { header -> statsRepository.getStats(header, range!!) }
-                .map { it.stats }
-                .map(this::toDomainModel)
+                .flatMapObservable { header ->
+                    statsRepository.getStats(header, range!!, onLoadedFromServer = {
+                        statsRepository.cacheStats(it)
+                    })
+                }
+                .map { this.toDomainModel(it.stats, it.dateUpdated) }
     }
 
-    private fun toDomainModel(stats: Stats): List<StatsModel> {
+    private fun toDomainModel(stats: Stats, dateUpdated: Long): List<StatsModel> {
         operator fun MutableList<StatsModel>.plusAssign(item: StatsModel?) {
             item?.let(this::add)
         }
@@ -50,7 +50,7 @@ class FetchStats(
         list += stats.editors?.toDomainModel(StatsRepository.StatsType.Editors)
         list += stats.operatingSystems?.toDomainModel(StatsRepository.StatsType.OperatingSystems)
         list += StatsModel.Metadata(
-                lastUpdated = timeProvider.getCurrentTimeMillis(),
+                lastUpdated = dateUpdated,
                 isEmpty = stats.totalSeconds == 0.0,
                 range = stats.range
         )
@@ -74,7 +74,7 @@ class FetchStats(
         return (bestDayTotalSec * 100 / dailyAverageSec - 100).toInt()
     }
 
-    private fun List<StatsItemDto>?.toDomainModel(statsType: StatsRepository.StatsType): StatsModel.Stats? {
+    private fun List<com.kondenko.pocketwaka.data.stats.model.StatsItem>?.toDomainModel(statsType: StatsRepository.StatsType): StatsModel.Stats? {
         val items = this?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }
         return items
                 ?.zip(colorProvider.provideColors(items)) { item, color -> item.copy(color = color) }
