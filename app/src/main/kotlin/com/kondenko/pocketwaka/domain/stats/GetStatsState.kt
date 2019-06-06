@@ -16,7 +16,7 @@ class GetStatsState(
 
     private val delayBetweenSkeletonAndActualUi: Long = 50
 
-    data class Params(val range: String, val refreshRateMin: Int)
+    data class Params(val range: String?, val refreshRateMin: Int)
 
     override fun build(params: Params?): Observable<State<List<StatsModel>>> {
         if (params == null) return Observable.just(State.Failure(ErrorType.UnknownRange))
@@ -36,7 +36,6 @@ class GetStatsState(
         val data = Observable.interval(0, params.refreshRateMin.toLong(), TimeUnit.MINUTES, schedulers.workerScheduler)
                 .flatMap {
                     fetchStats.build(params.range)
-                            .toObservable()
                             .map<State<List<StatsModel>>> { State.Success(it) }
                 }
         return Observable.concat(loading, data)

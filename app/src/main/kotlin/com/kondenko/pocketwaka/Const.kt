@@ -1,5 +1,9 @@
 package com.kondenko.pocketwaka
 
+const val databaseName = "pocketwaka-database"
+
+const val databaseVersion = 1
+
 // TODO Remove top Const object
 object Const {
 

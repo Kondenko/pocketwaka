@@ -1,10 +1,17 @@
 package com.kondenko.pocketwaka.data.stats.dto
 
-import com.kondenko.pocketwaka.data.stats.model.Stats
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 
-
+@Entity(tableName = "stats_cache")
 data class StatsDto(
+        @PrimaryKey
         val range: String,
+        @ColumnInfo(name = "date_updated")
         val dateUpdated: Long,
-        val stats: Stats
+        @Embedded
+        val stats: ArrayList<StatsModel>
 )

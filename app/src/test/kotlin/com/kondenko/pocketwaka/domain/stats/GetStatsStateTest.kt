@@ -4,20 +4,21 @@ import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.nhaarman.mockito_kotlin.*
-import io.reactivex.rxkotlin.toSingle
+import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.schedulers.TestScheduler
 import org.junit.Test
 import java.util.concurrent.TimeUnit
 
 class GetStatsStateTest {
 
+    private val testScheduler = TestScheduler()
+
     private val fetchStats: FetchStats = mock()
 
     private val getSkeletonPlaceholderData: GetSkeletonPlaceholderData = mock()
 
-    private val testScheduler = TestScheduler()
-
-    private val useCase = GetStatsState(SchedulersContainer(testScheduler, testScheduler), getSkeletonPlaceholderData, fetchStats)
+    private val getState = GetStatsState(SchedulersContainer(testScheduler, testScheduler), getSkeletonPlaceholderData, fetchStats)
 
     @Test
     fun `should show loading first and then update data`() {
@@ -26,10 +27,10 @@ class GetStatsStateTest {
         val skeletonModel: List<StatsModel> = mock()
         val actualModel: List<StatsModel> = mock()
 
-        whenever(getSkeletonPlaceholderData.build()).doReturn(skeletonModel.toSingle())
-        whenever(fetchStats.build(params.range)).doReturn(actualModel.toSingle())
+        whenever(getSkeletonPlaceholderData.build()).doReturn(Single.just(skeletonModel))
+        whenever(fetchStats.build(params.range)).doReturn(Observable.just(actualModel))
 
-        val observable = useCase.execute(params)
+        val observable = getState.execute(params)
         val testObserver = observable.test()
 
         inOrder(getSkeletonPlaceholderData, fetchStats) {

@@ -2,6 +2,7 @@ package com.kondenko.pocketwaka.di.modules
 
 import android.content.Context
 import com.kondenko.pocketwaka.data.android.DateFormatter
+import com.kondenko.pocketwaka.data.stats.dao.StatsDao
 import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
 import com.kondenko.pocketwaka.data.stats.service.StatsService
 import com.kondenko.pocketwaka.di.Api
@@ -19,9 +20,16 @@ import retrofit2.Retrofit
 object StatsModule {
     fun create(context: Context) = module {
         single { get<Retrofit>(Api).create<StatsService>() }
-        single { StatsRepository(context, get()) }
         single { ColorProvider(context) }
         single { DateFormatter(context) }
+        single { StatsRepository(
+                context = context,
+                service = get(),
+                dao = get<StatsDao>(),
+                colorProvider = get(),
+                dateFormatter = get(),
+                timeProvider = get()
+        ) }
         single { GetSkeletonPlaceholderData(get()) }
         factory {
             GetTokenHeaderValue(
@@ -33,9 +41,6 @@ object StatsModule {
         factory {
             FetchStats(
                     schedulers = get(),
-                    timeProvider = get(),
-                    colorProvider = get(),
-                    dateFormatter = get(),
                     getTokenHeader = get() as GetTokenHeaderValue,
                     statsRepository = get()
             )
@@ -47,7 +52,7 @@ object StatsModule {
                     fetchStats = get()
             )
         }
-        viewModel { (range: String) -> StatsViewModel(range, get() as GetStatsState) }
+        viewModel { (range: String?) -> StatsViewModel(range, get() as GetStatsState) }
     }
 
 }

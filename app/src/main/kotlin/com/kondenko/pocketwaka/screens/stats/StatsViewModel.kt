@@ -7,7 +7,7 @@ import com.kondenko.pocketwaka.domain.stats.GetStatsState
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.State
 
-class StatsViewModel(private val range: String, private val getStats: GetStatsState) : ViewModel() {
+class StatsViewModel(private val range: String?, private val getStats: GetStatsState) : ViewModel() {
 
     private val refreshRateMin = 3
 

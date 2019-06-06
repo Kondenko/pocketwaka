@@ -1,11 +1,8 @@
 package com.kondenko.pocketwaka.domain.stats
 
-import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.testutils.testSchedulers
-import com.kondenko.pocketwaka.utils.ColorProvider
-import com.kondenko.pocketwaka.utils.TimeProvider
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.mock
@@ -15,17 +12,11 @@ import org.junit.Test
 
 class FetchStatsTest {
 
-    private val timeProvider: TimeProvider = mock()
-
-    private val colorProvider: ColorProvider = mock()
-
     private val getTokenHeader: GetTokenHeaderValue = mock()
 
     private val statsRepository: StatsRepository = mock()
 
-    private val dateFormatter: DateFormatter = mock()
-
-    private val useCase = FetchStats(testSchedulers, timeProvider, colorProvider, dateFormatter, getTokenHeader, statsRepository)
+    private val useCase = FetchStats(testSchedulers, getTokenHeader, statsRepository)
 
     @Test
     fun `should fetch token first`() {
