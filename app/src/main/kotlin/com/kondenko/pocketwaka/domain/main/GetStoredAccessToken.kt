@@ -4,7 +4,7 @@ import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.utils.Encryptor
-import com.kondenko.pocketwaka.utils.SchedulerContainer
+import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.Single
 
 /**
@@ -13,7 +13,7 @@ import io.reactivex.Single
 
 class GetStoredAccessToken
 (
-        schedulers: SchedulerContainer,
+        schedulers: SchedulersContainer,
         private val accessTokenRepository: AccessTokenRepository,
         private val encryptor: Encryptor
 ) : UseCaseSingle<Nothing, AccessToken>(schedulers) {

@@ -19,7 +19,7 @@
     <string name="stats_header_total">Всего</string>
     <string name="stats_header_daily_average">Сред. в день</string>
     <string name="stats_header_best_day">Лучший день</string>
-    <string name="stats_caption_best_day">активности</string>
+    <string name="stats_caption_best_day">%d%% выше среднего</string>
     <string name="stats_card_header_projects">Проекты</string>
     <string name="stats_card_header_editors">Редакторы</string>
     <string name="stats_card_header_languages">Языки</string>
@@ -39,4 +39,5 @@
     <string name="loginactivity_subtitle_error">Ошибка входа</string>
     <string name="loginactivity_subtitle_loading">Входим в приложение</string>
     <string name="loginactivity_subtitle_error_action">Войти</string>
+    <string name="screen_stats">Статистика</string>
 </resources>

@@ -9,8 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
+import com.kondenko.pocketwaka.utils.getStatusBarHeight
 import com.ogaclejapan.smarttablayout.utils.v4.Bundler
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
@@ -19,8 +24,10 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_stats_container.*
 import timber.log.Timber
+import kotlin.math.roundToInt
 
-class FragmentStats : androidx.fragment.app.Fragment() {
+
+class FragmentStats : Fragment() {
 
     private val refreshEvents = PublishSubject.create<Any>()
 
@@ -30,11 +37,13 @@ class FragmentStats : androidx.fragment.app.Fragment() {
 
     private var refreshSubscription: Disposable? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
-            = inflater.inflate(R.layout.fragment_stats_container, container, false)
+    private var elevatedSurface: View? = null
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_stats_container, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        elevatedSurface = activity?.findViewById(R.id.view_main_elevated_surface)
         val adapter = FragmentPagerItemAdapter(
                 childFragmentManager,
                 FragmentPagerItems.with(activity)
@@ -45,24 +54,28 @@ class FragmentStats : androidx.fragment.app.Fragment() {
                         .create()
         )
         stats_viewpager_content.adapter = adapter
-        stats_smarttablayout_ranges.setViewPager(stats_viewpager_content)
         stats_viewpager_content.post {
             onFragmentSelected(adapter.getPage(stats_viewpager_content.currentItem) as FragmentStatsTab)
         }
-        stats_smarttablayout_ranges.setOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {
-            }
-
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-            }
-
+        stats_smarttablayout_ranges.setViewPager(stats_viewpager_content)
+        stats_smarttablayout_ranges.setOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
-                Timber.i("Selected page $position")
                 val selectedFragment = adapter.getPage(position) as FragmentStatsTab?
-                if (selectedFragment == null) Timber.d("$selectedFragment at position $position is null")
+                if (selectedFragment == null) Timber.e("$selectedFragment at position $position is null")
                 selectedFragment?.let { fragment -> onFragmentSelected(fragment) }
             }
         })
+        stats_smarttablayout_ranges.post {
+            elevatedSurface?.updateLayoutParams {
+                val statusbarHeight: Float = activity?.run {
+                    getStatusBarHeight()?.toFloat()
+                            ?: resources.getDimension(R.dimen.height_all_statusbar_fallback)
+                } ?: view.context.adjustForDensity(24)
+                height = stats_smarttablayout_ranges
+                        .run { bottom + height + statusbarHeight }
+                        .roundToInt()
+            }
+        }
     }
 
     private fun onFragmentSelected(fragment: FragmentStatsTab) {
@@ -72,35 +85,38 @@ class FragmentStats : androidx.fragment.app.Fragment() {
         scrollSubscription?.dispose()
         refreshSubscription = fragment.subscribeToRefreshEvents(refreshEvents)
         scrollSubscription = fragment.scrollDirection().subscribe { scrollDirection ->
-            animateTabs(elevated = scrollDirection === ScrollingDirection.Down)
+            animateTabs(elevated = scrollDirection === ScrollDirection.Down)
         }
     }
 
     private fun animateTabs(elevated: Boolean) {
         areTabsElevated = elevated
         // Tabs background color
-        val colorGray = ContextCompat.getColor(context!!, R.color.color_background_gray)
-        val colorPrimaryLight = ContextCompat.getColor(context!!, android.R.color.white)
-        val colorAnim = ValueAnimator()
-        stats_smarttablayout_ranges.background
-        with(colorAnim) {
-            @Suppress("UsePropertyAccessSyntax")
-            setDuration(Const.DEFAULT_ANIM_DURATION)
-            setIntValues(if (elevated) colorGray else colorPrimaryLight, if (elevated) colorPrimaryLight else colorGray)
-            setEvaluator(ArgbEvaluator())
-            addUpdateListener { valueAnimator ->
-                stats_smarttablayout_ranges.setBackgroundColor(valueAnimator.animatedValue as Int)
+        @Suppress("UsePropertyAccessSyntax")
+        elevatedSurface?.let {
+            val colorResting = ContextCompat.getColor(context!!, R.color.color_app_bar_resting)
+            val colorElevated = ContextCompat.getColor(context!!, R.color.color_app_bar_elevated)
+            val colorAnim = ValueAnimator()
+            with(colorAnim) {
+                setDuration(Const.DEFAULT_ANIM_DURATION)
+                setIntValues(if (elevated) colorResting else colorElevated, if (elevated) colorElevated else colorResting)
+                setEvaluator(ArgbEvaluator())
+                addUpdateListener { valueAnimator ->
+                    it.setBackgroundColor(valueAnimator.animatedValue as Int)
+                }
+                start()
             }
-            start()
+            // Custom tabs elevation
+            stats_view_shadow.animate().alpha(if (elevated) Const.MAX_SHADOW_OPACITY else 0f).start()
         }
-        // Custom tabs elevation
-        stats_view_shadow.animate().alpha(if (elevated) Const.MAX_SHADOW_OPACITY else 0f).start()
     }
 
     fun subscribeToRefreshEvents(refreshEvents: Observable<Any>) {
         refreshEvents.subscribeWith(this.refreshEvents)
     }
 
-    private fun FragmentPagerItems.Creator.addFragment(@StringRes title: Int, range: String) = this.add(title, FragmentStatsTab::class.java, Bundler().putString(FragmentStatsTab.ARG_RANGE, range).get())
+    private fun FragmentPagerItems.Creator.addFragment(@StringRes title: Int, range: String): FragmentPagerItems.Creator {
+        return this.add(title, FragmentStatsTab::class.java, Bundler().putString(FragmentStatsTab.ARG_RANGE, range).get())
+    }
 
 }

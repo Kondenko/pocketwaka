@@ -6,20 +6,30 @@
     <color name="color_accent">#2595ff</color>
     <color name="color_background_gray">#F5F9FF</color>
 
+    <color name="color_app_bar_resting">@color/color_background_gray</color>
+    <color name="color_app_bar_elevated">@android:color/white</color>
+
     <color name="color_tab_text_default">@color/color_primary</color>
+
+    <color name="color_skeleton_text">#1435434F</color>
+
+    <color name="color_all_divider">#1F000000</color>
 
     <color name="color_text_black_primary">#DD000000</color>
     <color name="color_text_black_secondary">#89000000</color>
     <color name="color_text_white_primary">#FFFFFF</color>
     <color name="color_text_error">#FF001F</color>
 
+    <color name="color_stats_item_light">#E6FFFFFF</color>
+    <color name="color_stats_item_dark">#BF35434F</color>
+
     <array name="chart_colors">
         <!--<item name="chart_blue">#4da2db</item>-->
-        <item name="chart_blue">@color/color_accent</item>
-        <item name="chart_red">#ff6a59</item>
-        <item name="chart_yellow">#f2ef55</item>
+        <item name="chart_blue">#FA5757</item>
+        <item name="chart_red">#5E8DDF</item>
+        <item name="chart_yellow">#FFB736</item>
         <item name="chart_purple">#9b59b6</item>
-        <item name="chart_green">#59ff9e</item>
+        <item name="chart_green">#4ACF81</item>
         <item name="chart_orange">#ff8859</item>
     </array>
 

@@ -33,7 +33,7 @@ class RefreshAccessTokenTest {
 
     private val getAppSecret: GetAppSecret = mock()
 
-    private val usecase = RefreshAccessToken(testSchedulers, timeProvider, encryptor, accessTokenRepository, getStoredAccessToken, getAppId, getAppSecret)
+    private val useCase = RefreshAccessToken(testSchedulers, timeProvider, encryptor, accessTokenRepository, getStoredAccessToken, getAppId, getAppSecret)
 
     lateinit var token: AccessToken
 
@@ -65,7 +65,7 @@ class RefreshAccessTokenTest {
         whenever(timeProvider.getCurrentTimeSec()).doReturn(currentTime)
         whenever(token.isValid(currentTime)).doReturn(true)
 
-        val single = usecase.execute()
+        val single = useCase.execute()
         verifyNoMoreInteractions(getAppId)
         verifyNoMoreInteractions(getAppSecret)
         verifyNoMoreInteractions(accessTokenRepository)
@@ -97,7 +97,7 @@ class RefreshAccessTokenTest {
         whenever(encryptor.encryptToken(newToken)).doReturn(encryptedNewToken)
         whenever(accessTokenRepository.getRefreshedAccessToken(eq(appId), eq(appSecret), anyString(), anyString(), eq(refreshToken))).doReturn(newToken.toSingle())
 
-        val single = usecase.execute()
+        val single = useCase.execute()
 
         verify(getAppId).build()
         verify(getAppSecret).build()

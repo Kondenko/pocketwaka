@@ -1,9 +1,11 @@
 <resources>
+
     <string name="all_app_name" translatable="false">PocketWaka</string>
+
+    <string name="screen_stats">Your stats</string>
 
     <string name="main_action_logout">Log out</string>
     <string name="main_action_refresh">Refresh</string>
-
 
     <string name="error_refreshing_token">Please log in again</string>
 
@@ -33,7 +35,7 @@
     <string name="stats_header_total">Total</string>
     <string name="stats_header_daily_average">Daily average</string>
     <string name="stats_header_best_day">Best day</string>
-    <string name="stats_caption_best_day">of coding activity</string>
+    <string name="stats_caption_best_day">%d%% greater than your average</string>
 
     <string name="stats_card_header_projects">Projects</string>
     <string name="stats_card_header_editors">Editors</string>
@@ -49,7 +51,6 @@
         <item quantity="one">%d min</item>
         <item quantity="other">%d mins</item>
     </plurals>
-
 
     <string name="stats_card_less_than_1_percent" formatted="false" translatable="false">&lt; 1%</string>
     <string name="stats_card_percent_format_int" formatted="false" translatable="false">%.0f%%</string>

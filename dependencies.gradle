@@ -20,7 +20,8 @@ ext {
     ]
 
     archComponents = [
-            "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
+            "androidx.lifecycle:lifecycle-extensions-ktx:${versions.lifecycle}",
+            "androidx.lifecycle:lifecycle-reactivestreams-ktx:${versions.lifecycle}",
     ]
 
     rx = [
@@ -43,7 +44,8 @@ ext {
 
     koin = [
             "org.koin:koin-core:${versions.koin}",
-            "org.koin:koin-android:${versions.koin}"
+            "org.koin:koin-android:${versions.koin}",
+            "org.koin:koin-androidx-viewmodel:${versions.koin}"
     ]
 
     constraintLayout = "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
@@ -57,6 +59,7 @@ ext {
     crashlyticsGoogle = "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
 
     testingDependencies = [
+            "androidx.test:core:${versions.androidxTest}",
             "org.koin:koin-test:${versions.koin}",
             "junit:junit:${versions.junit}",
             "org.mockito:mockito-core:${versions.mockito}",
@@ -67,7 +70,7 @@ ext {
     androidTestingDependencies = [
             "androidx.annotation:annotation:${versions.androidx}",
             "androidx.test:runner:${versions.androidxTest}",
-            "androidx.test:rules:${versions.androidxTest}"
+            "androidx.test:rules:${versions.androidxTest}",
     ]
 
     androidTestingSupportDependencies = [

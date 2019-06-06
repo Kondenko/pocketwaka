@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".screens.base.stateful.states.FragmentErrorState"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
+
+    <ImageView
+        android:id="@+id/imageview_emptystate_image"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:adjustViewBounds="true"
+        android:cropToPadding="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/state_empty_img" />
+
+    <TextView
+        android:id="@+id/textview_emptystate_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/empty_state_title"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.App.State.Any.Title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageview_emptystate_image" />
+
+    <TextView
+        android:id="@+id/textview_emptystate_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/empty_state_subtitle"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.App.State.Any.Subtitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_emptystate_title" />
+
+    <TextView
+        android:id="@+id/textview_emptystate_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="@string/empty_state_text"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.App.State.Any.Text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_emptystate_subtitle" />
+
+
+    <Button
+        android:id="@+id/button_emptystate_plugins"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="192dp"
+        android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/state_empty_ic_open_plugins_white_24dp"
+        android:text="@string/empty_state_action"
+        android:textColor="@color/color_text_white_primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_emptystate_text"
+        app:layout_constraintVertical_bias="0.506">
+
+    </Button>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

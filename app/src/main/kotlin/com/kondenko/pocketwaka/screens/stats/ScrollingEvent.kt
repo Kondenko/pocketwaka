@@ -1,6 +1,6 @@
 package com.kondenko.pocketwaka.screens.stats
 
-sealed class ScrollingDirection {
-    object Up : ScrollingDirection()
-    object Down: ScrollingDirection()
+sealed class ScrollDirection {
+    object Up : ScrollDirection()
+    object Down: ScrollDirection()
 }

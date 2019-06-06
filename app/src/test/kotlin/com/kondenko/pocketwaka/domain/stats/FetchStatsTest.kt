@@ -1,0 +1,41 @@
+package com.kondenko.pocketwaka.domain.stats
+
+import com.kondenko.pocketwaka.data.android.DateFormatter
+import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
+import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
+import com.kondenko.pocketwaka.testutils.testSchedulers
+import com.kondenko.pocketwaka.utils.ColorProvider
+import com.kondenko.pocketwaka.utils.TimeProvider
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.inOrder
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
+import io.reactivex.rxkotlin.toSingle
+import org.junit.Test
+
+class FetchStatsTest {
+
+    private val timeProvider: TimeProvider = mock()
+
+    private val colorProvider: ColorProvider = mock()
+
+    private val getTokenHeader: GetTokenHeaderValue = mock()
+
+    private val statsRepository: StatsRepository = mock()
+
+    private val dateFormatter: DateFormatter = mock()
+
+    private val useCase = FetchStats(testSchedulers, timeProvider, colorProvider, dateFormatter, getTokenHeader, statsRepository)
+
+    @Test
+    fun `should fetch token first`() {
+        val header = "foo"
+        val range = "bar"
+        whenever(getTokenHeader.build()).doReturn(header.toSingle())
+        useCase.execute(range)
+        val order = inOrder(getTokenHeader, statsRepository)
+        order.verify(getTokenHeader).build()
+        order.verify(statsRepository).getStats(header, range)
+    }
+
+}

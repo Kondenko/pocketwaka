@@ -1,3 +1,3 @@
 package com.kondenko.pocketwaka.data.stats.model
 
-class Project : StatsItem()
+class Project : StatsItemDto()

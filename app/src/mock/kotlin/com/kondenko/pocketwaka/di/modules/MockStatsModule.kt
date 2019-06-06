@@ -6,7 +6,7 @@ import com.kondenko.pocketwaka.data.stats.service.StatsService
 import org.koin.dsl.module.applicationContext
 
 object MockStatsModule {
-    fun create(context: Context) = applicationContext {
-        bean { MockStatsService(context, get()) as StatsService }
+    fun create(context: Context) = module {
+        single { MockStatsService(context, get()) as StatsService }
     }
 }

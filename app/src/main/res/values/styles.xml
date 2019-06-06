@@ -1,5 +1,11 @@
 <resources>
 
+    <style name="App.CardView.Light" parent="CardView.Light">
+        <item name="android:padding">@dimen/padding_all_card_inner</item>
+    </style>
+
+    <!-- Text -->
+
     <style name="TextAppearance.App.Login.Subhead" parent="TextAppearance.AppCompat.Subhead">
         <item name="android:textColor">@color/color_primary_dark</item>
         <item name="android:textAlignment">center</item>
@@ -12,7 +18,6 @@
         <item name="android:textAlignment">center</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
-
 
     <style name="TextAppearance.App.State.Any.Title" parent="TextAppearance.AppCompat.Display1">
         <item name="android:textColor">?android:attr/textColorSecondary</item>
@@ -28,16 +33,16 @@
     </style>
 
     <style name="TextAppearance.App.Stats.Header" parent="TextAppearance.AppCompat">
-        <item name="android:gravity">center</item>
+        <item name="android:gravity">start</item>
         <item name="android:textColor">@color/color_accent</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">@dimen/textsize_stats_header</item>
     </style>
 
-    <style name="TextAppearance.App.Stats.TotalInfo" parent="TextAppearance.AppCompat">
+    <style name="TextAppearance.App.Stats.Time" parent="TextAppearance.AppCompat">
         <item name="android:gravity">center</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/color_text_black_primary</item>
-        <item name="android:textSize">@dimen/textsize_stats_info</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.05</item>
     </style>
 
     <style name="TextAppearance.App.Stats.BestDay.Date" parent="TextAppearance.AppCompat">
@@ -46,9 +51,8 @@
         <item name="android:textSize">@dimen/textsize_stats_bestday_date</item>
     </style>
 
-    <style name="TextAppearance.App.Stats.BestDay.Time" parent="TextAppearance.AppCompat">
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/color_text_black_primary</item>
+    <style name="TextAppearance.App.Stats.BestDay.Time" parent="TextAppearance.App.Stats.Time">
+        <item name="android:gravity">start</item>
         <item name="android:textSize">@dimen/textsize_stats_bestday_time</item>
     </style>
 

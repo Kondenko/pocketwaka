@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="OneLineSegmentedChart">
-        <attr name="bar_width" format="dimension"/>
-        <attr name="corner_radius" format="dimension"/>
+        <attr name="bar_width" format="dimension" />
+        <attr name="corner_radius" format="dimension" />
         <attr name="sort_descending" format="boolean" />
     </declare-styleable>
     <declare-styleable name="LoadingView">
-        <attr name="dots_number" format="integer"/>
-        <attr name="dot_drawable" format="reference"/>
-        <attr name="dot_margin" format="integer"/>
+        <attr name="dots_number" format="integer" />
+        <attr name="dot_drawable" format="reference" />
+        <attr name="dot_margin" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="View">
+        <attr name="has_skeleton" format="boolean" />
     </declare-styleable>
 </resources>

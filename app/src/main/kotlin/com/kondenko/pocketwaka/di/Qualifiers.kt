@@ -1,8 +1,10 @@
 package com.kondenko.pocketwaka.di
 
-const val Ui = "ui"
-const val Worker = "worker"
+import org.koin.core.qualifier.StringQualifier
 
-const val Api = "api"
-const val Auth = "auth"
+val Ui = StringQualifier("ui")
+val Worker = StringQualifier("worker")
+
+val Api = StringQualifier("api")
+val Auth = StringQualifier("auth")
 

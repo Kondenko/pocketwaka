@@ -1,6 +1,7 @@
 package com.kondenko.pocketwaka.utils
 
 import android.content.Context
+import com.kondenko.pocketwaka.utils.extensions.isConnectionAvailable
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -16,7 +17,7 @@ class CacheInterceptor(val context: Context) : Interceptor {
         if (request.method() == "GET") {
             val name = "Cache-Control"
             val value: String
-            value = if (isConnectionAvailable(context)) {
+            value = if (context.isConnectionAvailable()) {
                 "public, max-age=$MAX_AGE"
             } else {
                 val maxStale = 60 * 60 * 24 * DAYS_VALID

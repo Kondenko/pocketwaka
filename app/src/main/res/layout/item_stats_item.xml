@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintlayout_item_stats_card_root"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/height_stats_card_item"
+    android:paddingTop="@dimen/margin_card_stats_item_vertical"
+    android:paddingBottom="@dimen/margin_card_stats_item_vertical">
+
+    <com.kondenko.pocketwaka.ui.SquircleProgressBar
+        android:id="@+id/progressbar_stats_item_percentage"
+        android:layout_width="0dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textview_stats_item_percent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textview_stats_item_percent"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="viewStart"
+        app:layout_constraintBottom_toBottomOf="@+id/textview_stats_item_name"
+        app:layout_constraintEnd_toStartOf="@+id/progressbar_stats_item_percentage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textview_stats_item_name"
+        tools:text="100%">
+
+        <tag
+            android:id="@id/tag_skeleton_width_key"
+            android:value="@integer/width_stats_skeleton_text_card_percent" />
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/textview_stats_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:lines="1"
+        android:paddingStart="@dimen/margin_card_stats_label_horizontal"
+        android:paddingEnd="@dimen/margin_card_stats_label_horizontal"
+        android:paddingBottom="@dimen/margin_card_stats_label_bottom"
+        android:textColor="@color/color_stats_item_light"
+        app:layout_constraintBottom_toBottomOf="@+id/progressbar_stats_item_percentage"
+        app:layout_constraintEnd_toEndOf="@+id/progressbar_stats_item_percentage"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textview_stats_item_percent"
+        app:layout_constraintTop_toTopOf="@+id/progressbar_stats_item_percentage"
+        tools:text="PocketWaka">
+
+        <tag android:id="@id/tag_skeleton_width_key"
+            android:value="@integer/width_all_skeleton_text_match_parent"/>
+
+    </TextView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

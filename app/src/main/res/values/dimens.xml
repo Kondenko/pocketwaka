@@ -1,5 +1,7 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="height_all_statusbar_fallback">24dp</dimen>
+
     <dimen name="margin_all_vertical_small">8dp</dimen>
 
     <dimen name="margin_all_card_inner">8dp</dimen>
@@ -8,27 +10,47 @@
 
     <dimen name="height_all_button">36dp</dimen>
 
+    <dimen name="width_all_divider_vertical">1dp</dimen>
+
+    <dimen name="height_all_skeleton_text">11dp</dimen>
+    <item name="width_all_skeleton_text_match_parent" type="integer">-1</item>
+
+    <dimen name="padding_all_card_inner">16dp</dimen>
+
+
     <!--Login-->
     <dimen name="size_login_loading_dot">6dp</dimen>
     <dimen name="padding_login_loading_view_side">30dp</dimen>
     <dimen name="margin_login_loading_view_dot">2dp</dimen>
 
     <!--Stats-->
+
+    <item name="width_stats_skeleton_text_info" type="integer">88</item>
+    <item name="width_stats_skeleton_text_best_day_date" type="integer">88</item>
+    <item name="width_stats_skeleton_text_best_day_time" type="integer">112</item>
+    <item name="width_stats_skeleton_text_best_day_caption" type="integer">156</item>
+    <item name="width_stats_skeleton_text_card_title" type="integer">64</item>
+    <item name="width_stats_skeleton_text_card_percent" type="integer">28</item>
+
+    <dimen name="margin_stats_card_horizontal">8dp</dimen>
+    <dimen name="margin_stats_card_vertical">4dp</dimen>
+
     <dimen name="textsize_stats_header">16sp</dimen>
-    <dimen name="textsize_stats_info">20sp</dimen> <!-- Total and average time -->
+    <dimen name="textsize_stats_info_number">25sp</dimen> <!-- Total and average time -->
+    <dimen name="textsize_stats_info_text">14sp</dimen>
 
     <dimen name="height_stats_tab_bar">56dp</dimen>
     <dimen name="width_stats_tab_min">110dp</dimen>
 
-    <dimen name="height_stats_tab_indicator">36dp</dimen>
+    <dimen name="height_stats_tab_indicator">4dp</dimen>
     <dimen name="width_stats_tab_indicator">90dp</dimen>
 
     <dimen name="textsize_stats_tabs">14dp</dimen>
 
-    <dimen name="height_stats_shadow">4dp</dimen>
+    <dimen name="height_stats_shadow">6dp</dimen>
 
     <dimen name="height_stats_bestday">112dp</dimen>
-    <item name="alpha_stats_bestday_img" format="float" type="dimen">0.6</item>
+    <dimen name="padding_stats_bestday_vertical">16dp</dimen>
 
     <dimen name="textsize_stats_bestday_date">16sp</dimen>
     <dimen name="textsize_stats_bestday_time">24sp</dimen>
@@ -36,13 +58,11 @@
 
     <dimen name="elevation_stats_bestday">2dp</dimen>
 
-    <dimen name="padding_stats_card_inner">16dp</dimen>
-    <dimen name="card_stats_bar_height">16dp</dimen>
-    <dimen name="card_stats_bar_corner_radius">90dp</dimen>
-    <dimen name="card_stats_bar_margin_top">16dp</dimen>
-    <dimen name="card_stats_bar_margin_bottom">8dp</dimen>
+    <dimen name="margin_card_stats_item_vertical">4dp</dimen>
+    <dimen name="margin_card_stats_label_horizontal">8dp</dimen>
+    <dimen name="margin_card_stats_label_bottom">1dp</dimen>
 
-    <dimen name="height_stats_card_item">48dp</dimen>
+    <dimen name="height_stats_card_item">40dp</dimen>
     <dimen name="padding_left_stats_card_item_text">30dp</dimen>
     <dimen name="padding_right_stats_card_item_text">16dp</dimen>
     <dimen name="size_stats_card_item_label">18dp</dimen>

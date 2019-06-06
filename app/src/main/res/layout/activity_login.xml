@@ -68,6 +68,6 @@
         app:layout_constraintEnd_toEndOf="@+id/animationView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/animationView"
-        app:srcCompat="@drawable/img_logo" />
+        app:srcCompat="@drawable/login_img_logo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,7 +5,7 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.utils.adjustForDensity
+import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import java.util.*
 
 /**

@@ -3,13 +3,13 @@ package com.kondenko.pocketwaka.domain.auth
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.utils.Encryptor
-import com.kondenko.pocketwaka.utils.SchedulerContainer
+import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.Single
 
 
 class GetTokenHeaderValue
 (
-        schedulers: SchedulerContainer,
+        schedulers: SchedulersContainer,
         private val encryptor: Encryptor,
         private val accessTokenRepository: AccessTokenRepository
 ) : UseCaseSingle<Nothing, String>(schedulers) {
