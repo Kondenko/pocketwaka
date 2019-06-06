@@ -84,7 +84,7 @@ class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : 
                 R.id.textview_bestday_time -> {
                     v.translationY += 3f.adjustValue(isSkeleton)
                 }
-                R.id.textview_stats_item -> {
+                R.id.textview_stats_item_name -> {
                     v.translationX += 8f.adjustValue(isSkeleton)
                 }
                 R.id.textview_stats_card_title -> {

@@ -34,19 +34,21 @@ class CardStatsListAdapter(private val context: Context, private val items: List
                     if (item.percent != null) setPercent(item.percent)
                     else if (!isSkeleton) setInvisible()
                 }
-                textview_stats_item.text = item.name
-                progressbar_stats_item.color = item.color
-                progressbar_stats_item.progress = (item.percent?.toFloat() ?: 0f) / 100
-                // Add text label
+                textview_stats_item_name.text = item.name
+                progressbar_stats_item_percentage.color = item.color
+                progressbar_stats_item_percentage.progress = (item.percent?.toFloat() ?: 0f) / 100
+                // Setup the project name label
                 post {
-                    val isTextWiderThanProgress = progressbar_stats_item.progressBarWidth <= textview_stats_item.width
+                    val isTextWiderThanProgress = progressbar_stats_item_percentage.progressBarWidth <= textview_stats_item_name.width
                     if (isTextWiderThanProgress && !isSkeleton) {
-                        textview_stats_item.width = (progressbar_stats_item.width - progressbar_stats_item.progressBarWidth).toInt()
-                        textview_stats_item.setTextColor(ContextCompat.getColor(context, R.color.color_stats_item_dark))
-                        textview_stats_item.x += progressbar_stats_item.progressBarWidth
+                        textview_stats_item_name.updateLayoutParams {
+                            width = (progressbar_stats_item_percentage.width - progressbar_stats_item_percentage.progressBarWidth).toInt()
+                        }
+                        textview_stats_item_name.setTextColor(ContextCompat.getColor(context, R.color.color_stats_item_dark))
+                        textview_stats_item_name.x += progressbar_stats_item_percentage.progressBarWidth
                     } else {
-                        textview_stats_item.updateLayoutParams {
-                            width = progressbar_stats_item.width
+                        textview_stats_item_name.updateLayoutParams {
+                            width = progressbar_stats_item_percentage.width
                         }
                     }
                 }
