@@ -110,13 +110,6 @@ class StatsRepositoryTest {
         }
     }
 
-    /**
-     * Good news: the repository works as expected
-     * Bad news: in case of a network error and empty cache
-     * the network error won't go down the stream
-     *
-     * TODO Prioritize the network error in the stream
-     */
     @Test
     fun `should return an error when no data is loaded`() {
         val error = TestException()

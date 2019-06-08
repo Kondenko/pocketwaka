@@ -34,37 +34,34 @@ class StatsRepository(
 
     fun getStats(tokenHeader: String, range: String): Observable<StatsDto> {
         val cache = getStatsFromCache(range)
-        val server = getStatsFromServer(tokenHeader, range).onErrorResumeNext(cache)
-        return Observable.concatDelayError(listOf(cache, server)).distinctUntilChanged()
+        val server = getStatsFromServer(tokenHeader, range)
+                .onErrorResumeNext { error: Throwable ->
+                    // Pass the network error down the stream if cache is empty
+                    cache.switchIfEmpty(Maybe.error(error)).toObservable()
+                }
+        return Observable.concatDelayError(listOf(cache.toObservable(), server))
+                .distinctUntilChanged()
     }
 
 
     private fun cacheStats(stats: StatsDto) = dao.cacheStats(stats)
 
-    private fun getStatsFromCache(range: String): Observable<StatsDto> =
+    private fun getStatsFromCache(range: String): Maybe<StatsDto> =
             dao.getCachedStats(range)
                     .doOnSuccess { Timber.d("Loaded stats from cache: $range") }
-                    .switchIfEmpty(Maybe.error(NullPointerException("No cached data")))
-                    .toObservable()
 
     private fun getStatsFromServer(tokenHeader: String, range: String): Observable<StatsDto> =
             service.getCurrentUserStats(tokenHeader, range)
-                    .doOnSuccess {
-                        Timber.d("Loaded stats from the server: $range")
-                    }
+                    .doOnSuccess { Timber.d("Loaded stats from the server: $range") }
                     .flatMapObservable {
                         if (it.stats != null) Observable.just(toDomainModel(range, it.stats, timeProvider.getCurrentTimeMillis()))
                         else Observable.error(NullPointerException("Stats are null"))
                     }
-                    .doOnNext { println("Downloading on thread: ${Thread.currentThread().name}") }
                     .doOnNext {
-                        cacheStats(it)
-                                .doOnDispose { println("cacheStats() disposed") }
-                                .doOnEvent { println("Caching on thread: ${Thread.currentThread().name}") }
-                                .subscribeBy(
-                                        onComplete = { Timber.d("Stats cached: $range") },
-                                        onError = { Timber.w(it, "Failed to cache stats: $range") }
-                                )
+                        cacheStats(it).subscribeBy(
+                                onComplete = { Timber.d("Stats cached: $range") },
+                                onError = { Timber.w(it, "Failed to cache stats: $range") }
+                        )
                     }
 
     private fun toDomainModel(range: String, stats: Stats, dateUpdated: Long): StatsDto {
