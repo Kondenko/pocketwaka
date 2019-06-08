@@ -2,7 +2,6 @@ package com.kondenko.pocketwaka.di.modules
 
 import android.content.Context
 import com.kondenko.pocketwaka.data.android.DateFormatter
-import com.kondenko.pocketwaka.data.stats.dao.StatsDao
 import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
 import com.kondenko.pocketwaka.data.stats.service.StatsService
 import com.kondenko.pocketwaka.di.Api
@@ -25,7 +24,7 @@ object StatsModule {
         single { StatsRepository(
                 context = context,
                 service = get(),
-                dao = get<StatsDao>(),
+                dao = get(),
                 colorProvider = get(),
                 dateFormatter = get(),
                 timeProvider = get()
@@ -41,6 +40,7 @@ object StatsModule {
         factory {
             FetchStats(
                     schedulers = get(),
+                    disposables = get(),
                     getTokenHeader = get() as GetTokenHeaderValue,
                     statsRepository = get()
             )

@@ -11,7 +11,7 @@ import io.reactivex.rxkotlin.toSingle
 
 class GetSkeletonPlaceholderData(schedulers: SchedulersContainer) : UseCaseSingle<Nothing, List<StatsModel>>(schedulers) {
 
-    private val skeletonStatsCard = mutableListOf(StatsItem(null, null, null, null)) * 3
+    private val skeletonStatsCard = mutableListOf(StatsItem("", null, null, null)) * 3
 
     override fun build(params: Nothing?): Single<List<StatsModel>> = listOf(
             StatsModel.Info(null, null),

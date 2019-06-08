@@ -101,11 +101,12 @@ class RefreshAccessTokenTest {
 
         verify(getAppId).build()
         verify(getAppSecret).build()
-        val inOrder = inOrder(accessTokenRepository, encryptor)
-        inOrder.verify(accessTokenRepository).getRefreshToken()
-        inOrder.verify(accessTokenRepository).getRefreshedAccessToken(eq(appId), eq(appSecret), anyString(), anyString(), eq(refreshToken))
-        inOrder.verify(encryptor).encryptToken(newToken)
-        inOrder.verify(accessTokenRepository).saveToken(encryptedNewToken, currentTime)
+        inOrder(accessTokenRepository, encryptor) {
+            verify(accessTokenRepository).getRefreshToken()
+            verify(accessTokenRepository).getRefreshedAccessToken(eq(appId), eq(appSecret), anyString(), anyString(), eq(refreshToken))
+            verify(encryptor).encryptToken(newToken)
+            verify(accessTokenRepository).saveToken(encryptedNewToken, currentTime)
+        }
 
         with(single.test()) {
             assertSubscribed()

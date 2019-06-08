@@ -17,7 +17,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
-import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 
 object NetModule {
@@ -36,7 +36,7 @@ object NetModule {
         single { CacheInterceptor(appContext) }
         single {
             OkHttpClient.Builder()
-                    .readTimeout(Duration.ofSeconds(10))
+                    .readTimeout(15, TimeUnit.SECONDS)
                     .cache(get())
                     .addInterceptor(get() as CacheInterceptor)
                     .build()

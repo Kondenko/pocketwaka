@@ -2,6 +2,7 @@ package com.kondenko.pocketwaka.data.stats.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.kondenko.pocketwaka.data.stats.dto.StatsDto
 import io.reactivex.Completable
@@ -13,7 +14,7 @@ interface StatsDao {
     @Query("SELECT * FROM stats_cache WHERE range == :range")
     fun getCachedStats(range: String): Maybe<StatsDto>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun cacheStats(stats: StatsDto): Completable
 
     @Query("DELETE FROM stats_cache")

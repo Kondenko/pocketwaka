@@ -12,7 +12,10 @@ import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.TimeProvider
 import com.kondenko.pocketwaka.utils.notNull
+import io.reactivex.Maybe
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.subscribeBy
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
@@ -29,25 +32,42 @@ class StatsRepository(
         Editors, Languages, Projects, OperatingSystems
     }
 
-    fun getStats(tokenHeader: String, range: String, onLoadedFromServer: ((StatsDto) -> Unit)? = null): Observable<StatsDto> {
+    fun getStats(tokenHeader: String, range: String): Observable<StatsDto> {
         val cache = getStatsFromCache(range)
-        val server = getStatsFromServer(tokenHeader, range)
-        return cache.concatWith(server)
+        val server = getStatsFromServer(tokenHeader, range).onErrorResumeNext(cache)
+        return Observable.concatDelayError(listOf(cache, server)).distinctUntilChanged()
     }
 
 
-    fun cacheStats(stats: StatsDto) = dao.cacheStats(stats)
+    private fun cacheStats(stats: StatsDto) = dao.cacheStats(stats)
 
-    private fun getStatsFromCache(range: String): Observable<StatsDto> = dao.getCachedStats(range).toObservable()
+    private fun getStatsFromCache(range: String): Observable<StatsDto> =
+            dao.getCachedStats(range)
+                    .doOnSuccess { Timber.d("Loaded stats from cache: $range") }
+                    .switchIfEmpty(Maybe.error(NullPointerException("No cached data")))
+                    .toObservable()
 
     private fun getStatsFromServer(tokenHeader: String, range: String): Observable<StatsDto> =
             service.getCurrentUserStats(tokenHeader, range)
+                    .doOnSuccess {
+                        Timber.d("Loaded stats from the server: $range")
+                    }
                     .flatMapObservable {
                         if (it.stats != null) Observable.just(toDomainModel(range, it.stats, timeProvider.getCurrentTimeMillis()))
                         else Observable.error(NullPointerException("Stats are null"))
                     }
+                    .doOnNext { println("Downloading on thread: ${Thread.currentThread().name}") }
+                    .doOnNext {
+                        cacheStats(it)
+                                .doOnDispose { println("cacheStats() disposed") }
+                                .doOnEvent { println("Caching on thread: ${Thread.currentThread().name}") }
+                                .subscribeBy(
+                                        onComplete = { Timber.d("Stats cached: $range") },
+                                        onError = { Timber.w(it, "Failed to cache stats: $range") }
+                                )
+                    }
 
-    protected fun toDomainModel(range: String, stats: Stats, dateUpdated: Long): StatsDto {
+    private fun toDomainModel(range: String, stats: Stats, dateUpdated: Long): StatsDto {
         operator fun MutableList<StatsModel>.plusAssign(item: StatsModel?) {
             item?.let(this::add)
         }
@@ -74,6 +94,13 @@ class StatsRepository(
         return StatsDto(range, timeProvider.getCurrentTimeMillis(), list)
     }
 
+    private fun List<com.kondenko.pocketwaka.data.stats.model.StatsItem>?.toDomainModel(statsType: StatsType): StatsModel.Stats? {
+        val items = this?.filter { it.name != null }?.map { StatsItem(it.name!!, it.hours, it.minutes, it.percent) }
+        return items
+                ?.zip(colorProvider.provideColors(items)) { item, color -> item.copy(color = color) }
+                ?.let { StatsModel.Stats(getCardTitle(statsType), it) }
+    }
+
     private fun Stats.convertBestDay(dailyAverageSec: Int?): StatsModel.BestDay? = bestDay?.let { bestDay ->
         val date = bestDay.date?.let(dateFormatter::reformatBestDayDate)
         val timeSec = bestDay.totalSeconds?.roundToLong()
@@ -89,13 +116,6 @@ class StatsRepository(
     private fun calculatePercentAboveAverage(bestDayTotalSec: Long?, dailyAverageSec: Int?): Int? {
         if (bestDayTotalSec == null || dailyAverageSec == null) return null
         return (bestDayTotalSec * 100 / dailyAverageSec - 100).toInt()
-    }
-
-    private fun List<com.kondenko.pocketwaka.data.stats.model.StatsItem>?.toDomainModel(statsType: StatsRepository.StatsType): StatsModel.Stats? {
-        val items = this?.map { StatsItem(it.hours, it.minutes, it.name, it.percent) }
-        return items
-                ?.zip(colorProvider.provideColors(items)) { item, color -> item.copy(color = color) }
-                ?.let { StatsModel.Stats(getCardTitle(statsType), it) }
     }
 
     private fun Long.secondsToHumanReadableTime(): String {
