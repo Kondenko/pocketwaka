@@ -1,3 +1,3 @@
 package com.kondenko.pocketwaka.testutils
 
-class TestException : Exception()
+class TestException(message: String? = null) : Exception(message)

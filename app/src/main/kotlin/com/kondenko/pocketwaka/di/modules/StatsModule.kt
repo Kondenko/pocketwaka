@@ -49,7 +49,8 @@ object StatsModule {
             GetStatsState(
                     schedulers = get(),
                     getSkeletonPlaceholderData = get(),
-                    fetchStats = get()
+                    fetchStats = get(),
+                    connectivityStatusProvider = get()
             )
         }
         viewModel { (range: String?) -> StatsViewModel(range, get() as GetStatsState) }
