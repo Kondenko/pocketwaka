@@ -33,12 +33,11 @@ class GetStatsState(
                      */
                     initialDelay.map { state }
                 }
-        val data = Observable.interval(0, params.refreshRateMin.toLong(), TimeUnit.MINUTES, schedulers.workerScheduler)
-                .flatMap {
-                    fetchStats.build(params.range)
-                            .map<State<List<StatsModel>>> { State.Success(it) }
-                }
-        return Observable.concat(loading, data)
+        val stats = fetchStats.build(params.range)
+                .map<State<List<StatsModel>>> { State.Success(it) }
+        val interval = Observable.interval(0, params.refreshRateMin.toLong(), TimeUnit.MINUTES, schedulers.workerScheduler)
+                .flatMap { stats }
+        return Observable.concat(loading, interval)
                 .onErrorReturn { State.Failure(ErrorType.Unknown(it)) }
     }
 

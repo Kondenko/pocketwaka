@@ -2,15 +2,23 @@ package com.kondenko.pocketwaka.domain.stats
 
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.State
+import com.kondenko.pocketwaka.testutils.RxRule
 import com.kondenko.pocketwaka.utils.SchedulersContainer
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.inOrder
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.TestScheduler
+import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.TimeUnit
 
 class GetStatsStateTest {
+
+    @get:Rule
+    val rxRule = RxRule()
 
     private val testScheduler = TestScheduler()
 
@@ -30,13 +38,12 @@ class GetStatsStateTest {
         whenever(getSkeletonPlaceholderData.build()).doReturn(Single.just(skeletonModel))
         whenever(fetchStats.build(params.range)).doReturn(Observable.just(actualModel))
 
-        val observable = getState.execute(params)
-        val testObserver = observable.test()
+        val testObserver = getState.execute(params).test()
 
         inOrder(getSkeletonPlaceholderData, fetchStats) {
             testScheduler.triggerActions()
             verify(getSkeletonPlaceholderData).build()
-            verify(fetchStats, times(2)).build(params.range)
+            verify(fetchStats).build(params.range)
             verifyNoMoreInteractions()
         }
 
