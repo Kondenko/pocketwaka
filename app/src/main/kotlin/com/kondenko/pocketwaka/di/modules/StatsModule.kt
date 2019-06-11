@@ -40,7 +40,6 @@ object StatsModule {
         factory {
             FetchStats(
                     schedulers = get(),
-                    disposables = get(),
                     getTokenHeader = get() as GetTokenHeaderValue,
                     statsRepository = get()
             )

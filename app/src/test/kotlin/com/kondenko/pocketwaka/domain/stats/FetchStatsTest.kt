@@ -17,7 +17,7 @@ class FetchStatsTest {
 
     private val statsRepository: StatsRepository = mock()
 
-    private val useCase = FetchStats(testSchedulers, mock(), getTokenHeader, statsRepository)
+    private val useCase = FetchStats(testSchedulers, getTokenHeader, statsRepository)
 
     private val header = "foo"
 
