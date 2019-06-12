@@ -9,7 +9,6 @@ import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.extensions.testWithLogging
 import com.nhaarman.mockito_kotlin.*
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.schedulers.TestScheduler
 import io.reactivex.subjects.BehaviorSubject
 import org.junit.Rule
@@ -48,7 +47,7 @@ class GetStatsStateTest {
     @Test
     fun `should show loading first and then update stats`() {
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
-        whenever(getSkeletonPlaceholderData.build()).doReturn(Single.just(skeletonModel))
+        whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(fetchStats.build(params.range)).doReturn(Observable.just(actualModel))
         val testObserver = getState.execute(params).test()
         testScheduler.triggerActions()
@@ -69,7 +68,7 @@ class GetStatsStateTest {
         var model: List<StatsModel> = mock()
         val testStatsSubject = BehaviorSubject.createDefault<List<StatsModel>>(model)
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
-        whenever(getSkeletonPlaceholderData.build()).doReturn(Single.just(skeletonModel))
+        whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(fetchStats.build(params.range)).doReturn(testStatsSubject)
         with(getState.execute(params).test()) {
             testScheduler.triggerActions()
@@ -92,7 +91,7 @@ class GetStatsStateTest {
     @Test
     fun `should show an error state if no data and offline`() {
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(false))
-        whenever(getSkeletonPlaceholderData.build()).doReturn(Single.just(skeletonModel))
+        whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(fetchStats.build(params.range)).doReturn(Observable.error(TestException("No network")))
         with(getState.execute(params).test()) {
             testScheduler.triggerActions()
@@ -109,7 +108,7 @@ class GetStatsStateTest {
     fun `should show an offline state with cached data`() {
         val testConnectivitySubject = BehaviorSubject.createDefault<Boolean>(true)
         val testStatsSubject = BehaviorSubject.createDefault<List<StatsModel>>(actualModel)
-        whenever(getSkeletonPlaceholderData.build()).doReturn(Single.just(skeletonModel))
+        whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(testConnectivitySubject)
         whenever(fetchStats.build(params.range)).doReturn(testStatsSubject)
         with(getState.execute(params).test()) {
@@ -130,7 +129,7 @@ class GetStatsStateTest {
     @Test
     fun `should show an offline state and then update with new data`() {
         val testConnectivitySubject = BehaviorSubject.createDefault<Boolean>(true)
-        whenever(getSkeletonPlaceholderData.build()).doReturn(Single.just(skeletonModel))
+        whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(testConnectivitySubject)
         whenever(fetchStats.build(params.range)).doReturn(Observable.just(actualModel))
         with(getState.execute(params).testWithLogging()) {
@@ -154,7 +153,7 @@ class GetStatsStateTest {
 
     @Test
     fun `should accept all errors while maintaining current state`() {
-        whenever(getSkeletonPlaceholderData.build()).doReturn(Single.just(skeletonModel))
+        whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
         whenever(fetchStats.build(params.range)).doReturn(Observable.just(actualModel))
         with(getState.execute(params).test()) {
