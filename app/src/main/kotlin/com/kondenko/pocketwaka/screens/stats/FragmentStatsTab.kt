@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
-import com.kondenko.pocketwaka.screens.base.ErrorType
 import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.utils.attachToLifecycle
 import com.kondenko.pocketwaka.utils.extensions.observe
@@ -70,7 +69,7 @@ class FragmentStatsTab : Fragment() {
             Timber.d("${arguments?.get(ARG_RANGE)} state updated: $state")
             when (state) {
                 is State.Success -> onSuccess(state.data)
-                is State.Failure -> onError(state.errorType)
+                is State.Failure<*> -> onError(state)
                 is State.Loading -> onLoading(state.skeletonData)
                 State.Empty -> onEmpty()
             }
@@ -127,7 +126,7 @@ class FragmentStatsTab : Fragment() {
         showFirstView(layout_empty, layout_data, layout_error)
     }
 
-    private fun onError(error: ErrorType) {
+    private fun onError(error: State.Failure<*>) {
         @Suppress("WhenWithOnlyElse") // will be extended in the future
         when (error) {
             else -> {
