@@ -6,6 +6,7 @@ import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.testutils.RxRule
 import com.kondenko.pocketwaka.testutils.TestException
 import com.kondenko.pocketwaka.utils.SchedulersContainer
+import com.kondenko.pocketwaka.utils.extensions.assertOneOfValues
 import com.kondenko.pocketwaka.utils.extensions.testWithLogging
 import com.nhaarman.mockito_kotlin.*
 import io.reactivex.Observable
@@ -170,10 +171,37 @@ class GetStatsStateTest {
                 testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
                 assertValueAt(3) { it is State.Failure.Unknown<*> && it.data == actualModel && it.exception == exception }
             }
-            assertValueCount(4)
+            RuntimeException().let { exception ->
+                whenever(fetchStats.build(params.range)).doReturn(Observable.error(exception))
+                testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
+                assertValueAt(4) { it is State.Failure.Unknown<*> && it.data == actualModel && it.exception == exception }
+            }
+            TestException().let { exception ->
+                whenever(fetchStats.build(params.range)).doReturn(Observable.error(exception))
+                testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
+                assertValueAt(5) { it is State.Failure.Unknown<*> && it.data == actualModel && it.exception == exception }
+            }
+            assertValueCount(6)
             assertNoErrors()
             assertNotTerminated()
             assertNotComplete()
+            dispose()
+        }
+    }
+
+    @Test
+    fun `should show an error state after retrying several times if no data is present`() {
+        whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
+        whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
+        whenever(fetchStats.build(params.range)).doReturn(Observable.error(TestException()))
+        with(getState.execute(params).test()) {
+            testScheduler.triggerActions()
+            verify(fetchStats, atLeast(2))
+            assertOneOfValues { it is State.Failure.Unknown<*> && it.isFatal && it.data == null }
+            assertNoErrors()
+            assertNotTerminated()
+            assertNotComplete()
+            dispose()
         }
     }
 

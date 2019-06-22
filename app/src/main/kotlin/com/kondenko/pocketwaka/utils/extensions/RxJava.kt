@@ -31,3 +31,6 @@ inline fun <T1 : Any, T2 : Any, T3 : Any, R : Any> flatMapLatest(
 
 
 fun <T> Observable<T>.testWithLogging(): TestObserver<T> = this.doOnEach(::println).test()
+
+fun <T> TestObserver<T>.assertOneOfValues(predicate: (T) -> Boolean) =
+        values().find(predicate) != null

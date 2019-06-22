@@ -29,6 +29,8 @@ class GetStatsState(
      */
     private val delayBetweenSkeletonAndActualUi: Long = 75
 
+    private val maxRetries = 3L
+
     data class Params(val range: String?, val refreshRateMin: Int)
 
     override fun build(params: Params?): Observable<StatsState> {
@@ -58,10 +60,13 @@ class GetStatsState(
 
     private fun triggerLoading(range: String, isConnected: Boolean) =
             if (isConnected) {
-                getStats(range).onErrorReturn { t ->
-                    if (isConnected) Failure.Unknown<StatsState>(exception = t)
-                    else Failure.NoNetwork<StatsState>(exception = t)
-                }
+                getStats(range)
+                        .onErrorReturn { t ->
+                            if (isConnected) Failure.Unknown<StatsState>(exception = t)
+                            else Failure.NoNetwork<StatsState>(exception = t)
+                        }
+                        .retry(maxRetries)
+                        .onErrorReturn { Failure.Unknown<StatsState>(exception = it, isFatal = true) }
             } else {
                 Observable.just(Failure.NoNetwork<StatsState>())
             }
