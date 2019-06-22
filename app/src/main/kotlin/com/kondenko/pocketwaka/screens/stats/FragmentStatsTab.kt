@@ -88,12 +88,12 @@ class FragmentStatsTab : Fragment() {
                 }
                 is State.Failure<List<StatsModel>> -> {
                     showData(false)
-                    fragmentState?.setState(state, this::openPlugins)
+                    fragmentState?.setState(state, vm::update)
                     state.exception?.report()
                 }
                 State.Empty -> {
                     showData(false)
-                    fragmentState?.setState(state, vm::update)
+                    fragmentState?.setState(state, this::openPlugins)
                 }
             }
         })
