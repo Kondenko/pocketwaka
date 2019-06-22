@@ -4,6 +4,13 @@
         <item name="android:padding">@dimen/padding_all_card_inner</item>
     </style>
 
+    <style name="App.Button" parent="Widget.MaterialComponents.Button">
+    </style>
+
+    <style name="App.Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/color_text_primary</item>
+    </style>
+
     <!-- Text -->
 
     <style name="TextAppearance.App.Login.Subhead" parent="TextAppearance.AppCompat.Subhead">
@@ -20,12 +27,15 @@
     </style>
 
     <style name="TextAppearance.App.State.Any.Title" parent="TextAppearance.AppCompat.Display1">
-        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textColor">@color/color_text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <style name="TextAppearance.App.State.Any.Subtitle" parent="TextAppearance.AppCompat.Title">
-        <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/color_text_secondary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="TextAppearance.App.State.Any.Text" parent="TextAppearance.AppCompat.Body2">
@@ -56,10 +66,12 @@
         <item name="android:textSize">@dimen/textsize_stats_bestday_time</item>
     </style>
 
+
     <style name="TextAppearance.App.Stats.BestDay.Caption" parent="TextAppearance.AppCompat">
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/color_text_black_secondary</item>
         <item name="android:textSize">@dimen/textsize_stats_bestday_caption</item>
     </style>
+
 
 </resources>

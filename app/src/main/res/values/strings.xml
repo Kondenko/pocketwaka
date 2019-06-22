@@ -9,13 +9,15 @@
 
     <string name="error_refreshing_token">Please log in again</string>
 
-    <string name="error_state_title">Oh, no</string>
-    <string name="error_state_subtitle">We couldn\'t get your stats</string>
+    <string name="error_state_title">We did our best\nbut couldn’t load your stats</string>
+    <string name="error_state_subtitle">Please try again later</string>
     <string name="error_state_action">Retry</string>
 
+    <string name="offline_state_title">Check your connection</string>
+    <string name="offline_state_subtitle">We’ll retry as soon as you\'re online</string>
+
     <string name="empty_state_title">No activity</string>
-    <string name="empty_state_subtitle">New to Wakatime?</string>
-    <string name="empty_state_text">Install plugins for you favorite editors and write some code!</string>
+    <string name="empty_state_subtitle">Install plugins for you favorite editors and write some code!</string>
     <string name="empty_state_action">Browse plugins</string>
 
 
