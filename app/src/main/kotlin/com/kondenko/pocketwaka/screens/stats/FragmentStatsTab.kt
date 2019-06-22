@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.Const
@@ -17,7 +18,6 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.utils.attachToLifecycle
-import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.rxClicks
 import com.kondenko.pocketwaka.utils.extensions.showFirstView
 import com.kondenko.pocketwaka.utils.report
@@ -65,15 +65,15 @@ class FragmentStatsTab : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUi(view)
-        vm.state().observe(viewLifecycleOwner) { state ->
+        vm.state().observe(viewLifecycleOwner, Observer { state ->
             Timber.d("${arguments?.get(ARG_RANGE)} state updated: $state")
             when (state) {
-                is State.Success -> onSuccess(state.data)
-                is State.Failure<*> -> onError(state)
-                is State.Loading -> onLoading(state.skeletonData)
+                is State.Success<List<StatsModel>> -> onSuccess(state.data)
+                is State.Failure<List<StatsModel>> -> onError(state)
+                is State.Loading<List<StatsModel>> -> onLoading(state.skeletonData)
                 State.Empty -> onEmpty()
             }
-        }
+        })
     }
 
     override fun onResume() {

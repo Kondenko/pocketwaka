@@ -2,21 +2,25 @@ package com.kondenko.pocketwaka.screens.base
 
 import android.accounts.NetworkErrorException
 
-sealed class State<out T> {
+sealed class State<out T>(open val data: T?) {
 
-    data class Loading<T>(val skeletonData: T) : State<T>()
+    data class Success<T>(override val data: T) : State<T>(data)
 
-    data class Offline<T>(val data: T?, val lastUpdated: Long? = null) : State<T>()
+    data class Loading<T>(
+            override val data: T? = null,
+            val skeletonData: T,
+            val isInterrupting: Boolean = true
+    ) : State<T>(data)
 
-    object Empty : State<Nothing>()
+    data class Offline<T>(override val data: T?, val lastUpdated: Long? = null) : State<T>(data)
 
-    data class Success<T>(val data: T) : State<T>()
+    object Empty : State<Nothing>(null)
 
     sealed class Failure<out T>(
-            open val data: T?,
+            override val data: T?,
             open val exception: Throwable? = null,
             open val isFatal: Boolean = false
-    ) : State<Nothing>() {
+    ) : State<T>(data) {
 
         data class NoNetwork<T>(
                 override val data: T? = null,
@@ -39,7 +43,7 @@ sealed class State<out T> {
 
 }
 
-fun <T> State.Failure<T>.copyFrom(data: T?, exception: Throwable? = this.exception): State.Failure<T?> {
+fun <T> State.Failure<T>.copyFrom(data: T?, exception: Throwable? = this.exception): State.Failure<T> {
     return when (this) {
         is State.Failure.NoNetwork<T> -> this.copy(data, exception)
         is State.Failure.UnknownRange<T> -> this.copy(data)

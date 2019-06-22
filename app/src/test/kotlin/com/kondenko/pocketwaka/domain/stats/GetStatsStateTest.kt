@@ -7,15 +7,17 @@ import com.kondenko.pocketwaka.testutils.RxRule
 import com.kondenko.pocketwaka.testutils.TestException
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.extensions.assertOneOfValues
-import com.kondenko.pocketwaka.utils.extensions.testWithLogging
 import com.nhaarman.mockito_kotlin.*
 import io.reactivex.Observable
 import io.reactivex.schedulers.TestScheduler
 import io.reactivex.subjects.BehaviorSubject
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mockito.validateMockitoUsage
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+
 
 class GetStatsStateTest {
 
@@ -45,6 +47,11 @@ class GetStatsStateTest {
 
     private val actualModel: List<StatsModel> = mock()
 
+    @After
+    fun validate() {
+        validateMockitoUsage()
+    }
+
     @Test
     fun `should show loading first and then update stats`() {
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
@@ -56,7 +63,7 @@ class GetStatsStateTest {
         verify(getSkeletonPlaceholderData).build()
         verify(fetchStats, atLeastOnce()).build(params.range)
         with(testObserver) {
-            assertValueAt(0) { it is State.Loading && it.skeletonData === skeletonModel }
+            assertValueAt(0) { it is State.Loading && it.skeletonData === skeletonModel && it.isInterrupting }
             assertValueAt(1) { it is State.Success && it.data === actualModel }
             assertValueCount(2)
             assertNoErrors()
@@ -67,7 +74,7 @@ class GetStatsStateTest {
     @Test
     fun `should update stats every minute`() {
         var model: List<StatsModel> = mock()
-        val testStatsSubject = BehaviorSubject.createDefault<List<StatsModel>>(model)
+        val testStatsSubject = BehaviorSubject.createDefault(model)
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
         whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(fetchStats.build(params.range)).doReturn(testStatsSubject)
@@ -75,15 +82,14 @@ class GetStatsStateTest {
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading && it.skeletonData == skeletonModel }
             assertValueAt(1) { it is State.Success && it.data == model }
-            model = mock()
             testStatsSubject.onNext(model)
             testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
-            assertValueAt(2) { it is State.Success && it.data == model }
-            model = mock()
-            testStatsSubject.onNext(model)
-            testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
+            assertValueAt(2) { it is State.Loading && !it.isInterrupting }
             assertValueAt(3) { it is State.Success && it.data == model }
-            assertValueCount(4)
+            testStatsSubject.onNext(model)
+            testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
+            assertValueAt(4) { it is State.Loading && !it.isInterrupting }
+            assertValueAt(5) { it is State.Success && it.data == model }
             assertNoErrors()
             dispose()
         }
@@ -96,8 +102,7 @@ class GetStatsStateTest {
         whenever(fetchStats.build(params.range)).doReturn(Observable.error(TestException("No network")))
         with(getState.execute(params).test()) {
             testScheduler.triggerActions()
-            assertValueAt(0) { it is State.Loading }
-            assertValueAt(1) { it is State.Failure.NoNetwork<*> }
+            assertValue { it is State.Failure.NoNetwork<*> }
             assertNotTerminated()
             assertNotComplete()
             assertNoErrors()
@@ -133,7 +138,7 @@ class GetStatsStateTest {
         whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(testConnectivitySubject)
         whenever(fetchStats.build(params.range)).doReturn(Observable.just(actualModel))
-        with(getState.execute(params).testWithLogging()) {
+        with(getState.execute(params).test()) {
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading }
             assertValueAt(1) { it is State.Success && it.data == actualModel }
@@ -144,7 +149,8 @@ class GetStatsStateTest {
             whenever(fetchStats.build(params.range)).doReturn(Observable.just(actualModel))
             testConnectivitySubject.onNext(true)
             testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
-            assertValueAt(3) { it is State.Success }
+            assertValueAt(3) { it is State.Loading && !it.isInterrupting }
+            assertValueAt(4) { it is State.Success }
             assertNotTerminated()
             assertNotComplete()
             assertNoErrors()
@@ -164,24 +170,27 @@ class GetStatsStateTest {
             TestException().let { exception ->
                 whenever(fetchStats.build(params.range)).doReturn(Observable.error(exception))
                 testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
-                assertValueAt(2) { it is State.Failure.Unknown<*> && it.data == actualModel && it.exception == exception }
+                assertValueAt(2) { it is State.Loading && !it.isInterrupting }
+                assertValueAt(3) { it is State.Failure.Unknown<*> && it.data == actualModel && it.exception == exception }
             }
             TimeoutException().let { exception ->
                 whenever(fetchStats.build(params.range)).doReturn(Observable.error(exception))
                 testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
-                assertValueAt(3) { it is State.Failure.Unknown<*> && it.data == actualModel && it.exception == exception }
+                assertValueAt(4) { it is State.Loading && !it.isInterrupting }
+                assertValueAt(5) { it is State.Failure.Unknown<*> && it.data == actualModel && it.exception == exception }
             }
             RuntimeException().let { exception ->
                 whenever(fetchStats.build(params.range)).doReturn(Observable.error(exception))
                 testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
-                assertValueAt(4) { it is State.Failure.Unknown<*> && it.data == actualModel && it.exception == exception }
+                assertValueAt(6) { it is State.Loading && !it.isInterrupting }
+                assertValueAt(7) { it is State.Failure.Unknown<*> && it.data == actualModel && it.exception == exception }
             }
             TestException().let { exception ->
                 whenever(fetchStats.build(params.range)).doReturn(Observable.error(exception))
                 testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
-                assertValueAt(5) { it is State.Failure.Unknown<*> && it.data == actualModel && it.exception == exception }
+                assertValueAt(8) { it is State.Loading && !it.isInterrupting }
+                assertValueAt(9) { it is State.Failure.Unknown<*> && it.data == actualModel && it.exception == exception }
             }
-            assertValueCount(6)
             assertNoErrors()
             assertNotTerminated()
             assertNotComplete()
@@ -196,7 +205,7 @@ class GetStatsStateTest {
         whenever(fetchStats.build(params.range)).doReturn(Observable.error(TestException()))
         with(getState.execute(params).test()) {
             testScheduler.triggerActions()
-            verify(fetchStats, atLeast(2))
+            verify(fetchStats, atLeast(2)).build(params.range)
             assertOneOfValues { it is State.Failure.Unknown<*> && it.isFatal && it.data == null }
             assertNoErrors()
             assertNotTerminated()
