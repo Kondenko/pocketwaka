@@ -28,8 +28,11 @@ class StateFragment : Fragment() {
                 drawableRes = R.drawable.img_offline
                 titleRes = R.string.offline_state_title
                 subtitleRes = R.string.offline_state_subtitle
+                button_state_action_retry.isVisible = false
+                button_state_action_open_plugins.isVisible = false
             }
             State.Empty -> {
+                drawableRes = R.drawable.state_empty_img
                 titleRes = R.string.empty_state_title
                 subtitleRes = R.string.empty_state_subtitle
                 button_state_action_open_plugins.isVisible = true
@@ -39,6 +42,7 @@ class StateFragment : Fragment() {
                 }
             }
             is State.Failure.UnknownRange, is State.Failure.Unknown -> {
+                drawableRes = R.drawable.state_error_img
                 titleRes = R.string.error_state_title
                 subtitleRes = R.string.error_state_subtitle
                 button_state_action_retry.isVisible = true

@@ -17,7 +17,7 @@
     <string name="offline_state_subtitle">We’ll retry as soon as you\'re online</string>
 
     <string name="empty_state_title">No activity</string>
-    <string name="empty_state_subtitle">Install plugins for you favorite editors and write some code!</string>
+    <string name="empty_state_subtitle">Install plugins for you favorite editors\nand write some code!</string>
     <string name="empty_state_action">Browse plugins</string>
 
 

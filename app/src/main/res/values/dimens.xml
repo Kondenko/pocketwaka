@@ -21,6 +21,7 @@
     <dimen name="size_state_screen_image">200dp</dimen>
     <dimen name="height_state_screen_button">52dp</dimen>
     <dimen name="margin_state_screen_button_bottom">24dp</dimen>
+    <dimen name="margin_state_screen_button_top">40dp</dimen>
 
     <!--Login-->
     <dimen name="size_login_loading_dot">6dp</dimen>
