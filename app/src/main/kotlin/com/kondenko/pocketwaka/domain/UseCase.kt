@@ -12,7 +12,7 @@ interface UseCase<PARAMS, RESULT, CONTEXT> {
 
     fun build(params: PARAMS? = null): CONTEXT
 
-    fun execute(
+    operator fun invoke(
             params: PARAMS? = null,
             onSuccess: (RESULT) -> Unit = {},
             onError: (Throwable) -> Unit = {},

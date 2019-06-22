@@ -31,7 +31,6 @@ class GetStatsState(
 
     private val maxRetries = 3L
 
-
     data class Params(val range: String?, val refreshRateMin: Int)
 
     override fun build(params: Params?): Observable<StatsState> {

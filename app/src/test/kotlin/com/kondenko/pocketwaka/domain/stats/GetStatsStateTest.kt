@@ -57,7 +57,7 @@ class GetStatsStateTest {
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
         whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(fetchStats.build(params.range)).doReturn(Observable.just(actualModel))
-        val testObserver = getState.execute(params).test()
+        val testObserver = getState.invoke(params).test()
         testScheduler.triggerActions()
         verify(connectivityStatusProvider).isNetworkAvailable()
         verify(getSkeletonPlaceholderData).build()
@@ -78,7 +78,7 @@ class GetStatsStateTest {
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
         whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(fetchStats.build(params.range)).doReturn(testStatsSubject)
-        with(getState.execute(params).test()) {
+        with(getState.invoke(params).test()) {
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading && it.skeletonData == skeletonModel }
             assertValueAt(1) { it is State.Success && it.data == model }
@@ -100,7 +100,7 @@ class GetStatsStateTest {
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(false))
         whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(fetchStats.build(params.range)).doReturn(Observable.error(TestException("No network")))
-        with(getState.execute(params).test()) {
+        with(getState.invoke(params).test()) {
             testScheduler.triggerActions()
             assertValue { it is State.Failure.NoNetwork<*> }
             assertNotTerminated()
@@ -117,7 +117,7 @@ class GetStatsStateTest {
         whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(testConnectivitySubject)
         whenever(fetchStats.build(params.range)).doReturn(testStatsSubject)
-        with(getState.execute(params).test()) {
+        with(getState.invoke(params).test()) {
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading }
             assertValueAt(1) { it is State.Success && it.data == actualModel }
@@ -138,7 +138,7 @@ class GetStatsStateTest {
         whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(testConnectivitySubject)
         whenever(fetchStats.build(params.range)).doReturn(Observable.just(actualModel))
-        with(getState.execute(params).test()) {
+        with(getState.invoke(params).test()) {
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading }
             assertValueAt(1) { it is State.Success && it.data == actualModel }
@@ -163,7 +163,7 @@ class GetStatsStateTest {
         whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
         whenever(fetchStats.build(params.range)).doReturn(Observable.just(actualModel))
-        with(getState.execute(params).test()) {
+        with(getState.invoke(params).test()) {
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading }
             assertValueAt(1) { it is State.Success }
@@ -203,7 +203,7 @@ class GetStatsStateTest {
         whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
         whenever(fetchStats.build(params.range)).doReturn(Observable.error(TestException()))
-        with(getState.execute(params).test()) {
+        with(getState.invoke(params).test()) {
             testScheduler.triggerActions()
             verify(fetchStats, atLeast(2)).build(params.range)
             assertOneOfValues { it is State.Failure.Unknown<*> && it.isFatal && it.data == null }

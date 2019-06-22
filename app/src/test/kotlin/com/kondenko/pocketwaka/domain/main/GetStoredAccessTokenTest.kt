@@ -27,7 +27,7 @@ class GetStoredAccessTokenTest {
         whenever(repository.getEncryptedToken()).doReturn(encryptedToken.toSingle())
         whenever(encryptor.decryptToken(encryptedToken)).doReturn(decryptedToken)
 
-        val single = useCase.execute()
+        val single = useCase.invoke()
 
         verify(repository).getEncryptedToken()
         verify(encryptor.decryptToken(encryptedToken))

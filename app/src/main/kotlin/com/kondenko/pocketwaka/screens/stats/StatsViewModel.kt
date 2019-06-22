@@ -20,7 +20,7 @@ class StatsViewModel(private val range: String?, private val getStats: GetStatsS
     fun state(): LiveData<State<List<StatsModel>>> = statsData
 
     fun update() {
-        getStats.execute(GetStatsState.Params(range, refreshRateMin), onSuccess = statsData::setValue)
+        getStats(GetStatsState.Params(range, refreshRateMin), onSuccess = statsData::setValue)
     }
 
     override fun onCleared() {

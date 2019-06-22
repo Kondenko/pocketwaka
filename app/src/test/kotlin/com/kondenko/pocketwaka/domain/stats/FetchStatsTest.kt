@@ -26,7 +26,7 @@ class FetchStatsTest {
     @Test
     fun `should fetch token first`() {
         whenever(getTokenHeader.build()).doReturn(header.toSingle())
-        useCase.execute(range)
+        useCase.invoke(range)
         inOrder(getTokenHeader, statsRepository) {
             verify(getTokenHeader).build()
             verify(statsRepository).getStats(header, range)

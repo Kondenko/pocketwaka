@@ -65,7 +65,7 @@ class RefreshAccessTokenTest {
         whenever(timeProvider.getCurrentTimeSec()).doReturn(currentTime)
         whenever(token.isValid(currentTime)).doReturn(true)
 
-        val single = useCase.execute()
+        val single = useCase.invoke()
         verifyNoMoreInteractions(getAppId)
         verifyNoMoreInteractions(getAppSecret)
         verifyNoMoreInteractions(accessTokenRepository)
@@ -97,7 +97,7 @@ class RefreshAccessTokenTest {
         whenever(encryptor.encryptToken(newToken)).doReturn(encryptedNewToken)
         whenever(accessTokenRepository.getRefreshedAccessToken(eq(appId), eq(appSecret), anyString(), anyString(), eq(refreshToken))).doReturn(newToken.toSingle())
 
-        val single = useCase.execute()
+        val single = useCase.invoke()
 
         verify(getAppId).build()
         verify(getAppSecret).build()
