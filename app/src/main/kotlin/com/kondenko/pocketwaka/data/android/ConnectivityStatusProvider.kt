@@ -6,7 +6,7 @@ import android.net.Network
 import android.net.NetworkRequest
 import androidx.core.content.getSystemService
 import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.BehaviorSubject
 
 class ConnectivityStatusProvider(context: Context) {
 
@@ -14,11 +14,12 @@ class ConnectivityStatusProvider(context: Context) {
 
     fun isNetworkAvailable() =
             connectivityManager?.let { manager ->
-                val subject = PublishSubject.create<Boolean>()
+                val isNetworkInitiallyAvailable = manager.activeNetworkInfo?.isConnected == true
+                val subject = BehaviorSubject.createDefault<Boolean>(isNetworkInitiallyAvailable)
                 val networkRequest = NetworkRequest.Builder().build()
                 val callback = object : ConnectivityManager.NetworkCallback() {
-                    override fun onUnavailable() {
-                        super.onUnavailable()
+                    override fun onLost(network: Network?) {
+                        super.onLost(network)
                         subject.onNext(false)
                     }
 
@@ -27,9 +28,10 @@ class ConnectivityStatusProvider(context: Context) {
                         subject.onNext(true)
                     }
                 }
-                return@let subject
+                subject
                         .doOnSubscribe { manager.registerNetworkCallback(networkRequest, callback) }
                         .doOnDispose { manager.unregisterNetworkCallback(callback) }
+                        .distinctUntilChanged()
             } ?: Observable.error(NullPointerException("ConnectivityManager not available"))
 
 }
