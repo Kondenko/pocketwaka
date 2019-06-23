@@ -1,6 +1,10 @@
 package com.kondenko.pocketwaka.domain.stats.model
 
 sealed class StatsModel {
+    sealed class Status(val lastUpdated: Long? = null) : StatsModel() {
+        class Loading(lastUpdated: Long? = null): Status(lastUpdated)
+        class Offline(lastUpdated: Long? = null): Status(lastUpdated)
+    }
     data class Metadata(val range: String, val lastUpdated: Long, val isEmpty: Boolean, val isFromCache: Boolean) : StatsModel()
     data class Info(val humanReadableDailyAverage: String?, val humanReadableTotal: String?) : StatsModel()
     data class Stats(val cardTitle: String, val items: List<StatsItem>) : StatsModel()

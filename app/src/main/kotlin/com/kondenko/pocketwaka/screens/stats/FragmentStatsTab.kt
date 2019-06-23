@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -73,6 +74,11 @@ class FragmentStatsTab : Fragment() {
                             if (it.items.isEmpty()) it.items = state.skeletonData
                             recyclerview_stats?.adapter = it
                         }
+                    } else {
+                        recyclerview_stats?.apply {
+                            if (adapter != statsAdapter) adapter = statsAdapter
+                            statsAdapter?.items = listOf(StatsModel.Status.Loading()) + state.data!!
+                        }
                     }
                 }
                 is State.Success<List<StatsModel>> -> {
@@ -83,13 +89,24 @@ class FragmentStatsTab : Fragment() {
                     }
                 }
                 is State.Offline -> {
-                    showData(false)
-                    fragmentState?.setState(state)
+                    if (state.data == null) {
+                        showData(false)
+                        fragmentState?.setState(state)
+                    } else {
+                        recyclerview_stats?.apply {
+                            if (adapter != statsAdapter) adapter = statsAdapter
+                            statsAdapter?.items = listOf(StatsModel.Status.Offline()) + state.data!!
+                        }
+                    }
                 }
                 is State.Failure<List<StatsModel>> -> {
-                    showData(false)
-                    fragmentState?.setState(state, vm::update)
                     state.exception?.report()
+                    if (state.isFatal) {
+                        showData(false)
+                        fragmentState?.setState(state, vm::update)
+                    } else {
+                        Toast.makeText(context, state.exception?.message, Toast.LENGTH_LONG).show()
+                    }
                 }
                 State.Empty -> {
                     showData(false)

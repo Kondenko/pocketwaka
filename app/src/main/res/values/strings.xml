@@ -21,6 +21,9 @@
     <string name="empty_state_subtitle">Install plugins for you favorite editors\nand write some code!</string>
     <string name="empty_state_action">Browse plugins</string>
 
+    <string name="status_offline">Offline</string>
+    <string name="status_offline_with_date">Offline, updated %s ago</string>
+    <string name="status_loading_with_date">Updated %s ago</string>
 
     <string name="loginactivity_sign_in">Log in</string>
     <string name="loginactivity_title" translatable="false">PocketWaka</string>

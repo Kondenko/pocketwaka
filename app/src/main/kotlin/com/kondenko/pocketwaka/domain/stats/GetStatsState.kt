@@ -5,7 +5,6 @@ import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.screens.base.State.*
-import com.kondenko.pocketwaka.screens.base.copyFrom
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
@@ -50,63 +49,51 @@ class GetStatsState(
         )
         return connectivityStatus
                 .switchMap { isConnected ->
-                    interval
-                            .flatMap<StatsState> {
-                                if (isConnected) Observable.concatArray(loading, getStats(params.range, isConnected))
-                                else Observable.just(Failure.NoNetwork())
-                            }
+                    interval.flatMap {
+                        Observable.concatArray(loading, getStats(params.range, isConnected))
+                    }
                 }
                 .scan(::changeState)
-                .distinctUntilChanged(::distinct)
+                .distinctUntilChanged(::equal)
     }
 
     private fun getStats(range: String, isConnected: Boolean) =
             fetchStats.build(range)
-                    .map<StatsState> { Success(it) }
                     .retry(maxRetries)
+                    .map {
+                        if (it.isFromCache()) Offline(it)
+                        else Success(it)
+                    }
                     .onErrorReturn { t ->
                         if (isConnected) Failure.Unknown(exception = t)
                         else Failure.NoNetwork(exception = t)
                     }
 
-    private fun distinct(old: StatsState, new: StatsState) =
-            if (old is Failure<StatsModelList> && new is Failure<StatsModelList>) old.exception == new.exception
-            else old == new
+    private fun equal(old: StatsState, new: StatsState) = when {
+        old is Failure<StatsModelList> && new is Failure<StatsModelList> -> old.exception == new.exception
+        else -> old == new
+    }
 
     private fun changeState(old: StatsState, new: StatsState): StatsState = when {
         new is Loading<StatsModelList> -> {
-            when (old) {
-                is Success -> new.copy(data = old.data, isInterrupting = false)
-                is Offline -> new.copy(data = old.data, isInterrupting = old.data == null)
-                is Failure<*> -> new.copy(data = old.data, isInterrupting = old.data == null)
-                else -> new
-            }
+            if (old is Success) new.copy(data = old.data, isInterrupting = false)
+            else new.copy(data = old.data, isInterrupting = old.data == null)
         }
         old is Loading<StatsModelList> -> {
             when (new) {
+                is Failure.NoNetwork -> old.data?.let { Offline(data = it) } ?: new
+                is Failure.UnknownRange -> new.copy(data = old.data, isFatal = old.data == null)
+                is Failure.Unknown -> new.copy(data = old.data, isFatal = old.data == null)
                 is Loading -> new.copy(data = old.data)
                 is Offline -> new.copy(data = old.data)
-                is Failure.NoNetwork -> new.copy(data = old.data)
-                is Failure.UnknownRange -> new.copy(data = old.data)
-                is Failure.Unknown -> new.copy(data = old.data)
                 else -> new
             }
-        }
-        old is Success<StatsModelList> && new is Failure.NoNetwork<*> -> {
-            Offline(old.data)
-        }
-        old is Success<StatsModelList> && new is Failure<StatsModelList> -> {
-            new.copyFrom(old.data, new.exception)
-        }
-        old is Offline<StatsModelList> && new is Failure<*> -> {
-            old
-        }
-        old is Failure<StatsModelList> && new is Failure<StatsModelList> -> {
-            new.copyFrom(old.data)
         }
         else -> {
             new
         }
     }
+
+    private fun StatsModelList.isFromCache(): Boolean = find { it is StatsModel.Metadata && it.isFromCache } != null
 
 }

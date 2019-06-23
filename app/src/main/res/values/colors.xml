@@ -25,6 +25,8 @@
     <color name="color_stats_item_light">#E6FFFFFF</color>
     <color name="color_stats_item_dark">#BF35434F</color>
 
+    <color name="color_status">#3335434F</color>
+
     <array name="chart_colors">
         <!--<item name="chart_blue">#4da2db</item>-->
         <item name="chart_blue">#FA5757</item>
