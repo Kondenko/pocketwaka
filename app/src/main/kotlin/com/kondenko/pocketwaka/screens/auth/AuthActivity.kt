@@ -3,6 +3,7 @@ package com.kondenko.pocketwaka.screens.auth
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageInfo
 import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
@@ -105,7 +106,7 @@ class AuthActivity : AppCompatActivity(), AuthView {
             override fun onServiceDisconnected(name: ComponentName) {
             }
         }
-        CustomTabsClient.bindCustomTabsService(this, "com.android.chrome", connection)
+        CustomTabsClient.bindCustomTabsService(this, getChromePackage(), connection)
     }
 
     override fun onGetTokenSuccess(token: AccessToken) {
@@ -128,6 +129,21 @@ class AuthActivity : AppCompatActivity(), AuthView {
         textViewSubhead.apply {
             setText(R.string.loginactivity_subtitle_error)
             TextViewCompat.setTextAppearance(this, R.style.TextAppearance_App_Login_Subhead_Error)
+        }
+    }
+
+    private fun getChromePackage() : String? {
+        fun Iterable<PackageInfo>.find(packageName: String): String? {
+            return find { it.packageName == packageName }?.packageName
+        }
+        val chrome = "com.chrome"
+        val stable = "com.android.chrome"
+        val beta = "$chrome.beta"
+        val dev = "$chrome.dev"
+        val canary = "$chrome.canary"
+        val apps = packageManager.getInstalledPackages(0)
+        return apps.run {
+            find(stable)?:find(beta)?:find(dev)?:find(canary)
         }
     }
 
