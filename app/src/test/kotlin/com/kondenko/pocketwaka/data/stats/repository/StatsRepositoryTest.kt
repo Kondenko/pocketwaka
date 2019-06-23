@@ -11,6 +11,7 @@ import com.kondenko.pocketwaka.data.stats.service.StatsService
 import com.kondenko.pocketwaka.testutils.TestException
 import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.TimeProvider
+import com.kondenko.pocketwaka.utils.extensions.testWithLogging
 import com.nhaarman.mockito_kotlin.*
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -59,7 +60,7 @@ class StatsRepositoryTest {
 
     @Test
     fun `should fetch stats from the database and from the server`() {
-        val cachedStats = mock<StatsDto>()
+        val cachedStats = StatsDto(range, 0, false, emptyList())
         val newStatsResponse = mock<Stats>()
         whenever(dao.getCachedStats(range))
                 .doReturn(Maybe.just(cachedStats))
@@ -67,24 +68,23 @@ class StatsRepositoryTest {
                 .doReturn(Single.just(StatsServiceResponse(newStatsResponse)))
         whenever(dao.cacheStats(anyOrNull()))
                 .doReturn(Completable.complete())
-        with(repository.getStats(token, range).test()) {
+        with(repository.getStats(token, range).testWithLogging()) {
             assertNoErrors()
-            assertValueCount(2)
-            assertValueAt(0, cachedStats)
+            assertValueAt(0) { it.isFromCache }
+            assertValueAt(1) { !it.isFromCache }
             assertComplete()
         }
     }
 
     @Test
     fun `should show stats from the database when the server returns an error`() {
-        val cachedStats = mock<StatsDto>()
+        val cachedStats = StatsDto(range, 0, false, emptyList())
         whenever(dao.getCachedStats(range))
                 .doReturn(Maybe.just(cachedStats))
         whenever(service.getCurrentUserStats(token, range))
                 .doReturn(Single.error(TestException()))
-        with(repository.getStats(token, range).test()) {
-            assertValueCount(1)
-            assertValue(cachedStats)
+        with(repository.getStats(token, range).testWithLogging()) {
+            assertValue { it.isFromCache }
             assertTerminated()
         }
     }
@@ -98,14 +98,14 @@ class StatsRepositoryTest {
                 .doReturn(Single.just(newStatsResponse))
         whenever(dao.cacheStats(anyOrNull()))
                 .doReturn(Completable.complete())
-        with(repository.getStats(token, range).test()) {
+        with(repository.getStats(token, range).testWithLogging()) {
             verify(dao, times(1)).getCachedStats(range)
             inOrder(service, dao) {
                 verify(dao).getCachedStats(range)
                 verify(service).getCurrentUserStats(token, range)
                 verify(dao).cacheStats(anyOrNull())
             }
-            assertValueCount(1)
+            assertValue { !it.isFromCache }
             assertComplete()
         }
     }
@@ -117,7 +117,7 @@ class StatsRepositoryTest {
                 .doReturn(Maybe.empty())
         whenever(service.getCurrentUserStats(token, range))
                 .doReturn(Single.error(error))
-        with(repository.getStats(token, range).test()) {
+        with(repository.getStats(token, range).testWithLogging()) {
             verify(dao, times(1)).getCachedStats(range)
             inOrder(service, dao) {
                 verify(dao).getCachedStats(range)

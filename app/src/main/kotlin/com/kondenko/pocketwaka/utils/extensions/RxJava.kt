@@ -1,6 +1,7 @@
 package com.kondenko.pocketwaka.utils.extensions
 
 import io.reactivex.Observable
+import io.reactivex.exceptions.CompositeException
 import io.reactivex.observers.TestObserver
 import io.reactivex.rxkotlin.Observables
 
@@ -30,7 +31,15 @@ inline fun <T1 : Any, T2 : Any, T3 : Any, R : Any> flatMapLatest(
                 .flatMap { (t1, t2, t3) -> function(t1, t2, t3) }
 
 
-fun <T> Observable<T>.testWithLogging(): TestObserver<T> = this.doOnEach(::println).test()
+fun <T> Observable<T>.testWithLogging(): TestObserver<T> = this
+        .doOnEach {
+            println(it)
+            (it.error as? CompositeException)?.let {
+                println("Exceptions: ")
+                it.exceptions.forEach(::println)
+            }
+        }
+        .test()
 
 fun <T> TestObserver<T>.assertOneOfValues(predicate: (T) -> Boolean) =
         values().find(predicate) != null

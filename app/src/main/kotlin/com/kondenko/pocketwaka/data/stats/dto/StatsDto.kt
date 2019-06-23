@@ -12,5 +12,6 @@ data class StatsDto(
         val range: String,
         @ColumnInfo(name = "date_updated")
         val dateUpdated: Long,
+        val isFromCache: Boolean = false,
         val stats: List<StatsModel>
 )

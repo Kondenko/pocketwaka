@@ -19,7 +19,13 @@ class FetchStats(
                 .flatMapObservable { header ->
                     statsRepository.getStats(header, range!!)
                 }
-                .map { it.stats }
+                .map { dto ->
+                    dto.stats.map {
+                        if (it is StatsModel.Metadata) it.copy(isFromCache = dto.isFromCache)
+                        else it
+                    }
+                }
+
     }
 
 }

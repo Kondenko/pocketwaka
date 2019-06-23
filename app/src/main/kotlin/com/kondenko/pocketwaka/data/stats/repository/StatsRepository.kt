@@ -12,7 +12,6 @@ import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.TimeProvider
 import com.kondenko.pocketwaka.utils.notNull
-import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 import timber.log.Timber
@@ -37,22 +36,24 @@ class StatsRepository(
         val server = getStatsFromServer(tokenHeader, range)
                 .onErrorResumeNext { error: Throwable ->
                     // Pass the network error down the stream if cache is empty
-                    cache.switchIfEmpty(Maybe.error(error)).toObservable()
+                    cache.switchIfEmpty(Observable.error(error))
                 }
-        return Observable.concatDelayError(listOf(cache.toObservable(), server))
+        return Observable.concatDelayError(listOf(cache, server))
                 .distinctUntilChanged()
     }
 
 
     private fun cacheStats(stats: StatsDto) = dao.cacheStats(stats)
 
-    private fun getStatsFromCache(range: String): Maybe<StatsDto> =
+    private fun getStatsFromCache(range: String) =
             dao.getCachedStats(range)
-                    .doOnSuccess { Timber.d("Loaded stats from cache: $range") }
+                    .toObservable()
+                    .map { it.copy(isFromCache = true) }
+                    .doOnNext { Timber.d("Got stats from cache: $range") }
 
     private fun getStatsFromServer(tokenHeader: String, range: String): Observable<StatsDto> =
             service.getCurrentUserStats(tokenHeader, range)
-                    .doOnSuccess { Timber.d("Loaded stats from the server: $range") }
+                    .doOnSuccess { Timber.d("Got stats from the server: $range") }
                     .flatMapObservable {
                         if (it.stats != null) Observable.just(toDomainModel(range, it.stats, timeProvider.getCurrentTimeMillis()))
                         else Observable.error(NullPointerException("Stats are null"))
@@ -85,10 +86,11 @@ class StatsRepository(
         list += StatsModel.Metadata(
                 range = range,
                 lastUpdated = dateUpdated,
-                isEmpty = stats.totalSeconds == 0.0
+                isEmpty = stats.totalSeconds == 0.0,
+                isFromCache = false
         )
 
-        return StatsDto(range, timeProvider.getCurrentTimeMillis(), list)
+        return StatsDto(range, timeProvider.getCurrentTimeMillis(), false, list)
     }
 
     private fun List<com.kondenko.pocketwaka.data.stats.model.StatsItem>?.toDomainModel(statsType: StatsType): StatsModel.Stats? {
