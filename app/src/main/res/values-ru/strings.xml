@@ -36,7 +36,7 @@
         <item quantity="many">%d мин.</item>
         <item quantity="other">%d мин.</item>
     </plurals>
-    <string name="loginactivity_subtitle_error">Ошибка входа</string>
+    <string name="loginactivity_error_generic">Не удалось войти</string>
     <string name="loginactivity_subtitle_loading">Входим в приложение</string>
     <string name="loginactivity_subtitle_error_action">Войти</string>
     <string name="screen_stats">Статистика</string>

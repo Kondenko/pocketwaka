@@ -9,6 +9,7 @@
 
     <string name="error_refreshing_token">Please log in again</string>
 
+
     <string name="error_state_title">We did our best\nbut couldn’t load your stats</string>
     <string name="error_state_subtitle">Please try again later</string>
     <string name="error_state_action">Retry</string>
@@ -25,7 +26,10 @@
     <string name="loginactivity_title" translatable="false">PocketWaka</string>
     <string name="loginactivity_subtitle_default">Get insights on your\ncoding productivity</string>
     <string name="loginactivity_subtitle_loading">Logging in</string>
-    <string name="loginactivity_subtitle_error">Failed to log in</string>
+
+    <string name="loginactivity_error_generic">Failed to log in</string>
+    <string name="loginactivity_error_no_browser">Google Chrome needs to be installed \nto log in</string>
+
     <string name="loginactivity_subtitle_error_action">Try again</string>
 
 

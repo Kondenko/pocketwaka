@@ -106,7 +106,9 @@ class AuthActivity : AppCompatActivity(), AuthView {
             override fun onServiceDisconnected(name: ComponentName) {
             }
         }
-        CustomTabsClient.bindCustomTabsService(this, getChromePackage(), connection)
+        getChromePackage()?.let {
+            CustomTabsClient.bindCustomTabsService(this, getChromePackage(), connection)
+        } ?: showError(null, R.string.loginactivity_error_no_browser)
     }
 
     override fun onGetTokenSuccess(token: AccessToken) {
@@ -127,15 +129,16 @@ class AuthActivity : AppCompatActivity(), AuthView {
         throwable?.report()
         loadingButtonStateWrapper.setError()
         textViewSubhead.apply {
-            setText(R.string.loginactivity_subtitle_error)
+            setText(messageStringRes ?: R.string.loginactivity_error_generic)
             TextViewCompat.setTextAppearance(this, R.style.TextAppearance_App_Login_Subhead_Error)
         }
     }
 
-    private fun getChromePackage() : String? {
+    private fun getChromePackage(): String? {
         fun Iterable<PackageInfo>.find(packageName: String): String? {
             return find { it.packageName == packageName }?.packageName
         }
+
         val chrome = "com.chrome"
         val stable = "com.android.chrome"
         val beta = "$chrome.beta"
@@ -143,7 +146,7 @@ class AuthActivity : AppCompatActivity(), AuthView {
         val canary = "$chrome.canary"
         val apps = packageManager.getInstalledPackages(0)
         return apps.run {
-            find(stable)?:find(beta)?:find(dev)?:find(canary)
+            find(stable) ?: find(beta) ?: find(dev) ?: find(canary)
         }
     }
 
