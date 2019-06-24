@@ -13,12 +13,13 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnNextLayout
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.BaseAdapter
-import com.kondenko.pocketwaka.screens.base.BaseDiffCallback
 import com.kondenko.pocketwaka.ui.Skeleton
+import com.kondenko.pocketwaka.utils.SimpleCallback
 import com.kondenko.pocketwaka.utils.component1
 import com.kondenko.pocketwaka.utils.component2
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
@@ -64,8 +65,9 @@ class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : 
                 else -> throw IllegalArgumentException("Unknown view type $viewType")
             }
 
-    override fun getDiffCallback(oldList: List<StatsModel>, newList: List<StatsModel>): BaseDiffCallback<StatsModel> {
-        return BaseDiffCallback(oldList, newList, areItemsTheSame = { a, b ->
+
+    override fun getDiffCallback(oldList: List<StatsModel>, newList: List<StatsModel>): DiffUtil.Callback {
+        return SimpleCallback(oldList, newList, areItemsTheSame = { a, b ->
             when (a) {
                 is StatsModel.Info -> b is StatsModel.Info
                 is StatsModel.BestDay -> b is StatsModel.BestDay
@@ -75,11 +77,11 @@ class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : 
         })
     }
 
-    /**
-     * @param skeleton null if this adapter is not for showing skeletons
-     */
     inner class ViewHolder(val view: View) : BaseViewHolder(view) {
 
+        /**
+         * Null if this adapter is not for showing skeletons
+         */
         private val skeleton: Skeleton? = if (isSkeleton) setupSkeleton(view) else null
 
         override fun bind(item: StatsModel) {

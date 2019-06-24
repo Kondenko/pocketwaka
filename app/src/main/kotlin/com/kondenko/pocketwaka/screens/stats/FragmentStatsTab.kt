@@ -93,6 +93,7 @@ class FragmentStatsTab : Fragment() {
                         showData(false)
                         fragmentState?.setState(state)
                     } else {
+                        showData(true)
                         recyclerview_stats?.apply {
                             if (adapter != statsAdapter) adapter = statsAdapter
                             statsAdapter?.items = listOf(StatsModel.Status.Offline()) + state.data!!
@@ -105,7 +106,7 @@ class FragmentStatsTab : Fragment() {
                         showData(false)
                         fragmentState?.setState(state, vm::update)
                     } else {
-                        Toast.makeText(context, state.exception?.message, Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, state.exception?.message, Toast.LENGTH_SHORT).show()
                     }
                 }
                 State.Empty -> {
