@@ -42,9 +42,11 @@ class GetStatsStateTest {
 
     private val refreshInterval = 1
 
+    private val retryAttempts = 3
+
     private val range = "foo"
 
-    private val params = GetStatsState.Params(range, refreshInterval)
+    private val params = GetStatsState.Params(range, refreshInterval, retryAttempts)
 
     private val skeletonModel: List<StatsModel> = mock()
 

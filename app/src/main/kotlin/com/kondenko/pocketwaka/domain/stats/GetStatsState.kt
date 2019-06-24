@@ -28,9 +28,7 @@ class GetStatsState(
      */
     private val delayBetweenSkeletonAndActualUi: Long = 75
 
-    private val maxRetries = 3L
-
-    data class Params(val range: String?, val refreshRateMin: Int)
+    data class Params(val range: String?, val refreshRateMin: Int, val retryAttempts: Int)
 
     override fun build(params: Params?): Observable<StatsState> {
         if (params?.range == null) return Observable.just(Failure.UnknownRange())
@@ -50,16 +48,16 @@ class GetStatsState(
         return connectivityStatus
                 .switchMap { isConnected ->
                     interval.flatMap {
-                        Observable.concatArray(loading, getStats(params.range, isConnected))
+                        Observable.concatArray(loading, getStats(params.range, params.retryAttempts, isConnected))
                     }
                 }
                 .scan(::changeState)
                 .distinctUntilChanged(::equal)
     }
 
-    private fun getStats(range: String, isConnected: Boolean) =
+    private fun getStats(range: String, retryAttempts: Int, isConnected: Boolean) =
             fetchStats.build(range)
-                    .retry(maxRetries)
+                    .retry(retryAttempts.toLong())
                     .map {
                         if (it.isFromCache()) Offline(it)
                         else Success(it)

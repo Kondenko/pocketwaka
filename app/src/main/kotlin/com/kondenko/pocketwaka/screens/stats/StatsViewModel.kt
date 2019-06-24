@@ -11,6 +11,8 @@ class StatsViewModel(private val range: String?, private val getStats: GetStatsS
 
     private val refreshRateMin = 3
 
+    private val retryAttempts = 3
+
     private val statsData = MutableLiveData<State<List<StatsModel>>>()
 
     init {
@@ -20,7 +22,7 @@ class StatsViewModel(private val range: String?, private val getStats: GetStatsS
     fun state(): LiveData<State<List<StatsModel>>> = statsData
 
     fun update() {
-        getStats(GetStatsState.Params(range, refreshRateMin), onSuccess = statsData::setValue)
+        getStats(GetStatsState.Params(range, retryAttempts, refreshRateMin), onSuccess = statsData::setValue)
     }
 
     override fun onCleared() {
