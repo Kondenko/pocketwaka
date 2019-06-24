@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnNextLayout
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,19 +50,19 @@ class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : 
             }
 
     override fun getItemViewType(position: Int): Int = when (items[position]) {
-        is StatsModel.Metadata -> throw IllegalArgumentException("StatsAdapter won't render metadata")
+        is StatsModel.Status -> typeStatus
         is StatsModel.Info -> typeInfo
         is StatsModel.BestDay -> typeBestDay
         is StatsModel.Stats -> typeStats
-        else -> typeStatus
+        is StatsModel.Metadata -> throw IllegalArgumentException("StatsAdapter won't render metadata")
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
             when (viewType) {
                 typeStatus -> ViewHolder(inflate(R.layout.item_status, parent))
-                typeStats -> ViewHolder(inflate(R.layout.layout_stats_card, parent))
                 typeInfo -> ViewHolder(inflate(R.layout.layout_stats_info, parent))
                 typeBestDay -> ViewHolder(inflate(R.layout.layout_stats_best_day, parent))
+                typeStats -> ViewHolder(inflate(R.layout.layout_stats_card, parent))
                 else -> throw IllegalArgumentException("Unknown view type $viewType")
             }
 
@@ -69,9 +70,9 @@ class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : 
     override fun getDiffCallback(oldList: List<StatsModel>, newList: List<StatsModel>): DiffUtil.Callback {
         return SimpleCallback(oldList, newList, areItemsTheSame = { a, b ->
             when (a) {
+                is StatsModel.Status -> b is StatsModel.Status
                 is StatsModel.Info -> b is StatsModel.Info
                 is StatsModel.BestDay -> b is StatsModel.BestDay
-                is StatsModel.Status -> b is StatsModel.Status
                 else -> false
             }
         })
@@ -87,26 +88,26 @@ class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : 
         override fun bind(item: StatsModel) {
             skeleton?.hide()
             when (item) {
-                is StatsModel.Info -> view.renderInfo(item)
-                is StatsModel.BestDay -> view.renderBestDay(item)
-                is StatsModel.Stats -> view.renderStats(item)
-                is StatsModel.Status -> view.renderStatus(item)
+                is StatsModel.Status -> view.render(item)
+                is StatsModel.Info -> view.render(item)
+                is StatsModel.BestDay -> view.render(item)
+                is StatsModel.Stats -> view.render(item)
             }
         }
         
-        private fun View.renderStatus(item: StatsModel.Status) {
-            val isOfflne = item is StatsModel.Status.Offline
-            imageView_status_offline.isVisible = isOfflne
-            progressbar_status_loading.isVisible = !isOfflne
+        private fun View.render(item: StatsModel.Status) {
+            val isOffline = item is StatsModel.Status.Offline
+            imageView_status_offline.isInvisible = !isOffline
+            progressbar_status_loading.isInvisible = isOffline
         }
 
-        private fun View.renderInfo(item: StatsModel.Info) {
+        private fun View.render(item: StatsModel.Info) {
             textview_stats_time_total.text = item.humanReadableTotal.timeToSpannable()
             textview_stats_daily_average.text = item.humanReadableDailyAverage.timeToSpannable()
             skeleton?.show()
         }
 
-        private fun View.renderBestDay(item: StatsModel.BestDay) {
+        private fun View.render(item: StatsModel.BestDay) {
             textview_bestday_date.text = item.date
             textview_bestday_time.text = item.time.timeToSpannable()
             imageview_bestday_illustration.isVisible = !isSkeleton
@@ -116,14 +117,14 @@ class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : 
             skeleton?.show()
         }
 
-        private fun View.renderStats(item: StatsModel.Stats) {
+        private fun View.render(item: StatsModel.Stats) {
             textview_stats_card_title.text = item.cardTitle
             with(view.statsCardRecyclerView) {
                 layoutManager = object : LinearLayoutManager(context) {
                     override fun canScrollVertically() = false
                 }
                 doOnNextLayout {
-                    skeleton?.addViews(this@renderStats as ViewGroup)
+                    skeleton?.addViews(this@render as ViewGroup)
                     skeleton?.show()
                 }
                 adapter = CardStatsListAdapter(context, item.items, isSkeleton)

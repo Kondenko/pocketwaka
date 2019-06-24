@@ -24,12 +24,12 @@ class SimpleCallback<T>(
         ) ?: oldList[oldItemPosition] == newList[newItemPosition]
     }
 
-    override fun getOldListSize(): Int = oldList.size
-
-    override fun getNewListSize(): Int = newList.size
-
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
         return getChangePayload?.invoke(oldList[oldItemPosition], newList[newItemPosition])
     }
+
+    override fun getOldListSize(): Int = oldList.size
+
+    override fun getNewListSize(): Int = newList.size
 
 }
