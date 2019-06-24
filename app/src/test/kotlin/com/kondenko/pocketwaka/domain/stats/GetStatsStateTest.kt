@@ -6,7 +6,6 @@ import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.testutils.RxRule
 import com.kondenko.pocketwaka.testutils.TestException
 import com.kondenko.pocketwaka.utils.SchedulersContainer
-import com.kondenko.pocketwaka.utils.extensions.assertOneOfValues
 import com.kondenko.pocketwaka.utils.extensions.testWithLogging
 import com.nhaarman.mockito_kotlin.*
 import io.reactivex.Observable
@@ -115,7 +114,23 @@ class GetStatsStateTest {
         with(getState.invoke(params).testWithLogging()) {
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading }
-            assertValueAt(1) { it is State.Failure.NoNetwork<*> }
+            assertValueAt(1) { it is State.Failure.NoNetwork<*> && it.isFatal }
+            assertNotTerminated()
+            assertNotComplete()
+            assertNoErrors()
+            dispose()
+        }
+    }
+
+    @Test
+    fun `should show an offline state with data`() {
+        whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(false))
+        whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
+        whenever(fetchStats.build(params.range)).doReturn(Observable.just(cachedModel))
+        with(getState.invoke(params).testWithLogging()) {
+            testScheduler.triggerActions()
+            assertValueAt(0) { it is State.Loading }
+            assertValueAt(1) { it is State.Offline && it.data != null && it.data == cachedModel }
             assertNotTerminated()
             assertNotComplete()
             assertNoErrors()
@@ -205,22 +220,6 @@ class GetStatsStateTest {
                 assertValueAt(8) { it is State.Loading && !it.isInterrupting }
                 assertValueAt(9) { it is State.Failure.Unknown<*> && it.data == actualModel && it.exception == exception }
             }
-            assertNoErrors()
-            assertNotTerminated()
-            assertNotComplete()
-            dispose()
-        }
-    }
-
-    @Test
-    fun `should show an error state after retrying several times if no data is present`() {
-        whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
-        whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
-        whenever(fetchStats.build(params.range)).doReturn(Observable.error(TestException()))
-        with(getState.invoke(params).testWithLogging()) {
-            testScheduler.triggerActions()
-            verify(fetchStats, atLeast(2)).build(params.range)
-            assertOneOfValues { it is State.Failure.Unknown<*> && it.isFatal && it.data == null }
             assertNoErrors()
             assertNotTerminated()
             assertNotComplete()

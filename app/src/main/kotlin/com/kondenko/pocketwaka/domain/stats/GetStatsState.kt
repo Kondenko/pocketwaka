@@ -5,8 +5,10 @@ import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.screens.base.State.*
+import com.kondenko.pocketwaka.screens.base.copyFrom
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.Observable
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 
@@ -46,21 +48,25 @@ class GetStatsState(
                 schedulers.workerScheduler
         )
         return connectivityStatus
-                .switchMap { isConnected ->
+                .switchMapDelayError { isConnected ->
                     interval.flatMap {
-                        Observable.concatArray(loading, getStats(params.range, params.retryAttempts, isConnected))
+                        Observable.concatArray(loading, getStats(params.range, params.retryAttempts.toLong(), isConnected))
                     }
                 }
                 .scan(::changeState)
                 .distinctUntilChanged(::equal)
     }
 
-    private fun getStats(range: String, retryAttempts: Int, isConnected: Boolean) =
+    private fun getStats(range: String, retryAttempts: Long, isConnected: Boolean) =
             fetchStats.build(range)
-                    .retry(retryAttempts.toLong())
+                    .doOnEach { Timber.d("Stats: $it") }
                     .map {
-                        if (it.isFromCache()) Offline(it)
-                        else Success(it)
+                        if (it.isFromCache()) {
+                            if (isConnected) Loading(it, emptyList(), false)
+                            else Offline(it)
+                        } else {
+                            Success(it)
+                        }
                     }
                     .onErrorReturn { t ->
                         if (isConnected) Failure.Unknown(exception = t)
@@ -75,18 +81,22 @@ class GetStatsState(
     private fun changeState(old: StatsState, new: StatsState): StatsState = when {
         new is Loading<StatsModelList> -> {
             if (old is Success) new.copy(data = old.data, isInterrupting = false)
-            else new.copy(data = old.data, isInterrupting = old.data == null)
+            else new.copy(data = new.data
+                    ?: old.data, isInterrupting = new.data == null && old.data == null)
         }
         old is Loading<StatsModelList> -> {
             when (new) {
-                is Failure.NoNetwork -> old.data?.let { Offline(data = it) } ?: new
+                is Failure.NoNetwork -> old.data?.let { Offline(data = it) } ?: new.copy(isFatal = true)
                 is Failure.UnknownRange -> new.copy(data = old.data, isFatal = old.data == null)
                 is Failure.Unknown -> new.copy(data = old.data, isFatal = old.data == null)
-                is Loading -> new.copy(data = old.data)
-                is Offline -> new.copy(data = old.data)
+                is Loading -> old.data?.let { new.copy(data = it) } ?: new
+                is Offline -> old.data?.let { new.copy(data = it) } ?: new
                 else -> new
             }
         }
+        new is Success -> old.data?.let { new.copy(data = it) } ?: new
+        new is Offline -> old.data?.let { new.copy(data = it) } ?: new
+        new is Failure -> old.data?.let { new.copyFrom(it, new.exception) } ?: new
         else -> {
             new
         }
