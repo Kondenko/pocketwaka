@@ -79,11 +79,13 @@ class GetStatsState(
     private fun changeState(old: StatsState, new: StatsState): StatsState = when {
         new is Loading<StatsModelList> -> {
             if (old is Success) new.copy(data = old.data, isInterrupting = false)
-            else new.copy(data = new.data ?: old.data, isInterrupting = new.data == null && old.data == null)
+            else new.copy(data = new.data
+                    ?: old.data, isInterrupting = new.data == null && old.data == null)
         }
         old is Loading<StatsModelList> -> {
             when (new) {
-                is Failure.NoNetwork -> old.data?.let { Offline(data = it) } ?: new.copy(isFatal = true)
+                is Failure.NoNetwork -> old.data?.let { Offline(data = it) }
+                        ?: new.copy(isFatal = true)
                 is Failure.UnknownRange -> new.copy(data = old.data, isFatal = old.data == null)
                 is Failure.Unknown -> new.copy(data = old.data, isFatal = old.data == null)
                 is Loading -> old.data?.let { new.copy(data = it) } ?: new

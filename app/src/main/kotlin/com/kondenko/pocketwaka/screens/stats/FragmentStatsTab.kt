@@ -51,9 +51,9 @@ class FragmentStatsTab : Fragment() {
 
     private val scrollDirection = BehaviorSubject.create<ScrollDirection>()
 
-    private var statsAdapter: StatsAdapter? = null
-
     private var skeletonAdapter: StatsAdapter? = null
+
+    private var statsAdapter: StatsAdapter? = null
 
     private var fragmentState: StateFragment? = null
 
@@ -85,7 +85,6 @@ class FragmentStatsTab : Fragment() {
     private fun setupUi() {
         fragmentState = childFragmentManager.findFragmentById(R.id.fragment_state) as StateFragment
         with(recyclerview_stats) {
-            itemAnimator = null
             layoutManager = LinearLayoutManager(context)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -120,6 +119,16 @@ class FragmentStatsTab : Fragment() {
         }
     }
 
+    private fun State.Failure<List<StatsModel>>.render() {
+        exception?.report()
+        if (isFatal) {
+            showData(false)
+            fragmentState?.setState(this, vm::update)
+        } else {
+            Toast.makeText(context, exception?.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun State.Offline<List<StatsModel>>.render() {
         if (data == null) {
             showData(false)
@@ -130,16 +139,6 @@ class FragmentStatsTab : Fragment() {
                 if (adapter != statsAdapter) adapter = statsAdapter
                 statsAdapter?.items = listOf(StatsModel.Status.Offline()) + data
             }
-        }
-    }
-
-    private fun State.Failure<List<StatsModel>>.render() {
-        exception?.report()
-        if (isFatal) {
-            showData(false)
-            fragmentState?.setState(this, vm::update)
-        } else {
-            Toast.makeText(context, exception?.message, Toast.LENGTH_SHORT).show()
         }
     }
 

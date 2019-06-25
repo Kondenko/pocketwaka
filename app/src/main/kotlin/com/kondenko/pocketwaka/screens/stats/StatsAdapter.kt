@@ -49,6 +49,10 @@ class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : 
                 super.items = it
             }
 
+    init {
+        setHasStableIds(true)
+    }
+
     override fun getItemViewType(position: Int): Int = when (items[position]) {
         is StatsModel.Status -> typeStatus
         is StatsModel.Info -> typeInfo
@@ -66,6 +70,7 @@ class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : 
                 else -> throw IllegalArgumentException("Unknown view type $viewType")
             }
 
+    override fun getItemId(position: Int): Long = items[position].hashCode().toLong()
 
     override fun getDiffCallback(oldList: List<StatsModel>, newList: List<StatsModel>): DiffUtil.Callback {
         return SimpleCallback(oldList, newList, areItemsTheSame = { a, b ->
