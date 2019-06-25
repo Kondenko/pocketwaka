@@ -65,13 +65,13 @@ class CardStatsListAdapter(private val context: Context, private val items: List
     }
 
     private fun getTextParams(item: StatsItem, progressBarWidth: Int, progressWidth: Float, textViewWidth: Int, textViewX: Float) =
-            textParamsCache.getOrPut(item) { calculateNamePosition(progressBarWidth, progressWidth, textViewWidth, textViewX) }
+            textParamsCache.getOrPut(item) { calculateNamePosition(item.percent, progressBarWidth, progressWidth, textViewWidth, textViewX) }
 
     /**
      * Puts stats item's name outside of the ProgressBar is the name is too long.
      */
-    private fun calculateNamePosition(progressBarWidth: Int, progressWidth: Float, textViewWidth: Int, textViewX: Float): TextParams {
-        val isTextWiderThanProgress = progressWidth * 1.1 <= textViewWidth
+    private fun calculateNamePosition(progress: Double?, progressBarWidth: Int, progressWidth: Float, textViewWidth: Int, textViewX: Float): TextParams {
+        val isTextWiderThanProgress = progressWidth * 1.1 <= textViewWidth || progress ?: 0.0 <= 0.1
         return if (isTextWiderThanProgress && !isSkeleton) {
             val width = progressBarWidth - progressWidth.toInt()
             val x = textViewX + progressWidth
