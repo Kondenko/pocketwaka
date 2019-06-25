@@ -104,8 +104,11 @@ class FragmentStats : Fragment() {
     }
 
     private fun onFragmentSelected(position: Int, fragment: FragmentStatsTab) {
+        val wasPreviousTabElevated = tabsElevationHelper.isElevated
         tabsElevationHelper.currentTabIndex = position
-        animateTabs(tabsElevationHelper.isElevated)
+        val isCurrentTabElevated = tabsElevationHelper.isElevated
+        if (!wasPreviousTabElevated && isCurrentTabElevated) animateTabs(true)
+        else if (wasPreviousTabElevated && !isCurrentTabElevated) animateTabs(false)
         refreshSubscription?.dispose()
         scrollSubscription?.dispose()
         refreshSubscription = fragment.subscribeToRefreshEvents(refreshEvents)
