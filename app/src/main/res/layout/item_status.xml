@@ -25,7 +25,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="9dp"
         android:text="@string/status_offline"
         android:textAppearance="@style/TextAppearance.App.Stats.Status"
         app:layout_constraintBottom_toBottomOf="@id/imageView_status_offline"

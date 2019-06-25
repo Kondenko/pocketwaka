@@ -97,6 +97,7 @@ class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : 
         
         private fun View.render(item: StatsModel.Status) {
             val isOffline = item is StatsModel.Status.Offline
+            textview_status_description.setText(if (isOffline) R.string.status_offline else R.string.status_updating)
             imageView_status_offline.isInvisible = !isOffline
             progressbar_status_loading.isInvisible = isOffline
         }

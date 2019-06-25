@@ -46,4 +46,5 @@
     <string name="status_offline_with_date">Оффлайн, обновлено %s назад</string>
     <string name="status_loading_with_date">Обновлено %s назад</string>
     <string name="loginactivity_error_no_browser">Нужен Google Chrome, \\nчтобы войти в приложение</string>
+    <string name="status_updating">Статистика обновляется</string>
 </resources>

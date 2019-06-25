@@ -9,7 +9,6 @@
 
     <string name="error_refreshing_token">Please log in again</string>
 
-
     <string name="error_state_title">We did our best\nbut couldn’t load your stats</string>
     <string name="error_state_subtitle">Please try again later</string>
     <string name="error_state_action">Retry</string>
@@ -22,6 +21,7 @@
     <string name="empty_state_action">Browse plugins</string>
 
     <string name="status_offline">Offline</string>
+    <string name="status_updating">Updating</string>
     <string name="status_offline_with_date">Offline, updated %s ago</string>
     <string name="status_loading_with_date">Updated %s ago</string>
 
