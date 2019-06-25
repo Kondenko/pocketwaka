@@ -52,29 +52,19 @@ class FragmentStats : Fragment() {
     }
 
     private fun setupViewPager(view: View) {
+        val adapter = FragmentPagerItemAdapter(
+                childFragmentManager,
+                FragmentPagerItems.with(activity)
+                        .addFragment(R.string.stats_tab_7_days, Const.STATS_RANGE_7_DAYS)
+                        .addFragment(R.string.stats_tab_30_days, Const.STATS_RANGE_30_DAYS)
+                        .addFragment(R.string.stats_tab_6_months, Const.STATS_RANGE_6_MONTHS)
+                        .addFragment(R.string.stats_tab_1_year, Const.STATS_RANGE_1_YEAR)
+                        .create()
+        )
         with(stats_viewpager_content) {
-            val adapter = FragmentPagerItemAdapter(
-                    childFragmentManager,
-                    FragmentPagerItems.with(activity)
-                            .addFragment(R.string.stats_tab_7_days, Const.STATS_RANGE_7_DAYS)
-                            .addFragment(R.string.stats_tab_30_days, Const.STATS_RANGE_30_DAYS)
-                            .addFragment(R.string.stats_tab_6_months, Const.STATS_RANGE_6_MONTHS)
-                            .addFragment(R.string.stats_tab_1_year, Const.STATS_RANGE_1_YEAR)
-                            .create()
-            )
             this.adapter = adapter
             post {
                 onFragmentSelected(0, adapter.getPage(currentItem) as FragmentStatsTab)
-            }
-            stats_smarttablayout_ranges.setViewPager(stats_viewpager_content)
-            stats_smarttablayout_ranges.setOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
-                override fun onPageSelected(position: Int) {
-                    val selectedFragment = adapter.getPage(position) as FragmentStatsTab?
-                    if (selectedFragment != null) onFragmentSelected(position, selectedFragment)
-                    else Timber.e("$selectedFragment at position $position is null")
-                }
-            })
-            post {
                 activity!!.view_main_elevated_surface.updateLayoutParams {
                     val statusbarHeight: Float = activity?.run {
                         getStatusBarHeight()?.toFloat()
@@ -85,6 +75,16 @@ class FragmentStats : Fragment() {
                             .roundToInt()
                 }
             }
+        }
+        with(stats_smarttablayout_ranges) {
+            setViewPager(stats_viewpager_content)
+            setOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+                override fun onPageSelected(position: Int) {
+                    val selectedFragment = adapter.getPage(position) as FragmentStatsTab?
+                    if (selectedFragment != null) onFragmentSelected(position, selectedFragment)
+                    else Timber.e("$selectedFragment at position $position is null")
+                }
+            })
         }
     }
 
