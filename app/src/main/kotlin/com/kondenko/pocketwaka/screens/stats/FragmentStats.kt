@@ -89,6 +89,7 @@ class FragmentStats : Fragment() {
     }
 
     private fun createColorAnimator(initialColor: Int, finalColor: Int) = ValueAnimator().apply {
+        @Suppress("UsePropertyAccessSyntax")
         setDuration(Const.DEFAULT_ANIM_DURATION)
         setIntValues(initialColor, finalColor)
         setEvaluator(ArgbEvaluator())
