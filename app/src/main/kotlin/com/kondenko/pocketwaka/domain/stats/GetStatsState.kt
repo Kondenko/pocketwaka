@@ -5,10 +5,8 @@ import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.screens.base.State.*
-import com.kondenko.pocketwaka.screens.base.copyFrom
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.Observable
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 
@@ -59,13 +57,13 @@ class GetStatsState(
 
     private fun getStats(range: String, retryAttempts: Long, isConnected: Boolean) =
             fetchStats.build(range)
-                    .doOnEach { Timber.d("Stats: $it") }
                     .map {
-                        if (it.isFromCache()) {
-                            if (isConnected) Loading(it, emptyList(), false)
-                            else Offline(it)
+                        val stats = it.stats
+                        if (it.isFromCache) {
+                            if (isConnected) Loading(stats, emptyList(), false)
+                            else Offline(stats)
                         } else {
-                            Success(it)
+                            Success(stats)
                         }
                     }
                     .onErrorReturn { t ->
@@ -81,8 +79,7 @@ class GetStatsState(
     private fun changeState(old: StatsState, new: StatsState): StatsState = when {
         new is Loading<StatsModelList> -> {
             if (old is Success) new.copy(data = old.data, isInterrupting = false)
-            else new.copy(data = new.data
-                    ?: old.data, isInterrupting = new.data == null && old.data == null)
+            else new.copy(data = new.data ?: old.data, isInterrupting = new.data == null && old.data == null)
         }
         old is Loading<StatsModelList> -> {
             when (new) {
@@ -94,14 +91,9 @@ class GetStatsState(
                 else -> new
             }
         }
-        new is Success -> old.data?.let { new.copy(data = it) } ?: new
-        new is Offline -> old.data?.let { new.copy(data = it) } ?: new
-        new is Failure -> old.data?.let { new.copyFrom(it, new.exception) } ?: new
         else -> {
             new
         }
     }
-
-    private fun StatsModelList.isFromCache(): Boolean = find { it is StatsModel.Metadata && it.isFromCache } != null
 
 }

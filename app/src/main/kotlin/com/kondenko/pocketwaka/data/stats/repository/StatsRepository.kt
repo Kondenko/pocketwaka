@@ -86,8 +86,7 @@ class StatsRepository(
         list += StatsModel.Metadata(
                 range = range,
                 lastUpdated = dateUpdated,
-                isEmpty = stats.totalSeconds == 0.0,
-                isFromCache = false
+                isEmpty = stats.totalSeconds == 0.0
         )
 
         return StatsDto(range, timeProvider.getCurrentTimeMillis(), false, list)
