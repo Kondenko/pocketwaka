@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.R
@@ -37,7 +38,9 @@ class CardStatsListAdapter(private val context: Context, private val items: List
                 textview_stats_item_name.text = item.name
                 progressbar_stats_item_percentage.color = item.color
                 progressbar_stats_item_percentage.progress = (item.percent?.toFloat() ?: 0f) / 100
-                post { itemView.setupItemNameWidth() }
+                itemView.doOnPreDraw {
+                    it.setupItemNameWidth()
+                }
             }
         }
     }
@@ -47,15 +50,13 @@ class CardStatsListAdapter(private val context: Context, private val items: List
      */
     private fun View.setupItemNameWidth() {
         val isTextWiderThanProgress = progressbar_stats_item_percentage.progressBarWidth * 1.1 <= textview_stats_item_name.width
-        if (isTextWiderThanProgress && !isSkeleton) {
-            textview_stats_item_name.updateLayoutParams {
-                width = (progressbar_stats_item_percentage.width - progressbar_stats_item_percentage.progressBarWidth).toInt()
-            }
-            textview_stats_item_name.setTextColor(ContextCompat.getColor(context, R.color.color_stats_item_dark))
-            textview_stats_item_name.x += progressbar_stats_item_percentage.progressBarWidth
-        } else {
-            textview_stats_item_name.updateLayoutParams {
-                width = if (isSkeleton) {
+        textview_stats_item_name.updateLayoutParams {
+            width = if (isTextWiderThanProgress && !isSkeleton) {
+                textview_stats_item_name.setTextColor(ContextCompat.getColor(context, R.color.color_stats_item_dark))
+                textview_stats_item_name.x += progressbar_stats_item_percentage.progressBarWidth
+                (progressbar_stats_item_percentage.width - progressbar_stats_item_percentage.progressBarWidth).toInt()
+            } else {
+                if (isSkeleton) {
                     progressbar_stats_item_percentage.width
                 } else {
                     progressbar_stats_item_percentage.progressBarWidth.toInt()
