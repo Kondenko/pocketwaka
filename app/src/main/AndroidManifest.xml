@@ -13,10 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-
         <meta-data
             android:name="google_analytics_adid_collection_enabled"
             android:value="false" />
+
+        <uses-library android:name="android.test.runner"
+            android:required="false" />
 
         <activity
             android:name=".screens.auth.AuthActivity"

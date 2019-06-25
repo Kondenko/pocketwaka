@@ -1,13 +1,13 @@
 package com.kondenko.pocketwaka.utils
 
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
-import com.kondenko.pocketwaka.testutils.CustomRobolectricTestRunner
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-@RunWith(CustomRobolectricTestRunner::class)
+@RunWith(RobolectricTestRunner::class)
 class EncryptorTest {
 
     private val encryptor = Encryptor()

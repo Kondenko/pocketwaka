@@ -71,17 +71,19 @@ ext {
 
     testingDependencies = [
             "androidx.test:core:${versions.androidxTest}",
-            "org.koin:koin-test:${versions.koin}",
-            "junit:junit:${versions.junit}",
+            "androidx.test.ext:junit:${versions.junit}",
+            "androidx.test:runner:${versions.testRunner}",
+            "androidx.test:rules:${versions.testRunner}",
             "org.mockito:mockito-core:${versions.mockito}",
             "com.nhaarman:mockito-kotlin:${versions.mockitoKotlin}",
-            "org.robolectric:robolectric:${versions.robolectric}"
+            "org.robolectric:robolectric:${versions.robolectric}",
+            "org.koin:koin-test:${versions.koin}",
     ]
 
     androidTestingDependencies = [
             "androidx.annotation:annotation:${versions.annotation}",
-            "androidx.test:runner:${versions.androidxTest}",
-            "androidx.test:rules:${versions.androidxTest}",
+            "androidx.test:runner:${versions.testRunner}",
+            "androidx.test:rules:${versions.testRunner}",
     ]
 
     androidTestingSupportDependencies = [

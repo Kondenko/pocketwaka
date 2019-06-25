@@ -42,11 +42,3 @@ sealed class State<out T>(open val data: T?) {
     }
 
 }
-
-fun <T> State.Failure<T>.copyFrom(data: T?, exception: Throwable? = this.exception): State.Failure<T> {
-    return when (this) {
-        is State.Failure.NoNetwork<T> -> this.copy(data, exception)
-        is State.Failure.UnknownRange<T> -> this.copy(data)
-        is State.Failure.Unknown<T> -> this.copy(data, exception)
-    }
-}

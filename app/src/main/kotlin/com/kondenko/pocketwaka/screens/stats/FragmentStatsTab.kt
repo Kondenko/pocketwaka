@@ -53,12 +53,10 @@ class FragmentStatsTab : Fragment() {
         return inflater.inflate(R.layout.fragment_stats, container, false)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
-        context?.let {
-            statsAdapter = StatsAdapter(it)
-            skeletonAdapter = StatsAdapter(it, true)
-        }
+        statsAdapter = StatsAdapter(context)
+        skeletonAdapter = StatsAdapter(context, true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

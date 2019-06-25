@@ -92,11 +92,14 @@ android {
             java.srcDirs += debugKaptFiles
         }
     }
-
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
     androidExtensions {
         experimental = true
     }
-
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
@@ -133,14 +136,14 @@ dependencies {
     implementation lottie
     implementation room
 
+    debugImplementation databaseBrowser
+
     kapt roomCompiler
 
     testImplementation testingDependencies
-
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: versions.mockito
 
     androidTestImplementation androidTestingDependencies
-
     androidTestImplementation(androidTestingSupportDependencies, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
