@@ -11,7 +11,7 @@ import com.kondenko.pocketwaka.domain.stats.GetSkeletonPlaceholderData
 import com.kondenko.pocketwaka.domain.stats.GetStatsState
 import com.kondenko.pocketwaka.screens.stats.StatsViewModel
 import com.kondenko.pocketwaka.utils.ColorProvider
-import com.kondenko.pocketwaka.utils.encryption.Encryptor
+import com.kondenko.pocketwaka.utils.encryption.StringEncryptor
 import com.kondenko.pocketwaka.utils.extensions.create
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -34,7 +34,7 @@ object StatsModule {
         factory {
             GetTokenHeaderValue(
                     schedulers = get(),
-                    stringEncryptor = get() as Encryptor<String>,
+                    stringEncryptor = get<StringEncryptor>(),
                     accessTokenRepository = get()
             )
         }
