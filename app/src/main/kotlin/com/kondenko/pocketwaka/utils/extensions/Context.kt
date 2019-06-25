@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Build
 import android.util.TypedValue
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import java.util.*
 
 fun Context.getCurrentLocale(): Locale = resources.configuration.run {
@@ -31,3 +33,5 @@ fun Context.isConnectionAvailable(): Boolean {
     val service = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     return service.activeNetworkInfo?.isConnected ?: false
 }
+
+fun Context.getColorCompat(@ColorRes colorRes: Int) = ContextCompat.getColor(this, colorRes)

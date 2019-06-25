@@ -8,13 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
-import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
+import com.kondenko.pocketwaka.utils.extensions.getColorCompat
 import com.kondenko.pocketwaka.utils.getStatusBarHeight
 import com.ogaclejapan.smarttablayout.utils.v4.Bundler
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
@@ -41,17 +41,13 @@ class FragmentStats : Fragment() {
 
     private lateinit var colorAnimator: ValueAnimator
 
-    private var toolbarColorResting: Int? = null
-
-    private var toolbarColorElevated: Int? = null
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_stats_container, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        toolbarColorResting = ContextCompat.getColor(view.context, R.color.color_app_bar_resting)
-        toolbarColorElevated = ContextCompat.getColor(view.context, R.color.color_app_bar_elevated)
-        colorAnimator = createColorAnimator()
+        val toolbarColorResting = view.context.getColorCompat(R.color.color_app_bar_resting)
+        val toolbarColorElevated = view.context.getColorCompat(R.color.color_app_bar_elevated)
+        colorAnimator = createColorAnimator(toolbarColorResting, toolbarColorElevated)
         setupViewPager(view)
     }
 
@@ -92,14 +88,12 @@ class FragmentStats : Fragment() {
         }
     }
 
-    private fun createColorAnimator(): ValueAnimator {
-        return ValueAnimator().apply {
-            setDuration(Const.DEFAULT_ANIM_DURATION)
-            setIntValues(toolbarColorResting!!, toolbarColorElevated!!)
-            setEvaluator(ArgbEvaluator())
-            addUpdateListener { valueAnimator ->
-                activity!!.view_main_elevated_surface.setBackgroundColor(valueAnimator.animatedValue as Int)
-            }
+    private fun createColorAnimator(initialColor: Int, finalColor: Int) = ValueAnimator().apply {
+        setDuration(Const.DEFAULT_ANIM_DURATION)
+        setIntValues(initialColor, finalColor)
+        setEvaluator(ArgbEvaluator())
+        addUpdateListener { valueAnimator ->
+            activity?.view_main_elevated_surface?.setBackgroundColor(valueAnimator.animatedValue as Int)
         }
     }
 
@@ -125,22 +119,17 @@ class FragmentStats : Fragment() {
 
     private fun animateTabs(elevate: Boolean) {
         // Tabs background color
+        tabsElevationHelper.isElevated = elevate
         colorAnimator.cancel()
-        if (elevate) {
-            colorAnimator.start()
-            tabsElevationHelper.isElevated = true
-        } else {
-            colorAnimator.reverse()
-            tabsElevationHelper.isElevated = false
+        with(colorAnimator) {
+            if (elevate) start()
+            else reverse()
         }
-        animateShadow(elevate)
+        // Custom tabs elevation
+        stats_view_shadow.animate()
+                .alpha(if (elevate) Const.MAX_SHADOW_OPACITY else 0f)
+                .start()
     }
-
-    // Custom tabs elevation
-    private fun animateShadow(show: Boolean) = stats_view_shadow.animate()
-            .alpha(if (show) Const.MAX_SHADOW_OPACITY else 0f)
-            .start()
-
 
     fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Observable<Any> = refreshEvents.subscribeWith(this.refreshEvents)
 
