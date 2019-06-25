@@ -12,11 +12,10 @@ ext {
     ]
 
     support = [
-            "androidx.legacy:legacy-support-v4:${versions.androidx}",
-            "androidx.appcompat:appcompat:${versions.androidx}",
+            "androidx.appcompat:appcompat:${versions.appcompat}",
             "com.google.android.material:material:${versions.androidx}",
-            "androidx.cardview:cardview:${versions.androidx}",
-            "androidx.browser:browser:${versions.androidx}"
+            "androidx.cardview:cardview:${versions.cardview}",
+            "androidx.browser:browser:${versions.browser}"
     ]
 
     archComponents = [
@@ -54,6 +53,7 @@ ext {
     koin = [
             "org.koin:koin-core:${versions.koin}",
             "org.koin:koin-android:${versions.koin}",
+            "org.koin:koin-androidx-scope:$versions.koin",
             "org.koin:koin-androidx-viewmodel:${versions.koin}"
     ]
 
@@ -67,6 +67,8 @@ ext {
 
     crashlyticsGoogle = "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
 
+    databaseBrowser = "com.amitshekhar.android:debug-db:${versions.databaseBrowser}"
+
     testingDependencies = [
             "androidx.test:core:${versions.androidxTest}",
             "org.koin:koin-test:${versions.koin}",
@@ -77,7 +79,7 @@ ext {
     ]
 
     androidTestingDependencies = [
-            "androidx.annotation:annotation:${versions.androidx}",
+            "androidx.annotation:annotation:${versions.annotation}",
             "androidx.test:runner:${versions.androidxTest}",
             "androidx.test:rules:${versions.androidxTest}",
     ]
