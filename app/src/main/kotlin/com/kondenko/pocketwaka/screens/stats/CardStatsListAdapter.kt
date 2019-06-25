@@ -5,16 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
+import com.kondenko.pocketwaka.utils.extensions.getColorCompat
 import com.kondenko.pocketwaka.utils.extensions.setInvisible
 import kotlinx.android.synthetic.main.item_stats_item.view.*
 
 class CardStatsListAdapter(private val context: Context, private val items: List<StatsItem>, private val isSkeleton: Boolean) : RecyclerView.Adapter<CardStatsListAdapter.ViewHolder>() {
+
+    private data class TextParams(val width: Int, val x: Float, val useDarkColor: Boolean)
+
+    private val textParamsCache = mutableMapOf<StatsItem, TextParams>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_stats_item, parent, false)
@@ -39,29 +43,42 @@ class CardStatsListAdapter(private val context: Context, private val items: List
                 progressbar_stats_item_percentage.color = item.color
                 progressbar_stats_item_percentage.progress = (item.percent?.toFloat() ?: 0f) / 100
                 itemView.doOnPreDraw {
-                    it.setupItemNameWidth()
+                    val params = getTextParams(
+                            item,
+                            progressbar_stats_item_percentage.width,
+                            progressbar_stats_item_percentage.progressBarWidth,
+                            textview_stats_item_name.width,
+                            textview_stats_item_name.x
+                    )
+                    with(textview_stats_item_name) {
+                        updateLayoutParams {
+                            width = params.width
+                            x = params.x
+                        }
+                        if (params.useDarkColor) {
+                            setTextColor(context.getColorCompat(R.color.color_stats_item_dark))
+                        }
+                    }
                 }
             }
         }
     }
 
+    private fun getTextParams(item: StatsItem, progressBarWidth: Int, progressWidth: Float, textViewWidth: Int, textViewX: Float) =
+            textParamsCache.getOrPut(item) { calculateNamePosition(progressBarWidth, progressWidth, textViewWidth, textViewX) }
+
     /**
      * Puts stats item's name outside of the ProgressBar is the name is too long.
      */
-    private fun View.setupItemNameWidth() {
-        val isTextWiderThanProgress = progressbar_stats_item_percentage.progressBarWidth * 1.1 <= textview_stats_item_name.width
-        textview_stats_item_name.updateLayoutParams {
-            width = if (isTextWiderThanProgress && !isSkeleton) {
-                textview_stats_item_name.setTextColor(ContextCompat.getColor(context, R.color.color_stats_item_dark))
-                textview_stats_item_name.x += progressbar_stats_item_percentage.progressBarWidth
-                (progressbar_stats_item_percentage.width - progressbar_stats_item_percentage.progressBarWidth).toInt()
-            } else {
-                if (isSkeleton) {
-                    progressbar_stats_item_percentage.width
-                } else {
-                    progressbar_stats_item_percentage.progressBarWidth.toInt()
-                }
-            }
+    private fun calculateNamePosition(progressBarWidth: Int, progressWidth: Float, textViewWidth: Int, textViewX: Float): TextParams {
+        val isTextWiderThanProgress = progressWidth * 1.1 <= textViewWidth
+        return if (isTextWiderThanProgress && !isSkeleton) {
+            val width = progressBarWidth - progressWidth.toInt()
+            val x = textViewX + progressWidth
+            TextParams(width, x, true)
+        } else {
+            val width = if (isSkeleton) progressBarWidth else progressWidth.toInt()
+            TextParams(width, textViewX, false)
         }
     }
 
