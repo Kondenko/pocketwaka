@@ -28,7 +28,6 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_stats.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import timber.log.Timber
 
 class FragmentStatsTab : Fragment() {
 
@@ -62,57 +61,66 @@ class FragmentStatsTab : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUi()
-        vm.state().observe(viewLifecycleOwner, Observer { state ->
-            Timber.d("${arguments?.get(ARG_RANGE)} state updated: $state")
-            when (state) {
-                is State.Loading<List<StatsModel>> -> {
-                    showData(true)
-                    if (state.isInterrupting) {
-                        skeletonAdapter?.let {
-                            if (it.items.isEmpty()) it.items = state.skeletonData
-                            recyclerview_stats?.adapter = it
-                        }
-                    } else {
-                        recyclerview_stats?.apply {
-                            if (adapter != statsAdapter) adapter = statsAdapter
-                            statsAdapter?.items = listOf(StatsModel.Status.Loading()) + state.data!!
-                        }
-                    }
-                }
-                is State.Success<List<StatsModel>> -> {
-                    showData(true)
-                    statsAdapter?.items = state.data
-                    recyclerview_stats?.apply {
-                        if (adapter != statsAdapter) adapter = statsAdapter
-                    }
-                }
-                is State.Offline -> {
-                    if (state.data == null) {
-                        showData(false)
-                        fragmentState?.setState(state)
-                    } else {
-                        showData(true)
-                        recyclerview_stats?.apply {
-                            if (adapter != statsAdapter) adapter = statsAdapter
-                            statsAdapter?.items = listOf(StatsModel.Status.Offline()) + state.data!!
-                        }
-                    }
-                }
-                is State.Failure<List<StatsModel>> -> {
-                    state.exception?.report()
-                    if (state.isFatal) {
-                        showData(false)
-                        fragmentState?.setState(state, vm::update)
-                    } else {
-                        Toast.makeText(context, state.exception?.message, Toast.LENGTH_SHORT).show()
-                    }
-                }
-                State.Empty -> {
-                    showData(false)
-                    fragmentState?.setState(state, this::openPlugins)
-                }
+        vm.state().observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is State.Success -> it.render()
+                is State.Loading -> it.render()
+                is State.Offline -> it.render()
+                is State.Empty -> it.render()
+                is State.Failure -> it.render()
             }
         })
+    }
+
+    private fun State.Loading<List<StatsModel>>.render() {
+        showData(true)
+        if (isInterrupting) {
+            skeletonAdapter?.let {
+                if (it.items.isEmpty()) it.items = skeletonData
+                recyclerview_stats?.adapter = it
+            }
+        } else {
+            recyclerview_stats?.apply {
+                if (adapter != statsAdapter) adapter = statsAdapter
+                statsAdapter?.items = listOf(StatsModel.Status.Loading()) + (data ?: emptyList())
+            }
+        }
+    }
+
+    private fun State.Success<List<StatsModel>>.render() {
+        showData(true)
+        statsAdapter?.items = data
+        recyclerview_stats?.apply {
+            if (adapter != statsAdapter) adapter = statsAdapter
+        }
+    }
+
+    private fun State.Offline<List<StatsModel>>.render() {
+        if (data == null) {
+            showData(false)
+            fragmentState?.setState(this)
+        } else {
+            showData(true)
+            recyclerview_stats?.apply {
+                if (adapter != statsAdapter) adapter = statsAdapter
+                statsAdapter?.items = listOf(StatsModel.Status.Offline()) + data
+            }
+        }
+    }
+
+    private fun State.Failure<List<StatsModel>>.render() {
+        exception?.report()
+        if (isFatal) {
+            showData(false)
+            fragmentState?.setState(this, vm::update)
+        } else {
+            Toast.makeText(context, exception?.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun State.Empty.render() {
+        showData(false)
+        fragmentState?.setState(this, ::openPlugins)
     }
 
     override fun onResume() {
