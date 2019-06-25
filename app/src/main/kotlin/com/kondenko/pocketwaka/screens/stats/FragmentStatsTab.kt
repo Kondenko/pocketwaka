@@ -20,6 +20,7 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.StateFragment
 import com.kondenko.pocketwaka.screens.base.State
+import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import com.kondenko.pocketwaka.utils.report
 import com.kondenko.pocketwaka.utils.transaction
 import io.reactivex.Observable
@@ -37,6 +38,15 @@ class FragmentStatsTab : Fragment() {
 
     private val vm: StatsViewModel by viewModel { parametersOf(arguments?.getString(ARG_RANGE)) }
 
+    /**
+     * The minimum value the RecyclerView has to be scrolled for
+     * for the AppBar shadow to be shown
+     */
+    private val minScrollOffset: Float by lazy {
+        val value = 8f
+        context?.adjustForDensity(value) ?: value
+    }
+
     private var shadowAnimationNeeded = true
 
     private val scrollDirection = BehaviorSubject.create<ScrollDirection>()
@@ -52,12 +62,6 @@ class FragmentStatsTab : Fragment() {
         return inflater.inflate(R.layout.fragment_stats, container, false)
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        statsAdapter = StatsAdapter(context)
-        skeletonAdapter = StatsAdapter(context, true)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUi()
@@ -70,6 +74,27 @@ class FragmentStatsTab : Fragment() {
                 is State.Failure -> it.render()
             }
         })
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        statsAdapter = StatsAdapter(context)
+        skeletonAdapter = StatsAdapter(context, true)
+    }
+
+    private fun setupUi() {
+        fragmentState = childFragmentManager.findFragmentById(R.id.fragment_state) as StateFragment
+        with(recyclerview_stats) {
+            itemAnimator = null
+            layoutManager = LinearLayoutManager(context)
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    updateAppBarElevation()
+                }
+            })
+        }
+        showData(true)
     }
 
     private fun State.Loading<List<StatsModel>>.render() {
@@ -123,26 +148,6 @@ class FragmentStatsTab : Fragment() {
         fragmentState?.setState(this, ::openPlugins)
     }
 
-    override fun onResume() {
-        super.onResume()
-        updateAppBarElevation()
-    }
-
-    private fun setupUi() {
-        fragmentState = childFragmentManager.findFragmentById(R.id.fragment_state) as StateFragment
-        with(recyclerview_stats) {
-            itemAnimator = null
-            layoutManager = LinearLayoutManager(context)
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    updateAppBarElevation()
-                }
-            })
-        }
-        showData(true)
-    }
-
     private fun openPlugins() {
         val uri = Const.URL_PLUGINS
         val builder = CustomTabsIntent.Builder()
@@ -152,7 +157,7 @@ class FragmentStatsTab : Fragment() {
     }
 
     private fun updateAppBarElevation() {
-        shadowAnimationNeeded = if ((recyclerview_stats as RecyclerView).computeVerticalScrollOffset() >= 10) {
+        shadowAnimationNeeded = if (recyclerview_stats.computeVerticalScrollOffset() >= minScrollOffset) {
             if (shadowAnimationNeeded) scrollDirection.onNext(ScrollDirection.Down)
             false
         } else {
@@ -163,7 +168,7 @@ class FragmentStatsTab : Fragment() {
 
     fun scrollDirection(): Observable<ScrollDirection> = scrollDirection
 
-    fun isScrollviewOnTop() = recyclerview_stats?.scrollY ?: 0 == 0
+    fun isListOnTop() = (recyclerview_stats?.scrollY ?: 0) == 0
 
     fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Disposable {
         return refreshEvents.subscribe {
