@@ -7,9 +7,11 @@ import com.kondenko.pocketwaka.domain.stats.GetStatsState
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.State
 
-class StatsViewModel(private val range: String, private val getStats: GetStatsState) : ViewModel() {
+class StatsViewModel(private val range: String?, private val getStats: GetStatsState) : ViewModel() {
 
     private val refreshRateMin = 3
+
+    private val retryAttempts = 3
 
     private val statsData = MutableLiveData<State<List<StatsModel>>>()
 
@@ -20,7 +22,7 @@ class StatsViewModel(private val range: String, private val getStats: GetStatsSt
     fun state(): LiveData<State<List<StatsModel>>> = statsData
 
     fun update() {
-        getStats.execute(GetStatsState.Params(range, refreshRateMin), onSuccess = statsData::setValue)
+        getStats(GetStatsState.Params(range, retryAttempts, refreshRateMin), onSuccess = statsData::setValue)
     }
 
     override fun onCleared() {

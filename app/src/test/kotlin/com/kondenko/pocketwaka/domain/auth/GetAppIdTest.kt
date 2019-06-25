@@ -21,7 +21,7 @@ class GetAppIdTest {
         val idDecrypted = "bar"
         whenever(encryptedKeysRepository.appId).doReturn(Single.just(idEncrypted))
         whenever(encryptor.decrypt(idEncrypted)).doReturn(idDecrypted)
-        val single = useCase.execute()
+        val single = useCase.invoke()
         verify(encryptedKeysRepository, times(1)).appId
         verify(encryptor, times(1)).decrypt(idEncrypted)
         val testObserver = single.test()

@@ -18,10 +18,10 @@ class MainActivityPresenter(
     }
 
     private fun checkIfLoggedIn() {
-        checkIfUserIsLoggedIn.execute(
+        checkIfUserIsLoggedIn.invoke(
                 onSuccess = { isLoggedIn ->
                     if (isLoggedIn) {
-                        refreshAccessToken.execute()
+                        refreshAccessToken.invoke()
                         view?.showStats()
                     } else {
                         view?.showLoginScreen()
@@ -34,7 +34,7 @@ class MainActivityPresenter(
     }
 
     fun logout() {
-        deleteSavedToken.execute(onFinish = { view?.onLogout() })
+        deleteSavedToken.invoke(onFinish = { view?.onLogout() })
     }
 
     override fun detach() {

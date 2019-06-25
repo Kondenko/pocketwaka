@@ -29,5 +29,5 @@ fun Context.adjustForDensity(value: Int?): Float? {
 
 fun Context.isConnectionAvailable(): Boolean {
     val service = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    return service.activeNetworkInfo?.isConnectedOrConnecting ?: false
+    return service.activeNetworkInfo?.isConnected ?: false
 }

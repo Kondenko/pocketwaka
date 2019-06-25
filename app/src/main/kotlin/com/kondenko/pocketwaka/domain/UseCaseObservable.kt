@@ -13,7 +13,7 @@ abstract class UseCaseObservable<PARAMS, RESULT>(private val schedulers: Schedul
 
     abstract override fun build(params: PARAMS?): Observable<RESULT>
 
-    override fun execute(params: PARAMS?, onSuccess: (RESULT) -> Unit, onError: (Throwable) -> Unit, onFinish: () -> Unit): Observable<RESULT> {
+    override fun invoke(params: PARAMS?, onSuccess: (RESULT) -> Unit, onError: (Throwable) -> Unit, onFinish: () -> Unit): Observable<RESULT> {
         return build(params)
                 .subscribeOn(schedulers.workerScheduler)
                 .observeOn(schedulers.uiScheduler)

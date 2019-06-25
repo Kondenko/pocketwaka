@@ -8,7 +8,6 @@ import androidx.core.view.updateLayoutParams
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import com.kondenko.pocketwaka.utils.extensions.findViewsWithTag
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 private data class InitialState(
@@ -30,7 +29,6 @@ class Skeleton(
     fun addViews(root: ViewGroup) {
         findViews(root).forEach { (view, state) ->
             if (!initialStates.containsKey(view)) {
-                Timber.d("Adding $view")
                 initialStates[view] = state
             }
         }
@@ -38,7 +36,6 @@ class Skeleton(
 
     fun addView(view: View) {
         if (view.getTag(R.id.tag_skeleton_width_key) != null) {
-            Timber.d("Adding $view")
             initialStates[view] = view.getInitialState()
         }
     }
@@ -60,7 +57,6 @@ class Skeleton(
     }
 
     private fun View.showSkeleton() {
-        Timber.d("Showing a skeleton of $this")
         val dimenWidth = (getTag(R.id.tag_skeleton_width_key) as String?)?.toInt()
         val finalWidth = context.adjustForDensity(dimenWidth)?.roundToInt().let {
             if (it == null || it < 0) width else it

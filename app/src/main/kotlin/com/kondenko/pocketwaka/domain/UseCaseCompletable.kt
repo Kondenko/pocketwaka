@@ -13,7 +13,7 @@ abstract class UseCaseCompletable<PARAMS>(private val schedulers: SchedulersCont
 
     abstract override fun build(params: PARAMS?): Completable
 
-    override fun execute(params: PARAMS?, onSuccess: (Nothing) -> Unit, onError: (Throwable) -> Unit, onFinish: () -> Unit): Completable {
+    override fun invoke(params: PARAMS?, onSuccess: (Nothing) -> Unit, onError: (Throwable) -> Unit, onFinish: () -> Unit): Completable {
         return build(params)
                 .subscribeOn(schedulers.workerScheduler)
                 .observeOn(schedulers.uiScheduler)

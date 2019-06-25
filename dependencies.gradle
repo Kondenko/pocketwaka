@@ -20,8 +20,17 @@ ext {
     ]
 
     archComponents = [
-            "androidx.lifecycle:lifecycle-extensions-ktx:${versions.lifecycle}",
+            "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}",
             "androidx.lifecycle:lifecycle-reactivestreams-ktx:${versions.lifecycle}",
+    ]
+
+    room = [
+            "androidx.room:room-runtime:${versions.room}",
+            "androidx.room:room-rxjava2:${versions.room}"
+    ]
+
+    roomCompiler = [
+            "androidx.room:room-compiler:${versions.room}"
     ]
 
     rx = [

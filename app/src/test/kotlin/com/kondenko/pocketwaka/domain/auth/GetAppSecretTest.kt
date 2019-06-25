@@ -21,7 +21,7 @@ class GetAppSecretTest{
         val secretDecrypted = "bar"
         whenever(encryptedKeysRepository.appSecret).doReturn(Single.just(secretEncrypted))
         whenever(encryptor.decrypt(secretEncrypted)).doReturn(secretDecrypted)
-        val single = useCase.execute()
+        val single = useCase.invoke()
         verify(encryptedKeysRepository, times(1)).appSecret
         verify(encryptor, times(1)).decrypt(secretEncrypted)
         with(single.test()) {

@@ -42,11 +42,6 @@ fun <T> ViewGroup.findViewsWithTag(id: Int, value: T? = null): List<View> {
 
 fun View.rxClicks() = RxView.clicks(this)
 
-fun showFirstView(visibleView: View, vararg goneViews: View) {
-    visibleView.setVisible()
-    goneViews.forEach { it.setGone() }
-}
-
 fun View.setVisible() {
     visibility = View.VISIBLE
 }
@@ -72,10 +67,3 @@ fun View.post(): Completable {
         }
     }
 }
-
-fun View.post(action: (View) -> Unit) {
-    post {
-        action(this)
-    }
-}
-

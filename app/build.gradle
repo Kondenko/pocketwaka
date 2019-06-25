@@ -120,6 +120,7 @@ dependencies {
 
     implementation kotlinLib
     implementation androidKtx
+    implementation archComponents
     implementation support
     implementation constraintLayout
     implementation rx
@@ -130,6 +131,9 @@ dependencies {
     implementation firebaseCore
     implementation crashlyticsGoogle
     implementation lottie
+    implementation room
+
+    kapt roomCompiler
 
     testImplementation testingDependencies
 

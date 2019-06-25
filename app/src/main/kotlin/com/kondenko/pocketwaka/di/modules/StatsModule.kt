@@ -19,9 +19,16 @@ import retrofit2.Retrofit
 object StatsModule {
     fun create(context: Context) = module {
         single { get<Retrofit>(Api).create<StatsService>() }
-        single { StatsRepository(context, get()) }
         single { ColorProvider(context) }
         single { DateFormatter(context) }
+        single { StatsRepository(
+                context = context,
+                service = get(),
+                dao = get(),
+                colorProvider = get(),
+                dateFormatter = get(),
+                timeProvider = get()
+        ) }
         single { GetSkeletonPlaceholderData(get()) }
         factory {
             GetTokenHeaderValue(
@@ -33,9 +40,6 @@ object StatsModule {
         factory {
             FetchStats(
                     schedulers = get(),
-                    timeProvider = get(),
-                    colorProvider = get(),
-                    dateFormatter = get(),
                     getTokenHeader = get() as GetTokenHeaderValue,
                     statsRepository = get()
             )
@@ -44,10 +48,11 @@ object StatsModule {
             GetStatsState(
                     schedulers = get(),
                     getSkeletonPlaceholderData = get(),
-                    fetchStats = get()
+                    fetchStats = get(),
+                    connectivityStatusProvider = get()
             )
         }
-        viewModel { (range: String) -> StatsViewModel(range, get() as GetStatsState) }
+        viewModel { (range: String?) -> StatsViewModel(range, get() as GetStatsState) }
     }
 
 }

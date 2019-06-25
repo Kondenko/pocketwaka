@@ -111,9 +111,8 @@ class FragmentStats : Fragment() {
         }
     }
 
-    fun subscribeToRefreshEvents(refreshEvents: Observable<Any>) {
-        refreshEvents.subscribeWith(this.refreshEvents)
-    }
+    fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Observable<Any>
+            = refreshEvents.subscribeWith(this.refreshEvents)
 
     private fun FragmentPagerItems.Creator.addFragment(@StringRes title: Int, range: String): FragmentPagerItems.Creator {
         return this.add(title, FragmentStatsTab::class.java, Bundler().putString(FragmentStatsTab.ARG_RANGE, range).get())
