@@ -23,9 +23,9 @@ import java.util.concurrent.TimeUnit
 object NetModule {
 
     fun create(appContext: Context) = module {
-        single(Worker) { Schedulers.io() }
-        single(Ui) { AndroidSchedulers.mainThread() }
-        single { SchedulersContainer(uiScheduler = get(Ui), workerScheduler = get(Worker)) }
+        factory(Worker) { Schedulers.io() }
+        factory(Ui) { AndroidSchedulers.mainThread() }
+        factory { SchedulersContainer(uiScheduler = get(Ui), workerScheduler = get(Worker)) }
         single { RxJava2CallAdapterFactory.create() }
         single { GsonConverterFactory.create() }
         single {

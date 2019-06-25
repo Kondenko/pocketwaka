@@ -4,11 +4,10 @@ import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
-import com.kondenko.pocketwaka.utils.Encryptor
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.TimeProvider
-import io.reactivex.Single
-import io.reactivex.rxkotlin.zipWith
+import com.kondenko.pocketwaka.utils.encryption.Encryptor
+import io.reactivex.rxkotlin.Singles
 
 /**
  * Fetches access token.
@@ -16,7 +15,7 @@ import io.reactivex.rxkotlin.zipWith
 class GetAccessToken(
         schedulers: SchedulersContainer,
         private val timeProvider: TimeProvider,
-        private val encryptor: Encryptor,
+        private val tokenEncryptor: Encryptor<AccessToken>,
         private val accessTokenRepository: AccessTokenRepository,
         private val getAppId: GetAppId,
         private val getAppSecret: GetAppSecret
@@ -24,12 +23,12 @@ class GetAccessToken(
 
     private val GRANT_TYPE_AUTH_CODE = "authorization_code"
 
-    override fun build(code: String?): Single<AccessToken> {
-        return getAppId.build().zipWith(getAppSecret.build())
-        { id, secret -> accessTokenRepository.getNewAccessToken(id, secret, Const.AUTH_REDIRECT_URI, GRANT_TYPE_AUTH_CODE, code!!) }
-                .flatMap { it }
-                .map { encryptor.encryptToken(it) }
-                .doOnSuccess { accessTokenRepository.saveToken(it, timeProvider.getCurrentTimeSec()) }
-    }
+    override fun build(code: String?) =
+            Singles.zip(getAppId.build(), getAppSecret.build()) { id: String, secret: String ->
+                accessTokenRepository.getNewAccessToken(id, secret, Const.AUTH_REDIRECT_URI, GRANT_TYPE_AUTH_CODE, code!!)
+            }
+                    .flatMap { it }
+                    .map { tokenEncryptor.encrypt(it) }
+                    .doOnSuccess { accessTokenRepository.saveToken(it, timeProvider.getCurrentTimeSec()) }
 
 }

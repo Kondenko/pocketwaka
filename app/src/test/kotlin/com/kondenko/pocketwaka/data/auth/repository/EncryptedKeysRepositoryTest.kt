@@ -4,10 +4,7 @@ import com.kondenko.pocketwaka.testutils.RxRule
 import com.nhaarman.mockito_kotlin.mock
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
-@RunWith(RobolectricTestRunner::class)
 class EncryptedKeysRepositoryTest {
 
     @get:Rule

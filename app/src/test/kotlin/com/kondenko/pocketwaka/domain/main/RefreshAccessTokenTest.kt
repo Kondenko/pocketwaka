@@ -5,8 +5,8 @@ import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.domain.auth.GetAppId
 import com.kondenko.pocketwaka.domain.auth.GetAppSecret
 import com.kondenko.pocketwaka.testutils.testSchedulers
-import com.kondenko.pocketwaka.utils.Encryptor
 import com.kondenko.pocketwaka.utils.TimeProvider
+import com.kondenko.pocketwaka.utils.encryption.TokenEncryptor
 import com.nhaarman.mockito_kotlin.*
 import io.reactivex.rxkotlin.toSingle
 import org.junit.Assert.assertFalse
@@ -23,7 +23,7 @@ class RefreshAccessTokenTest {
 
     private val timeProvider: TimeProvider = mock()
 
-    private val encryptor: Encryptor = mock()
+    private val tokenEncryptor: TokenEncryptor = mock()
 
     private val accessTokenRepository: AccessTokenRepository = mock()
 
@@ -33,7 +33,7 @@ class RefreshAccessTokenTest {
 
     private val getAppSecret: GetAppSecret = mock()
 
-    private val useCase = RefreshAccessToken(testSchedulers, timeProvider, encryptor, accessTokenRepository, getStoredAccessToken, getAppId, getAppSecret)
+    private val useCase = RefreshAccessToken(testSchedulers, timeProvider, tokenEncryptor, accessTokenRepository, getStoredAccessToken, getAppId, getAppSecret)
 
     lateinit var token: AccessToken
 
@@ -69,7 +69,7 @@ class RefreshAccessTokenTest {
         verifyNoMoreInteractions(getAppId)
         verifyNoMoreInteractions(getAppSecret)
         verifyNoMoreInteractions(accessTokenRepository)
-        verifyNoMoreInteractions(encryptor)
+        verifyNoMoreInteractions(tokenEncryptor)
         with(single.test()) {
             assertSubscribed()
             assertNoErrors()
@@ -94,17 +94,17 @@ class RefreshAccessTokenTest {
         whenever(getAppId.build()).doReturn(appId.toSingle())
         whenever(getAppSecret.build()).doReturn(appSecret.toSingle())
         whenever(accessTokenRepository.getRefreshToken()).doReturn(refreshToken.toSingle())
-        whenever(encryptor.encryptToken(newToken)).doReturn(encryptedNewToken)
+        whenever(tokenEncryptor.encrypt(newToken)).doReturn(encryptedNewToken)
         whenever(accessTokenRepository.getRefreshedAccessToken(eq(appId), eq(appSecret), anyString(), anyString(), eq(refreshToken))).doReturn(newToken.toSingle())
 
         val single = useCase.invoke()
 
         verify(getAppId).build()
         verify(getAppSecret).build()
-        inOrder(accessTokenRepository, encryptor) {
+        inOrder(accessTokenRepository, tokenEncryptor) {
             verify(accessTokenRepository).getRefreshToken()
             verify(accessTokenRepository).getRefreshedAccessToken(eq(appId), eq(appSecret), anyString(), anyString(), eq(refreshToken))
-            verify(encryptor).encryptToken(newToken)
+            verify(tokenEncryptor).encrypt(newToken)
             verify(accessTokenRepository).saveToken(encryptedNewToken, currentTime)
         }
 

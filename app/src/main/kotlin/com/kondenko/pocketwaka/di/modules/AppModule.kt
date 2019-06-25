@@ -10,7 +10,7 @@ object AppModule {
 
     fun create(context: Context) = module {
         single { PreferenceManager.getDefaultSharedPreferences(context) }
-        single { TimeProvider() }
+        factory { TimeProvider() }
         single { ConnectivityStatusProvider(context) }
     }
 

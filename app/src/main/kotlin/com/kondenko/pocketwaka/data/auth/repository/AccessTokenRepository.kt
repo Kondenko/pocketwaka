@@ -8,7 +8,10 @@ import com.kondenko.pocketwaka.utils.singleOrErrorIfNull
 import io.reactivex.Completable
 import io.reactivex.Single
 
-class AccessTokenRepository(private val service: AccessTokenService, private val prefs: SharedPreferences) {
+class AccessTokenRepository(
+        private val service: AccessTokenService,
+        private val prefs: SharedPreferences
+) {
 
     private val KEY_ACCESS_TOKEN = "access_token"
     private val KEY_EXPIRES_IN = "expires_in"
@@ -24,7 +27,6 @@ class AccessTokenRepository(private val service: AccessTokenService, private val
 
     fun getRefreshedAccessToken(clientId: String, clientSecret: String, redirectUri: String, grantType: String, refreshToken: String) =
             service.getRefreshToken(clientId, clientSecret, redirectUri, grantType, refreshToken)
-
 
     fun getEncryptedToken(): Single<AccessToken> {
         return isTokenSaved().flatMap { isSaved ->
