@@ -62,6 +62,7 @@ class FragmentStats : Fragment() {
                         .create()
         )
         with(stats_viewpager_content) {
+            offscreenPageLimit = 2
             this.adapter = adapter
             post {
                 onFragmentSelected(0, adapter.getPage(currentItem) as FragmentStatsTab)
