@@ -20,6 +20,8 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.StateFragment
 import com.kondenko.pocketwaka.screens.base.State
+import com.kondenko.pocketwaka.screens.stats.adapter.StatsAdapter
+import com.kondenko.pocketwaka.screens.stats.model.ScrollDirection
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import com.kondenko.pocketwaka.utils.report
 import com.kondenko.pocketwaka.utils.transaction

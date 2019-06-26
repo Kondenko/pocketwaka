@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.screens.stats
+package com.kondenko.pocketwaka.screens.stats.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
