@@ -6,12 +6,17 @@ import androidx.lifecycle.ViewModel
 import com.kondenko.pocketwaka.domain.stats.GetStatsState
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.State
+import io.reactivex.Scheduler
+import io.reactivex.disposables.Disposable
+import java.util.concurrent.TimeUnit
 
-class StatsViewModel(private val range: String?, private val getStats: GetStatsState) : ViewModel() {
+class StatsViewModel(
+        private val range: String?,
+        private val getStats: GetStatsState,
+        private val uiScheduler: Scheduler
+) : ViewModel() {
 
-    private val refreshRateMin = 3
-
-    private val retryAttempts = 3
+    private var statsDisposable: Disposable? = null
 
     private val statsData = MutableLiveData<State<List<StatsModel>>>()
 
@@ -22,12 +27,17 @@ class StatsViewModel(private val range: String?, private val getStats: GetStatsS
     fun state(): LiveData<State<List<StatsModel>>> = statsData
 
     fun update() {
-        getStats(GetStatsState.Params(range, retryAttempts, refreshRateMin), onSuccess = statsData::setValue)
+        statsDisposable = getStats
+                .build(GetStatsState.Params(range, refreshRateMin = 3, retryAttempts = 3))
+                .debounce(50, TimeUnit.MILLISECONDS, uiScheduler)
+                .subscribe(statsData::postValue) {
+                    statsData.postValue(State.Failure.Unknown(exception = it, isFatal = true))
+                }
     }
 
     override fun onCleared() {
+        statsDisposable?.dispose()
         super.onCleared()
-        getStats.dispose()
     }
 
 }

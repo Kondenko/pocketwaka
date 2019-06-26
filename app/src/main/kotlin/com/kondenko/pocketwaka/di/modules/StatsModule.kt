@@ -11,6 +11,7 @@ import com.kondenko.pocketwaka.domain.stats.GetSkeletonPlaceholderData
 import com.kondenko.pocketwaka.domain.stats.GetStatsState
 import com.kondenko.pocketwaka.screens.stats.StatsViewModel
 import com.kondenko.pocketwaka.utils.ColorProvider
+import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.encryption.StringEncryptor
 import com.kondenko.pocketwaka.utils.extensions.create
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -53,7 +54,7 @@ object StatsModule {
                     connectivityStatusProvider = get()
             )
         }
-        viewModel { (range: String?) -> StatsViewModel(range, get() as GetStatsState) }
+        viewModel { (range: String?) -> StatsViewModel(range, get() as GetStatsState, get<SchedulersContainer>().uiScheduler) }
     }
 
 }

@@ -20,8 +20,6 @@ class GetStatsState(
         private val connectivityStatusProvider: ConnectivityStatusProvider
 ) : UseCaseObservable<GetStatsState.Params, StatsState>(schedulers) {
 
-    private val debounceDuration: Long = 50
-
     data class Params(val range: String?, val refreshRateMin: Int, val retryAttempts: Int)
 
     override fun build(params: Params?): Observable<StatsState> {
@@ -42,7 +40,6 @@ class GetStatsState(
                 }
                 .scan(::changeState)
                 .distinctUntilChanged(::equal)
-                .debounce(debounceDuration, TimeUnit.MILLISECONDS, schedulers.uiScheduler)
                 .subscribeOn(schedulers.workerScheduler)
     }
 
