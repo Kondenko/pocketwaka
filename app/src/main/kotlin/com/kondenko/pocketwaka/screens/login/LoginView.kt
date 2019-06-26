@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.screens.auth
+package com.kondenko.pocketwaka.screens.login
 
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.screens.base.BaseView

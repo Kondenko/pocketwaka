@@ -21,7 +21,7 @@
             android:required="false" />
 
         <activity
-            android:name=".screens.auth.LoginActivity"
+            android:name=".screens.login.LoginActivity"
             android:theme="@style/LoginActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.screens.auth
+package com.kondenko.pocketwaka.screens.login
 
 import android.annotation.SuppressLint
 import android.content.ComponentName

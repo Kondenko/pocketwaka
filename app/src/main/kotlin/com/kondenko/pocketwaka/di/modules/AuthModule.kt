@@ -8,7 +8,7 @@ import com.kondenko.pocketwaka.domain.auth.GetAccessToken
 import com.kondenko.pocketwaka.domain.auth.GetAppId
 import com.kondenko.pocketwaka.domain.auth.GetAppSecret
 import com.kondenko.pocketwaka.domain.auth.GetAuthUrl
-import com.kondenko.pocketwaka.screens.auth.LoginPresenter
+import com.kondenko.pocketwaka.screens.login.LoginPresenter
 import com.kondenko.pocketwaka.utils.encryption.StringEncryptor
 import com.kondenko.pocketwaka.utils.encryption.TokenEncryptor
 import com.kondenko.pocketwaka.utils.extensions.create

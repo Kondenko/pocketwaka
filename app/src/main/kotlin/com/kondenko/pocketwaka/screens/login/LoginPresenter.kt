@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.screens.auth
+package com.kondenko.pocketwaka.screens.login
 
 import com.kondenko.pocketwaka.domain.auth.GetAccessToken
 import com.kondenko.pocketwaka.domain.auth.GetAuthUrl
