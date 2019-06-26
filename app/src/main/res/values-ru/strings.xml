@@ -3,12 +3,11 @@
     <string name="main_action_logout">Выйти</string>
     <string name="main_action_refresh">Обновить</string>
     <string name="error_refreshing_token">Пожалуйста, войдите снова</string>
-    <string name="error_state_title">Упс</string>
-    <string name="error_state_subtitle">Не получилось загрузить данные</string>
-    <string name="error_state_action">" Попробовать снова"</string>
-    <string name="empty_state_title">Кажется, у нас нет для вас статистики</string>
-    <string name="empty_state_subtitle">Недавно начали пользоваться Wakatime?</string>
-    <string name="empty_state_text">Установите плагины для ваших редакторов и продолжайте работать</string>
+    <string name="error_state_title">Не получилось загрузить данные</string>
+    <string name="error_state_subtitle">Пожвлуйста, попробуйте позже</string>
+    <string name="error_state_action">Попробовать снова</string>
+    <string name="empty_state_title">Кажется, у вас нет статистики</string>
+    <string name="empty_state_subtitle">Установите плагин для вашего редактора кода и она появится</string>
     <string name="empty_state_action">Найти плагины</string>
     <string name="loginactivity_sign_in">Войти</string>
     <string name="loginactivity_subtitle_default">Визуализируем ваше рабочее время</string>
@@ -19,7 +18,7 @@
     <string name="stats_header_total">Всего</string>
     <string name="stats_header_daily_average">Сред. в день</string>
     <string name="stats_header_best_day">Лучший день</string>
-    <string name="stats_caption_best_day">%d%% выше среднего</string>
+    <string name="stats_caption_best_day">На %d%% выше среднего</string>
     <string name="stats_card_header_projects">Проекты</string>
     <string name="stats_card_header_editors">Редакторы</string>
     <string name="stats_card_header_languages">Языки</string>
