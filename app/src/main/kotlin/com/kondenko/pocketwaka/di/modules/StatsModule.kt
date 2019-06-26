@@ -7,7 +7,6 @@ import com.kondenko.pocketwaka.data.stats.service.StatsService
 import com.kondenko.pocketwaka.di.Api
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.stats.FetchStats
-import com.kondenko.pocketwaka.domain.stats.GetSkeletonPlaceholderData
 import com.kondenko.pocketwaka.domain.stats.GetStatsState
 import com.kondenko.pocketwaka.screens.stats.StatsViewModel
 import com.kondenko.pocketwaka.utils.ColorProvider
@@ -31,7 +30,6 @@ object StatsModule {
                 dateFormatter = get(),
                 timeProvider = get()
         ) }
-        single { GetSkeletonPlaceholderData(schedulers = get()) }
         factory {
             GetTokenHeaderValue(
                     schedulers = get(),
@@ -49,7 +47,6 @@ object StatsModule {
         factory {
             GetStatsState(
                     schedulers = get(),
-                    getSkeletonPlaceholderData = get(),
                     fetchStats = get(),
                     connectivityStatusProvider = get()
             )

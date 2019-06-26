@@ -8,7 +8,6 @@ sealed class State<out T>(open val data: T?) {
 
     data class Loading<T>(
             override val data: T? = null,
-            val skeletonData: T,
             val isInterrupting: Boolean = true
     ) : State<T>(data)
 

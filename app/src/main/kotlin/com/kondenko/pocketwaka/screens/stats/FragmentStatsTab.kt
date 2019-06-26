@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.StateFragment
 import com.kondenko.pocketwaka.screens.base.State
@@ -24,6 +25,7 @@ import com.kondenko.pocketwaka.screens.stats.adapter.StatsAdapter
 import com.kondenko.pocketwaka.screens.stats.model.ScrollDirection
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import com.kondenko.pocketwaka.utils.report
+import com.kondenko.pocketwaka.utils.times
 import com.kondenko.pocketwaka.utils.transaction
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
@@ -81,13 +83,22 @@ class FragmentStatsTab : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         statsAdapter = StatsAdapter(context)
-        skeletonAdapter = StatsAdapter(context, true)
+        skeletonAdapter = StatsAdapter(context, true).apply {
+            val skeletonStatsCard = mutableListOf(StatsItem("", null, null, null)) * 3
+            items = listOf(
+                    StatsModel.Info(null, null),
+                    StatsModel.BestDay("", "", 0),
+                    StatsModel.Stats("", skeletonStatsCard),
+                    StatsModel.Stats("", skeletonStatsCard)
+            )
+        }
     }
 
     private fun setupUi() {
         fragmentState = childFragmentManager.findFragmentById(R.id.fragment_state) as StateFragment
         with(recyclerview_stats) {
             layoutManager = LinearLayoutManager(context)
+            adapter = skeletonAdapter
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
@@ -101,27 +112,26 @@ class FragmentStatsTab : Fragment() {
     private fun State.Loading<List<StatsModel>>.render() {
         showData(true)
         if (isInterrupting) {
-            skeletonAdapter.items = skeletonData
-            recyclerview_stats.adapter = skeletonAdapter
+            recyclerview_stats.apply {
+                if (adapter != skeletonAdapter) adapter = skeletonAdapter
+            }
         } else {
-            recyclerview_stats.adapter = statsAdapter
-            statsAdapter.items = listOf(StatsModel.Status.Loading()) + (data ?: emptyList())
+            updateStats(listOf(StatsModel.Status.Loading()) + (data ?: emptyList()))
         }
     }
 
     private fun State.Success<List<StatsModel>>.render() {
         showData(true)
-        statsAdapter.items = data
-        recyclerview_stats.adapter = statsAdapter
+        updateStats(data)
     }
 
     private fun State.Failure<List<StatsModel>>.render() {
         exception?.report()
         showData(!isFatal)
         if (isFatal) {
-            fragmentState?.setState(this, vm::update)
+            fragmentState?.setState(this, onActionClick = vm::update)
         } else {
-            data?.let { statsAdapter.items = it }
+            updateStats(data)
             view?.let {
                 val errorRes = when (this) {
                     is State.Failure.Unknown -> R.string.stats_error_unknown
@@ -138,14 +148,18 @@ class FragmentStatsTab : Fragment() {
         if (data == null) {
             fragmentState?.setState(this)
         } else {
-            recyclerview_stats.adapter = statsAdapter
-            statsAdapter.items = listOf(StatsModel.Status.Offline()) + data
+            updateStats(listOf(StatsModel.Status.Offline()) + data)
         }
     }
 
     private fun State.Empty.render() {
         showData(false)
         fragmentState?.setState(this, ::openPlugins)
+    }
+
+    private fun updateStats(data: List<StatsModel>?) = recyclerview_stats.apply {
+        if (adapter != statsAdapter) adapter = statsAdapter
+        data?.let { statsAdapter.items = it }
     }
 
     private fun showData(show: Boolean) {

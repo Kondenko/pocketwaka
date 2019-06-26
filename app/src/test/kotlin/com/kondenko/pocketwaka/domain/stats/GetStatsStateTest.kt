@@ -27,15 +27,12 @@ class GetStatsStateTest {
 
     private val testScheduler = TestScheduler()
 
-    private val getSkeletonPlaceholderData: GetSkeletonPlaceholderData = mock()
-
     private val fetchStats: FetchStats = mock()
 
     private val connectivityStatusProvider: ConnectivityStatusProvider = mock()
 
     private val getState = GetStatsState(
             SchedulersContainer(testScheduler, testScheduler),
-            getSkeletonPlaceholderData,
             fetchStats,
             connectivityStatusProvider
     )
@@ -72,16 +69,13 @@ class GetStatsStateTest {
     @Test
     fun `should show loading first and then update stats`() {
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
-        whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(fetchStats.build(params.range)).doReturn(Observable.just(serverDto))
-        val testObserver = getState.invoke(params).testWithLogging()
-        testScheduler.triggerActions()
-        verify(connectivityStatusProvider).isNetworkAvailable()
-        verify(getSkeletonPlaceholderData).build()
-        verify(fetchStats, atLeastOnce()).build(params.range)
-        with(testObserver) {
-            assertValueAt(0) { it is State.Loading && it.skeletonData === skeletonModel && it.isInterrupting }
-            assertValueAt(1) { it is State.Success && it.data === actualModel }
+        with(getState.invoke(params).testWithLogging()) {
+            testScheduler.triggerActions()
+            verify(connectivityStatusProvider).isNetworkAvailable()
+            verify(fetchStats, atLeastOnce()).build(params.range)
+            assertValueAt(0) { it is State.Loading && it.isInterrupting }
+            assertValueAt(1) { it is State.Success && it.data == actualModel }
             assertValueCount(2)
             assertNoErrors()
             dispose()
@@ -92,11 +86,10 @@ class GetStatsStateTest {
     fun `should update stats every minute`() {
         val testStatsSubject = BehaviorSubject.createDefault(serverDto)
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
-        whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(fetchStats.build(params.range)).doReturn(testStatsSubject)
         with(getState.invoke(params).testWithLogging()) {
             testScheduler.triggerActions()
-            assertValueAt(0) { it is State.Loading && it.skeletonData == skeletonModel }
+            assertValueAt(0) { it is State.Loading && it.isInterrupting }
             assertValueAt(1) { it is State.Success && it.data == actualModel }
             testStatsSubject.onNext(serverDto)
             testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
@@ -114,7 +107,6 @@ class GetStatsStateTest {
     @Test
     fun `should show an error state if no data and offline`() {
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(false))
-        whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(fetchStats.build(params.range)).doReturn(Observable.error(TestException("No network")))
         with(getState.invoke(params).testWithLogging()) {
             testScheduler.triggerActions()
@@ -130,7 +122,6 @@ class GetStatsStateTest {
     @Test
     fun `should show an offline state with data`() {
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(false))
-        whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(fetchStats.build(params.range)).doReturn(Observable.just(cacheDto))
         with(getState.invoke(params).testWithLogging()) {
             testScheduler.triggerActions()
@@ -146,7 +137,6 @@ class GetStatsStateTest {
     @Test
     fun `should show an offline state with cached data`() {
         val testConnectivitySubject = BehaviorSubject.createDefault(true)
-        whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(testConnectivitySubject)
         with(getState.invoke(params).testWithLogging()) {
             whenever(fetchStats.build(params.range)).doReturn(Observable.just(serverDto))
@@ -168,7 +158,6 @@ class GetStatsStateTest {
     @Test
     fun `should show an offline state and then update with new data`() {
         val testConnectivitySubject = BehaviorSubject.createDefault(true)
-        whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(testConnectivitySubject)
         whenever(fetchStats.build(params.range)).doReturn(Observable.just(serverDto))
         with(getState.invoke(params).testWithLogging()) {
@@ -194,7 +183,6 @@ class GetStatsStateTest {
 
     @Test
     fun `should accept all errors while maintaining current state`() {
-        whenever(getSkeletonPlaceholderData.build()).doReturn(Observable.just(skeletonModel))
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
         whenever(fetchStats.build(params.range)).doReturn(Observable.just(serverDto))
         with(getState.invoke(params).testWithLogging()) {

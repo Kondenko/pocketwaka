@@ -15,7 +15,6 @@ private typealias StatsState = State<StatsModelList>
 
 class GetStatsState(
         private val schedulers: SchedulersContainer,
-        private val getSkeletonPlaceholderData: GetSkeletonPlaceholderData,
         private val fetchStats: FetchStats,
         private val connectivityStatusProvider: ConnectivityStatusProvider
 ) : UseCaseObservable<GetStatsState.Params, StatsState>(schedulers) {
@@ -25,17 +24,18 @@ class GetStatsState(
     override fun build(params: Params?): Observable<StatsState> {
         if (params?.range == null) return Observable.just(Failure.UnknownRange())
         val connectivityStatus = connectivityStatusProvider.isNetworkAvailable()
-        val loading = getSkeletonPlaceholderData.build().map { Loading(skeletonData = it) }
         val interval = Observable.interval(
                 0,
                 params.refreshRateMin.toLong(),
                 TimeUnit.MINUTES,
                 schedulers.workerScheduler
         )
+        val loading = Observable.just(Loading(null, true))
         return connectivityStatus
                 .switchMapDelayError { isConnected ->
                     interval.flatMap {
-                        Observable.concatArray(loading, getStats(params.range, params.retryAttempts.toLong(), isConnected))
+                        val stats = getStats(params.range, params.retryAttempts.toLong(), isConnected)
+                        Observable.concatArray(loading, stats)
                     }
                 }
                 .scan(::changeState)
@@ -48,7 +48,7 @@ class GetStatsState(
                     .map {
                         val stats = it.stats
                         if (it.isFromCache) {
-                            if (isConnected) Loading(stats, emptyList(), false)
+                            if (isConnected) Loading(stats)
                             else Offline(stats)
                         } else {
                             Success(stats)
@@ -67,9 +67,7 @@ class GetStatsState(
 
     private fun changeState(old: StatsState, new: StatsState): StatsState = when {
         new is Loading<StatsModelList> -> {
-            if (old is Success) new.copy(data = old.data, isInterrupting = false)
-            else new.copy(data = new.data
-                    ?: old.data, isInterrupting = new.data == null && old.data == null)
+            new.copy(new.data ?: old.data, old.data == null)
         }
         old is Loading<StatsModelList> -> {
             when (new) {
