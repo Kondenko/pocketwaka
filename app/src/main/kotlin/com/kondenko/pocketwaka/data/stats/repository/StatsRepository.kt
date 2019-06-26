@@ -38,7 +38,7 @@ class StatsRepository(
                     // Pass the network error down the stream if cache is empty
                     cache.switchIfEmpty(Observable.error(error))
                 }
-        return Observable.concatDelayError(listOf(cache, server))
+        return Observable.concatArrayDelayError(cache, server)
                 .distinctUntilChanged()
     }
 

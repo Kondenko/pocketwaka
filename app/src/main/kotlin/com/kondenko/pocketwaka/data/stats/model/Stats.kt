@@ -3,7 +3,7 @@ package com.kondenko.pocketwaka.data.stats.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class Stats  {
+class Stats {
 
     @SerializedName("range")
     @Expose
