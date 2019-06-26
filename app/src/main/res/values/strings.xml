@@ -41,6 +41,10 @@
     <string name="stats_tab_6_months">6 months</string>
     <string name="stats_tab_1_year">1 year</string>
 
+    <string name="stats_error_unknown">Couldn\'t update stats</string>
+    <string name="stats_error_unknown_range">Couldn\'t get stats for this period</string>
+    <string name="stats_error_unknown_range_no_network">Network error</string>
+
     <string name="stats_header_total">Total</string>
     <string name="stats_header_daily_average">Daily average</string>
     <string name="stats_header_best_day">Best day</string>

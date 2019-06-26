@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -15,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
@@ -51,9 +51,9 @@ class FragmentStatsTab : Fragment() {
 
     private val scrollDirection = BehaviorSubject.create<ScrollDirection>()
 
-    private var skeletonAdapter: StatsAdapter? = null
+    private lateinit var skeletonAdapter: StatsAdapter
 
-    private var statsAdapter: StatsAdapter? = null
+    private lateinit var statsAdapter: StatsAdapter
 
     private var fragmentState: StateFragment? = null
 
@@ -99,52 +99,61 @@ class FragmentStatsTab : Fragment() {
     private fun State.Loading<List<StatsModel>>.render() {
         showData(true)
         if (isInterrupting) {
-            skeletonAdapter?.let {
-                if (it.items.isEmpty()) it.items = skeletonData
-                recyclerview_stats?.adapter = it
-            }
+            skeletonAdapter.items = skeletonData
+            recyclerview_stats.adapter = skeletonAdapter
         } else {
-            recyclerview_stats?.apply {
-                if (adapter != statsAdapter) adapter = statsAdapter
-                statsAdapter?.items = listOf(StatsModel.Status.Loading()) + (data ?: emptyList())
-            }
+            recyclerview_stats.adapter = statsAdapter
+            statsAdapter.items = listOf(StatsModel.Status.Loading()) + (data ?: emptyList())
         }
     }
 
     private fun State.Success<List<StatsModel>>.render() {
         showData(true)
-        statsAdapter?.items = data
-        recyclerview_stats?.apply {
-            if (adapter != statsAdapter) adapter = statsAdapter
-        }
+        statsAdapter.items = data
+        recyclerview_stats.adapter = statsAdapter
     }
 
     private fun State.Failure<List<StatsModel>>.render() {
         exception?.report()
+        showData(!isFatal)
         if (isFatal) {
-            showData(false)
             fragmentState?.setState(this, vm::update)
         } else {
-            Toast.makeText(context, exception?.message, Toast.LENGTH_SHORT).show()
+            data?.let { statsAdapter.items = it }
+            view?.let {
+                val errorRes = when (this) {
+                    is State.Failure.Unknown -> R.string.stats_error_unknown
+                    is State.Failure.UnknownRange -> R.string.stats_error_unknown_range
+                    is State.Failure.NoNetwork -> R.string.stats_error_unknown_range_no_network
+                }
+                Snackbar.make(it, errorRes, Snackbar.LENGTH_SHORT).show()
+            }
         }
     }
 
     private fun State.Offline<List<StatsModel>>.render() {
+        showData(data != null)
         if (data == null) {
-            showData(false)
             fragmentState?.setState(this)
         } else {
-            showData(true)
-            recyclerview_stats?.apply {
-                if (adapter != statsAdapter) adapter = statsAdapter
-                statsAdapter?.items = listOf(StatsModel.Status.Offline()) + data
-            }
+            recyclerview_stats.adapter = statsAdapter
+            statsAdapter.items = listOf(StatsModel.Status.Offline()) + data
         }
     }
 
     private fun State.Empty.render() {
         showData(false)
         fragmentState?.setState(this, ::openPlugins)
+    }
+
+    private fun showData(show: Boolean) {
+        recyclerview_stats.isVisible = show
+        fragmentState?.let {
+            childFragmentManager.transaction {
+                if (show) hide(it)
+                else show(it)
+            }
+        }
     }
 
     private fun openPlugins() {
@@ -167,22 +176,9 @@ class FragmentStatsTab : Fragment() {
 
     fun scrollDirection(): Observable<ScrollDirection> = scrollDirection
 
-    fun isListOnTop() = (recyclerview_stats?.scrollY ?: 0) == 0
-
     fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Disposable {
         return refreshEvents.subscribe {
             vm.update()
-        }
-    }
-
-    private fun showData(show: Boolean) {
-        recyclerview_stats.isVisible = show
-        val fragmentState = fragmentState
-        if (fragmentState != null) {
-            childFragmentManager.transaction {
-                if (show) hide(fragmentState)
-                else show(fragmentState)
-            }
         }
     }
 

@@ -47,4 +47,7 @@
     <string name="status_loading_with_date">Обновлено %s назад</string>
     <string name="loginactivity_error_no_browser">Нужен Google Chrome, \\nчтобы войти в приложение</string>
     <string name="status_updating">Статистика обновляется</string>
+    <string name="stats_error_unknown">Не удалось обновить</string>
+    <string name="stats_error_unknown_range">Не удалось загрузить статистику за эот период</string>
+    <string name="stats_error_unknown_range_no_network">Ошибка сети</string>
 </resources>
