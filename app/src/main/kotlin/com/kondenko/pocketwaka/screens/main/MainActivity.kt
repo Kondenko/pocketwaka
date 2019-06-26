@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.screens.auth.AuthActivity
+import com.kondenko.pocketwaka.screens.auth.LoginActivity
 import com.kondenko.pocketwaka.screens.base.MainState
 import com.kondenko.pocketwaka.screens.stats.FragmentStats
 import com.kondenko.pocketwaka.utils.report
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showLoginScreen() {
-        val intent = Intent(this, AuthActivity::class.java)
+        val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }
@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun logout() {
         finish()
-        startActivity(Intent(this, AuthActivity::class.java))
+        startActivity(Intent(this, LoginActivity::class.java))
     }
 
     private fun setFragment(fragment: androidx.fragment.app.Fragment, tag: String) {

@@ -7,9 +7,45 @@
     android:layout_height="match_parent"
     android:background="@color/color_text_white_primary"
     android:fitsSystemWindows="true"
-    tools:context=".screens.auth.AuthActivity"
+    tools:context=".screens.auth.LoginActivity"
     tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="0dp">
+    tools:layout_editor_absoluteY="0dp"
+    >
+
+    <com.kondenko.pocketwaka.ui.LoadingView
+        android:id="@+id/loadingView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingStart="@dimen/padding_login_loading_view_side"
+        android:paddingEnd="@dimen/padding_login_loading_view_side"
+        app:dot_drawable="@drawable/loading_dot"
+        app:dot_margin="@dimen/margin_login_loading_view_dot"
+        app:dots_number="3"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonLogin"
+        app:layout_constraintEnd_toEndOf="@+id/buttonLogin"
+        app:layout_constraintStart_toStartOf="@+id/buttonLogin"
+        app:layout_constraintTop_toTopOf="@+id/buttonLogin"
+        />
+
+    <Button
+        android:id="@+id/buttonLogin"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="54dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:minWidth="98dp"
+        android:text="@string/loginactivity_sign_in"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewSubhead"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animationView"
@@ -22,27 +58,8 @@
         app:layout_constraintVertical_chainStyle="spread_inside"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/lottie_anim_login" />
-
-
-    <Button
-        android:id="@+id/buttonLogin"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="54dp"
-        android:layout_marginBottom="8dp"
-        android:minWidth="98dp"
-        android:text="@string/loginactivity_sign_in"
-        android:textColor="@android:color/white"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewSubhead"
-        tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1" />
+        app:lottie_rawRes="@raw/lottie_anim_login"
+        />
 
     <TextView
         android:id="@+id/textViewSubhead"
@@ -54,7 +71,8 @@
         android:textAppearance="@style/TextAppearance.App.Login.Subhead"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/animationView" />
+        app:layout_constraintTop_toBottomOf="@+id/animationView"
+        />
 
     <ImageView
         android:id="@+id/imageViewLogo"
@@ -68,6 +86,8 @@
         app:layout_constraintEnd_toEndOf="@+id/animationView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/animationView"
-        app:srcCompat="@drawable/login_img_logo" />
+        app:srcCompat="@drawable/login_img_logo"
+        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,7 +8,7 @@ import com.kondenko.pocketwaka.domain.auth.GetAccessToken
 import com.kondenko.pocketwaka.domain.auth.GetAppId
 import com.kondenko.pocketwaka.domain.auth.GetAppSecret
 import com.kondenko.pocketwaka.domain.auth.GetAuthUrl
-import com.kondenko.pocketwaka.screens.auth.AuthPresenter
+import com.kondenko.pocketwaka.screens.auth.LoginPresenter
 import com.kondenko.pocketwaka.utils.encryption.StringEncryptor
 import com.kondenko.pocketwaka.utils.encryption.TokenEncryptor
 import com.kondenko.pocketwaka.utils.extensions.create
@@ -36,7 +36,7 @@ object AuthModule {
                     getAppSecret = get()
             )
         }
-        single { AuthPresenter(get() as GetAuthUrl, get() as GetAccessToken) }
+        single { LoginPresenter(get() as GetAuthUrl, get() as GetAccessToken) }
     }
 
 }

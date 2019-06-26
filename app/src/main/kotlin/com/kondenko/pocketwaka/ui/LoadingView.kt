@@ -16,7 +16,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.view.children
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.utils.IllegalViewUsageException
-import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
+import com.kondenko.pocketwaka.utils.extensions.useAttributes
 import kotlin.math.roundToInt
 
 class LoadingView @JvmOverloads constructor(
@@ -40,7 +40,7 @@ class LoadingView @JvmOverloads constructor(
 
     var dotMargin: Int = 2
         set(value) {
-            field = context.adjustForDensity(value).roundToInt()
+            field = value
             construct()
         }
 
@@ -68,11 +68,10 @@ class LoadingView @JvmOverloads constructor(
     private val animationsOffsetMs = 10
 
     init {
-        with(context.obtainStyledAttributes(attrs, R.styleable.LoadingView, defStyleAttr, defStyleRes)) {
+        useAttributes(attrs, R.styleable.LoadingView, defStyleAttr, defStyleRes) {
             dotsNumber = getInteger(R.styleable.LoadingView_dots_number, 3)
-            dotMargin = getInteger(R.styleable.LoadingView_dot_margin, dotMargin)
-            getDrawable(R.styleable.LoadingView_dot_drawable)?.let { dotDrawable = it }
-            recycle()
+            dotMargin = getDimension(R.styleable.LoadingView_dot_margin, dotMargin.toFloat()).roundToInt()
+            dotDrawable = getDrawable(R.styleable.LoadingView_dot_drawable)
         }
         orientation = HORIZONTAL
         gravity = Gravity.CENTER
@@ -80,7 +79,8 @@ class LoadingView @JvmOverloads constructor(
     }
 
     private fun construct() {
-        val finalDotDrawable = dotDrawable ?: throw IllegalViewUsageException("Dot drawable must be set")
+        val finalDotDrawable = dotDrawable
+                ?: throw IllegalViewUsageException("Dot drawable must be set")
         removeAllViews()
         weightSum = dotsNumber.toFloat()
         for (i in 1..dotsNumber) {

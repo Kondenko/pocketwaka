@@ -25,8 +25,8 @@
 
     <!--Login-->
     <dimen name="size_login_loading_dot">6dp</dimen>
-    <dimen name="padding_login_loading_view_side">30dp</dimen>
-    <dimen name="margin_login_loading_view_dot">2dp</dimen>
+    <dimen name="padding_login_loading_view_side">24dp</dimen>
+    <dimen name="margin_login_loading_view_dot">4dp</dimen>
 
     <!--Stats-->
 

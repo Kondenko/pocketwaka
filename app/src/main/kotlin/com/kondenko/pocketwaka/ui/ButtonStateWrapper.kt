@@ -1,29 +1,15 @@
 package com.kondenko.pocketwaka.ui
 
-import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
-import android.widget.RelativeLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import timber.log.Timber
 
-class ButtonStateWrapper
-@JvmOverloads constructor(
+class ButtonStateWrapper(
         private val button: Button,
-        private val loadingView: View? = null,
-        private val retryText: CharSequence? = null,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0,
-        defStyleRes: Int = 0
-) : RelativeLayout(button.context, attrs, defStyleAttr, defStyleRes) {
-
-    companion object {
-        fun wrap(button: Button, loadingView: View? = null, retryText: CharSequence? = null): ButtonStateWrapper {
-            return ButtonStateWrapper(button, loadingView, retryText)
-        }
-    }
+        private val loadingView: View,
+        private val retryText: CharSequence
+) {
 
     private val text = button.text
 
@@ -36,27 +22,9 @@ class ButtonStateWrapper
     var isError: Boolean = false
         private set
 
-    init {
-        button.post {
-            layoutParams = LayoutParams(button.layoutParams)
-            x = button.x
-            y = button.y
-            (button.parent as ViewGroup).let {
-                it.removeView(button)
-                it.addView(this)
-                addView(button)
-            }
-            loadingView?.let {
-                addView(it, button.layoutParams)
-                it.z = 100f
-            }
-        }
-    }
-
     fun setDefault() {
-        Timber.d("Default state set")
         button.text = text
-        loadingView?.isGone = true
+        loadingView.isGone = true
         button.isClickable = true
         isDefault = true
         isLoading = false
@@ -64,9 +32,8 @@ class ButtonStateWrapper
     }
 
     fun setLoading() {
-        Timber.d("Loading state set")
         button.text = null
-        loadingView?.isVisible = true
+        loadingView.isVisible = true
         button.isClickable = false
         isDefault = false
         isLoading = true
@@ -74,9 +41,8 @@ class ButtonStateWrapper
     }
 
     fun setError() {
-        Timber.d("Error state set")
         button.text = retryText
-        loadingView?.isGone = true
+        loadingView.isGone = true
         button.isClickable = true
         isDefault = false
         isLoading = false
