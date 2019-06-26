@@ -1,7 +1,8 @@
-package com.kondenko.pocketwaka.utils
+package com.kondenko.pocketwaka.utils.delegates
 
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.kondenko.pocketwaka.utils.SimpleCallback
 import kotlin.reflect.KProperty
 
 class DiffUtilDelegate<T, VH : RecyclerView.ViewHolder, A : RecyclerView.Adapter<VH>>(

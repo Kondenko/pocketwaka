@@ -37,7 +37,8 @@ class FragmentStats : Fragment() {
 
     private var refreshSubscription: Disposable? = null
 
-    private val tabsElevationHelper = TabsElevationHelper()
+    private val keyTabsElevation = "tabsElevationState"
+    private lateinit var tabsElevation: TabsElevationState
 
     private lateinit var colorAnimator: ValueAnimator
 
@@ -45,10 +46,17 @@ class FragmentStats : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        tabsElevation = savedInstanceState?.getParcelable(keyTabsElevation) ?: TabsElevationState()
         val toolbarColorResting = view.context.getColorCompat(R.color.color_app_bar_resting)
         val toolbarColorElevated = view.context.getColorCompat(R.color.color_app_bar_elevated)
         colorAnimator = createColorAnimator(toolbarColorResting, toolbarColorElevated)
         setupViewPager(view)
+        restoreTabsElevation(stats_viewpager_content.currentItem)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable(keyTabsElevation, tabsElevation)
+        super.onSaveInstanceState(outState)
     }
 
     private fun setupViewPager(view: View) {
@@ -65,7 +73,6 @@ class FragmentStats : Fragment() {
             offscreenPageLimit = 2
             this.adapter = adapter
             post {
-                onFragmentSelected(0, adapter.getPage(currentItem) as FragmentStatsTab)
                 activity!!.view_main_elevated_surface.updateLayoutParams {
                     val statusbarHeight: Float = activity?.run {
                         getStatusBarHeight()?.toFloat()
@@ -75,6 +82,7 @@ class FragmentStats : Fragment() {
                             .run { bottom + height + statusbarHeight }
                             .roundToInt()
                 }
+                onFragmentSelected(currentItem, adapter.getPage(currentItem) as FragmentStatsTab)
             }
         }
         with(stats_smarttablayout_ranges) {
@@ -100,11 +108,7 @@ class FragmentStats : Fragment() {
     }
 
     private fun onFragmentSelected(position: Int, fragment: FragmentStatsTab) {
-        val wasPreviousTabElevated = tabsElevationHelper.isElevated
-        tabsElevationHelper.currentTabIndex = position
-        val isCurrentTabElevated = tabsElevationHelper.isElevated
-        if (!wasPreviousTabElevated && isCurrentTabElevated) animateTabs(true)
-        else if (wasPreviousTabElevated && !isCurrentTabElevated) animateTabs(false)
+        restoreTabsElevation(position)
         refreshSubscription?.dispose()
         scrollSubscription?.dispose()
         refreshSubscription = fragment.subscribeToRefreshEvents(refreshEvents)
@@ -119,9 +123,17 @@ class FragmentStats : Fragment() {
                 )
     }
 
+    private fun restoreTabsElevation(currentTabIndex: Int) {
+        val wasPreviousTabElevated = tabsElevation.run { isElevated && this.currentTabIndex != currentTabIndex}
+        tabsElevation.currentTabIndex = currentTabIndex
+        val isCurrentTabElevated = tabsElevation.isElevated
+        if (!wasPreviousTabElevated && isCurrentTabElevated) animateTabs(true)
+        else if (wasPreviousTabElevated && !isCurrentTabElevated) animateTabs(false)
+    }
+
     private fun animateTabs(elevate: Boolean) {
         // Tabs background color
-        tabsElevationHelper.isElevated = elevate
+        tabsElevation.isElevated = elevate
         colorAnimator.cancel()
         with(colorAnimator) {
             if (elevate) start()
