@@ -11,8 +11,9 @@
 
     <com.ogaclejapan.smarttablayout.SmartTabLayout
         android:id="@+id/stats_smarttablayout_ranges"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/height_stats_tab_bar"
+        android:layout_gravity="center_horizontal"
         android:clipToPadding="false"
         android:gravity="center"
         android:padding="@dimen/margin_all_vertical_small"
@@ -24,10 +25,9 @@
         app:stl_indicatorColor="@color/color_accent"
         app:stl_indicatorCornerRadius="90dp"
         app:stl_indicatorGravity="bottom"
-        app:stl_underlineThickness="0dp"
         app:stl_indicatorInterpolation="linear"
         app:stl_indicatorThickness="@dimen/height_stats_tab_indicator"
-        />
+        app:stl_underlineThickness="0dp" />
 
     <FrameLayout
         android:layout_width="match_parent"
