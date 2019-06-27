@@ -5,10 +5,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.utils.SimpleCallback
 import kotlin.reflect.KProperty
 
-class DiffUtilDelegate<T, VH : RecyclerView.ViewHolder, A : RecyclerView.Adapter<VH>>(
+fun <T, VH : RecyclerView.ViewHolder, A : RecyclerView.Adapter<VH>> diffUtil(
         initialValue: List<T>,
-        private val callbackFactory: (List<T>, List<T>) -> DiffUtil.Callback =
-                { old, new -> SimpleCallback(old, new) }
+        callbackFactory: (List<T>, List<T>) -> DiffUtil.Callback = { old, new -> SimpleCallback(old, new) }
+) = DiffUtilDelegate<T, VH, A>(initialValue, callbackFactory)
+
+class DiffUtilDelegate<T, VH : RecyclerView.ViewHolder, A : RecyclerView.Adapter<VH>>
+internal constructor(
+        initialValue: List<T>,
+        private val callbackFactory: (List<T>, List<T>) -> DiffUtil.Callback
 ) {
 
     private var currentValue: List<T> = initialValue

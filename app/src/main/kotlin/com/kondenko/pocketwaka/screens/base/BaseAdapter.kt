@@ -8,14 +8,12 @@ import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.utils.SimpleCallback
-import com.kondenko.pocketwaka.utils.delegates.DiffUtilDelegate
+import com.kondenko.pocketwaka.utils.delegates.diffUtil
 
 abstract class BaseAdapter<T, VH : BaseAdapter<T, VH>.BaseViewHolder>(protected val context: Context)
     : RecyclerView.Adapter<VH>() {
 
-    open var items: List<T> by DiffUtilDelegate<T, VH, BaseAdapter<T, VH>>(emptyList()) { old, new ->
-        getDiffCallback(old, new)
-    }
+    open var items: List<T> by diffUtil(emptyList(), ::getDiffCallback)
 
     @CallSuper
     override fun onBindViewHolder(holder: VH, position: Int) = holder.bind(items[position])
