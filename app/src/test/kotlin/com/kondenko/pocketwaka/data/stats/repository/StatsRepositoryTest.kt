@@ -50,6 +50,8 @@ class StatsRepositoryTest {
 
     private val range = "7_days"
 
+    private val cachedStats = StatsDto(range, 0, false, false, emptyList())
+
     @Before
     fun setupContext() {
         val resources = mock<Resources>()
@@ -60,7 +62,6 @@ class StatsRepositoryTest {
 
     @Test
     fun `should fetch stats from the database and from the server`() {
-        val cachedStats = StatsDto(range, 0, false, emptyList())
         val newStatsResponse = mock<Stats>()
         whenever(dao.getCachedStats(range))
                 .doReturn(Maybe.just(cachedStats))
@@ -78,7 +79,6 @@ class StatsRepositoryTest {
 
     @Test
     fun `should show stats from the database when the server returns an error`() {
-        val cachedStats = StatsDto(range, 0, false, emptyList())
         whenever(dao.getCachedStats(range))
                 .doReturn(Maybe.just(cachedStats))
         whenever(service.getCurrentUserStats(token, range))
@@ -128,5 +128,7 @@ class StatsRepositoryTest {
             assertTerminated()
         }
     }
+
+    // TODO Ann a test case for empty data
 
 }

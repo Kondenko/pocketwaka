@@ -45,25 +45,35 @@ class GetStatsStateTest {
 
     private val params = GetStatsState.Params(range, refreshInterval, retryAttempts)
 
-    private val skeletonModel: List<StatsModel> = mock()
-
     private val cachedModel: List<StatsModel> = listOf(
-            StatsModel.Metadata(range, 0, isEmpty = false),
-            StatsModel.Info("", "")
+            StatsModel.Info("1h", "1h")
     )
 
     private val actualModel: List<StatsModel> = listOf(
-            StatsModel.Metadata(range, 0, isEmpty = false),
-            StatsModel.Info("", "")
+            StatsModel.Info("1h", "1h")
     )
 
-    private val cacheDto = StatsDto(range, 0, true, cachedModel)
+    private val cacheDto = StatsDto(range, 0, true, false, cachedModel)
 
-    private val serverDto = StatsDto(range, 0, false, actualModel)
+    private val serverDto = StatsDto(range, 0, false, false, actualModel)
 
     @After
     fun validate() {
         validateMockitoUsage()
+    }
+
+    @Test
+    fun `should show an empty state`() {
+        val emptyDto = StatsDto(range, 0, false, true, actualModel)
+        whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
+        whenever(fetchStats.build(params.range)).doReturn(Observable.just(emptyDto))
+        with(getState.invoke(params).testWithLogging()) {
+            testScheduler.triggerActions()
+            assertValueAt(0) { it is State.Loading && it.isInterrupting }
+            assertValueAt(1) { it is State.Empty }
+            assertNoErrors()
+            dispose()
+        }
     }
 
     @Test

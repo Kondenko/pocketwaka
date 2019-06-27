@@ -10,7 +10,6 @@ object StatsListConverter {
 
     private val statsItemFactory = RuntimeTypeAdapterFactory
             .of(StatsModel::class.java)
-            .registerSubtype(StatsModel.Metadata::class.java)
             .registerSubtype(StatsModel.Info::class.java)
             .registerSubtype(StatsModel.Stats::class.java)
             .registerSubtype(StatsModel.BestDay::class.java)

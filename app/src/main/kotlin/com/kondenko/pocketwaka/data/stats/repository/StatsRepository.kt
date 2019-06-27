@@ -83,13 +83,13 @@ class StatsRepository(
         list += stats.editors?.toDomainModel(StatsType.Editors)
         list += stats.operatingSystems?.toDomainModel(StatsType.OperatingSystems)
 
-        list += StatsModel.Metadata(
+        return StatsDto(
                 range = range,
-                lastUpdated = dateUpdated,
-                isEmpty = stats.totalSeconds == 0.0
+                dateUpdated = timeProvider.getCurrentTimeMillis(),
+                isFromCache = false,
+                isEmpty = stats.totalSeconds == 0.0,
+                stats = list
         )
-
-        return StatsDto(range, timeProvider.getCurrentTimeMillis(), false, list)
     }
 
     private fun List<com.kondenko.pocketwaka.data.stats.model.StatsItem>?.toDomainModel(statsType: StatsType): StatsModel.Stats? {

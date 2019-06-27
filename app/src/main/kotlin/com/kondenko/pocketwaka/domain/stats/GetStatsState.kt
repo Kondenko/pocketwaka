@@ -54,7 +54,8 @@ class GetStatsState(
                             if (isConnected) Loading(stats)
                             else Offline(stats)
                         } else {
-                            Success(stats)
+                            if (it.isEmpty) Empty
+                            else Success(stats)
                         }
                     }
                     .onErrorReturn { t ->
@@ -74,13 +75,24 @@ class GetStatsState(
         }
         old is Loading<StatsModelList> -> {
             when (new) {
-                is Failure.NoNetwork -> old.data?.let { Offline(data = it) }
-                        ?: new.copy(isFatal = true)
-                is Failure.UnknownRange -> new.copy(data = old.data, isFatal = old.data == null)
-                is Failure.Unknown -> new.copy(data = old.data, isFatal = old.data == null)
-                is Loading -> old.data?.let { new.copy(data = it) } ?: new
-                is Offline -> old.data?.let { new.copy(data = it) } ?: new
-                else -> new
+                is Failure.NoNetwork -> {
+                    old.data?.let { Offline(data = it) } ?: new.copy(isFatal = true)
+                }
+                is Failure.UnknownRange -> {
+                    new.copy(data = old.data, isFatal = old.data == null)
+                }
+                is Failure.Unknown -> {
+                    new.copy(data = old.data, isFatal = old.data == null)
+                }
+                is Loading -> {
+                    old.data?.let { new.copy(data = it) } ?: new
+                }
+                is Offline -> {
+                    old.data?.let { new.copy(data = it) } ?: new
+                }
+                else -> {
+                    new
+                }
             }
         }
         else -> {

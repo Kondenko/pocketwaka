@@ -43,11 +43,10 @@ class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : 
     private val typeStats = 3
 
     override var items: List<StatsModel> = super.items
-        set(value) =
-            value.filterNot { it is StatsModel.Metadata }.let {
-                field = it
-                super.items = it
-            }
+        set(value) {
+            field = value
+            super.items = value
+        }
 
     init {
         setHasStableIds(true)
@@ -58,7 +57,6 @@ class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : 
         is StatsModel.Info -> typeInfo
         is StatsModel.BestDay -> typeBestDay
         is StatsModel.Stats -> typeStats
-        is StatsModel.Metadata -> throw IllegalArgumentException("StatsAdapter won't render metadata")
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -99,7 +97,7 @@ class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : 
                 is StatsModel.Stats -> view.render(item)
             }
         }
-        
+
         private fun View.render(item: StatsModel.Status) {
             val isOffline = item is StatsModel.Status.Offline
             textview_status_description.setText(if (isOffline) R.string.status_offline else R.string.status_updating)
