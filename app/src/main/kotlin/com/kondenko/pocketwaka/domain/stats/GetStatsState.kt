@@ -7,6 +7,7 @@ import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.screens.base.State.*
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.Observable
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 
@@ -45,6 +46,8 @@ class GetStatsState(
 
     private fun getStats(range: String, retryAttempts: Long, isConnected: Boolean) =
             fetchStats.build(range)
+                    .doOnError(Timber::w)
+                    .retry(retryAttempts)
                     .map {
                         val stats = it.stats
                         if (it.isFromCache) {
