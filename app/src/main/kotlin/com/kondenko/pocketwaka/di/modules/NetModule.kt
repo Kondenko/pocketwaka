@@ -26,7 +26,8 @@ object NetModule {
         single { GsonConverterFactory.create() }
         single {
             OkHttpClient.Builder()
-                    .readTimeout(15, TimeUnit.SECONDS)
+                    .connectTimeout(15, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
                     .build()
         }
         single {
