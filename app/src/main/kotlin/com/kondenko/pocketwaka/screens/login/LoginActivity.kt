@@ -1,6 +1,5 @@
 package com.kondenko.pocketwaka.screens.login
 
-import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageInfo
@@ -22,11 +21,12 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.screens.main.MainActivity
 import com.kondenko.pocketwaka.ui.ButtonStateWrapper
-import com.kondenko.pocketwaka.utils.report
+import com.kondenko.pocketwaka.utils.extensions.attachToLifecycle
+import com.kondenko.pocketwaka.utils.extensions.report
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.inject
 
-
+// TODO Migrate to ViewModel
 class LoginActivity : AppCompatActivity(), LoginView {
 
     private val presenter: LoginPresenter by inject()
@@ -35,7 +35,6 @@ class LoginActivity : AppCompatActivity(), LoginView {
 
     private lateinit var loadingButtonStateWrapper: ButtonStateWrapper
 
-    @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -52,11 +51,14 @@ class LoginActivity : AppCompatActivity(), LoginView {
                     buttonLogin.isClickable
                 }
                 .subscribe { presenter.onLoginButtonClicked() }
+                .attachToLifecycle(this)
+        @Suppress("ConstantConditionIf")
         if (BuildConfig.DEBUG) {
             val clicksRequired = 3
             RxView.longClicks(buttonLogin)
                     .buffer(clicksRequired)
                     .subscribe { Crashlytics.getInstance().crash() }
+                    .attachToLifecycle(this)
         }
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }

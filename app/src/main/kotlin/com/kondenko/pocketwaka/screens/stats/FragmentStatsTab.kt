@@ -24,9 +24,9 @@ import com.kondenko.pocketwaka.screens.base.State
 import com.kondenko.pocketwaka.screens.stats.adapter.StatsAdapter
 import com.kondenko.pocketwaka.screens.stats.model.ScrollDirection
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
-import com.kondenko.pocketwaka.utils.report
-import com.kondenko.pocketwaka.utils.times
-import com.kondenko.pocketwaka.utils.transaction
+import com.kondenko.pocketwaka.utils.extensions.report
+import com.kondenko.pocketwaka.utils.extensions.times
+import com.kondenko.pocketwaka.utils.extensions.transaction
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject

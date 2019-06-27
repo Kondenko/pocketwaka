@@ -21,11 +21,7 @@ import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.BaseAdapter
 import com.kondenko.pocketwaka.ui.Skeleton
 import com.kondenko.pocketwaka.utils.SimpleCallback
-import com.kondenko.pocketwaka.utils.component1
-import com.kondenko.pocketwaka.utils.component2
-import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
-import com.kondenko.pocketwaka.utils.extensions.setInvisible
-import com.kondenko.pocketwaka.utils.negateIfTrue
+import com.kondenko.pocketwaka.utils.extensions.*
 import kotlinx.android.synthetic.main.item_status.view.*
 import kotlinx.android.synthetic.main.layout_stats_best_day.view.*
 import kotlinx.android.synthetic.main.layout_stats_card.view.*

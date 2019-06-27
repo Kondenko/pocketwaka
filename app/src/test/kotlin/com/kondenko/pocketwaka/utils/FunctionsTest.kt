@@ -1,5 +1,6 @@
 package com.kondenko.pocketwaka.utils
 
+import com.kondenko.pocketwaka.utils.extensions.times
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

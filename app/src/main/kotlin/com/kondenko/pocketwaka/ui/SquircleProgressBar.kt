@@ -9,8 +9,8 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
-import com.kondenko.pocketwaka.utils.applyMatrix
-import com.kondenko.pocketwaka.utils.createPath
+import com.kondenko.pocketwaka.utils.extensions.applyMatrix
+import com.kondenko.pocketwaka.utils.extensions.createPath
 
 class SquircleProgressBar
 @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {

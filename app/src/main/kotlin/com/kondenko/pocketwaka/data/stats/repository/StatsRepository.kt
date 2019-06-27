@@ -11,7 +11,7 @@ import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.TimeProvider
-import com.kondenko.pocketwaka.utils.notNull
+import com.kondenko.pocketwaka.utils.extensions.notNull
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 import timber.log.Timber
@@ -55,7 +55,7 @@ class StatsRepository(
             service.getCurrentUserStats(tokenHeader, range)
                     .doOnSuccess { Timber.d("Got stats from the server: $range") }
                     .flatMapObservable {
-                        if (it.stats != null) Observable.just(toDomainModel(range, it.stats, timeProvider.getCurrentTimeMillis()))
+                        if (it.stats != null) Observable.just(toDomainModel(range, it.stats))
                         else Observable.error(NullPointerException("Stats are null"))
                     }
                     .doOnNext {
@@ -65,7 +65,7 @@ class StatsRepository(
                         )
                     }
 
-    private fun toDomainModel(range: String, stats: Stats, dateUpdated: Long): StatsDto {
+    private fun toDomainModel(range: String, stats: Stats): StatsDto {
         operator fun MutableList<StatsModel>.plusAssign(item: StatsModel?) {
             item?.let(this::add)
         }

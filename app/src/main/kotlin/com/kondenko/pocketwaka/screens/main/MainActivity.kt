@@ -13,8 +13,8 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.screens.base.MainState
 import com.kondenko.pocketwaka.screens.login.LoginActivity
 import com.kondenko.pocketwaka.screens.stats.FragmentStats
-import com.kondenko.pocketwaka.utils.report
-import com.kondenko.pocketwaka.utils.transaction
+import com.kondenko.pocketwaka.utils.extensions.report
+import com.kondenko.pocketwaka.utils.extensions.transaction
 import io.reactivex.subjects.PublishSubject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

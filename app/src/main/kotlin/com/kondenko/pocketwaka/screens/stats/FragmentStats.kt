@@ -17,7 +17,7 @@ import com.kondenko.pocketwaka.screens.stats.model.ScrollDirection
 import com.kondenko.pocketwaka.screens.stats.model.TabsElevationState
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import com.kondenko.pocketwaka.utils.extensions.getColorCompat
-import com.kondenko.pocketwaka.utils.getStatusBarHeight
+import com.kondenko.pocketwaka.utils.extensions.getStatusBarHeight
 import com.ogaclejapan.smarttablayout.utils.v4.Bundler
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems

@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.utils
+package com.kondenko.pocketwaka.utils.extensions
 
 import android.app.Activity
 import android.content.SharedPreferences
@@ -6,8 +6,13 @@ import android.graphics.Matrix
 import android.graphics.Path
 import android.graphics.Rect
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
 import com.crashlytics.android.Crashlytics
 import io.reactivex.Single
+import io.reactivex.disposables.Disposable
 import timber.log.Timber
 
 fun notNull(vararg values: Any?): Boolean = values.all { it != null }
@@ -61,3 +66,15 @@ operator fun <T> List<T>.times(times: Int): List<T> {
     }
     return list
 }
+
+fun Disposable?.attachToLifecycle(lifecycle: LifecycleOwner) {
+    lifecycle.lifecycle.addObserver(object : LifecycleObserver {
+        @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        fun onDestroy() {
+            this@attachToLifecycle?.dispose()
+        }
+    })
+}
+
+fun SharedPreferences.getStringOrThrow(key: String) =
+        getString(key, null)?: throw NullPointerException("Preference with key $key not found")
