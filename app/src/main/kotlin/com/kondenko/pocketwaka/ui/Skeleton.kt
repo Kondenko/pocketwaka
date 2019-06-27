@@ -1,5 +1,6 @@
 package com.kondenko.pocketwaka.ui
 
+import android.animation.ValueAnimator
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,8 @@ class Skeleton(
 ) {
 
     var animDuration: Long = 300
+
+    private val pulseAnimations: MutableSet<ValueAnimator> = mutableSetOf<ValueAnimator>()
 
     private val initialStates: MutableMap<View, InitialState> by lazy { findViews(root) }
 
@@ -49,11 +52,16 @@ class Skeleton(
     private fun View.getInitialState() = InitialState((this as? TextView)?.text, this.background)
 
     fun show() {
-        initialStates.keys.forEach { it.showSkeleton() }
+        initialStates.keys
+                .forEach {
+                    it.showSkeleton()
+                    it.playPulseAnimation()
+                }
     }
 
     fun hide() {
         initialStates.keys.forEach { it.hideSkeleton() }
+        stopPulseAnimations()
     }
 
     private fun View.showSkeleton() {
@@ -92,5 +100,19 @@ class Skeleton(
                 .setDuration(if (!isShown) animDuration / 2 else animDuration)
                 .start()
     }
+
+    private fun View.playPulseAnimation() {
+        val alphaDimmed = 0.59f
+        val alphaFull = 1f
+        pulseAnimations += ValueAnimator.ofFloat(alphaDimmed, alphaFull).apply {
+            duration = 650L
+            repeatMode = ValueAnimator.REVERSE
+            repeatCount = ValueAnimator.INFINITE
+            addUpdateListener { this@playPulseAnimation.alpha = it.animatedValue as Float }
+            start()
+        }
+    }
+
+    private fun stopPulseAnimations() = pulseAnimations.forEach(ValueAnimator::cancel)
 
 }
