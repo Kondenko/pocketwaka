@@ -6,7 +6,7 @@
 
     <style name="App.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:textAllCaps">false</item>
-        <item name="android:letterSpacing">0.08</item>
+        <item name="android:letterSpacing">0.04</item>
     </style>
 
     <style name="App.Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">

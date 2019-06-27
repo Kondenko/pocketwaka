@@ -62,7 +62,7 @@
         app:layout_constraintEnd_toEndOf="@+id/textview_state_subtitle"
         app:layout_constraintStart_toStartOf="@+id/textview_state_subtitle"
         app:layout_constraintTop_toBottomOf="@+id/textview_state_subtitle"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_state_action_open_plugins"
@@ -79,7 +79,7 @@
         app:layout_constraintEnd_toEndOf="@+id/textview_state_subtitle"
         app:layout_constraintStart_toStartOf="@+id/textview_state_subtitle"
         app:layout_constraintTop_toBottomOf="@+id/textview_state_subtitle"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
