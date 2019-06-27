@@ -6,8 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.kondenko.pocketwaka.domain.main.CheckIfUserIsLoggedIn
 import com.kondenko.pocketwaka.domain.main.ClearCache
 import com.kondenko.pocketwaka.domain.main.RefreshAccessToken
-import com.kondenko.pocketwaka.screens.base.MainState
-import com.kondenko.pocketwaka.screens.base.MainState.*
+import com.kondenko.pocketwaka.screens.main.MainState.*
 
 
 class MainViewModel(

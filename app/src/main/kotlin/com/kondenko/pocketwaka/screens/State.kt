@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.screens.base
+package com.kondenko.pocketwaka.screens
 
 import android.accounts.NetworkErrorException
 

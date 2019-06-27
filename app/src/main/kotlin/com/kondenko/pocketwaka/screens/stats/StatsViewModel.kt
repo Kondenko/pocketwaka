@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kondenko.pocketwaka.domain.stats.GetStatsState
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
-import com.kondenko.pocketwaka.screens.base.State
+import com.kondenko.pocketwaka.screens.State
 import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable
 import java.util.concurrent.TimeUnit

@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.screens.base
+package com.kondenko.pocketwaka.screens.main
 
 sealed class MainState {
     object ShowStats : MainState()

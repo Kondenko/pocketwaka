@@ -3,7 +3,7 @@ package com.kondenko.pocketwaka.domain.stats
 import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
 import com.kondenko.pocketwaka.data.stats.dto.StatsDto
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
-import com.kondenko.pocketwaka.screens.base.State
+import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.testutils.RxRule
 import com.kondenko.pocketwaka.testutils.TestException
 import com.kondenko.pocketwaka.utils.SchedulersContainer

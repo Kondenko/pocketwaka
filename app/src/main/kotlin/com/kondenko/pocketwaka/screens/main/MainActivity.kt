@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.screens.base.MainState
 import com.kondenko.pocketwaka.screens.login.LoginActivity
 import com.kondenko.pocketwaka.screens.stats.FragmentStats
 import com.kondenko.pocketwaka.utils.extensions.report

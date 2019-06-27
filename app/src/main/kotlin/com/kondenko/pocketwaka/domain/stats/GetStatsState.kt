@@ -3,8 +3,8 @@ package com.kondenko.pocketwaka.domain.stats
 import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
 import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
-import com.kondenko.pocketwaka.screens.base.State
-import com.kondenko.pocketwaka.screens.base.State.*
+import com.kondenko.pocketwaka.screens.State
+import com.kondenko.pocketwaka.screens.State.*
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.Observable
 import timber.log.Timber

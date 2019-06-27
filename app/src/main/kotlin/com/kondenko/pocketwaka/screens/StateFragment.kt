@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.screens.base.State
 import kotlinx.android.synthetic.main.fragment_state.*
 import kotlinx.android.synthetic.main.fragment_state.view.*
 import timber.log.Timber
