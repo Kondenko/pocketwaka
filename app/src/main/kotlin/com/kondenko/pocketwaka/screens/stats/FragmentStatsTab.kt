@@ -175,7 +175,7 @@ class FragmentStatsTab : Fragment() {
     private fun openPlugins() {
         val uri = Const.URL_PLUGINS
         val builder = CustomTabsIntent.Builder()
-        builder.setToolbarColor(ContextCompat.getColor(context!!, R.color.color_primary))
+        builder.setToolbarColor(ContextCompat.getColor(context!!, R.color.color_primary_light))
         val customTabsIntent = builder.build()
         customTabsIntent.launchUrl(context, Uri.parse(uri))
     }
