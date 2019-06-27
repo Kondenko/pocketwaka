@@ -56,7 +56,7 @@ class StateFragment : Fragment() {
             }
         }
         view?.run {
-            drawableRes?.let { imageview_state_illustration.setImageDrawable(context.getDrawable(it)) }
+            drawableRes?.let { imageview_state_illustration?.setImageDrawable(context.getDrawable(it)) }
             titleRes?.let { textview_state_title.setText(it) }
             subtitleRes?.let { textview_state_subtitle.setText(it) }
         }
