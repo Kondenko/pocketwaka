@@ -21,7 +21,7 @@ class ColorProvider(val context: Context) {
             val color: Int = if (i <= predefinedColors.size - 1) {
                 predefinedColors[i]
             } else {
-                getRandomColor(item.name?.hashCode()?.toLong()?:0)
+                getRandomColor(item.name.hashCode().toLong())
             }
             colors.add(color)
         }

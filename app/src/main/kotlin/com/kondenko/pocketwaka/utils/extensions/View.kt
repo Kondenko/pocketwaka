@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StyleableRes
 import androidx.core.view.children
-import com.jakewharton.rxbinding2.view.RxView
 
 fun View.useAttributes(attrs: AttributeSet?, @StyleableRes styleable: IntArray, defStyleAttr: Int = 0, defStyleRes: Int = 0, actions: TypedArray.() -> Unit) {
     attrs?.let {
@@ -29,8 +28,6 @@ fun <T> ViewGroup.findViewsWithTag(id: Int, value: T? = null): List<View> {
     }
     return childrenWithTag
 }
-
-fun View.rxClicks() = RxView.clicks(this)
 
 fun View.setInvisible() {
     visibility = View.INVISIBLE

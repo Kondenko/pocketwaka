@@ -22,11 +22,8 @@
 
     <string name="status_offline">Offline</string>
     <string name="status_updating">Updating</string>
-    <string name="status_offline_with_date">Offline, updated %s ago</string>
-    <string name="status_loading_with_date">Updated %s ago</string>
 
     <string name="loginactivity_sign_in">Log in</string>
-    <string name="loginactivity_title" translatable="false">PocketWaka</string>
     <string name="loginactivity_subtitle_default">Get insights on your\ncoding productivity</string>
     <string name="loginactivity_subtitle_loading">Logging in</string>
 

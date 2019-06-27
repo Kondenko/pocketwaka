@@ -42,8 +42,6 @@
     <string name="offline_state_title">Нет интернета</string>
     <string name="offline_state_subtitle">Обновим данные, когда он появится</string>
     <string name="status_offline">Оффлайн</string>
-    <string name="status_offline_with_date">Оффлайн, обновлено %s назад</string>
-    <string name="status_loading_with_date">Обновлено %s назад</string>
     <string name="loginactivity_error_no_browser">Нужен Google Chrome, \\nчтобы войти в приложение</string>
     <string name="status_updating">Статистика обновляется</string>
     <string name="stats_error_unknown">Не удалось обновить</string>

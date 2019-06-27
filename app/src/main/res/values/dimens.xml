@@ -4,12 +4,6 @@
 
     <dimen name="margin_all_vertical_small">8dp</dimen>
 
-    <dimen name="margin_all_card_inner">8dp</dimen>
-    <dimen name="margin_all_card_outer_vertical">4dp</dimen>
-    <dimen name="margin_all_card_outer_horizontal">8dp</dimen>
-
-    <dimen name="height_all_button">36dp</dimen>
-
     <dimen name="width_all_divider_vertical">1dp</dimen>
 
     <dimen name="height_all_skeleton_text">11dp</dimen>
@@ -45,34 +39,23 @@
     <dimen name="textsize_stats_info_text">14sp</dimen>
 
     <dimen name="height_stats_tab_bar">56dp</dimen>
-    <dimen name="width_stats_tab_min">110dp</dimen>
 
     <dimen name="height_stats_tab_indicator">4dp</dimen>
-    <dimen name="width_stats_tab_indicator">90dp</dimen>
 
     <dimen name="textsize_stats_tabs">14dp</dimen>
 
     <dimen name="height_stats_shadow">6dp</dimen>
 
-    <dimen name="height_stats_bestday">112dp</dimen>
     <dimen name="padding_stats_bestday_vertical">16dp</dimen>
 
     <dimen name="textsize_stats_bestday_date">16sp</dimen>
     <dimen name="textsize_stats_bestday_time">24sp</dimen>
     <dimen name="textsize_stats_bestday_caption">14sp</dimen>
 
-    <dimen name="elevation_stats_bestday">2dp</dimen>
-
     <dimen name="margin_card_stats_item_vertical">4dp</dimen>
     <dimen name="margin_card_stats_label_horizontal">8dp</dimen>
     <dimen name="margin_card_stats_label_bottom">1dp</dimen>
 
     <dimen name="height_stats_card_item">40dp</dimen>
-    <dimen name="padding_left_stats_card_item_text">30dp</dimen>
-    <dimen name="padding_right_stats_card_item_text">16dp</dimen>
-    <dimen name="size_stats_card_item_label">18dp</dimen>
-
-    <!--Error state-->
-    <dimen name="padding_error_retry_button_horizontal">16dp</dimen>
 
 </resources>

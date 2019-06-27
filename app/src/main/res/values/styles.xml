@@ -41,10 +41,6 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="TextAppearance.App.State.Any.Text" parent="TextAppearance.AppCompat.Body2">
-        <item name="android:textColor">?android:attr/textColorSecondary</item>
-    </style>
-
     <style name="TextAppearance.App.Stats.Header" parent="TextAppearance.AppCompat">
         <item name="android:gravity">start</item>
         <item name="android:textColor">@color/color_accent</item>
