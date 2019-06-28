@@ -14,3 +14,4 @@ href='https://play.google.com/store/apps/details?id=com.kondenko.pocketwaka&utm_
 - Room
 - RxJava / RxBinding
 - <a href="https://insert-koin.io/">Koin</a>
+- Lottie
