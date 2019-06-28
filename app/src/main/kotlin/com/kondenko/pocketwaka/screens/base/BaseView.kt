@@ -1,6 +1,6 @@
 package com.kondenko.pocketwaka.screens.base
 
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 
 interface BaseView {
 

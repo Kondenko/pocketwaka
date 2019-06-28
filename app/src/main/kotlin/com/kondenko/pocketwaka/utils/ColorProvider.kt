@@ -7,8 +7,7 @@ import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import java.util.*
 
 
-class ColorProvider
-(val context: Context) {
+class ColorProvider(val context: Context) {
 
     private val saturation = 0.65f
 
@@ -22,7 +21,7 @@ class ColorProvider
             val color: Int = if (i <= predefinedColors.size - 1) {
                 predefinedColors[i]
             } else {
-                getRandomColor(item.name?.hashCode()?.toLong()?:0)
+                getRandomColor(item.name.hashCode().toLong())
             }
             colors.add(color)
         }

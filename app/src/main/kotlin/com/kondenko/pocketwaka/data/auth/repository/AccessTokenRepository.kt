@@ -3,8 +3,9 @@ package com.kondenko.pocketwaka.data.auth.repository
 import android.content.SharedPreferences
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.data.auth.service.AccessTokenService
-import com.kondenko.pocketwaka.utils.edit
-import com.kondenko.pocketwaka.utils.singleOrErrorIfNull
+import com.kondenko.pocketwaka.utils.extensions.edit
+import com.kondenko.pocketwaka.utils.extensions.getStringOrThrow
+import com.kondenko.pocketwaka.utils.extensions.singleOrErrorIfNull
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -21,31 +22,31 @@ class AccessTokenRepository(private val service: AccessTokenService, private val
     fun getNewAccessToken(id: String, secret: String, redirectUri: String, grantType: String, code: String) =
             service.getAccessToken(id, secret, redirectUri, grantType, code)
 
-
     fun getRefreshedAccessToken(clientId: String, clientSecret: String, redirectUri: String, grantType: String, refreshToken: String) =
             service.getRefreshToken(clientId, clientSecret, redirectUri, grantType, refreshToken)
-
 
     fun getEncryptedToken(): Single<AccessToken> {
         return isTokenSaved().flatMap { isSaved ->
             if (!isSaved) Single.error(NullPointerException("Access Token is not acquired yet"))
             else Single.just(
                     AccessToken(
-                            prefs.getString(KEY_ACCESS_TOKEN, null),
-                            prefs.getFloat(KEY_EXPIRES_IN, 0f).toDouble(),
-                            prefs.getString(KEY_REFRESH_TOKEN, null),
-                            prefs.getString(KEY_SCOPE, null),
-                            prefs.getString(KEY_TOKEN_TYPE, null),
-                            prefs.getString(KEY_UID, null),
-                            prefs.getFloat(KEY_CREATED_AT, 0f)
+                            accessToken = prefs.getStringOrThrow(KEY_ACCESS_TOKEN),
+                            refreshToken = prefs.getStringOrThrow(KEY_REFRESH_TOKEN),
+                            tokenType = prefs.getStringOrThrow(KEY_TOKEN_TYPE),
+                            scope = prefs.getStringOrThrow(KEY_SCOPE),
+                            uid = prefs.getStringOrThrow(KEY_UID),
+                            expiresIn = prefs.getFloat(KEY_EXPIRES_IN, 0f).toDouble(),
+                            createdAt = prefs.getFloat(KEY_CREATED_AT, 0f)
                     )
             )
         }
     }
 
-    fun getRefreshToken() = prefs.getString(KEY_REFRESH_TOKEN, null).singleOrErrorIfNull(IllegalStateException("No refresh token available"))
+    fun getRefreshToken() = prefs.getString(KEY_REFRESH_TOKEN, null)
+            .singleOrErrorIfNull(IllegalStateException("No refresh token available"))
 
-    fun getEncryptedTokenValue() = prefs.getString(KEY_ACCESS_TOKEN, null).singleOrErrorIfNull(IllegalStateException("Access Token is not acquired yet"))
+    fun getEncryptedTokenValue() = prefs.getString(KEY_ACCESS_TOKEN, null)
+            .singleOrErrorIfNull(IllegalStateException("Access Token is not acquired yet"))
 
     fun saveToken(token: AccessToken, createdAt: Float) {
         prefs.edit {

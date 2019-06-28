@@ -2,17 +2,15 @@
 <resources>
     <string name="main_action_logout">Выйти</string>
     <string name="main_action_refresh">Обновить</string>
-    <string name="error_logging_in">Вход не выполнен</string>
     <string name="error_refreshing_token">Пожалуйста, войдите снова</string>
-    <string name="error_state_title">Упс</string>
-    <string name="error_state_subtitle">Не получилось загрузить данные</string>
-    <string name="error_state_action">" Попробовать снова"</string>
-    <string name="empty_state_title">Кажется, у нас нет для вас статистики</string>
-    <string name="empty_state_subtitle">Недавно начали пользоваться Wakatime?</string>
-    <string name="empty_state_text">Установите плагины для ваших редакторов и продолжайте работать</string>
+    <string name="error_state_title">Не получилось загрузить данные</string>
+    <string name="error_state_subtitle">Пожвлуйста, попробуйте позже</string>
+    <string name="error_state_action">Попробовать снова</string>
+    <string name="empty_state_title">Кажется, у вас нет статистики</string>
+    <string name="empty_state_subtitle">Установите плагин для вашего редактора кода и она появится</string>
     <string name="empty_state_action">Найти плагины</string>
     <string name="loginactivity_sign_in">Войти</string>
-    <string name="loginactivity_subtitle">Визуализируем ваше рабочее время</string>
+    <string name="loginactivity_subtitle_default">Визуализируем ваше рабочее время</string>
     <string name="stats_tab_7_days">Неделя</string>
     <string name="stats_tab_30_days">Месяц</string>
     <string name="stats_tab_6_months">Полгода</string>
@@ -20,7 +18,7 @@
     <string name="stats_header_total">Всего</string>
     <string name="stats_header_daily_average">Сред. в день</string>
     <string name="stats_header_best_day">Лучший день</string>
-    <string name="stats_caption_best_day">активности</string>
+    <string name="stats_caption_best_day">На %d%% выше среднего</string>
     <string name="stats_card_header_projects">Проекты</string>
     <string name="stats_card_header_editors">Редакторы</string>
     <string name="stats_card_header_languages">Языки</string>
@@ -37,4 +35,16 @@
         <item quantity="many">%d мин.</item>
         <item quantity="other">%d мин.</item>
     </plurals>
+    <string name="loginactivity_error_generic">Не удалось войти</string>
+    <string name="loginactivity_subtitle_loading">Входим в приложение</string>
+    <string name="loginactivity_subtitle_error_action">Войти</string>
+    <string name="screen_stats">Статистика</string>
+    <string name="offline_state_title">Нет интернета</string>
+    <string name="offline_state_subtitle">Обновим данные, когда он появится</string>
+    <string name="status_offline">Оффлайн</string>
+    <string name="loginactivity_error_no_browser">Нужен Google Chrome, \\nчтобы войти в приложение</string>
+    <string name="status_updating">Статистика обновляется</string>
+    <string name="stats_error_unknown">Не удалось обновить</string>
+    <string name="stats_error_unknown_range">Не удалось загрузить статистику за эот период</string>
+    <string name="stats_error_unknown_range_no_network">Ошибка сети</string>
 </resources>

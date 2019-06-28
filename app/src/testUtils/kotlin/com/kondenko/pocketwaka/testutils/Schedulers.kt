@@ -1,6 +1,6 @@
 package com.kondenko.pocketwaka.testutils
 
-import com.kondenko.pocketwaka.utils.SchedulerContainer
+import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.schedulers.Schedulers
 
-val testSchedulers = SchedulerContainer(Schedulers.trampoline(), Schedulers.trampoline())
+val testSchedulers = SchedulersContainer(Schedulers.trampoline(), Schedulers.trampoline())

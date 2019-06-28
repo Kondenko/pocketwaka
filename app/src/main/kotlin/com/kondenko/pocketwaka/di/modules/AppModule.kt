@@ -2,14 +2,16 @@ package com.kondenko.pocketwaka.di.modules
 
 import android.content.Context
 import android.preference.PreferenceManager
+import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
 import com.kondenko.pocketwaka.utils.TimeProvider
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module
 
 object AppModule {
 
-    fun create(context: Context) = applicationContext {
-        bean { PreferenceManager.getDefaultSharedPreferences(context) }
-        bean { TimeProvider() }
+    fun create(context: Context) = module {
+        single { PreferenceManager.getDefaultSharedPreferences(context) }
+        single { TimeProvider() }
+        single { ConnectivityStatusProvider(context) }
     }
 
 }

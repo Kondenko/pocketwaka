@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="OneLineSegmentedChart">
-        <attr name="bar_width" format="dimension"/>
-        <attr name="corner_radius" format="dimension"/>
-        <attr name="sortDescending" format="boolean" />
+    <declare-styleable name="LoadingView">
+        <attr name="dots_number" format="integer|dimension" />
+        <attr name="dot_drawable" format="reference" />
+        <attr name="dot_margin" format="integer|dimension|float" />
     </declare-styleable>
 </resources>

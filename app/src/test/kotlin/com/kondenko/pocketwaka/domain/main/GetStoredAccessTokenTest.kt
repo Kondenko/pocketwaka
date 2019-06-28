@@ -3,7 +3,7 @@ package com.kondenko.pocketwaka.domain.main
 import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.testutils.testSchedulers
-import com.kondenko.pocketwaka.utils.Encryptor
+import com.kondenko.pocketwaka.utils.encryption.TokenEncryptor
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
@@ -13,26 +13,46 @@ import org.junit.Test
 
 class GetStoredAccessTokenTest {
 
-    private val encryptor: Encryptor = mock()
+    private val tokenEncryptor: TokenEncryptor = mock()
 
     private val repository: AccessTokenRepository = mock()
 
-    val usecase = GetStoredAccessToken(testSchedulers, repository, encryptor)
+    private val getAccessToken = GetStoredAccessToken(testSchedulers, repository, tokenEncryptor)
 
     @Test
     fun `should decrypt access token`() {
-        val encryptedToken: AccessToken = mock()
-        val decryptedToken: AccessToken = mock()
+        val encryptedToken: AccessToken = AccessToken(
+                "encrypted",
+                .0,
+                "encrypted",
+                "encrypted",
+                "encrypted",
+                "encrypted",
+                0f
+        )
+        val decryptedToken: AccessToken = AccessToken(
+                "decrypted",
+                .0,
+                "decrypted",
+                "decrypted",
+                "decrypted",
+                "decrypted",
+                0f
+        )
+
         whenever(repository.getEncryptedToken()).doReturn(encryptedToken.toSingle())
-        whenever(encryptor.decryptToken(encryptedToken)).doReturn(decryptedToken)
-        val single = usecase.execute()
+        whenever(tokenEncryptor.decrypt(encryptedToken)).doReturn(decryptedToken)
+
+        val single = getAccessToken()
+
         verify(repository).getEncryptedToken()
-        verify(encryptor.decryptToken(encryptedToken))
+        verify(tokenEncryptor).decrypt(encryptedToken)
+
         with(single.test()) {
+            assertValue { it == decryptedToken && it != encryptedToken }
             assertSubscribed()
             assertNoErrors()
             assertComplete()
-            assertValue(decryptedToken)
         }
     }
 

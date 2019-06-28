@@ -1,13 +1,10 @@
 package com.kondenko.pocketwaka.data.auth.repository
 
-import com.kondenko.pocketwaka.testutils.CustomRobolectricTestRunner
 import com.kondenko.pocketwaka.testutils.RxRule
 import com.nhaarman.mockito_kotlin.mock
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(CustomRobolectricTestRunner::class)
 class EncryptedKeysRepositoryTest {
 
     @get:Rule

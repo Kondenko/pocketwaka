@@ -18,7 +18,7 @@ android {
         versionCode versions.code
         versionName "${versions.appMajor}.${versions.appMinor}.${versions.appPatch}"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         vectorDrawables.useSupportLibrary = true
     }
@@ -63,33 +63,46 @@ android {
         File debugKaptFiles = file("$buildDir/generated/source/kapt/debug")
 
         main {
+            ext.enableCrashlytics = false
             java.srcDirs += 'src/main/kotlin'
         }
         release {
             java.srcDirs += [file("$buildDir/generated/source/kapt/release")]
         }
         debug {
+            ext.enableCrashlytics = false
             java.srcDirs += 'src/debug/kotlin'
             java.srcDirs += debugKaptFiles
         }
         mock {
+            ext.enableCrashlytics = false
             java.srcDirs += 'src/debug/kotlin'
             java.srcDirs += 'src/mock/kotlin'
             java.srcDirs += debugKaptFiles
         }
         test {
+            ext.enableCrashlytics = false
             java.srcDirs += 'src/test/kotlin'
             java.srcDirs += 'src/testUtils/kotlin'
             java.srcDirs += debugKaptFiles
         }
         androidTest {
+            ext.enableCrashlytics = false
             java.srcDirs += 'src/androidTest/kotlin'
             java.srcDirs += debugKaptFiles
         }
     }
-
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
     androidExtensions {
         experimental = true
+    }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
     }
 
 }
@@ -109,6 +122,8 @@ kapt {
 dependencies {
 
     implementation kotlinLib
+    implementation androidKtx
+    implementation archComponents
     implementation support
     implementation constraintLayout
     implementation rx
@@ -118,19 +133,21 @@ dependencies {
     implementation timber
     implementation firebaseCore
     implementation crashlyticsGoogle
+    implementation lottie
+    implementation room
 
-    debugImplementation stetho
-    mockImplementation stetho
+    debugImplementation databaseBrowser
+
+    kapt roomCompiler
 
     testImplementation testingDependencies
-
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: versions.mockito
 
     androidTestImplementation androidTestingDependencies
-
     androidTestImplementation(androidTestingSupportDependencies, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
 }
 
 buildscript {

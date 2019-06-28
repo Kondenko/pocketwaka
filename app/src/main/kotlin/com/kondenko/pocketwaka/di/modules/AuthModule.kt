@@ -8,24 +8,35 @@ import com.kondenko.pocketwaka.domain.auth.GetAccessToken
 import com.kondenko.pocketwaka.domain.auth.GetAppId
 import com.kondenko.pocketwaka.domain.auth.GetAppSecret
 import com.kondenko.pocketwaka.domain.auth.GetAuthUrl
-import com.kondenko.pocketwaka.screens.auth.AuthPresenter
-import com.kondenko.pocketwaka.utils.Encryptor
-import org.koin.dsl.module.applicationContext
+import com.kondenko.pocketwaka.screens.login.LoginPresenter
+import com.kondenko.pocketwaka.utils.encryption.StringEncryptor
+import com.kondenko.pocketwaka.utils.encryption.TokenEncryptor
+import com.kondenko.pocketwaka.utils.extensions.create
+import org.koin.dsl.module
 import retrofit2.Retrofit
 
 object AuthModule {
 
-    fun create() = applicationContext {
-        bean { Encryptor() }
-        bean { EncryptedKeysRepository() }
-        bean { get<Retrofit>(Auth).create(AccessTokenService::class.java) }
-        bean { EncryptedKeysRepository() }
-        bean { AccessTokenRepository(get(), get()) }
-        factory { GetAuthUrl(get(), get()) }
-        factory { GetAppId(get(), get(), get()) }
-        factory { GetAppSecret(get(), get(), get()) }
-        factory { GetAccessToken(get(), get(), get(), get(), get(),get()) }
-        bean { AuthPresenter(get() as GetAuthUrl, get() as GetAccessToken) }
+    fun create() = module {
+        factory { StringEncryptor() }
+        factory { TokenEncryptor(stringEncryptor = get<StringEncryptor>()) }
+        factory { EncryptedKeysRepository() }
+        factory { get<Retrofit>(Auth).create<AccessTokenService>() }
+        factory { AccessTokenRepository(service = get(), prefs = get()) }
+        factory { GetAuthUrl(schedulers = get(), getAppId = get()) }
+        factory { GetAppId(schedulers = get(), encryptedKeysRepository = get(), stringEncryptor = get<StringEncryptor>()) }
+        factory { GetAppSecret(schedulers = get(), encryptedKeysRepository = get(), stringEncryptor = get<StringEncryptor>()) }
+        factory {
+            GetAccessToken(
+                    schedulers = get(),
+                    timeProvider = get(),
+                    tokenEncryptor = get<TokenEncryptor>(),
+                    accessTokenRepository = get(),
+                    getAppId = get(),
+                    getAppSecret = get()
+            )
+        }
+        single { LoginPresenter(get() as GetAuthUrl, get() as GetAccessToken) }
     }
 
 }

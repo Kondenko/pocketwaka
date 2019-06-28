@@ -1,26 +1,36 @@
 <resources>
+
     <string name="all_app_name" translatable="false">PocketWaka</string>
+
+    <string name="screen_stats">Your stats</string>
 
     <string name="main_action_logout">Log out</string>
     <string name="main_action_refresh">Refresh</string>
 
-
-    <string name="error_logging_in">Logging in failed</string>
     <string name="error_refreshing_token">Please log in again</string>
 
-    <string name="error_state_title">Oh, no</string>
-    <string name="error_state_subtitle">We couldn\'t get your stats</string>
+    <string name="error_state_title">We did our best\nbut couldn’t load your stats</string>
+    <string name="error_state_subtitle">Please try again later</string>
     <string name="error_state_action">Retry</string>
 
+    <string name="offline_state_title">Check your connection</string>
+    <string name="offline_state_subtitle">We’ll retry as soon as you\'re online</string>
+
     <string name="empty_state_title">No activity</string>
-    <string name="empty_state_subtitle">New to Wakatime?</string>
-    <string name="empty_state_text">Install plugins for you favorite editors and write some code!</string>
+    <string name="empty_state_subtitle">Install plugins for you favorite editors\nand write some code!</string>
     <string name="empty_state_action">Browse plugins</string>
 
+    <string name="status_offline">Offline</string>
+    <string name="status_updating">Updating</string>
 
     <string name="loginactivity_sign_in">Log in</string>
-    <string name="loginactivity_title" translatable="false">PocketWaka</string>
-    <string name="loginactivity_subtitle">Your coding activity, visualized</string>
+    <string name="loginactivity_subtitle_default">Get insights on your\ncoding productivity</string>
+    <string name="loginactivity_subtitle_loading">Logging in</string>
+
+    <string name="loginactivity_error_generic">Failed to log in</string>
+    <string name="loginactivity_error_no_browser">Google Chrome needs to be installed \nto log in</string>
+
+    <string name="loginactivity_subtitle_error_action">Try again</string>
 
 
     <string name="stats_tab_7_days">Week</string>
@@ -28,10 +38,14 @@
     <string name="stats_tab_6_months">6 months</string>
     <string name="stats_tab_1_year">1 year</string>
 
+    <string name="stats_error_unknown">Couldn\'t update stats</string>
+    <string name="stats_error_unknown_range">Couldn\'t get stats for this period</string>
+    <string name="stats_error_unknown_range_no_network">Network error</string>
+
     <string name="stats_header_total">Total</string>
     <string name="stats_header_daily_average">Daily average</string>
     <string name="stats_header_best_day">Best day</string>
-    <string name="stats_caption_best_day">of coding activity</string>
+    <string name="stats_caption_best_day">%d%% greater than your average</string>
 
     <string name="stats_card_header_projects">Projects</string>
     <string name="stats_card_header_editors">Editors</string>
@@ -47,7 +61,6 @@
         <item quantity="one">%d min</item>
         <item quantity="other">%d mins</item>
     </plurals>
-
 
     <string name="stats_card_less_than_1_percent" formatted="false" translatable="false">&lt; 1%</string>
     <string name="stats_card_percent_format_int" formatted="false" translatable="false">%.0f%%</string>

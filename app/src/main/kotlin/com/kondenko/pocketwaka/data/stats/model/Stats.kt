@@ -1,11 +1,13 @@
 package com.kondenko.pocketwaka.data.stats.model
 
-import android.os.Parcel
-import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class Stats  {
+class Stats {
+
+    @SerializedName("range")
+    @Expose
+    var range: String? = null
 
     @SerializedName("best_day")
     @Expose
@@ -82,10 +84,6 @@ class Stats  {
     @SerializedName("projects")
     @Expose
     var projects: List<Project>? = null
-
-    @SerializedName("range")
-    @Expose
-    var range: String? = null
 
     @SerializedName("start")
     @Expose

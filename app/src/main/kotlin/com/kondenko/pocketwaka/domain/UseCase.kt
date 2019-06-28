@@ -8,10 +8,15 @@ package com.kondenko.pocketwaka.domain
  * @param RESULT the result of the performed operation.
  * @param CONTEXT determines the way we run this operation (like [io.reactivex.Observable], [io.reactivex.Completable] or [io.reactivex.Single])
  */
- interface UseCase<PARAMS, RESULT, CONTEXT> {
+interface UseCase<PARAMS, RESULT, CONTEXT> {
 
     fun build(params: PARAMS? = null): CONTEXT
 
-    fun execute(params: PARAMS? = null, onSuccess: (RESULT) -> Unit = {}, onError: (Throwable) -> Unit = {}, onFinish: () -> Unit = {}): CONTEXT
+    operator fun invoke(
+            params: PARAMS? = null,
+            onSuccess: (RESULT) -> Unit = {},
+            onError: (Throwable) -> Unit = {},
+            onFinish: () -> Unit = {}
+    ): CONTEXT
 
 }
