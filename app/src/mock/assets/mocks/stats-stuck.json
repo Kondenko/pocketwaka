@@ -1,0 +1,27 @@
+{
+  "data": {
+    "created_at": "2019-07-06T08:14:13Z",
+    "daily_average_including_other_language": 17822,
+    "end": "2019-07-05T20:59:59Z",
+    "human_readable_daily_average_including_other_language": "4 hrs 57 mins",
+    "human_readable_total_including_other_language": "1,079 hrs 13 mins",
+    "id": "d2be537d-d7b8-46f4-968e-59be550cf126",
+    "is_already_updating": false,
+    "is_coding_activity_visible": false,
+    "is_other_usage_visible": false,
+    "is_stuck": true,
+    "is_up_to_date": false,
+    "modified_at": "2019-07-10T07:59:10Z",
+    "project": null,
+    "range": "last_year",
+    "start": "2018-07-05T21:00:00Z",
+    "status": "pending_update",
+    "timeout": 15,
+    "timezone": "Europe/Moscow",
+    "total_seconds_including_other_language": 3885189.938405,
+    "user_id": "0974f3f9-7f4e-4ccf-91bd-f4176dc3c94e",
+    "username": "kondenko",
+    "writes_only": false
+  },
+  "message": "Calculating stats for this user. Check back later."
+}
