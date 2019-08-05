@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.screens.stats
+package com.kondenko.pocketwaka.screens.ranges
 
 
 import android.content.Context
@@ -21,8 +21,8 @@ import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.StateFragment
-import com.kondenko.pocketwaka.screens.stats.adapter.StatsAdapter
-import com.kondenko.pocketwaka.screens.stats.model.ScrollDirection
+import com.kondenko.pocketwaka.screens.ranges.adapter.StatsAdapter
+import com.kondenko.pocketwaka.screens.ranges.model.ScrollDirection
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import com.kondenko.pocketwaka.utils.extensions.report
 import com.kondenko.pocketwaka.utils.extensions.times

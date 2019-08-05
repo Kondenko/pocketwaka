@@ -2,7 +2,7 @@ package com.kondenko.pocketwaka.di
 
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.kondenko.pocketwaka.screens.stats.StatsViewModel
+import com.kondenko.pocketwaka.screens.ranges.StatsViewModel
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.parameter.parametersOf

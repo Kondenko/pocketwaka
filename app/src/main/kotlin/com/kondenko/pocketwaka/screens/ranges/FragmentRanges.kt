@@ -1,23 +1,22 @@
-package com.kondenko.pocketwaka.screens.stats
+package com.kondenko.pocketwaka.screens.ranges
 
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
-import androidx.core.view.updateLayoutParams
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.screens.stats.model.ScrollDirection
-import com.kondenko.pocketwaka.screens.stats.model.TabsElevationState
-import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
+import com.kondenko.pocketwaka.screens.ranges.model.ScrollDirection
+import com.kondenko.pocketwaka.screens.ranges.model.TabsElevationState
 import com.kondenko.pocketwaka.utils.extensions.getColorCompat
-import com.kondenko.pocketwaka.utils.extensions.getStatusBarHeight
 import com.ogaclejapan.smarttablayout.utils.v4.Bundler
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
@@ -25,13 +24,11 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_stats_container.*
 import timber.log.Timber
-import kotlin.math.roundToInt
 
 
-class FragmentStats : Fragment() {
+class FragmentRanges : Fragment() {
 
     private val refreshEvents = PublishSubject.create<Any>()
 
@@ -51,7 +48,7 @@ class FragmentStats : Fragment() {
         tabsElevation = savedInstanceState?.getParcelable(keyTabsElevation) ?: TabsElevationState()
         val toolbarColorResting = view.context.getColorCompat(R.color.color_app_bar_resting)
         val toolbarColorElevated = view.context.getColorCompat(R.color.color_app_bar_elevated)
-        colorAnimator = createColorAnimator(toolbarColorResting, toolbarColorElevated)
+        colorAnimator = createColorAnimator(activity as? AppCompatActivity, toolbarColorResting, toolbarColorElevated)
         setupViewPager(view)
         restoreTabsElevation(stats_viewpager_content.currentItem)
     }
@@ -75,15 +72,6 @@ class FragmentStats : Fragment() {
             offscreenPageLimit = 2
             this.adapter = adapter
             post {
-                activity!!.view_main_elevated_surface.updateLayoutParams {
-                    val statusbarHeight: Float = activity?.run {
-                        getStatusBarHeight()?.toFloat()
-                                ?: resources.getDimension(R.dimen.height_all_statusbar_fallback)
-                    } ?: view.context.adjustForDensity(24)
-                    height = stats_smarttablayout_ranges
-                            .run { bottom + height + statusbarHeight }
-                            .roundToInt()
-                }
                 onFragmentSelected(currentItem, adapter.getPage(currentItem) as FragmentStatsTab)
             }
         }
@@ -99,13 +87,21 @@ class FragmentStats : Fragment() {
         }
     }
 
-    private fun createColorAnimator(initialColor: Int, finalColor: Int) = ValueAnimator().apply {
+    private fun createColorAnimator(activity: AppCompatActivity?, initialColor: Int, finalColor: Int) = ValueAnimator().apply {
         @Suppress("UsePropertyAccessSyntax")
         setDuration(Const.DEFAULT_ANIM_DURATION)
         setIntValues(initialColor, finalColor)
         setEvaluator(ArgbEvaluator())
+        val toolbarBackgroundDrawable = ColorDrawable()
+        activity?.supportActionBar?.setBackgroundDrawable(toolbarBackgroundDrawable)
         addUpdateListener { valueAnimator ->
-            activity?.view_main_elevated_surface?.setBackgroundColor(valueAnimator.animatedValue as Int)
+            activity?.apply {
+                val color = valueAnimator.animatedValue as Int
+                window.statusBarColor = color
+                toolbarBackgroundDrawable.color = color
+                stats_smarttablayout_ranges.setBackgroundColor(color)
+            }
+
         }
     }
 
@@ -126,7 +122,7 @@ class FragmentStats : Fragment() {
     }
 
     private fun restoreTabsElevation(currentTabIndex: Int) {
-        val wasPreviousTabElevated = tabsElevation.run { isElevated && this.currentTabIndex != currentTabIndex}
+        val wasPreviousTabElevated = tabsElevation.run { isElevated && this.currentTabIndex != currentTabIndex }
         tabsElevation.currentTabIndex = currentTabIndex
         val isCurrentTabElevated = tabsElevation.isElevated
         if (!wasPreviousTabElevated && isCurrentTabElevated) animateTabs(true)

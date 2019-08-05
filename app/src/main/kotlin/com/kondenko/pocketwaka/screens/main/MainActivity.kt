@@ -8,35 +8,54 @@ import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.kondenko.pocketwaka.FragmentMenu
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.screens.daily.FragmentDayStats
 import com.kondenko.pocketwaka.screens.login.LoginActivity
-import com.kondenko.pocketwaka.screens.stats.FragmentStats
+import com.kondenko.pocketwaka.screens.ranges.FragmentRanges
 import com.kondenko.pocketwaka.utils.extensions.report
 import com.kondenko.pocketwaka.utils.extensions.transaction
 import io.reactivex.subjects.PublishSubject
+import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MainActivity : AppCompatActivity() {
 
-    private val tagStats = "stats"
-
     private val vm: MainViewModel by viewModel()
 
     private val refreshEvents = PublishSubject.create<Any>()
 
+    private val rangesFragment = FragmentRanges()
+    private val tagRanges = "ranges"
+
+    private val dailyFragment = FragmentDayStats()
+    private val tagDaily = "day"
+
+    private val menuFragment = FragmentMenu()
+    private val tagMenu = "menu"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setTitle(R.string.screen_stats)
+        supportActionBar?.elevation = 0f
         val visibility = window.decorView.systemUiVisibility or SYSTEM_UI_FLAG_LAYOUT_STABLE or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         window.decorView.systemUiVisibility = visibility
+        main_bottom_navigation.setOnNavigationItemSelectedListener {
+            when(it.itemId) {
+                R.id.bottomnav_item_today -> showDailyStats()
+                R.id.bottomnav_item_ranges -> showRanges()
+                R.id.bottomnav_item_menu -> showMenu()
+            }
+            true
+        }
+        main_bottom_navigation.selectedItemId = R.id.bottomnav_item_today
         vm.states().observe(this, Observer {
             when (it) {
-                MainState.ShowStats -> showStats()
-                MainState.ShowLoginScreen -> showLoginScreen()
-                MainState.LogOut -> logout()
+                is MainState.ShowLoginScreen -> showLoginScreen()
+                is MainState.LogOut -> logout()
                 is MainState.Error -> showError(it.cause)
             }
         })
@@ -61,12 +80,6 @@ class MainActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun showStats() {
-        val statsFragment = FragmentStats()
-        statsFragment.subscribeToRefreshEvents(refreshEvents)
-        setFragment(statsFragment, tagStats)
-    }
-
     private fun showError(throwable: Throwable?) {
         throwable?.report()
         Toast.makeText(this, R.string.error_refreshing_token, Toast.LENGTH_LONG).show()
@@ -77,10 +90,23 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(this, LoginActivity::class.java))
     }
 
-    private fun setFragment(fragment: androidx.fragment.app.Fragment, tag: String) {
+    private fun showDailyStats() {
+        setFragment(dailyFragment, tagDaily)
+    }
+
+    private fun showRanges() {
+        rangesFragment.subscribeToRefreshEvents(refreshEvents)
+        setFragment(rangesFragment, tagRanges)
+    }
+
+    private fun showMenu() {
+        setFragment(menuFragment, tagMenu)
+    }
+
+    private fun setFragment(fragment: Fragment, tag: String) {
         if (supportFragmentManager.findFragmentByTag(tag) == null) {
             supportFragmentManager.transaction {
-                replace(R.id.container, fragment, tag)
+                replace(R.id.main_container, fragment, tag)
             }
         }
     }

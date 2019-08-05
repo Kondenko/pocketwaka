@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.screens.stats.adapter
+package com.kondenko.pocketwaka.screens.ranges.adapter
 
 import android.content.Context
 import android.graphics.Color

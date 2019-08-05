@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.screens.stats
+package com.kondenko.pocketwaka.screens.ranges
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -8,7 +8,7 @@ import com.kondenko.pocketwaka.di.Api
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.stats.FetchStats
 import com.kondenko.pocketwaka.domain.stats.GetStatsState
-import com.kondenko.pocketwaka.screens.stats.StatsViewModel
+import com.kondenko.pocketwaka.screens.ranges.StatsViewModel
 import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.encryption.StringEncryptor

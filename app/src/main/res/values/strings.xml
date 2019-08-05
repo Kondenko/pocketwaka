@@ -7,6 +7,10 @@
     <string name="main_action_logout">Log out</string>
     <string name="main_action_refresh">Refresh</string>
 
+    <string name="main_bottomnav_today">Today</string>
+    <string name="main_bottomnav_ranges">Ranges</string>
+    <string name="main_bottomnav_menu">Menu</string>
+
     <string name="error_refreshing_token">Please log in again</string>
 
     <string name="error_state_title">We did our best\nbut couldn’t load your stats</string>
@@ -64,5 +68,8 @@
 
     <string name="stats_card_less_than_1_percent" formatted="false" translatable="false">&lt; 1%</string>
     <string name="stats_card_percent_format_int" formatted="false" translatable="false">%.0f%%</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -47,4 +47,7 @@
     <string name="stats_error_unknown">Не удалось обновить</string>
     <string name="stats_error_unknown_range">Не удалось загрузить статистику за эот период</string>
     <string name="stats_error_unknown_range_no_network">Ошибка сети</string>
+    <string name="main_bottomnav_menu">Меню</string>
+    <string name="main_bottomnav_today">Сегодня</string>
+    <string name="main_bottomnav_ranges">Периоды</string>
 </resources>
