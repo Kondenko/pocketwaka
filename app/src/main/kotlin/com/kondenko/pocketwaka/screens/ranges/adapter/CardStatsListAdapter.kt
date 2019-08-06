@@ -36,7 +36,7 @@ class CardStatsListAdapter(private val context: Context, private val items: List
         fun bind(item: StatsItem) {
             with(itemView) {
                 textview_stats_item_percent?.apply {
-                    if (item.percent != null) setPercent(item.percent)
+                    if (item.percent != null) setPercentValue(item.percent)
                     else if (!isSkeleton) setInvisible()
                 }
                 textview_stats_item_name.text = item.name
@@ -85,7 +85,7 @@ class CardStatsListAdapter(private val context: Context, private val items: List
     /**
      * Set the percent value so that if it's less than 1% it looks like < 1%
      */
-    private fun TextView.setPercent(percent: Double) {
+    private fun TextView.setPercentValue(percent: Double) {
         text = if (percent > 1) {
             String.format(context.getString(R.string.stats_card_percent_format_int) as String, percent)
         } else {

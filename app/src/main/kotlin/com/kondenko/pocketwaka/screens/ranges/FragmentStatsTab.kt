@@ -30,7 +30,7 @@ import com.kondenko.pocketwaka.utils.extensions.transaction
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
-import kotlinx.android.synthetic.main.fragment_stats.*
+import kotlinx.android.synthetic.main.fragment_stats_range.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -59,25 +59,12 @@ class FragmentStatsTab : Fragment() {
 
     private lateinit var statsAdapter: StatsAdapter
 
-    private var fragmentState: StateFragment? = null
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.fragment_stats, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupUi()
-        vm.state().observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is State.Success -> it.render()
-                is State.Loading -> it.render()
-                is State.Offline -> it.render()
-                is State.Empty -> it.render()
-                is State.Failure -> it.render()
-            }
-        })
+    private val fragmentState: StateFragment by lazy {
+        val fragment = StateFragment()
+        childFragmentManager.transaction {
+            add(fragment, null)
+        }
+        fragment
     }
 
     override fun onAttach(context: Context) {
@@ -94,11 +81,28 @@ class FragmentStatsTab : Fragment() {
         }
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        super.onCreateView(inflater, container, savedInstanceState)
+        return inflater.inflate(R.layout.fragment_stats_range, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupUi()
+        vm.state().observe(this, Observer {
+            when (it) {
+                is State.Success -> it.render()
+                is State.Loading -> it.render()
+                is State.Offline -> it.render()
+                is State.Empty -> it.render()
+                is State.Failure -> it.render()
+            }
+        })
+    }
+
     private fun setupUi() {
-        fragmentState = childFragmentManager.findFragmentById(R.id.fragment_state) as StateFragment
-        with(recyclerview_stats) {
+        with(stats_range_recyclerview) {
             layoutManager = LinearLayoutManager(context)
-            adapter = skeletonAdapter
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
@@ -112,7 +116,7 @@ class FragmentStatsTab : Fragment() {
     private fun State.Loading<List<StatsModel>>.render() {
         showData(true)
         if (isInterrupting) {
-            recyclerview_stats.apply {
+            stats_range_recyclerview.apply {
                 if (adapter != skeletonAdapter) adapter = skeletonAdapter
             }
         } else {
@@ -157,13 +161,13 @@ class FragmentStatsTab : Fragment() {
         fragmentState?.setState(this, ::openPlugins)
     }
 
-    private fun updateStats(data: List<StatsModel>?) = recyclerview_stats.apply {
+    private fun updateStats(data: List<StatsModel>?) = stats_range_recyclerview.apply {
         if (adapter != statsAdapter) adapter = statsAdapter
         data?.let { statsAdapter.items = it }
     }
 
     private fun showData(show: Boolean) {
-        recyclerview_stats.isVisible = show
+        stats_range_recyclerview.isVisible = show
         fragmentState?.let {
             childFragmentManager.transaction {
                 if (show) hide(it)
@@ -181,7 +185,7 @@ class FragmentStatsTab : Fragment() {
     }
 
     private fun updateAppBarElevation() {
-        shadowAnimationNeeded = if (recyclerview_stats.computeVerticalScrollOffset() >= minScrollOffset) {
+        shadowAnimationNeeded = if (stats_range_recyclerview.computeVerticalScrollOffset() >= minScrollOffset) {
             if (shadowAnimationNeeded) scrollDirection.onNext(ScrollDirection.Down)
             false
         } else {

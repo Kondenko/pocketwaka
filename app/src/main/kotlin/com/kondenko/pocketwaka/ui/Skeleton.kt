@@ -25,7 +25,7 @@ class Skeleton(
 
     var animDuration: Long = 300
 
-    private val pulseAnimations: MutableSet<ValueAnimator> = mutableSetOf<ValueAnimator>()
+    private val pulseAnimations: MutableSet<ValueAnimator> = mutableSetOf()
 
     private val initialStates: MutableMap<View, InitialState> by lazy { findViews(root) }
 

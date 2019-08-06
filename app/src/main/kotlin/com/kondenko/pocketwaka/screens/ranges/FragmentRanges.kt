@@ -49,7 +49,7 @@ class FragmentRanges : Fragment() {
         val toolbarColorResting = view.context.getColorCompat(R.color.color_app_bar_resting)
         val toolbarColorElevated = view.context.getColorCompat(R.color.color_app_bar_elevated)
         colorAnimator = createColorAnimator(activity as? AppCompatActivity, toolbarColorResting, toolbarColorElevated)
-        setupViewPager(view)
+        setupViewPager()
         restoreTabsElevation(stats_viewpager_content.currentItem)
     }
 
@@ -58,8 +58,8 @@ class FragmentRanges : Fragment() {
         super.onSaveInstanceState(outState)
     }
 
-    private fun setupViewPager(view: View) {
-        val adapter = FragmentPagerItemAdapter(
+    private fun setupViewPager() {
+        val pagerAdapter = FragmentPagerItemAdapter(
                 childFragmentManager,
                 FragmentPagerItems.with(activity)
                         .addFragment(R.string.stats_tab_7_days, Const.STATS_RANGE_7_DAYS)
@@ -70,16 +70,16 @@ class FragmentRanges : Fragment() {
         )
         with(stats_viewpager_content) {
             offscreenPageLimit = 2
-            this.adapter = adapter
+            this.adapter = pagerAdapter
             post {
-                onFragmentSelected(currentItem, adapter.getPage(currentItem) as FragmentStatsTab)
+                onFragmentSelected(currentItem, pagerAdapter.getPage(currentItem) as FragmentStatsTab)
             }
         }
         with(stats_smarttablayout_ranges) {
             setViewPager(stats_viewpager_content)
             setOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
                 override fun onPageSelected(position: Int) {
-                    val selectedFragment = adapter.getPage(position) as FragmentStatsTab?
+                    val selectedFragment = pagerAdapter.getPage(position) as FragmentStatsTab?
                     if (selectedFragment != null) onFragmentSelected(position, selectedFragment)
                     else Timber.e("$selectedFragment at position $position is null")
                 }
