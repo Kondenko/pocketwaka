@@ -32,7 +32,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_stats_range.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 
 class FragmentStatsTab : Fragment() {
@@ -41,7 +41,7 @@ class FragmentStatsTab : Fragment() {
         const val ARG_RANGE = "range"
     }
 
-    private val vm: StatsViewModel by viewModel { parametersOf(arguments?.getString(ARG_RANGE)) }
+    private lateinit var vm: StatsViewModel
 
     /**
      * The minimum value the RecyclerView has to be scrolled for
@@ -56,8 +56,9 @@ class FragmentStatsTab : Fragment() {
 
     private val scrollDirection = BehaviorSubject.create<ScrollDirection>()
 
-    private lateinit var statsAdapter: StatsAdapter
     private lateinit var listSkeleton: RecyclerViewSkeleton<StatsModel, StatsAdapter>
+
+    private lateinit var statsAdapter: StatsAdapter
 
     private val skeletonStatsCard = mutableListOf(StatsItem("", null, null, null)) * 3
     private val skeletonItems = listOf(
@@ -75,6 +76,11 @@ class FragmentStatsTab : Fragment() {
         fragment
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        vm = getViewModel { parametersOf(arguments?.getString(ARG_RANGE)) }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_stats_range, container, false)
@@ -83,7 +89,7 @@ class FragmentStatsTab : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUi(view.context)
-        vm.state().observe(this, Observer {
+        vm.state().observe(viewLifecycleOwner, Observer {
             render(it)
         })
     }
