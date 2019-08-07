@@ -99,9 +99,8 @@ class FragmentRanges : Fragment() {
                 val color = valueAnimator.animatedValue as Int
                 window.statusBarColor = color
                 toolbarBackgroundDrawable.color = color
-                stats_smarttablayout_ranges.setBackgroundColor(color)
+                stats_smarttablayout_ranges?.setBackgroundColor(color)
             }
-
         }
     }
 

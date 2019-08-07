@@ -1,8 +1,6 @@
 package com.kondenko.pocketwaka.screens.ranges.adapter
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -11,24 +9,25 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.view.doOnNextLayout
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsModel
-import com.kondenko.pocketwaka.screens.base.BaseAdapter
-import com.kondenko.pocketwaka.ui.Skeleton
+import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
+import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.utils.SimpleCallback
-import com.kondenko.pocketwaka.utils.extensions.*
+import com.kondenko.pocketwaka.utils.extensions.component1
+import com.kondenko.pocketwaka.utils.extensions.component2
+import com.kondenko.pocketwaka.utils.extensions.setInvisible
 import kotlinx.android.synthetic.main.item_status.view.*
 import kotlinx.android.synthetic.main.layout_stats_best_day.view.*
 import kotlinx.android.synthetic.main.layout_stats_card.view.*
 import kotlinx.android.synthetic.main.layout_stats_info.view.*
 import kotlin.math.roundToInt
 
-class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : BaseAdapter<StatsModel, StatsAdapter.ViewHolder>(context) {
+class StatsAdapter(context: Context, showSkeleton: Boolean) : SkeletonAdapter<StatsModel, StatsAdapter.ViewHolder>(context, showSkeleton) {
 
     private enum class ViewType(val type: Int) {
         Status(0), Info(1), BestDay(2), Stats(3)
@@ -52,76 +51,53 @@ class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : 
     }.type
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view: View
-        val skeleton: Skeleton?
-        when (viewType) {
-            ViewType.Status.type -> {
-                view = inflate(R.layout.item_status, parent)
-                skeleton = if (isSkeleton && view is ViewGroup) createSkeleton(view) else null
-                ViewHolder(view, skeleton)
-            }
-            ViewType.Info.type -> {
-                view = inflate(R.layout.layout_stats_info, parent)
-                skeleton = if (isSkeleton && view is ViewGroup) createSkeleton(view) else null
-                ViewHolder(view, skeleton)
-            }
-            ViewType.BestDay.type -> {
-                view = inflate(R.layout.layout_stats_best_day, parent)
-                skeleton = if (isSkeleton && view is ViewGroup) createSkeleton(view) else null
-                ViewHolder(view, skeleton)
-            }
-            ViewType.Stats.type -> {
-                view = inflate(R.layout.layout_stats_card, parent)
-                skeleton = if (isSkeleton && view is ViewGroup) createSkeleton(view) else null
-            }
-            else -> {
-                throw IllegalArgumentException("Unknown view type $viewType")
-            }
+        val view: View = when (viewType) {
+            ViewType.Status.type -> inflate(R.layout.item_status, parent)
+            ViewType.Info.type -> inflate(R.layout.layout_stats_info, parent)
+            ViewType.BestDay.type -> inflate(R.layout.layout_stats_best_day, parent)
+            ViewType.Stats.type -> inflate(R.layout.layout_stats_card, parent)
+            else -> throw IllegalArgumentException("Unknown view type $viewType")
         }
+        val skeleton = if (showSkeleton) createSkeleton(view) else null
         return ViewHolder(view, skeleton)
     }
 
     override fun getItemId(position: Int): Long = items[position].hashCode().toLong()
 
     override fun getDiffCallback(oldList: List<StatsModel>, newList: List<StatsModel>): DiffUtil.Callback {
-        return SimpleCallback(oldList, newList, areItemsTheSame = { a, b ->
-            when (a) {
-                is StatsModel.Status -> b is StatsModel.Status
-                is StatsModel.Info -> b is StatsModel.Info
-                is StatsModel.BestDay -> b is StatsModel.BestDay
-                else -> false
-            }
-        })
+        return SimpleCallback(
+                oldList,
+                newList,
+                areItemsTheSame = { a, b ->
+                    when (a) {
+                        is StatsModel.Status -> b is StatsModel.Status
+                        is StatsModel.Info -> b is StatsModel.Info
+                        is StatsModel.BestDay -> b is StatsModel.BestDay
+                        else -> false
+                    }
+                }
+        )
     }
 
-    private fun createSkeleton(view: ViewGroup): Skeleton {
-        fun Float.adjustValue(isSkeleton: Boolean) = (context.adjustForDensity(this)).negateIfTrue(!isSkeleton)
-        val skeletonDrawable = context.getDrawable(R.drawable.all_skeleton_text)
-                ?: ColorDrawable(Color.TRANSPARENT)
-        // Move bestday_textview_time down a little bit so Best Day skeletons are evenly distributed
-        val bestDayDateTransformation = { v: View, isSkeleton: Boolean ->
+    override fun createSkeleton(view: View): Skeleton {
+        val transformation = { v: View, isSkeleton: Boolean ->
             when (v.id) {
                 R.id.textview_bestday_time -> {
                     v.translationY += 3f.adjustValue(isSkeleton)
-                }
-                R.id.textview_stats_item_name -> {
-                    v.translationX += 8f.adjustValue(isSkeleton)
                 }
                 R.id.textview_stats_card_title -> {
                     v.translationY += 8f.adjustValue(isSkeleton)
                 }
             }
         }
-        val skeletonHeight = context.resources?.getDimension(R.dimen.height_all_skeleton_text)?.toInt()
         return Skeleton(
+                context,
                 view,
-                skeletonBackground = skeletonDrawable,
-                skeletonHeight = skeletonHeight ?: 16,
-                transform = bestDayDateTransformation
+                transform = transformation
         )
     }
 
-    inner class ViewHolder(val view: View, private val skeleton: Skeleton?) : BaseViewHolder(view) {
+    inner class ViewHolder(val view: View, skeleton: Skeleton?) : SkeletonViewHolder(view, skeleton) {
 
         override fun bind(item: StatsModel) {
             when (item) {
@@ -142,21 +118,17 @@ class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : 
         private fun View.render(item: StatsModel.Info) {
             textview_stats_time_total.text = item.humanReadableTotal.timeToSpannable()
             textview_stats_daily_average.text = item.humanReadableDailyAverage.timeToSpannable()
-            post {
-                skeleton?.show()
-            }
+            super.bind(item)
         }
 
         private fun View.render(item: StatsModel.BestDay) {
             textview_bestday_date.text = item.date
             textview_bestday_time.text = item.time.timeToSpannable()
-            imageview_bestday_illustration.isVisible = !isSkeleton
+            imageview_bestday_illustration.isVisible = !showSkeleton
             val caption = context.getString(R.string.stats_caption_best_day, item.percentAboveAverage)
             if (item.percentAboveAverage > 0) textview_bestday_caption.text = caption
-            else if (!isSkeleton) textview_bestday_caption.setInvisible()
-            post {
-                skeleton?.show()
-            }
+            else if (!showSkeleton) textview_bestday_caption.setInvisible()
+            super.bind(item)
         }
 
         private fun View.render(item: StatsModel.Stats) {
@@ -165,12 +137,11 @@ class StatsAdapter(context: Context, private val isSkeleton: Boolean = false) : 
                 layoutManager = object : LinearLayoutManager(context) {
                     override fun canScrollVertically() = false
                 }
-                doOnNextLayout {
-                    skeleton?.addViews(this@render as ViewGroup)
-                    skeleton?.show()
+                adapter = CardStatsListAdapter(context, showSkeleton).apply {
+                    items = item.items
                 }
-                adapter = CardStatsListAdapter(context, item.items, isSkeleton)
             }
+            super.bind(item)
         }
 
         private fun String?.timeToSpannable(): Spannable? {

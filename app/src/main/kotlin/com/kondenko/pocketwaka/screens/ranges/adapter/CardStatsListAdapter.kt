@@ -1,47 +1,55 @@
 package com.kondenko.pocketwaka.screens.ranges.adapter
 
 import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.updateLayoutParams
-import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
+import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
+import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.utils.extensions.getColorCompat
 import com.kondenko.pocketwaka.utils.extensions.setInvisible
 import kotlinx.android.synthetic.main.item_stats_item.view.*
 
-class CardStatsListAdapter(private val context: Context, private val items: List<StatsItem>, private val isSkeleton: Boolean) : RecyclerView.Adapter<CardStatsListAdapter.ViewHolder>() {
+class CardStatsListAdapter(context: Context, showSkeleton: Boolean) : SkeletonAdapter<StatsItem, CardStatsListAdapter.ViewHolder>(context, showSkeleton) {
 
     private data class TextParams(val width: Int, val x: Float, val useDarkColor: Boolean)
 
     private val textParamsCache = mutableMapOf<StatsItem, TextParams>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_stats_item, parent, false)
-        return ViewHolder(view)
+        val view = inflate(R.layout.item_stats_item, parent)
+        val skeleton = createSkeleton(view)
+        return ViewHolder(view, skeleton)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(items[position])
+    override fun createSkeleton(view: View): Skeleton {
+        val transformation = { v: View, isSkeleton: Boolean ->
+            when (v.id) {
+                R.id.textview_stats_item_name -> {
+                    v.translationX += 8f.adjustValue(isSkeleton)
+                }
+            }
+        }
+        return Skeleton(context, view, transform = transformation)
     }
 
-    override fun getItemCount(): Int = items.size
+    inner class ViewHolder(itemView: View, skeleton: Skeleton) : SkeletonViewHolder(itemView, skeleton) {
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        fun bind(item: StatsItem) {
+        override fun bind(item: StatsItem) {
+            super.bind(item)
             with(itemView) {
                 textview_stats_item_percent?.apply {
                     if (item.percent != null) setPercentValue(item.percent)
-                    else if (!isSkeleton) setInvisible()
+                    else if (!showSkeleton) setInvisible()
                 }
                 textview_stats_item_name.text = item.name
                 progressbar_stats_item_percentage.color = item.color
-                progressbar_stats_item_percentage.progress = (item.percent?.toFloat() ?: 0f) / 100
+                progressbar_stats_item_percentage.progress = (item.percent?.toFloat()
+                        ?: 0f) / 100
                 itemView.doOnPreDraw {
                     val params = getTextParams(
                             item,
@@ -62,6 +70,7 @@ class CardStatsListAdapter(private val context: Context, private val items: List
                 }
             }
         }
+
     }
 
     private fun getTextParams(item: StatsItem, progressBarWidth: Int, progressWidth: Float, textViewWidth: Int, textViewX: Float) =
@@ -72,12 +81,12 @@ class CardStatsListAdapter(private val context: Context, private val items: List
      */
     private fun calculateNamePosition(progress: Double?, progressBarWidth: Int, progressWidth: Float, textViewWidth: Int, textViewX: Float): TextParams {
         val isTextWiderThanProgress = progressWidth * 1.1 <= textViewWidth || progress ?: 0.0 <= 0.1
-        return if (isTextWiderThanProgress && !isSkeleton) {
+        return if (isTextWiderThanProgress && !showSkeleton) {
             val width = progressBarWidth - progressWidth.toInt()
             val x = textViewX + progressWidth
             TextParams(width, x, true)
         } else {
-            val width = if (isSkeleton) progressBarWidth else progressWidth.toInt()
+            val width = if (showSkeleton) progressBarWidth else progressWidth.toInt()
             TextParams(width, textViewX, false)
         }
     }

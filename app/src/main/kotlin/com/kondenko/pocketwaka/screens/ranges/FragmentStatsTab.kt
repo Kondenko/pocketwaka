@@ -23,6 +23,7 @@ import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.StateFragment
 import com.kondenko.pocketwaka.screens.ranges.adapter.StatsAdapter
 import com.kondenko.pocketwaka.screens.ranges.model.ScrollDirection
+import com.kondenko.pocketwaka.ui.skeleton.RecyclerViewSkeleton
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import com.kondenko.pocketwaka.utils.extensions.report
 import com.kondenko.pocketwaka.utils.extensions.times
@@ -55,9 +56,16 @@ class FragmentStatsTab : Fragment() {
 
     private val scrollDirection = BehaviorSubject.create<ScrollDirection>()
 
-    private lateinit var skeletonAdapter: StatsAdapter
-
     private lateinit var statsAdapter: StatsAdapter
+    private lateinit var listSkeleton: RecyclerViewSkeleton<StatsModel, StatsAdapter>
+
+    private val skeletonStatsCard = mutableListOf(StatsItem("", null, null, null)) * 3
+    private val skeletonItems = listOf(
+            StatsModel.Info(null, null),
+            StatsModel.BestDay("", "", 0),
+            StatsModel.Stats("", skeletonStatsCard),
+            StatsModel.Stats("", skeletonStatsCard)
+    )
 
     private val fragmentState: StateFragment by lazy {
         val fragment = StateFragment()
@@ -67,20 +75,6 @@ class FragmentStatsTab : Fragment() {
         fragment
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        statsAdapter = StatsAdapter(context)
-        skeletonAdapter = StatsAdapter(context, true).apply {
-            val skeletonStatsCard = mutableListOf(StatsItem("", null, null, null)) * 3
-            items = listOf(
-                    StatsModel.Info(null, null),
-                    StatsModel.BestDay("", "", 0),
-                    StatsModel.Stats("", skeletonStatsCard),
-                    StatsModel.Stats("", skeletonStatsCard)
-            )
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_stats_range, container, false)
@@ -88,20 +82,21 @@ class FragmentStatsTab : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupUi()
+        setupUi(view.context)
         vm.state().observe(this, Observer {
-            when (it) {
-                is State.Success -> it.render()
-                is State.Loading -> it.render()
-                is State.Offline -> it.render()
-                is State.Empty -> it.render()
-                is State.Failure -> it.render()
-            }
+            render(it)
         })
     }
 
-    private fun setupUi() {
+    private fun setupUi(context: Context) {
         with(stats_range_recyclerview) {
+            listSkeleton = RecyclerViewSkeleton(
+                    recyclerView = this,
+                    actualAdapter = StatsAdapter(context, false),
+                    skeletonAdapter = StatsAdapter(context, true),
+                    skeletonItems = skeletonItems
+            )
+            statsAdapter = listSkeleton.actualAdapter
             layoutManager = LinearLayoutManager(context)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -113,13 +108,20 @@ class FragmentStatsTab : Fragment() {
         showData(true)
     }
 
+    private fun render(state: State<List<StatsModel>>) {
+        listSkeleton.show((state as? State.Loading<*>)?.isInterrupting == true)
+        when (state) {
+            is State.Success -> state.render()
+            is State.Loading -> state.render()
+            is State.Offline -> state.render()
+            is State.Empty -> state.render()
+            is State.Failure -> state.render()
+        }
+    }
+
     private fun State.Loading<List<StatsModel>>.render() {
         showData(true)
-        if (isInterrupting) {
-            stats_range_recyclerview.apply {
-                if (adapter != skeletonAdapter) adapter = skeletonAdapter
-            }
-        } else {
+        if (!isInterrupting) {
             updateStats(listOf(StatsModel.Status.Loading()) + (data ?: emptyList()))
         }
     }
@@ -133,7 +135,7 @@ class FragmentStatsTab : Fragment() {
         exception?.report()
         showData(!isFatal)
         if (isFatal) {
-            fragmentState?.setState(this, onActionClick = vm::update)
+            fragmentState.setState(this, onActionClick = vm::update)
         } else {
             updateStats(data)
             view?.let {
@@ -150,7 +152,7 @@ class FragmentStatsTab : Fragment() {
     private fun State.Offline<List<StatsModel>>.render() {
         showData(data != null)
         if (data == null) {
-            fragmentState?.setState(this)
+            fragmentState.setState(this)
         } else {
             updateStats(listOf(StatsModel.Status.Offline()) + data)
         }
@@ -158,17 +160,16 @@ class FragmentStatsTab : Fragment() {
 
     private fun State.Empty.render() {
         showData(false)
-        fragmentState?.setState(this, ::openPlugins)
+        fragmentState.setState(this, ::openPlugins)
     }
 
     private fun updateStats(data: List<StatsModel>?) = stats_range_recyclerview.apply {
-        if (adapter != statsAdapter) adapter = statsAdapter
         data?.let { statsAdapter.items = it }
     }
 
     private fun showData(show: Boolean) {
         stats_range_recyclerview.isVisible = show
-        fragmentState?.let {
+        fragmentState.let {
             childFragmentManager.transaction {
                 if (show) hide(it)
                 else show(it)

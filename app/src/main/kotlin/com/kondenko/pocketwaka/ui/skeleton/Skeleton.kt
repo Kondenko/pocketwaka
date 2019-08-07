@@ -1,6 +1,7 @@
 package com.kondenko.pocketwaka.ui.skeleton
 
 import android.animation.ValueAnimator
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -21,11 +22,12 @@ private data class InitialState(
 )
 
 class Skeleton(
+        private val context: Context,
         private val root: View? = null,
         var skeletonBackground: Drawable =
-                root?.context?.getDrawable(R.drawable.all_skeleton_text) ?: ColorDrawable(Color.TRANSPARENT),
-        var skeletonHeight: Int? =
-                root?.context?.resources?.getDimension(R.dimen.height_all_skeleton_text)?.toInt(),
+                context.getDrawable(R.drawable.all_skeleton_text) ?: ColorDrawable(Color.TRANSPARENT),
+        var skeletonHeight: Int =
+                context.resources.getDimension(R.dimen.height_all_skeleton_text).toInt(),
         var transform: ((View, Boolean) -> Unit)? = null
 ) {
 
@@ -77,13 +79,13 @@ class Skeleton(
 
     private fun View.showSkeleton() {
         val dimenWidth = (getTag(R.id.tag_skeleton_width_key) as String?)?.toInt()
-        val finalWidth = context.adjustForDensity(dimenWidth)?.roundToInt().let {
+        val finalWidth = this@Skeleton.context.adjustForDensity(dimenWidth)?.roundToInt().let {
             if (it == null || it < 0) width else it
         }
         animateIn {
             this.updateLayoutParams {
                 width = finalWidth
-                height = skeletonHeight ?: height
+                height = skeletonHeight
             }
             if (isShown) transform?.invoke(this, true)
             background = skeletonBackground
