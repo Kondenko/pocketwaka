@@ -11,6 +11,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import com.kondenko.pocketwaka.utils.extensions.applyMatrix
 import com.kondenko.pocketwaka.utils.extensions.createPath
+import kotlin.math.abs
 
 class SquircleProgressBar
 @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
@@ -69,10 +70,10 @@ class SquircleProgressBar
         val path = createPath {
             moveTo(-radius.toFloat(), 0f)
             (-radius..radius).map(Int::toFloat).forEach { y ->
-                lineTo(getX(y), Math.cbrt(radiusToPow - Math.abs(y * y * y)).toFloat())
+                lineTo(getX(y), Math.cbrt(radiusToPow - abs(y * y * y)).toFloat())
             }
             (radius downTo -radius).map(Int::toFloat).forEach { y ->
-                lineTo(getX(y), (-Math.cbrt(radiusToPow - Math.abs(y * y * y))).toFloat())
+                lineTo(getX(y), (-Math.cbrt(radiusToPow - abs(y * y * y))).toFloat())
             }
         }
         path.applyMatrix {
