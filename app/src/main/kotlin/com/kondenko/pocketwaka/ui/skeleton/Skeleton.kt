@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.InsetDrawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -13,13 +14,6 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import com.kondenko.pocketwaka.utils.extensions.findViewsWithTag
 import kotlin.math.roundToInt
-
-private data class InitialState(
-        val text: CharSequence?,
-        val backgroundDrawable: Drawable?,
-        val width: Int,
-        val height: Int
-)
 
 class Skeleton(
         private val context: Context,
@@ -31,6 +25,12 @@ class Skeleton(
                 context.resources.getDimension(R.dimen.height_all_skeleton_text).toInt(),
         var transform: ((View, Boolean) -> Unit)? = null
 ) {
+
+    private data class InitialState(
+            val text: CharSequence?,
+            val backgroundDrawable: Drawable?,
+            val width: Int
+    )
 
     var animDuration: Long = 300
 
@@ -63,7 +63,7 @@ class Skeleton(
                     ?.toMutableMap()
                     ?: mutableMapOf()
 
-    private fun View.getInitialState() = InitialState((this as? TextView)?.text, this.background, width, height)
+    private fun View.getInitialState() = InitialState((this as? TextView)?.text, this.background, width)
 
     fun show() {
         initialStates.keys
@@ -88,10 +88,10 @@ class Skeleton(
         animateIn {
             this.updateLayoutParams {
                 width = finalWidth
-                height = skeletonHeight
             }
             if (isShown) transform?.invoke(this, true)
-            background = skeletonBackground
+            val verticalInset = -((height - skeletonHeight) / 2)
+            background = InsetDrawable(skeletonBackground, 0, verticalInset, 0, verticalInset)
             (this as? TextView)?.text = null
         }
     }
@@ -100,7 +100,6 @@ class Skeleton(
         animateIn {
             updateLayoutParams {
                 this.width = it.width
-                this.height = it.height
             }
             if (!isShown) transform?.invoke(this, false)
             background = it.backgroundDrawable
