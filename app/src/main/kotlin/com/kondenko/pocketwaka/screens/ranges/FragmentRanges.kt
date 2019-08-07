@@ -72,7 +72,7 @@ class FragmentRanges : Fragment() {
             offscreenPageLimit = 2
             this.adapter = pagerAdapter
             post {
-                onFragmentSelected(currentItem, pagerAdapter.getPage(currentItem) as FragmentStatsTab)
+                onFragmentSelected(currentItem, pagerAdapter.getPage(currentItem) as? FragmentStatsTab)
             }
         }
         with(stats_smarttablayout_ranges) {
@@ -104,7 +104,8 @@ class FragmentRanges : Fragment() {
         }
     }
 
-    private fun onFragmentSelected(position: Int, fragment: FragmentStatsTab) {
+    private fun onFragmentSelected(position: Int, fragment: FragmentStatsTab?) {
+        if (fragment == null) return
         restoreTabsElevation(position)
         refreshSubscription?.dispose()
         scrollSubscription?.dispose()
