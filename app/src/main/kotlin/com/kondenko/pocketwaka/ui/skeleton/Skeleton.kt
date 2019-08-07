@@ -25,13 +25,16 @@ class Skeleton(
         private val context: Context,
         private val root: View? = null,
         var skeletonBackground: Drawable =
-                context.getDrawable(R.drawable.all_skeleton_text) ?: ColorDrawable(Color.TRANSPARENT),
+                context.getDrawable(R.drawable.all_skeleton_text)
+                        ?: ColorDrawable(Color.TRANSPARENT),
         var skeletonHeight: Int =
                 context.resources.getDimension(R.dimen.height_all_skeleton_text).toInt(),
         var transform: ((View, Boolean) -> Unit)? = null
 ) {
 
     var animDuration: Long = 300
+
+    var animateChanges: Boolean = false
 
     private val pulseAnimations: MutableSet<ValueAnimator> = mutableSetOf()
 
@@ -106,12 +109,16 @@ class Skeleton(
     }
 
     private fun View.animateIn(updateView: () -> Unit) {
-        alpha = 0f
-        animate()
-                .withStartAction(updateView)
-                .alpha(1f)
-                .setDuration(if (!isShown) animDuration / 2 else animDuration)
-                .start()
+        if (animateChanges) {
+            alpha = 0f
+            animate()
+                    .withStartAction(updateView)
+                    .alpha(1f)
+                    .setDuration(if (!isShown) animDuration / 2 else animDuration)
+                    .start()
+        } else {
+            updateView()
+        }
     }
 
     private fun View.playPulseAnimation() {
