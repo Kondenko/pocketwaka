@@ -45,7 +45,7 @@ class StatsRepository(
 
     private fun cacheStats(stats: StatsDto) = dao.cacheStats(stats)
 
-    private fun getStatsFromCache(range: String) =
+    private fun getStatsFromCache(range: String): Observable<StatsDto> =
             dao.getCachedStats(range)
                     .toObservable()
                     .map { it.copy(isFromCache = true) }
