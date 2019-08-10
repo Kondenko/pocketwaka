@@ -1,14 +1,14 @@
-package com.kondenko.pocketwaka.data.stats.repository
+package com.kondenko.pocketwaka.data.ranges.repository
 
 import android.content.Context
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.android.DateFormatter
-import com.kondenko.pocketwaka.data.stats.dao.StatsDao
-import com.kondenko.pocketwaka.data.stats.dto.StatsDto
-import com.kondenko.pocketwaka.data.stats.model.Stats
-import com.kondenko.pocketwaka.data.stats.service.StatsService
-import com.kondenko.pocketwaka.domain.stats.model.StatsItem
-import com.kondenko.pocketwaka.domain.stats.model.StatsModel
+import com.kondenko.pocketwaka.data.ranges.dao.StatsDao
+import com.kondenko.pocketwaka.data.ranges.dto.StatsDto
+import com.kondenko.pocketwaka.data.ranges.model.Stats
+import com.kondenko.pocketwaka.data.ranges.service.StatsService
+import com.kondenko.pocketwaka.domain.ranges.model.StatsItem
+import com.kondenko.pocketwaka.domain.ranges.model.StatsModel
 import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.TimeProvider
 import com.kondenko.pocketwaka.utils.extensions.notNull
@@ -92,7 +92,7 @@ class StatsRepository(
         )
     }
 
-    private fun List<com.kondenko.pocketwaka.data.stats.model.StatsItem>?.toDomainModel(statsType: StatsType): StatsModel.Stats? {
+    private fun List<com.kondenko.pocketwaka.data.ranges.model.StatsItem>?.toDomainModel(statsType: StatsType): StatsModel.Stats? {
         val items = this?.filter { it.name != null }?.map { StatsItem(it.name!!, it.hours, it.minutes, it.percent) }
         return items
                 ?.zip(colorProvider.provideColors(items)) { item, color -> item.copy(color = color) }

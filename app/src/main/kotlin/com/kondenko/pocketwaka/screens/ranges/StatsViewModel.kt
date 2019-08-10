@@ -3,8 +3,8 @@ package com.kondenko.pocketwaka.screens.ranges
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.kondenko.pocketwaka.domain.stats.GetStatsState
-import com.kondenko.pocketwaka.domain.stats.model.StatsModel
+import com.kondenko.pocketwaka.domain.ranges.GetStatsState
+import com.kondenko.pocketwaka.domain.ranges.model.StatsModel
 import com.kondenko.pocketwaka.screens.State
 import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable

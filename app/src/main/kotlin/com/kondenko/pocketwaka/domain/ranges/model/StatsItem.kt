@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.domain.stats.model
+package com.kondenko.pocketwaka.domain.ranges.model
 
 import android.graphics.Color
 

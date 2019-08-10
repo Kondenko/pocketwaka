@@ -2,12 +2,12 @@ package com.kondenko.pocketwaka.di.modules
 
 import android.content.Context
 import com.kondenko.pocketwaka.data.android.DateFormatter
-import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
-import com.kondenko.pocketwaka.data.stats.service.StatsService
+import com.kondenko.pocketwaka.data.ranges.repository.StatsRepository
+import com.kondenko.pocketwaka.data.ranges.service.StatsService
 import com.kondenko.pocketwaka.di.Api
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
-import com.kondenko.pocketwaka.domain.stats.FetchStats
-import com.kondenko.pocketwaka.domain.stats.GetStatsState
+import com.kondenko.pocketwaka.domain.ranges.FetchStats
+import com.kondenko.pocketwaka.domain.ranges.GetStatsState
 import com.kondenko.pocketwaka.screens.ranges.StatsViewModel
 import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.SchedulersContainer

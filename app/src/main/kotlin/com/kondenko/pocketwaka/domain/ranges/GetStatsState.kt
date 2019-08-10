@@ -1,8 +1,8 @@
-package com.kondenko.pocketwaka.domain.stats
+package com.kondenko.pocketwaka.domain.ranges
 
 import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
 import com.kondenko.pocketwaka.domain.UseCaseObservable
-import com.kondenko.pocketwaka.domain.stats.model.StatsModel
+import com.kondenko.pocketwaka.domain.ranges.model.StatsModel
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.State.*
 import com.kondenko.pocketwaka.utils.SchedulersContainer

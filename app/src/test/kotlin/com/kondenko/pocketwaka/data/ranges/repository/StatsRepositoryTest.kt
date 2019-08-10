@@ -1,13 +1,13 @@
-package com.kondenko.pocketwaka.data.stats.repository
+package com.kondenko.pocketwaka.data.ranges.repository
 
 import android.content.Context
 import android.content.res.Resources
 import com.kondenko.pocketwaka.data.android.DateFormatter
-import com.kondenko.pocketwaka.data.stats.dao.StatsDao
-import com.kondenko.pocketwaka.data.stats.dto.StatsDto
-import com.kondenko.pocketwaka.data.stats.model.Stats
-import com.kondenko.pocketwaka.data.stats.model.StatsServiceResponse
-import com.kondenko.pocketwaka.data.stats.service.StatsService
+import com.kondenko.pocketwaka.data.ranges.dao.StatsDao
+import com.kondenko.pocketwaka.data.ranges.dto.StatsDto
+import com.kondenko.pocketwaka.data.ranges.model.Stats
+import com.kondenko.pocketwaka.data.ranges.model.StatsServiceResponse
+import com.kondenko.pocketwaka.data.ranges.service.StatsService
 import com.kondenko.pocketwaka.testutils.TestException
 import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.TimeProvider

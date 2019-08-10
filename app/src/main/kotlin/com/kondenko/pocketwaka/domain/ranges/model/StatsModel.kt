@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.domain.stats.model
+package com.kondenko.pocketwaka.domain.ranges.model
 
 sealed class StatsModel {
     sealed class Status(val lastUpdated: Long? = null) : StatsModel() {

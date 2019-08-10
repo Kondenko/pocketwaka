@@ -1,7 +1,7 @@
-package com.kondenko.pocketwaka.domain.stats
+package com.kondenko.pocketwaka.domain.ranges
 
-import com.kondenko.pocketwaka.data.stats.dto.StatsDto
-import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
+import com.kondenko.pocketwaka.data.ranges.dto.StatsDto
+import com.kondenko.pocketwaka.data.ranges.repository.StatsRepository
 import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.utils.SchedulersContainer

@@ -3,7 +3,7 @@ package com.kondenko.pocketwaka.utils
 import android.content.Context
 import android.graphics.Color
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.domain.stats.model.StatsItem
+import com.kondenko.pocketwaka.domain.ranges.model.StatsItem
 import java.util.*
 
 

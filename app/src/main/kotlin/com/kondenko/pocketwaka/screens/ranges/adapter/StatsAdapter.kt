@@ -14,7 +14,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.domain.stats.model.StatsModel
+import com.kondenko.pocketwaka.domain.ranges.model.StatsModel
 import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.utils.SimpleCallback

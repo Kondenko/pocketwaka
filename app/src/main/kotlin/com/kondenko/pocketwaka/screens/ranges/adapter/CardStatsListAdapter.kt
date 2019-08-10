@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.updateLayoutParams
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.domain.stats.model.StatsItem
+import com.kondenko.pocketwaka.domain.ranges.model.StatsItem
 import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.utils.extensions.getColorCompat

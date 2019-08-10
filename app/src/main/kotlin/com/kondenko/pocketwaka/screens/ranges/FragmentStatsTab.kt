@@ -17,8 +17,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.domain.stats.model.StatsItem
-import com.kondenko.pocketwaka.domain.stats.model.StatsModel
+import com.kondenko.pocketwaka.domain.ranges.model.StatsItem
+import com.kondenko.pocketwaka.domain.ranges.model.StatsModel
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.StateFragment
 import com.kondenko.pocketwaka.screens.ranges.adapter.StatsAdapter

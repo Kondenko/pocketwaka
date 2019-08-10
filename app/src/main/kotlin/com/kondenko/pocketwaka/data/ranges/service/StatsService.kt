@@ -1,7 +1,7 @@
-package com.kondenko.pocketwaka.data.stats.service
+package com.kondenko.pocketwaka.data.ranges.service
 
 import com.kondenko.pocketwaka.Const
-import com.kondenko.pocketwaka.data.stats.model.StatsServiceResponse
+import com.kondenko.pocketwaka.data.ranges.model.StatsServiceResponse
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Header

@@ -1,10 +1,10 @@
-package com.kondenko.pocketwaka.data.stats.dao
+package com.kondenko.pocketwaka.data.ranges.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.kondenko.pocketwaka.data.stats.dto.StatsDto
+import com.kondenko.pocketwaka.data.ranges.dto.StatsDto
 import io.reactivex.Completable
 import io.reactivex.Maybe
 
