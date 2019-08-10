@@ -29,7 +29,7 @@ class FetchStatsTest {
         useCase.invoke(range)
         inOrder(getTokenHeader, statsRepository) {
             verify(getTokenHeader).build()
-            verify(statsRepository).getStats(header, range)
+            verify(statsRepository).getData(StatsRepository.Params(header, range))
         }
     }
 

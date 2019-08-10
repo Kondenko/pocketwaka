@@ -1,16 +1,13 @@
 package com.kondenko.pocketwaka.data.ranges.repository
 
-import android.content.Context
-import android.content.res.Resources
-import com.kondenko.pocketwaka.data.android.DateFormatter
+import com.kondenko.pocketwaka.data.ModelConverter
+import com.kondenko.pocketwaka.data.ranges.converter.RangeDomainModelConverter
 import com.kondenko.pocketwaka.data.ranges.dao.StatsDao
 import com.kondenko.pocketwaka.data.ranges.dto.StatsDto
 import com.kondenko.pocketwaka.data.ranges.model.Stats
 import com.kondenko.pocketwaka.data.ranges.model.StatsServiceResponse
 import com.kondenko.pocketwaka.data.ranges.service.StatsService
 import com.kondenko.pocketwaka.testutils.TestException
-import com.kondenko.pocketwaka.utils.ColorProvider
-import com.kondenko.pocketwaka.utils.TimeProvider
 import com.kondenko.pocketwaka.utils.extensions.testWithLogging
 import com.nhaarman.mockito_kotlin.*
 import io.reactivex.Completable
@@ -19,31 +16,24 @@ import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class StatsRepositoryTest {
 
-    private val context = mock<Context>()
-
     private val service = mock<StatsService>()
 
     private val dao = mock<StatsDao>()
 
-    private val colorProvider = mock<ColorProvider>()
+    private val serviceResponseConverter: ModelConverter<StatsRepository.Params, StatsServiceResponse, StatsDto?> = mock()
 
-    private val dateFormatter = mock<DateFormatter>()
-
-    private val timeProvider = mock<TimeProvider>()
+    private val dtoConverter: ModelConverter<Nothing?, StatsDto, StatsDomainModel> = RangeDomainModelConverter()
 
     private val repository = StatsRepository(
-            context,
             service,
             dao,
-            colorProvider,
-            dateFormatter,
-            timeProvider
+            serviceResponseConverter,
+            dtoConverter
     )
 
     private val token = "token"
@@ -53,11 +43,8 @@ class StatsRepositoryTest {
     private val cachedStats = StatsDto(range, 0, false, false, emptyList())
 
     @Before
-    fun setupContext() {
-        val resources = mock<Resources>()
-        whenever(context.resources).doReturn(resources)
-        whenever(context.getString(anyInt())).doReturn("string")
-        whenever(resources.getQuantityString(anyInt(), anyInt())).doReturn("quantity string")
+    fun setupConverters() {
+        whenever(serviceResponseConverter.convert(model = any(), param = any())).doReturn(cachedStats)
     }
 
     @Test
@@ -69,7 +56,7 @@ class StatsRepositoryTest {
                 .doReturn(Single.just(StatsServiceResponse(newStatsResponse)))
         whenever(dao.cacheStats(anyOrNull()))
                 .doReturn(Completable.complete())
-        with(repository.getStats(token, range).testWithLogging()) {
+        with(repository.getData(StatsRepository.Params(token, range)).testWithLogging()) {
             assertNoErrors()
             assertValueAt(0) { it.isFromCache }
             assertValueAt(1) { !it.isFromCache }
@@ -83,7 +70,7 @@ class StatsRepositoryTest {
                 .doReturn(Maybe.just(cachedStats))
         whenever(service.getCurrentUserStats(token, range))
                 .doReturn(Single.error(TestException()))
-        with(repository.getStats(token, range).testWithLogging()) {
+        with(repository.getData(StatsRepository.Params(token, range)).testWithLogging()) {
             assertValue { it.isFromCache }
             assertTerminated()
         }
@@ -98,7 +85,7 @@ class StatsRepositoryTest {
                 .doReturn(Single.just(newStatsResponse))
         whenever(dao.cacheStats(anyOrNull()))
                 .doReturn(Completable.complete())
-        with(repository.getStats(token, range).testWithLogging()) {
+        with(repository.getData(StatsRepository.Params(token, range)).testWithLogging()) {
             verify(dao, times(1)).getCachedStats(range)
             inOrder(service, dao) {
                 verify(dao).getCachedStats(range)
@@ -117,7 +104,7 @@ class StatsRepositoryTest {
                 .doReturn(Maybe.empty())
         whenever(service.getCurrentUserStats(token, range))
                 .doReturn(Single.error(error))
-        with(repository.getStats(token, range).testWithLogging()) {
+        with(repository.getData(StatsRepository.Params(token, range)).testWithLogging()) {
             verify(dao, times(1)).getCachedStats(range)
             inOrder(service, dao) {
                 verify(dao).getCachedStats(range)

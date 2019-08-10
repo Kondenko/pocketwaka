@@ -16,7 +16,7 @@ class FetchStats(
 
     override fun build(range: String?): Observable<StatsDto> =
             getTokenHeader.build().flatMapObservable { header ->
-                statsRepository.getStats(header, range!!)
+                statsRepository.getData(StatsRepository.Params(header, range!!))
             }
 
 }
