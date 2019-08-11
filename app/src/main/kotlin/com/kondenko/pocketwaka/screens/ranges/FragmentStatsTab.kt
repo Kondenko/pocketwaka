@@ -147,7 +147,7 @@ class FragmentStatsTab : Fragment() {
             view?.let {
                 val errorRes = when (this) {
                     is State.Failure.Unknown -> R.string.stats_error_unknown
-                    is State.Failure.UnknownRange -> R.string.stats_error_unknown_range
+                    is State.Failure.InvalidParams -> R.string.stats_error_unknown_range
                     is State.Failure.NoNetwork -> R.string.stats_error_unknown_range_no_network
                 }
                 Snackbar.make(it, errorRes, Snackbar.LENGTH_SHORT).show()

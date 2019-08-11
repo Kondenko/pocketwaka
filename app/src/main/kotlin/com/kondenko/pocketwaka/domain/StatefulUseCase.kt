@@ -1,8 +1,7 @@
-package com.kondenko.pocketwaka.domain.ranges
+package com.kondenko.pocketwaka.domain
 
+import com.kondenko.pocketwaka.data.CacheableModel
 import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
-import com.kondenko.pocketwaka.domain.UseCaseObservable
-import com.kondenko.pocketwaka.domain.ranges.model.StatsModel
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.State.*
 import com.kondenko.pocketwaka.utils.SchedulersContainer
@@ -11,23 +10,22 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 
-private typealias StatsModelList = List<StatsModel>
-private typealias StatsState = State<StatsModelList>
-
-class GetStatsState(
+abstract class StatefulUseCase<PARAMS : StatefulUseCase.Params, UI_MODEL, DOMAIN_MODEL : CacheableModel<UI_MODEL>>(
         private val schedulers: SchedulersContainer,
-        private val fetchStats: FetchStats,
+        private val useCaseSingle: UseCaseObservable<PARAMS, DOMAIN_MODEL>,
         private val connectivityStatusProvider: ConnectivityStatusProvider
-) : UseCaseObservable<GetStatsState.Params, StatsState>(schedulers) {
+) : UseCaseObservable<PARAMS, State<UI_MODEL>>(schedulers) {
 
-    data class Params(val range: String?, val refreshRateMin: Int, val retryAttempts: Int)
+    abstract class Params(val refreshRate: Long, val retryAttempts: Int) {
+        abstract fun isValid(): Boolean
+    }
 
-    override fun build(params: Params?): Observable<StatsState> {
-        if (params?.range == null) return Observable.just(Failure.InvalidParams())
+    override fun build(params: PARAMS?): Observable<State<UI_MODEL>> {
+        if (params?.isValid() == true) return Observable.just(Failure.InvalidParams())
         val connectivityStatus = connectivityStatusProvider.isNetworkAvailable()
         val interval = Observable.interval(
                 0,
-                params.refreshRateMin.toLong(),
+                params!!.refreshRate,
                 TimeUnit.MINUTES,
                 schedulers.workerScheduler
         )
@@ -35,8 +33,8 @@ class GetStatsState(
         return connectivityStatus
                 .switchMapDelayError { isConnected ->
                     interval.flatMap {
-                        val stats = getStats(params.range, params.retryAttempts.toLong(), isConnected)
-                        Observable.concatArray(loading, stats)
+                        val data: Observable<State<UI_MODEL>> = getData(params, params.retryAttempts, isConnected)
+                        Observable.concatArray(loading, data)
                     }
                 }
                 .scan(::changeState)
@@ -44,10 +42,10 @@ class GetStatsState(
                 .subscribeOn(schedulers.workerScheduler)
     }
 
-    private fun getStats(range: String, retryAttempts: Long, isConnected: Boolean): Observable<StatsState> =
-            fetchStats.build(range)
+    private fun getData(params: PARAMS, retryAttempts: Int, isConnected: Boolean): Observable<State<UI_MODEL>> =
+            useCaseSingle.build(params)
                     .doOnError(Timber::w)
-                    .retry(retryAttempts)
+                    .retry(retryAttempts.toLong())
                     .map {
                         val stats = it.data
                         if (it.isFromCache) {
@@ -64,16 +62,16 @@ class GetStatsState(
                     }
                     .subscribeOn(schedulers.workerScheduler)
 
-    private fun equal(old: StatsState, new: StatsState) = when {
-        old is Failure<StatsModelList> && new is Failure<StatsModelList> -> old.exception == new.exception
+    private fun equal(old: State<UI_MODEL>, new: State<UI_MODEL>) = when {
+        old is Failure<*> && new is Failure<*> -> old.exception == new.exception
         else -> old == new
     }
 
-    private fun changeState(old: StatsState, new: StatsState): StatsState = when {
-        new is Loading<StatsModelList> -> {
+    private fun changeState(old: State<UI_MODEL>, new: State<UI_MODEL>): State<UI_MODEL> = when {
+        new is Loading<UI_MODEL> -> {
             new.copy(new.data ?: old.data, old.data == null)
         }
-        old is Loading<StatsModelList> -> {
+        old is Loading<UI_MODEL> -> {
             when (new) {
                 is Failure.NoNetwork -> {
                     old.data?.let { Offline(data = it) } ?: new.copy(isFatal = true)

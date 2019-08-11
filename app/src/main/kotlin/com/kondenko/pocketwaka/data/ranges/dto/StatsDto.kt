@@ -13,6 +13,6 @@ data class StatsDto(
         @ColumnInfo(name = "date_updated")
         val dateUpdated: Long,
         override val isFromCache: Boolean = false,
-        val isEmpty: Boolean = false,
-        val stats: List<StatsModel>
-) : CacheableModel
+        override val isEmpty: Boolean = false,
+        override val data: List<StatsModel>
+) : CacheableModel<List<StatsModel>>

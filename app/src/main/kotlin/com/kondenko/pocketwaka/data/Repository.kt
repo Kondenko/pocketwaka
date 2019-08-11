@@ -7,7 +7,7 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
 import timber.log.Timber
 
-abstract class Repository<Params, ServiceModel, Dto : CacheableModel, DomainModel : CacheableModel>(
+abstract class Repository<Params, ServiceModel, Dto : CacheableModel<*>, DomainModel : CacheableModel<*>>(
         private val serverDataProvider: (Params) -> Single<ServiceModel>,
         private val cachedDataProvider: (Params) -> Maybe<Dto>,
         private val serviceResponseConverter: ModelConverter<Params, ServiceModel, Dto?>,

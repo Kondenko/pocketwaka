@@ -56,7 +56,7 @@ class RangeDtoConverter(
                 dateUpdated = timeProvider.getCurrentTimeMillis(),
                 isFromCache = false,
                 isEmpty = stats.totalSeconds == 0.0,
-                stats = list
+                data = list
         )
     }
 

@@ -27,7 +27,7 @@ sealed class State<out T>(open val data: T?) {
                 override val isFatal: Boolean = false
         ) : Failure<T>(data, exception, isFatal)
 
-        data class UnknownRange<T>(
+        data class InvalidParams<T>(
                 override val data: T? = null,
                 override val isFatal: Boolean = false
         ) : Failure<T>(data, IllegalArgumentException("Unknown range"), isFatal)

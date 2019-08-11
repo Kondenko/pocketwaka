@@ -40,7 +40,7 @@ class StateFragment : Fragment() {
                     button_state_action_open_plugins.setOnClickListener { it() }
                 }
             }
-            is State.Failure.UnknownRange, is State.Failure.Unknown -> {
+            is State.Failure.InvalidParams, is State.Failure.Unknown -> {
                 drawableRes = R.drawable.state_error_img
                 titleRes = R.string.error_state_title
                 subtitleRes = R.string.error_state_subtitle
