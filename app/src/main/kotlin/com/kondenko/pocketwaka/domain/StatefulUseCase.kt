@@ -9,23 +9,26 @@ import io.reactivex.Observable
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-
-abstract class StatefulUseCase<PARAMS : StatefulUseCase.Params, UI_MODEL, DOMAIN_MODEL : CacheableModel<UI_MODEL>>(
+/**
+ * Fetches data and returns the appropriate state based on various conditions
+ * (loading, error, empty etc.)
+ */
+abstract class StatefulUseCase<PARAMS, UI_MODEL, DOMAIN_MODEL : CacheableModel<UI_MODEL>>(
         private val schedulers: SchedulersContainer,
-        private val useCaseSingle: UseCaseObservable<PARAMS, DOMAIN_MODEL>,
+        private val useCase: UseCaseObservable<PARAMS, DOMAIN_MODEL>,
         private val connectivityStatusProvider: ConnectivityStatusProvider
-) : UseCaseObservable<PARAMS, State<UI_MODEL>>(schedulers) {
+) : UseCaseObservable<StatefulUseCase.ParamsWrapper<PARAMS?>, State<UI_MODEL>>(schedulers) {
 
-    abstract class Params(val refreshRate: Long, val retryAttempts: Int) {
+    abstract class ParamsWrapper<T>(val params: T?, val refreshRate: Int, val retryAttempts: Int) {
         abstract fun isValid(): Boolean
     }
 
-    override fun build(params: PARAMS?): Observable<State<UI_MODEL>> {
-        if (params?.isValid() == true) return Observable.just(Failure.InvalidParams())
+    override fun build(paramsWrapper: ParamsWrapper<PARAMS?>?): Observable<State<UI_MODEL>> {
+        if (paramsWrapper?.isValid() == false) return Observable.just(Failure.InvalidParams())
         val connectivityStatus = connectivityStatusProvider.isNetworkAvailable()
         val interval = Observable.interval(
                 0,
-                params!!.refreshRate,
+                paramsWrapper!!.refreshRate.toLong(),
                 TimeUnit.MINUTES,
                 schedulers.workerScheduler
         )
@@ -33,7 +36,7 @@ abstract class StatefulUseCase<PARAMS : StatefulUseCase.Params, UI_MODEL, DOMAIN
         return connectivityStatus
                 .switchMapDelayError { isConnected ->
                     interval.flatMap {
-                        val data: Observable<State<UI_MODEL>> = getData(params, params.retryAttempts, isConnected)
+                        val data: Observable<State<UI_MODEL>> = getData(paramsWrapper.params!!, paramsWrapper.retryAttempts, isConnected)
                         Observable.concatArray(loading, data)
                     }
                 }
@@ -43,7 +46,7 @@ abstract class StatefulUseCase<PARAMS : StatefulUseCase.Params, UI_MODEL, DOMAIN
     }
 
     private fun getData(params: PARAMS, retryAttempts: Int, isConnected: Boolean): Observable<State<UI_MODEL>> =
-            useCaseSingle.build(params)
+            useCase.build(params)
                     .doOnError(Timber::w)
                     .retry(retryAttempts.toLong())
                     .map {

@@ -1,103 +1,19 @@
 package com.kondenko.pocketwaka.domain.ranges
 
 import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
-import com.kondenko.pocketwaka.domain.UseCaseObservable
+import com.kondenko.pocketwaka.data.ranges.dto.StatsDto
+import com.kondenko.pocketwaka.domain.StatefulUseCase
 import com.kondenko.pocketwaka.domain.ranges.model.StatsModel
-import com.kondenko.pocketwaka.screens.State
-import com.kondenko.pocketwaka.screens.State.*
 import com.kondenko.pocketwaka.utils.SchedulersContainer
-import io.reactivex.Observable
-import timber.log.Timber
-import java.util.concurrent.TimeUnit
-
-
-private typealias StatsModelList = List<StatsModel>
-private typealias StatsState = State<StatsModelList>
 
 class GetStatsState(
-        private val schedulers: SchedulersContainer,
-        private val fetchStats: FetchStats,
-        private val connectivityStatusProvider: ConnectivityStatusProvider
-) : UseCaseObservable<GetStatsState.Params, StatsState>(schedulers) {
+        schedulers: SchedulersContainer,
+        fetchStats: FetchStats,
+        connectivityStatusProvider: ConnectivityStatusProvider
+) : StatefulUseCase<String, List<StatsModel>, StatsDto>(schedulers, fetchStats, connectivityStatusProvider) {
 
-    data class Params(val range: String?, val refreshRateMin: Int, val retryAttempts: Int)
-
-    override fun build(params: Params?): Observable<StatsState> {
-        if (params?.range == null) return Observable.just(Failure.InvalidParams())
-        val connectivityStatus = connectivityStatusProvider.isNetworkAvailable()
-        val interval = Observable.interval(
-                0,
-                params.refreshRateMin.toLong(),
-                TimeUnit.MINUTES,
-                schedulers.workerScheduler
-        )
-        val loading = Observable.just(Loading(null, true))
-        return connectivityStatus
-                .switchMapDelayError { isConnected ->
-                    interval.flatMap {
-                        val stats = getStats(params.range, params.retryAttempts.toLong(), isConnected)
-                        Observable.concatArray(loading, stats)
-                    }
-                }
-                .scan(::changeState)
-                .distinctUntilChanged(::equal)
-                .subscribeOn(schedulers.workerScheduler)
-    }
-
-    private fun getStats(range: String, retryAttempts: Long, isConnected: Boolean): Observable<StatsState> =
-            fetchStats.build(range)
-                    .doOnError(Timber::w)
-                    .retry(retryAttempts)
-                    .map {
-                        val stats = it.data
-                        if (it.isFromCache) {
-                            if (isConnected) Loading(stats)
-                            else Offline(stats)
-                        } else {
-                            if (it.isEmpty) Empty
-                            else Success(stats)
-                        }
-                    }
-                    .onErrorReturn { t ->
-                        if (isConnected) Failure.Unknown(exception = t)
-                        else Failure.NoNetwork(exception = t)
-                    }
-                    .subscribeOn(schedulers.workerScheduler)
-
-    private fun equal(old: StatsState, new: StatsState) = when {
-        old is Failure<StatsModelList> && new is Failure<StatsModelList> -> old.exception == new.exception
-        else -> old == new
-    }
-
-    private fun changeState(old: StatsState, new: StatsState): StatsState = when {
-        new is Loading<StatsModelList> -> {
-            new.copy(new.data ?: old.data, old.data == null)
-        }
-        old is Loading<StatsModelList> -> {
-            when (new) {
-                is Failure.NoNetwork -> {
-                    old.data?.let { Offline(data = it) } ?: new.copy(isFatal = true)
-                }
-                is Failure.InvalidParams -> {
-                    new.copy(data = old.data, isFatal = old.data == null)
-                }
-                is Failure.Unknown -> {
-                    new.copy(data = old.data, isFatal = old.data == null)
-                }
-                is Loading -> {
-                    old.data?.let { new.copy(data = it) } ?: new
-                }
-                is Offline -> {
-                    old.data?.let { new.copy(data = it) } ?: new
-                }
-                else -> {
-                    new
-                }
-            }
-        }
-        else -> {
-            new
-        }
+    class Params(val range: String?, refreshRateMin: Int, retryAttempts: Int) : StatefulUseCase.ParamsWrapper<String?>(range, refreshRateMin, retryAttempts) {
+        override fun isValid(): Boolean = range != null
     }
 
 }
