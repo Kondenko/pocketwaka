@@ -12,10 +12,24 @@ import java.util.concurrent.TimeUnit
 /**
  * Fetches data and returns the appropriate state based on various conditions
  * (loading, error, empty etc.)
+ *
+ * TODO Simplify this terrible piece of code
+ *
+ * @param modelMapper if the class stored in the database is not the class to be rendered, convert it
+ *
+ * @param UI_MODEL the class to be passed to a ViewModel and rendered
+ * @param INTERMEDIATE_MODEL the class stored in the database
+ * @param DOMAIN_MODEL the class returned from a repository
  */
-abstract class StatefulUseCase<PARAMS : StatefulUseCase.ParamsWrapper, UI_MODEL, DOMAIN_MODEL : CacheableModel<UI_MODEL>>(
+abstract class StatefulUseCase<
+        PARAMS : StatefulUseCase.ParamsWrapper,
+        UI_MODEL,
+        INTERMEDIATE_MODEL,
+        DOMAIN_MODEL : CacheableModel<INTERMEDIATE_MODEL>>
+(
         private val schedulers: SchedulersContainer,
         private val useCase: UseCaseObservable<PARAMS, DOMAIN_MODEL>,
+        private val modelMapper: (INTERMEDIATE_MODEL) -> UI_MODEL,
         private val connectivityStatusProvider: ConnectivityStatusProvider
 ) : UseCaseObservable<PARAMS, State<UI_MODEL>>(schedulers) {
 
@@ -36,7 +50,7 @@ abstract class StatefulUseCase<PARAMS : StatefulUseCase.ParamsWrapper, UI_MODEL,
         return connectivityStatus
                 .switchMapDelayError { isConnected ->
                     interval.flatMap {
-                        val data: Observable<State<UI_MODEL>> = getData(params, params.retryAttempts, isConnected)
+                        val data = getData(params, params.retryAttempts, isConnected)
                         Observable.concatArray(loading, data)
                     }
                 }
@@ -50,7 +64,7 @@ abstract class StatefulUseCase<PARAMS : StatefulUseCase.ParamsWrapper, UI_MODEL,
                     .doOnError(Timber::w)
                     .retry(retryAttempts.toLong())
                     .map {
-                        val data = it.data
+                        val data = modelMapper(it.data)
                         if (it.isFromCache) {
                             if (isConnected) Loading(data)
                             else Offline(data)
@@ -71,35 +85,39 @@ abstract class StatefulUseCase<PARAMS : StatefulUseCase.ParamsWrapper, UI_MODEL,
     }
 
     private fun changeState(old: State<UI_MODEL>, new: State<UI_MODEL>): State<UI_MODEL> = when {
-        new is Loading<UI_MODEL> -> {
-            // Show the data
-            new.copy(new.data ?: old.data, old.data == null)
+        new is Loading<UI_MODEL> -> transitionToLoadingState(old, new)
+        old is Loading<UI_MODEL> -> transitionToNewState(old, new)
+        else -> new
+    }
+
+    private fun transitionToLoadingState(old: State<UI_MODEL>, new: Loading<UI_MODEL>) =
+            new.copy(
+                    new.data
+                            ?: old.data, // keep showing old data while displaying a loading indicator
+                    old.data == null // show an full-screen loading indicator if no data is present
+            )
+
+    private fun transitionToNewState(old: Loading<UI_MODEL>, new: State<UI_MODEL>) = when (new) {
+        // If there was any data present, go to the new state while still showing the data
+        is Failure.NoNetwork -> {
+            old.data?.let { Offline(data = it) } ?: new.copy(isFatal = true)
         }
-        old is Loading<UI_MODEL> -> {
-            when (new) {
-                is Failure.NoNetwork -> {
-                    old.data?.let { Offline(data = it) } ?: new.copy(isFatal = true)
-                }
-                is Failure.InvalidParams -> {
-                    new.copy(data = old.data, isFatal = old.data == null)
-                }
-                is Failure.Unknown -> {
-                    new.copy(data = old.data, isFatal = old.data == null)
-                }
-                is Loading -> {
-                    old.data?.let { new.copy(data = it) } ?: new
-                }
-                is Offline -> {
-                    old.data?.let { new.copy(data = it) } ?: new
-                }
-                else -> {
-                    new
-                }
-            }
+        is Failure.InvalidParams -> {
+            new.copy(data = old.data, isFatal = old.data == null)
+        }
+        is Failure.Unknown -> {
+            new.copy(data = old.data, isFatal = old.data == null)
+        }
+        is Loading -> {
+            old.data?.let { new.copy(data = it) } ?: new
+        }
+        is Offline -> {
+            old.data?.let { new.copy(data = it) } ?: new
         }
         else -> {
             new
         }
     }
+
 
 }

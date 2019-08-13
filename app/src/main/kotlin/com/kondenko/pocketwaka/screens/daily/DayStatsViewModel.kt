@@ -12,13 +12,17 @@ import io.reactivex.rxkotlin.toSingle
 class DayStatsViewModel(
         private val getDefaultSummaryRange: GetDefaultSummaryRange,
         private val getSummaryState: GetSummaryState
-) : BaseViewModel<SummaryUiModel>() {
+) : BaseViewModel<List<SummaryUiModel>>() {
+
+    init {
+        getDefaultSummaryRange() // For today
+    }
 
     fun getSummaryForRange(range: DateRange? = null) {
         val rangeSource = range?.toSingle() ?: getDefaultSummaryRange()
         disposables += rangeSource.flatMapObservable { range ->
             getSummaryState(GetSummary.Params(range))
-        }.subscribe() // .subscribe(_state::postValue, this::handleError)
+        }.subscribe(_state::postValue, this::handleError)
     }
 
 }

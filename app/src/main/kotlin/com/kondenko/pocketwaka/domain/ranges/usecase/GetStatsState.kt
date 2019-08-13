@@ -10,4 +10,9 @@ class GetStatsState(
         schedulers: SchedulersContainer,
         fetchStats: FetchStats,
         connectivityStatusProvider: ConnectivityStatusProvider
-) : StatefulUseCase<FetchStats.Params, List<StatsUiModel>, StatsDto>(schedulers, fetchStats, connectivityStatusProvider)
+) : StatefulUseCase<FetchStats.Params, List<StatsUiModel>, List<StatsUiModel>, StatsDto>(
+        schedulers,
+        fetchStats,
+        { it },
+        connectivityStatusProvider
+)
