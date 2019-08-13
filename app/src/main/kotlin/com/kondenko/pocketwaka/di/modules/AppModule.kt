@@ -3,7 +3,7 @@ package com.kondenko.pocketwaka.di.modules
 import android.content.Context
 import android.preference.PreferenceManager
 import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
-import com.kondenko.pocketwaka.utils.TimeProvider
+import com.kondenko.pocketwaka.utils.date.TimeProvider
 import org.koin.dsl.module
 
 object AppModule {

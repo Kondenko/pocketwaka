@@ -2,7 +2,7 @@ package com.kondenko.pocketwaka.di
 
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.kondenko.pocketwaka.screens.ranges.StatsViewModel
+import com.kondenko.pocketwaka.screens.ranges.RangesViewModel
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.parameter.parametersOf
@@ -17,7 +17,7 @@ class DependencyInjectionTest : KoinTest {
     fun `should build dependency graph`() {
         koinApplication { modules(getModuleList(ApplicationProvider.getApplicationContext())) }
                 .checkModules {
-                    create<StatsViewModel> { parametersOf("7_days") }
+                    create<RangesViewModel> { parametersOf("7_days") }
                 }
     }
 

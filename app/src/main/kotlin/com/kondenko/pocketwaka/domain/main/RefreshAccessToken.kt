@@ -7,7 +7,7 @@ import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.domain.auth.GetAppId
 import com.kondenko.pocketwaka.domain.auth.GetAppSecret
 import com.kondenko.pocketwaka.utils.SchedulersContainer
-import com.kondenko.pocketwaka.utils.TimeProvider
+import com.kondenko.pocketwaka.utils.date.TimeProvider
 import com.kondenko.pocketwaka.utils.encryption.Encryptor
 import io.reactivex.Single
 import io.reactivex.rxkotlin.Singles

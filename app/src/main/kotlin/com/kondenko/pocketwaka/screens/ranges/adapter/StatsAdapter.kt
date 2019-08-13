@@ -14,7 +14,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.domain.ranges.model.StatsModel
+import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
 import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.utils.SimpleCallback
@@ -27,13 +27,13 @@ import kotlinx.android.synthetic.main.layout_stats_card.view.*
 import kotlinx.android.synthetic.main.layout_stats_info.view.*
 import kotlin.math.roundToInt
 
-class StatsAdapter(context: Context, showSkeleton: Boolean) : SkeletonAdapter<StatsModel, StatsAdapter.ViewHolder>(context, showSkeleton) {
+class StatsAdapter(context: Context, showSkeleton: Boolean) : SkeletonAdapter<StatsUiModel, StatsAdapter.ViewHolder>(context, showSkeleton) {
 
     private enum class ViewType(val type: Int) {
         Status(0), Info(1), BestDay(2), Stats(3)
     }
 
-    override var items: List<StatsModel> = super.items
+    override var items: List<StatsUiModel> = super.items
         set(value) {
             field = value
             super.items = value
@@ -44,10 +44,10 @@ class StatsAdapter(context: Context, showSkeleton: Boolean) : SkeletonAdapter<St
     }
 
     override fun getItemViewType(position: Int): Int = when (items[position]) {
-        is StatsModel.Status -> ViewType.Status
-        is StatsModel.Info -> ViewType.Info
-        is StatsModel.BestDay -> ViewType.BestDay
-        is StatsModel.Stats -> ViewType.Stats
+        is StatsUiModel.Status -> ViewType.Status
+        is StatsUiModel.Info -> ViewType.Info
+        is StatsUiModel.BestDay -> ViewType.BestDay
+        is StatsUiModel.Stats -> ViewType.Stats
     }.type
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -64,15 +64,15 @@ class StatsAdapter(context: Context, showSkeleton: Boolean) : SkeletonAdapter<St
 
     override fun getItemId(position: Int): Long = items[position].hashCode().toLong()
 
-    override fun getDiffCallback(oldList: List<StatsModel>, newList: List<StatsModel>): DiffUtil.Callback {
+    override fun getDiffCallback(oldList: List<StatsUiModel>, newList: List<StatsUiModel>): DiffUtil.Callback {
         return SimpleCallback(
                 oldList,
                 newList,
                 areItemsTheSame = { a, b ->
                     when (a) {
-                        is StatsModel.Status -> b is StatsModel.Status
-                        is StatsModel.Info -> b is StatsModel.Info
-                        is StatsModel.BestDay -> b is StatsModel.BestDay
+                        is StatsUiModel.Status -> b is StatsUiModel.Status
+                        is StatsUiModel.Info -> b is StatsUiModel.Info
+                        is StatsUiModel.BestDay -> b is StatsUiModel.BestDay
                         else -> false
                     }
                 }
@@ -99,29 +99,29 @@ class StatsAdapter(context: Context, showSkeleton: Boolean) : SkeletonAdapter<St
 
     inner class ViewHolder(val view: View, skeleton: Skeleton?) : SkeletonViewHolder(view, skeleton) {
 
-        override fun bind(item: StatsModel) {
+        override fun bind(item: StatsUiModel) {
             when (item) {
-                is StatsModel.Status -> view.render(item)
-                is StatsModel.Info -> view.render(item)
-                is StatsModel.BestDay -> view.render(item)
-                is StatsModel.Stats -> view.render(item)
+                is StatsUiModel.Status -> view.render(item)
+                is StatsUiModel.Info -> view.render(item)
+                is StatsUiModel.BestDay -> view.render(item)
+                is StatsUiModel.Stats -> view.render(item)
             }
         }
 
-        private fun View.render(item: StatsModel.Status) {
-            val isOffline = item is StatsModel.Status.Offline
+        private fun View.render(item: StatsUiModel.Status) {
+            val isOffline = item is StatsUiModel.Status.Offline
             textview_status_description.setText(if (isOffline) R.string.status_offline else R.string.status_updating)
             imageView_status_offline.isInvisible = !isOffline
             progressbar_status_loading.isInvisible = isOffline
         }
 
-        private fun View.render(item: StatsModel.Info) {
+        private fun View.render(item: StatsUiModel.Info) {
             textview_stats_time_total.text = item.humanReadableTotal.timeToSpannable()
             textview_stats_daily_average.text = item.humanReadableDailyAverage.timeToSpannable()
             super.bind(item)
         }
 
-        private fun View.render(item: StatsModel.BestDay) {
+        private fun View.render(item: StatsUiModel.BestDay) {
             textview_bestday_date.text = item.date
             textview_bestday_time.text = item.time.timeToSpannable()
             imageview_bestday_illustration.isVisible = !showSkeleton
@@ -131,7 +131,7 @@ class StatsAdapter(context: Context, showSkeleton: Boolean) : SkeletonAdapter<St
             super.bind(item)
         }
 
-        private fun View.render(item: StatsModel.Stats) {
+        private fun View.render(item: StatsUiModel.Stats) {
             textview_stats_card_title.text = item.cardTitle
             with(view.statsCardRecyclerView) {
                 layoutManager = object : LinearLayoutManager(context) {

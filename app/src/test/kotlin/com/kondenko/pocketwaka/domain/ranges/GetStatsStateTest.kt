@@ -2,7 +2,9 @@ package com.kondenko.pocketwaka.domain.ranges
 
 import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
 import com.kondenko.pocketwaka.data.ranges.dto.StatsDto
-import com.kondenko.pocketwaka.domain.ranges.model.StatsModel
+import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
+import com.kondenko.pocketwaka.domain.ranges.usecase.FetchStats
+import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsState
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.testutils.RxRule
 import com.kondenko.pocketwaka.testutils.TestException
@@ -45,12 +47,12 @@ class GetStatsStateTest {
 
     private val params = GetStatsState.Params(range, refreshInterval, retryAttempts)
 
-    private val cachedModel: List<StatsModel> = listOf(
-            StatsModel.Info("1h", "1h")
+    private val cachedModel: List<StatsUiModel> = listOf(
+            StatsUiModel.Info("1h", "1h")
     )
 
-    private val actualModel: List<StatsModel> = listOf(
-            StatsModel.Info("1h", "1h")
+    private val actualModel: List<StatsUiModel> = listOf(
+            StatsUiModel.Info("1h", "1h")
     )
 
     private val cacheDto = StatsDto(range, 0, true, false, cachedModel)

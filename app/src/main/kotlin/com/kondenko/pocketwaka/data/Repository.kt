@@ -7,14 +7,13 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
 import timber.log.Timber
 
-abstract class Repository<Params, ServiceModel, Dto : CacheableModel<*>, DomainModel : CacheableModel<*>>(
+abstract class Repository<Params, ServiceModel, Dto : CacheableModel<*>>(
         private val serverDataProvider: (Params) -> Single<ServiceModel>,
         private val cachedDataProvider: (Params) -> Maybe<Dto>,
-        private val serviceResponseConverter: ModelConverter<Params, ServiceModel, Dto?>,
-        private val dtoConverter: ModelConverter<Nothing?, Dto, DomainModel>
+        private val serviceResponseConverter: ModelConverter<Params, ServiceModel, Dto?>
 ) {
 
-    fun getData(params: Params): Observable<DomainModel> {
+    fun getData(params: Params): Observable<Dto> {
         val cache = getDataFromCache(params)
         val server = getDataFromServer(params)
                 .onErrorResumeNext { error: Throwable ->
@@ -23,7 +22,6 @@ abstract class Repository<Params, ServiceModel, Dto : CacheableModel<*>, DomainM
                 }
         return Observable.concatArrayDelayError(cache, server)
                 .distinctUntilChanged()
-                .map { dtoConverter.convert(it, null) }
     }
 
     private fun getDataFromCache(params: Params): Observable<Dto> =
@@ -40,7 +38,7 @@ abstract class Repository<Params, ServiceModel, Dto : CacheableModel<*>, DomainM
                     }
                     .doOnNext { dto: Dto ->
                         cacheData(dto).subscribeBy(
-                                onComplete = { Timber.d("Data cached: $dto") },
+                                onComplete = { Timber.d("SummaryData cached: $dto") },
                                 onError = { Timber.w(it, "Failed to cache data") }
                         )
                     }

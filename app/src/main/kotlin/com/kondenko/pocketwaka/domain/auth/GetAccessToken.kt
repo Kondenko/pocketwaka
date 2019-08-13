@@ -5,7 +5,7 @@ import com.kondenko.pocketwaka.data.auth.model.AccessToken
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.utils.SchedulersContainer
-import com.kondenko.pocketwaka.utils.TimeProvider
+import com.kondenko.pocketwaka.utils.date.TimeProvider
 import com.kondenko.pocketwaka.utils.encryption.Encryptor
 import io.reactivex.rxkotlin.Singles
 

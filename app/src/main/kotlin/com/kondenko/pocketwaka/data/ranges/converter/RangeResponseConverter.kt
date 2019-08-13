@@ -10,14 +10,14 @@ import com.kondenko.pocketwaka.data.ranges.model.StatsEntity
 import com.kondenko.pocketwaka.data.ranges.model.StatsServiceResponse
 import com.kondenko.pocketwaka.data.ranges.repository.StatsRepository
 import com.kondenko.pocketwaka.domain.ranges.model.StatsItem
-import com.kondenko.pocketwaka.domain.ranges.model.StatsModel
+import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
 import com.kondenko.pocketwaka.utils.ColorProvider
-import com.kondenko.pocketwaka.utils.TimeProvider
+import com.kondenko.pocketwaka.utils.date.TimeProvider
 import com.kondenko.pocketwaka.utils.extensions.notNull
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
-class RangeDtoConverter(
+class RangeResponseConverter(
         private val context: Context,
         private val colorProvider: ColorProvider,
         private val dateFormatter: DateFormatter,
@@ -34,12 +34,12 @@ class RangeDtoConverter(
     private fun toDomainModel(range: String, stats: Stats?): StatsDto? {
         if (stats == null) return null
 
-        operator fun MutableList<StatsModel>.plusAssign(item: StatsModel?) {
+        operator fun MutableList<StatsUiModel>.plusAssign(item: StatsUiModel?) {
             item?.let(this::add)
         }
 
-        val list = arrayListOf<StatsModel>(
-                StatsModel.Info(
+        val list = arrayListOf<StatsUiModel>(
+                StatsUiModel.Info(
                         stats.dailyAverage?.toLong()?.secondsToHumanReadableTime(),
                         stats.totalSeconds?.roundToLong()?.secondsToHumanReadableTime()
                 )
@@ -60,20 +60,20 @@ class RangeDtoConverter(
         )
     }
 
-    private fun List<StatsEntity>?.toDomainModel(statsType: StatsType): StatsModel.Stats? {
+    private fun List<StatsEntity>?.toDomainModel(statsType: StatsType): StatsUiModel.Stats? {
         val items = this?.filter { it.name != null }?.map { StatsItem(it.name!!, it.hours, it.minutes, it.percent) }
         return items
                 ?.zip(colorProvider.provideColors(items)) { item, color -> item.copy(color = color) }
-                ?.let { StatsModel.Stats(getCardTitle(statsType), it) }
+                ?.let { StatsUiModel.Stats(getCardTitle(statsType), it) }
     }
 
-    private fun Stats.convertBestDay(dailyAverageSec: Int?): StatsModel.BestDay? = bestDay?.let { bestDay ->
+    private fun Stats.convertBestDay(dailyAverageSec: Int?): StatsUiModel.BestDay? = bestDay?.let { bestDay ->
         val date = bestDay.date?.let(dateFormatter::reformatBestDayDate)
         val timeSec = bestDay.totalSeconds?.roundToLong()
         val timeHumanReadable = timeSec?.secondsToHumanReadableTime()
         val percentAboveAverage = calculatePercentAboveAverage(timeSec, dailyAverageSec)
         if (notNull(date, timeHumanReadable, percentAboveAverage)) {
-            StatsModel.BestDay(date!!, timeHumanReadable!!, percentAboveAverage!!)
+            StatsUiModel.BestDay(date!!, timeHumanReadable!!, percentAboveAverage!!)
         } else {
             null
         }

@@ -1,6 +1,6 @@
 package com.kondenko.pocketwaka.data.daily.service
 
-import com.kondenko.pocketwaka.data.daily.dto.Summary
+import com.kondenko.pocketwaka.data.daily.model.Summary
 import io.reactivex.Single
 import retrofit2.http.Field
 import retrofit2.http.GET

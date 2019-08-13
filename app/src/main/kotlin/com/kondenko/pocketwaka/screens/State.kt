@@ -2,7 +2,7 @@ package com.kondenko.pocketwaka.screens
 
 import android.accounts.NetworkErrorException
 
-sealed class State<out T>(open val data: T?) {
+open class State<out T>(open val data: T?) {
 
     data class Success<T>(override val data: T) : State<T>(data)
 

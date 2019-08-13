@@ -3,14 +3,14 @@ package com.kondenko.pocketwaka.di.modules
 import android.content.Context
 import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.ranges.converter.RangeDomainModelConverter
-import com.kondenko.pocketwaka.data.ranges.converter.RangeDtoConverter
+import com.kondenko.pocketwaka.data.ranges.converter.RangeResponseConverter
 import com.kondenko.pocketwaka.data.ranges.repository.StatsRepository
 import com.kondenko.pocketwaka.data.ranges.service.StatsService
 import com.kondenko.pocketwaka.di.Api
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
-import com.kondenko.pocketwaka.domain.ranges.FetchStats
-import com.kondenko.pocketwaka.domain.ranges.GetStatsState
-import com.kondenko.pocketwaka.screens.ranges.StatsViewModel
+import com.kondenko.pocketwaka.domain.ranges.usecase.FetchStats
+import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsState
+import com.kondenko.pocketwaka.screens.ranges.RangesViewModel
 import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.encryption.StringEncryptor
@@ -25,7 +25,7 @@ object StatsModule {
         single { ColorProvider(context) }
         single { DateFormatter(context) }
         single {
-            RangeDtoConverter(
+            RangeResponseConverter(
                     context = context,
                     colorProvider = get(),
                     dateFormatter = get(),
@@ -39,7 +39,7 @@ object StatsModule {
             StatsRepository(
                     service = get(),
                     dao = get(),
-                    serviceResponseConverter = get<RangeDtoConverter>(),
+                    serviceResponseConverter = get<RangeResponseConverter>(),
                     dtoConverter = get<RangeDomainModelConverter>()
             )
         }
@@ -64,7 +64,7 @@ object StatsModule {
                     connectivityStatusProvider = get()
             )
         }
-        viewModel { (range: String?) -> StatsViewModel(range, get() as GetStatsState, get<SchedulersContainer>().uiScheduler) }
+        viewModel { (range: String?) -> RangesViewModel(range, get() as GetStatsState, get<SchedulersContainer>().uiScheduler) }
     }
 
 }

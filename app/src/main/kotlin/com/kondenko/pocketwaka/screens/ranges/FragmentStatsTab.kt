@@ -18,7 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.ranges.model.StatsItem
-import com.kondenko.pocketwaka.domain.ranges.model.StatsModel
+import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.StateFragment
 import com.kondenko.pocketwaka.screens.ranges.adapter.StatsAdapter
@@ -41,7 +41,7 @@ class FragmentStatsTab : Fragment() {
         const val ARG_RANGE = "range"
     }
 
-    private lateinit var vm: StatsViewModel
+    private lateinit var vm: RangesViewModel
 
     /**
      * The minimum value the RecyclerView has to be scrolled for
@@ -56,16 +56,16 @@ class FragmentStatsTab : Fragment() {
 
     private val scrollDirection = BehaviorSubject.create<ScrollDirection>()
 
-    private lateinit var listSkeleton: RecyclerViewSkeleton<StatsModel, StatsAdapter>
+    private lateinit var listSkeleton: RecyclerViewSkeleton<StatsUiModel, StatsAdapter>
 
     private lateinit var statsAdapter: StatsAdapter
 
     private val skeletonStatsCard = mutableListOf(StatsItem("", null, null, null)) * 3
     private val skeletonItems = listOf(
-            StatsModel.Info(null, null),
-            StatsModel.BestDay("", "", 0),
-            StatsModel.Stats("", skeletonStatsCard),
-            StatsModel.Stats("", skeletonStatsCard)
+            StatsUiModel.Info(null, null),
+            StatsUiModel.BestDay("", "", 0),
+            StatsUiModel.Stats("", skeletonStatsCard),
+            StatsUiModel.Stats("", skeletonStatsCard)
     )
 
     private val fragmentState: StateFragment by lazy {
@@ -89,7 +89,7 @@ class FragmentStatsTab : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUi(view.context)
-        vm.state().observe(viewLifecycleOwner, Observer {
+        vm.state.observe(viewLifecycleOwner, Observer {
             render(it)
         })
     }
@@ -114,7 +114,7 @@ class FragmentStatsTab : Fragment() {
         showData(true)
     }
 
-    private fun render(state: State<List<StatsModel>>) {
+    private fun render(state: State<List<StatsUiModel>>) {
         listSkeleton.show((state as? State.Loading<*>)?.isInterrupting == true)
         when (state) {
             is State.Success -> state.render()
@@ -125,19 +125,19 @@ class FragmentStatsTab : Fragment() {
         }
     }
 
-    private fun State.Loading<List<StatsModel>>.render() {
+    private fun State.Loading<List<StatsUiModel>>.render() {
         showData(true)
         if (!isInterrupting) {
-            updateStats(listOf(StatsModel.Status.Loading()) + (data ?: emptyList()))
+            updateStats(listOf(StatsUiModel.Status.Loading()) + (data ?: emptyList()))
         }
     }
 
-    private fun State.Success<List<StatsModel>>.render() {
+    private fun State.Success<List<StatsUiModel>>.render() {
         showData(true)
         updateStats(data)
     }
 
-    private fun State.Failure<List<StatsModel>>.render() {
+    private fun State.Failure<List<StatsUiModel>>.render() {
         exception?.report()
         showData(!isFatal)
         if (isFatal) {
@@ -155,12 +155,12 @@ class FragmentStatsTab : Fragment() {
         }
     }
 
-    private fun State.Offline<List<StatsModel>>.render() {
+    private fun State.Offline<List<StatsUiModel>>.render() {
         showData(data != null)
         if (data == null) {
             fragmentState.setState(this)
         } else {
-            updateStats(listOf(StatsModel.Status.Offline()) + data)
+            updateStats(listOf(StatsUiModel.Status.Offline()) + data)
         }
     }
 
@@ -169,7 +169,7 @@ class FragmentStatsTab : Fragment() {
         fragmentState.setState(this, ::openPlugins)
     }
 
-    private fun updateStats(data: List<StatsModel>?) = stats_range_recyclerview.apply {
+    private fun updateStats(data: List<StatsUiModel>?) = stats_range_recyclerview.apply {
         data?.let { statsAdapter.items = it }
     }
 

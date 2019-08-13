@@ -1,15 +1,15 @@
-package com.kondenko.pocketwaka.data.daily.dto
+package com.kondenko.pocketwaka.data.daily.model
 
 import com.google.gson.annotations.SerializedName
 
 data class Summary(
         @SerializedName("data")
-        val summaryData: List<Data>,
+        val summaryData: List<SummaryData>,
         val end: String,
         val start: String
 )
 
-data class Data(
+data class SummaryData(
         val categories: List<Any>,
         val dependencies: List<Any>,
         val editors: List<Any>,

@@ -13,22 +13,22 @@ import java.util.concurrent.TimeUnit
  * Fetches data and returns the appropriate state based on various conditions
  * (loading, error, empty etc.)
  */
-abstract class StatefulUseCase<PARAMS, UI_MODEL, DOMAIN_MODEL : CacheableModel<UI_MODEL>>(
+abstract class StatefulUseCase<PARAMS : StatefulUseCase.ParamsWrapper, UI_MODEL, DOMAIN_MODEL : CacheableModel<UI_MODEL>>(
         private val schedulers: SchedulersContainer,
         private val useCase: UseCaseObservable<PARAMS, DOMAIN_MODEL>,
         private val connectivityStatusProvider: ConnectivityStatusProvider
-) : UseCaseObservable<StatefulUseCase.ParamsWrapper<PARAMS?>, State<UI_MODEL>>(schedulers) {
+) : UseCaseObservable<PARAMS, State<UI_MODEL>>(schedulers) {
 
-    abstract class ParamsWrapper<T>(val params: T?, val refreshRate: Int, val retryAttempts: Int) {
+    abstract class ParamsWrapper(val refreshRate: Int = 1, val retryAttempts: Int = 3) {
         abstract fun isValid(): Boolean
     }
 
-    override fun build(paramsWrapper: ParamsWrapper<PARAMS?>?): Observable<State<UI_MODEL>> {
-        if (paramsWrapper?.isValid() == false) return Observable.just(Failure.InvalidParams())
+    override fun build(params: PARAMS?): Observable<State<UI_MODEL>> {
+        if (params?.isValid() == false) return Observable.just(Failure.InvalidParams())
         val connectivityStatus = connectivityStatusProvider.isNetworkAvailable()
         val interval = Observable.interval(
                 0,
-                paramsWrapper!!.refreshRate.toLong(),
+                params!!.refreshRate.toLong(),
                 TimeUnit.MINUTES,
                 schedulers.workerScheduler
         )
@@ -36,7 +36,7 @@ abstract class StatefulUseCase<PARAMS, UI_MODEL, DOMAIN_MODEL : CacheableModel<U
         return connectivityStatus
                 .switchMapDelayError { isConnected ->
                     interval.flatMap {
-                        val data: Observable<State<UI_MODEL>> = getData(paramsWrapper.params!!, paramsWrapper.retryAttempts, isConnected)
+                        val data: Observable<State<UI_MODEL>> = getData(params, params.retryAttempts, isConnected)
                         Observable.concatArray(loading, data)
                     }
                 }
@@ -50,13 +50,13 @@ abstract class StatefulUseCase<PARAMS, UI_MODEL, DOMAIN_MODEL : CacheableModel<U
                     .doOnError(Timber::w)
                     .retry(retryAttempts.toLong())
                     .map {
-                        val stats = it.data
+                        val data = it.data
                         if (it.isFromCache) {
-                            if (isConnected) Loading(stats)
-                            else Offline(stats)
+                            if (isConnected) Loading(data)
+                            else Offline(data)
                         } else {
                             if (it.isEmpty) Empty
-                            else Success(stats)
+                            else Success(data)
                         }
                     }
                     .onErrorReturn { t ->
@@ -72,6 +72,7 @@ abstract class StatefulUseCase<PARAMS, UI_MODEL, DOMAIN_MODEL : CacheableModel<U
 
     private fun changeState(old: State<UI_MODEL>, new: State<UI_MODEL>): State<UI_MODEL> = when {
         new is Loading<UI_MODEL> -> {
+            // Show the data
             new.copy(new.data ?: old.data, old.data == null)
         }
         old is Loading<UI_MODEL> -> {
