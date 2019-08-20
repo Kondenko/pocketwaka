@@ -3,7 +3,7 @@ package com.kondenko.pocketwaka.di.modules
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.data.auth.repository.EncryptedKeysRepository
 import com.kondenko.pocketwaka.data.auth.service.AccessTokenService
-import com.kondenko.pocketwaka.di.Auth
+import com.kondenko.pocketwaka.di.qualifiers.Auth
 import com.kondenko.pocketwaka.domain.auth.GetAccessToken
 import com.kondenko.pocketwaka.domain.auth.GetAppId
 import com.kondenko.pocketwaka.domain.auth.GetAppSecret

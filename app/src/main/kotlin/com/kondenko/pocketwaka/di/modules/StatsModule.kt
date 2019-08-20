@@ -6,7 +6,7 @@ import com.kondenko.pocketwaka.data.ranges.converter.RangeDomainModelConverter
 import com.kondenko.pocketwaka.data.ranges.converter.RangeResponseConverter
 import com.kondenko.pocketwaka.data.ranges.repository.StatsRepository
 import com.kondenko.pocketwaka.data.ranges.service.StatsService
-import com.kondenko.pocketwaka.di.Api
+import com.kondenko.pocketwaka.di.qualifiers.Api
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.ranges.usecase.FetchStats
 import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsState

@@ -19,8 +19,10 @@ class GetSummary(
     data class Params(
             val dateRange: DateRange,
             val project: String? = null,
-            val branches: String? = null
-    ) : StatefulUseCase.ParamsWrapper() {
+            val branches: String? = null,
+            override val refreshRate: Int,
+            override val retryAttempts: Int
+    ) : StatefulUseCase.ParamsWrapper(refreshRate, retryAttempts) {
         override fun isValid(): Boolean = dateRange.end > dateRange.start
     }
 

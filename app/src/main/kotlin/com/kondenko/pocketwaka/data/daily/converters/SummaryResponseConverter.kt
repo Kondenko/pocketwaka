@@ -7,8 +7,11 @@ import com.kondenko.pocketwaka.data.daily.model.Summary
 import com.kondenko.pocketwaka.data.daily.model.SummaryData
 import com.kondenko.pocketwaka.data.daily.repository.SummaryRepository
 
+/**
+ * Converts [com.kondenko.pocketwaka.data.daily.service.SummaryService]'s response to a DTO.
+ */
 class SummaryResponseConverter(private val summaryDataConverter: ModelConverter<SummaryRepository.Params, SummaryData, SummaryDto>)
-    : ModelConverter<SummaryRepository.Params, Summary, SummaryRangeDto> {
+    : ModelConverter<SummaryRepository.Params, Summary, SummaryRangeDto?> {
 
     override fun convert(model: Summary, param: SummaryRepository.Params): SummaryRangeDto {
         return model.summaryData
@@ -24,6 +27,9 @@ class SummaryResponseConverter(private val summaryDataConverter: ModelConverter<
     }
 }
 
+/**
+ * Converts a summary of a single day to a DTO.
+ */
 class SummaryDataConverter : ModelConverter<SummaryRepository.Params, SummaryData, SummaryDto> {
 
     /**

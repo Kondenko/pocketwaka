@@ -33,7 +33,7 @@ abstract class StatefulUseCase<
         private val connectivityStatusProvider: ConnectivityStatusProvider
 ) : UseCaseObservable<PARAMS, State<UI_MODEL>>(schedulers) {
 
-    abstract class ParamsWrapper(val refreshRate: Int = 1, val retryAttempts: Int = 3) {
+    abstract class ParamsWrapper(open val refreshRate: Int, open val retryAttempts: Int) {
         abstract fun isValid(): Boolean
     }
 

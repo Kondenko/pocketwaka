@@ -9,19 +9,23 @@ import com.kondenko.pocketwaka.utils.date.DateRange
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.toSingle
 
-class DayStatsViewModel(
+class SummaryViewModel(
         private val getDefaultSummaryRange: GetDefaultSummaryRange,
         private val getSummaryState: GetSummaryState
 ) : BaseViewModel<List<SummaryUiModel>>() {
 
+    private val refreshRate = 1
+
+    private val retryAttempts = 1
+
     init {
-        getDefaultSummaryRange() // For today
+        getSummaryForRange() // For today
     }
 
     fun getSummaryForRange(range: DateRange? = null) {
         val rangeSource = range?.toSingle() ?: getDefaultSummaryRange()
         disposables += rangeSource.flatMapObservable { range ->
-            getSummaryState(GetSummary.Params(range))
+            getSummaryState(GetSummary.Params(range, refreshRate = refreshRate, retryAttempts = retryAttempts))
         }.subscribe(_state::postValue, this::handleError)
     }
 

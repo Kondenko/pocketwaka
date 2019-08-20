@@ -14,7 +14,7 @@ class StatsRepository(
         private val service: StatsService,
         private val dao: StatsDao,
         serviceResponseConverter: ModelConverter<Params, StatsServiceResponse, StatsDto?>,
-        dtoConverter: ModelConverter<Nothing?, StatsDto, StatsDomainModel>
+        dtoConverter: ModelConverter<Nothing?, StatsDto, StatsDomainModel> // TODO remove
 ) : Repository<StatsRepository.Params, StatsServiceResponse, StatsDto>(
         serverDataProvider = { params -> service.getCurrentUserStats(params.tokenHeader, params.range) },
         cachedDataProvider = { params -> dao.getCachedStats(params.range) },

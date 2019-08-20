@@ -15,7 +15,7 @@ class FetchStats(
         private val statsRepository: StatsRepository
 ) : UseCaseObservable<FetchStats.Params, StatsDto>(schedulers) {
 
-    class Params(val range: String?, refreshRate: Int) : StatefulUseCase.ParamsWrapper(refreshRate) {
+    class Params(val range: String?, refreshRate: Int = 1, retryAttempts: Int = 3) : StatefulUseCase.ParamsWrapper(refreshRate, retryAttempts) {
         override fun isValid(): Boolean = range != null
     }
 

@@ -8,8 +8,8 @@ import io.reactivex.Single
 
 class GetDefaultSummaryRange(
         private val timeProvider: TimeProvider,
-        schedulersContainer: SchedulersContainer
-) : UseCaseSingle<Nothing?, DateRange>(schedulersContainer) {
+        schedulers: SchedulersContainer
+) : UseCaseSingle<Nothing?, DateRange>(schedulers) {
 
     override fun build(params: Nothing?): Single<DateRange> {
         val today = timeProvider.getToday().time
