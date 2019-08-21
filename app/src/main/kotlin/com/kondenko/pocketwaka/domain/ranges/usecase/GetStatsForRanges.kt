@@ -9,11 +9,11 @@ import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.Observable
 
 
-class FetchStats(
+class GetStatsForRanges(
         schedulers: SchedulersContainer,
         private val getTokenHeader: GetTokenHeaderValue,
         private val statsRepository: StatsRepository
-) : UseCaseObservable<FetchStats.Params, StatsDto>(schedulers) {
+) : UseCaseObservable<GetStatsForRanges.Params, StatsDto>(schedulers) {
 
     class Params(val range: String?, refreshRate: Int = 1, retryAttempts: Int = 3) : StatefulUseCase.ParamsWrapper(refreshRate, retryAttempts) {
         override fun isValid(): Boolean = range != null

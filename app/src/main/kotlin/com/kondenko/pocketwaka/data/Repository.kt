@@ -13,6 +13,8 @@ abstract class Repository<Params, ServiceModel, Dto : CacheableModel<*>>(
         private val serviceResponseConverter: ModelConverter<Params, ServiceModel, Dto?>
 ) {
 
+    interface params
+
     fun getData(params: Params): Observable<Dto> {
         val cache = getDataFromCache(params)
         val server = getDataFromServer(params)

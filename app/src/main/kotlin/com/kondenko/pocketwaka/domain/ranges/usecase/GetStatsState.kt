@@ -8,11 +8,11 @@ import com.kondenko.pocketwaka.utils.SchedulersContainer
 
 class GetStatsState(
         schedulers: SchedulersContainer,
-        fetchStats: FetchStats,
+        getStatsForRanges: GetStatsForRanges,
         connectivityStatusProvider: ConnectivityStatusProvider
-) : StatefulUseCase<FetchStats.Params, List<StatsUiModel>, List<StatsUiModel>, StatsDto>(
+) : StatefulUseCase<GetStatsForRanges.Params, List<StatsUiModel>, List<StatsUiModel>, StatsDto>(
         schedulers,
-        fetchStats,
+        getStatsForRanges,
         { it },
         connectivityStatusProvider
 )

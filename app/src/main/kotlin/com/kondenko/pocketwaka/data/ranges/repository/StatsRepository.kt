@@ -14,8 +14,8 @@ class StatsRepository(
         serviceResponseConverter: ModelConverter<Params, StatsServiceResponse, StatsDto?>,
         dtoConverter: ModelConverter<Nothing?, StatsDto, StatsDto> // Dto now serves as a domain model as well but will be refactored later
 ) : Repository<StatsRepository.Params, StatsServiceResponse, StatsDto>(
-        serverDataProvider = { params -> service.getCurrentUserStats(params.tokenHeader, params.range) },
-        cachedDataProvider = { params -> dao.getCachedStats(params.range) },
+        serverDataProvider = { (tokenHeader, range) -> service.getCurrentUserStats(tokenHeader, range) },
+        cachedDataProvider = { dao.getCachedStats(it.range) },
         serviceResponseConverter = serviceResponseConverter
 ) {
 

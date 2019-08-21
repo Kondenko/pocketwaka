@@ -8,7 +8,7 @@ import com.kondenko.pocketwaka.data.ranges.repository.StatsRepository
 import com.kondenko.pocketwaka.data.ranges.service.StatsService
 import com.kondenko.pocketwaka.di.qualifiers.Api
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
-import com.kondenko.pocketwaka.domain.ranges.usecase.FetchStats
+import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsForRanges
 import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsState
 import com.kondenko.pocketwaka.screens.ranges.RangesViewModel
 import com.kondenko.pocketwaka.utils.ColorProvider
@@ -51,7 +51,7 @@ object StatsModule {
             )
         }
         factory {
-            FetchStats(
+            GetStatsForRanges(
                     schedulers = get(),
                     getTokenHeader = get() as GetTokenHeaderValue,
                     statsRepository = get()
@@ -60,7 +60,7 @@ object StatsModule {
         factory {
             GetStatsState(
                     schedulers = get(),
-                    fetchStats = get(),
+                    getStatsForRanges = get(),
                     connectivityStatusProvider = get()
             )
         }

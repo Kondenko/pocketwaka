@@ -19,7 +19,7 @@ val summaryModule = module {
     single { SummaryDataConverter() }
     single { SummaryResponseConverter(summaryDataConverter = get<SummaryDataConverter>()) }
     single { SummaryRepository(summaryService = get(), summaryResponseConverter = get<SummaryResponseConverter>()) }
-    single { GetSummary(schedulers = get(), dateFormatter = get(), summaryRepository = get()) }
+    single { GetSummary(schedulers = get(), getTokenHeader = get(), dateFormatter = get(), summaryRepository = get()) }
     single { GetSummaryState(schedulers = get(), getSummary = get(), connectivityStatusProvider = get()) }
     single { GetDefaultSummaryRange(dateProvider = get(),dateFormatter = get(), schedulers = get()) }
     viewModel { SummaryViewModel(getDefaultSummaryRange = get(), getSummaryState = get()) }

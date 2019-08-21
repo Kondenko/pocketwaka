@@ -5,6 +5,7 @@ import com.kondenko.pocketwaka.data.summary.dto.SummaryRangeDto
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.domain.StatefulUseCase
 import com.kondenko.pocketwaka.domain.UseCaseObservable
+import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.date.DateRange
 import io.reactivex.Observable
@@ -12,6 +13,7 @@ import java.sql.Date
 
 class GetSummary(
         schedulers: SchedulersContainer,
+        private val getTokenHeader: GetTokenHeaderValue,
         private val dateFormatter: DateFormatter,
         private val summaryRepository: SummaryRepository
 ) : UseCaseObservable<GetSummary.Params, SummaryRangeDto>(schedulers) {
@@ -30,7 +32,15 @@ class GetSummary(
             params?.run {
                 val startDate = dateFormatter.formatDateAsParameter(Date(params.dateRange.start))
                 val endDate = dateFormatter.formatDateAsParameter(Date(params.dateRange.end))
-                summaryRepository.getData(SummaryRepository.Params(startDate, endDate, project, branches))
+                getTokenHeader.build().flatMapObservable {tokenHeader ->
+                    summaryRepository.getData(SummaryRepository.Params(
+                            tokenHeader,
+                            startDate,
+                            endDate,
+                            project,
+                            branches
+                    ))
+                }
             } ?: Observable.error(NullPointerException("Params are null"))
 
 }

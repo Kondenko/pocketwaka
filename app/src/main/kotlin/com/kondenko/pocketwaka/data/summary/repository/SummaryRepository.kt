@@ -12,14 +12,15 @@ class SummaryRepository(
         summaryService: SummaryService,
         summaryResponseConverter: ModelConverter<Params, Summary, SummaryRangeDto?>
 ) : Repository<SummaryRepository.Params, Summary, SummaryRangeDto>(
-        serverDataProvider = { (start, end, project, branches): Params ->
-            summaryService.getSummaries(start, end, project, branches)
+        serverDataProvider = { (tokenHeader, start, end, project, branches): Params ->
+            summaryService.getSummaries(tokenHeader, start, end, project, branches)
         },
         cachedDataProvider = { Maybe.empty() }, // TODO Retrieve data from cache
         serviceResponseConverter = summaryResponseConverter
 ) {
 
     data class Params(
+            val tokenHeader: String,
             val start: String,
             val end: String,
             val project: String? = null,

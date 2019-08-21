@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.screens.ranges
 
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
-import com.kondenko.pocketwaka.domain.ranges.usecase.FetchStats
+import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsForRanges
 import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsState
 import com.kondenko.pocketwaka.screens.BaseViewModel
 import io.reactivex.Scheduler
@@ -20,7 +20,7 @@ class RangesViewModel(
 
     fun update() {
         disposables += getStats
-                .build(FetchStats.Params(range, refreshRate = 3))
+                .build(GetStatsForRanges.Params(range, refreshRate = 3))
                 .debounce(50, TimeUnit.MILLISECONDS, uiScheduler)
                 .subscribe(_state::postValue, this::handleError)
     }
