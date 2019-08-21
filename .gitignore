@@ -65,3 +65,4 @@ app/src/main/res/values-v26/
 app/src/mock/kotlin/com/kondenko/pocketwaka/screens/
 
 **/*.trace
+**/.cxx
