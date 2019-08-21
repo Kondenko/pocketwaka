@@ -4,9 +4,9 @@ import android.content.Context
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.ModelConverter
 import com.kondenko.pocketwaka.data.android.DateFormatter
+import com.kondenko.pocketwaka.data.common.model.StatsEntity
 import com.kondenko.pocketwaka.data.ranges.dto.StatsDto
 import com.kondenko.pocketwaka.data.ranges.model.Stats
-import com.kondenko.pocketwaka.data.ranges.model.StatsEntity
 import com.kondenko.pocketwaka.data.ranges.model.StatsServiceResponse
 import com.kondenko.pocketwaka.data.ranges.repository.StatsRepository
 import com.kondenko.pocketwaka.domain.ranges.model.StatsItem

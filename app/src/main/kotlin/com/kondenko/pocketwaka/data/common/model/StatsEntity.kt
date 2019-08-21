@@ -1,6 +1,5 @@
-package com.kondenko.pocketwaka.data.ranges.model
+package com.kondenko.pocketwaka.data.common.model
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -15,33 +14,13 @@ import com.google.gson.annotations.SerializedName
  * @see com.kondenko.pocketwaka.ui.CardStatsListAdapter
  */
 open class StatsEntity  {
-
-    @SerializedName("digital")
-    @Expose
     var digital: String? = null
-
-    @SerializedName("hours")
-    @Expose
     var hours: Int? = null
-
-    @SerializedName("minutes")
-    @Expose
     var minutes: Int? = null
-
-    @SerializedName("name")
-    @Expose
+    var seconds: Int? = null
     var name: String? = null
-
-    @SerializedName("percent")
-    @Expose
     var percent: Double? = null
-
-    @SerializedName("text")
-    @Expose
     var text: String? = null
-
     @SerializedName("total_seconds")
-    @Expose
-    var totalSeconds: Double? = null
-
+    var totalSeconds: Float? = null
 }

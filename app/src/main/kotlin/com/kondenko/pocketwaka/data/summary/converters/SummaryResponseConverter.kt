@@ -37,7 +37,7 @@ class SummaryDataConverter : ModelConverter<SummaryRepository.Params, SummaryDat
      * TODO Implement conversion
      */
     override fun convert(model: SummaryData, param: SummaryRepository.Params): SummaryDto {
-        val isEmpty = model.grandTotal.totalSeconds == 0
+        val isEmpty = model.grandTotal.totalSeconds == 0f
         return SummaryDto(model.range.date, false, isEmpty, emptyList())
     }
 
