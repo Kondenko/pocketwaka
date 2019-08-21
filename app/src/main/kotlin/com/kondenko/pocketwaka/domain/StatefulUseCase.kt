@@ -6,7 +6,6 @@ import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.State.*
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.Observable
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 /**
@@ -61,7 +60,6 @@ abstract class StatefulUseCase<
 
     private fun getData(params: PARAMS, retryAttempts: Int, isConnected: Boolean): Observable<State<UI_MODEL>> =
             useCase.build(params)
-                    .doOnError(Timber::w)
                     .retry(retryAttempts.toLong())
                     .map {
                         val data = modelMapper(it.data)

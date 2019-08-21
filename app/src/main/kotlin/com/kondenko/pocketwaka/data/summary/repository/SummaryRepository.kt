@@ -1,11 +1,10 @@
-package com.kondenko.pocketwaka.data.daily.repository
+package com.kondenko.pocketwaka.data.summary.repository
 
 import com.kondenko.pocketwaka.data.ModelConverter
 import com.kondenko.pocketwaka.data.Repository
-import com.kondenko.pocketwaka.data.daily.dto.SummaryRangeDto
-import com.kondenko.pocketwaka.data.daily.model.Summary
-import com.kondenko.pocketwaka.data.daily.service.SummaryService
-import com.kondenko.pocketwaka.utils.date.DateRangeString
+import com.kondenko.pocketwaka.data.summary.dto.SummaryRangeDto
+import com.kondenko.pocketwaka.data.summary.model.Summary
+import com.kondenko.pocketwaka.data.summary.service.SummaryService
 import io.reactivex.Completable
 import io.reactivex.Maybe
 
@@ -13,15 +12,16 @@ class SummaryRepository(
         summaryService: SummaryService,
         summaryResponseConverter: ModelConverter<Params, Summary, SummaryRangeDto?>
 ) : Repository<SummaryRepository.Params, Summary, SummaryRangeDto>(
-        serverDataProvider = { (range, project, branches): Params ->
-            summaryService.getSummaries(range.start, range.end, project, branches)
+        serverDataProvider = { (start, end, project, branches): Params ->
+            summaryService.getSummaries(start, end, project, branches)
         },
         cachedDataProvider = { Maybe.empty() }, // TODO Retrieve data from cache
         serviceResponseConverter = summaryResponseConverter
 ) {
 
     data class Params(
-            val dateRangeString: DateRangeString,
+            val start: String,
+            val end: String,
             val project: String? = null,
             val branches: String? = null
     )

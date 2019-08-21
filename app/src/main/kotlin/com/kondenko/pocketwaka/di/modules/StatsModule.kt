@@ -29,7 +29,7 @@ object StatsModule {
                     context = context,
                     colorProvider = get(),
                     dateFormatter = get(),
-                    timeProvider = get()
+                    dateProvider = get()
             )
         }
         single {

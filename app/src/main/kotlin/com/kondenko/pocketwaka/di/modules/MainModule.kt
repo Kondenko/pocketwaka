@@ -25,7 +25,7 @@ object MainModule {
         ) }
         single { RefreshAccessToken(
                 schedulers = get(),
-                timeProvider = get(),
+                dateProvider = get(),
                 tokenEncryptor = get<TokenEncryptor>(),
                 accessTokenRepository = get(),
                 getStoredAccessToken = get(),

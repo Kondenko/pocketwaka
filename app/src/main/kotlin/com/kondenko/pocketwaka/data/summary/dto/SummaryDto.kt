@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.data.daily.dto
+package com.kondenko.pocketwaka.data.summary.dto
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

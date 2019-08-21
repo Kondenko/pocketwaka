@@ -29,7 +29,7 @@ object AuthModule {
         factory {
             GetAccessToken(
                     schedulers = get(),
-                    timeProvider = get(),
+                    dateProvider = get(),
                     tokenEncryptor = get<TokenEncryptor>(),
                     accessTokenRepository = get(),
                     getAppId = get(),

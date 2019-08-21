@@ -14,7 +14,7 @@ object Const {
     const val URL_PLUGINS = "https://wakatime.com/editors"
 
     const val BASE_URL = "https://wakatime.com/" // Used when a user is not authenticated yet
-    const val URL_API = "$BASE_URL/api/v1/" // Used for all API calls
+    const val URL_API = "${BASE_URL}api/v1/" // Used for all API calls
 
     /* Authorization */
 

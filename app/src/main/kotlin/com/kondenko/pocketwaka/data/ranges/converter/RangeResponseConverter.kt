@@ -12,7 +12,7 @@ import com.kondenko.pocketwaka.data.ranges.repository.StatsRepository
 import com.kondenko.pocketwaka.domain.ranges.model.StatsItem
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
 import com.kondenko.pocketwaka.utils.ColorProvider
-import com.kondenko.pocketwaka.utils.date.TimeProvider
+import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.extensions.notNull
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
@@ -21,7 +21,7 @@ class RangeResponseConverter(
         private val context: Context,
         private val colorProvider: ColorProvider,
         private val dateFormatter: DateFormatter,
-        private val timeProvider: TimeProvider
+        private val dateProvider: DateProvider
 ) : ModelConverter<StatsRepository.Params, StatsServiceResponse, StatsDto?> {
 
     private enum class StatsType {
@@ -53,7 +53,7 @@ class RangeResponseConverter(
 
         return StatsDto(
                 range = range,
-                dateUpdated = timeProvider.getCurrentTimeMillis(),
+                dateUpdated = dateProvider.getCurrentTimeMillis(),
                 isFromCache = false,
                 isEmpty = stats.totalSeconds == 0.0,
                 data = list
@@ -68,7 +68,7 @@ class RangeResponseConverter(
     }
 
     private fun Stats.convertBestDay(dailyAverageSec: Int?): StatsUiModel.BestDay? = bestDay?.let { bestDay ->
-        val date = bestDay.date?.let(dateFormatter::reformatBestDayDate)
+        val date = bestDay.date?.let(dateFormatter::formatDateForDisplay)
         val timeSec = bestDay.totalSeconds?.roundToLong()
         val timeHumanReadable = timeSec?.secondsToHumanReadableTime()
         val percentAboveAverage = calculatePercentAboveAverage(timeSec, dailyAverageSec)

@@ -3,7 +3,7 @@ package com.kondenko.pocketwaka.utils.date
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class TimeProvider {
+class DateProvider {
 
     fun getCurrentTimeMillis() = System.currentTimeMillis()
 

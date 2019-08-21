@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.utils.extensions.observe
+import com.kondenko.pocketwaka.utils.extensions.report
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -22,7 +24,10 @@ class FragmentDayStats : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         vm.state.observe(viewLifecycleOwner) {
-            Timber.d(it.toString())
+            Timber.d("New summary state: $it")
+            when(it) {
+                is State.Failure -> it.exception?.report()
+            }
         }
     }
 

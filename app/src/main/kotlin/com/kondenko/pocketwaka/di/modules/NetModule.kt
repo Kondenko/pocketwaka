@@ -5,6 +5,7 @@ import com.kondenko.pocketwaka.di.qualifiers.Api
 import com.kondenko.pocketwaka.di.qualifiers.Auth
 import com.kondenko.pocketwaka.di.qualifiers.Ui
 import com.kondenko.pocketwaka.di.qualifiers.Worker
+import com.kondenko.pocketwaka.utils.ResponseLogger
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -28,6 +29,7 @@ object NetModule {
             OkHttpClient.Builder()
                     .connectTimeout(15, TimeUnit.SECONDS)
                     .readTimeout(30, TimeUnit.SECONDS)
+                    .addNetworkInterceptor(ResponseLogger())
                     .build()
         }
         single {

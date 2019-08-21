@@ -24,11 +24,6 @@ abstract class Repository<Params, ServiceModel, Dto : CacheableModel<*>>(
                 .distinctUntilChanged()
     }
 
-    private fun getDataFromCache(params: Params): Observable<Dto> =
-            cachedDataProvider.invoke(params)
-                    .toObservable()
-                    .map { setIsFromCache(it, true) }
-
     private fun getDataFromServer(params: Params): Observable<Dto> =
             serverDataProvider.invoke(params)
                     .flatMapObservable {
@@ -38,10 +33,15 @@ abstract class Repository<Params, ServiceModel, Dto : CacheableModel<*>>(
                     }
                     .doOnNext { dto: Dto ->
                         cacheData(dto).subscribeBy(
-                                onComplete = { Timber.d("SummaryData cached: $dto") },
+                                onComplete = { Timber.d("Data cached: $dto") },
                                 onError = { Timber.w(it, "Failed to cache data") }
                         )
                     }
+
+    private fun getDataFromCache(params: Params): Observable<Dto> =
+            cachedDataProvider.invoke(params)
+                    .toObservable()
+                    .map { setIsFromCache(it, true) }
 
     protected abstract fun cacheData(data: Dto): Completable
 
