@@ -5,6 +5,7 @@ import android.text.format.DateUtils
 import com.kondenko.pocketwaka.utils.extensions.getCurrentLocale
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class DateFormatter(private val context: Context) {
 
@@ -17,6 +18,15 @@ class DateFormatter(private val context: Context) {
         return DateUtils.formatDateTime(
                 context,
                 dateMillis,
+                DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_MONTH
+        )
+    }
+
+    fun formatDateForDisplay(seconds: Float): String {
+        val locale = context.getCurrentLocale()
+        return DateUtils.formatDateTime(
+                context,
+                TimeUnit.SECONDS.toMillis(seconds.toLong()),
                 DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_MONTH
         )
     }

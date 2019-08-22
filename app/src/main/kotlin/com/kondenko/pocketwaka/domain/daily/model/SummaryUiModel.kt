@@ -18,8 +18,3 @@ sealed class SummaryUiModel {
 
 }
 
-data class Project(val name: String, val timeTracked: String, val isRepoConnected: Boolean, val branches: List<Branch>)
-
-data class Branch(val name: String, val timeTracked: String, val commits: List<Commit>)
-
-data class Commit(val message: String, val timeTracked: String)

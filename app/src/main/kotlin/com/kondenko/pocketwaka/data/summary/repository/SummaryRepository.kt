@@ -27,9 +27,6 @@ class SummaryRepository(
             val branches: String? = null
     )
 
-    /**
-     * TODO Implement caching
-     */
     override fun cacheData(data: SummaryRangeDto): Completable = Completable.error(NotImplementedError("Implement caching"))
 
     override fun setIsFromCache(model: SummaryRangeDto, isFromCache: Boolean): SummaryRangeDto = model.copy(isFromCache = isFromCache)
