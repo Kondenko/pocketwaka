@@ -5,6 +5,7 @@ import com.kondenko.pocketwaka.data.summary.converters.SummaryResponseConverter
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.data.summary.service.SummaryService
 import com.kondenko.pocketwaka.di.qualifiers.Api
+import com.kondenko.pocketwaka.domain.daily.usecase.GetAverage
 import com.kondenko.pocketwaka.domain.daily.usecase.GetDefaultSummaryRange
 import com.kondenko.pocketwaka.domain.daily.usecase.GetSummary
 import com.kondenko.pocketwaka.domain.daily.usecase.GetSummaryState
@@ -15,12 +16,57 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 
 val summaryModule = module {
-    single { get<Retrofit>(Api).create<SummaryService>() }
-    single { SummaryDataConverter(dateFormatter = get()) }
-    single { SummaryResponseConverter(summaryDataConverter = get<SummaryDataConverter>()) }
-    single { SummaryRepository(summaryService = get(), summaryResponseConverter = get<SummaryResponseConverter>()) }
-    single { GetSummary(schedulers = get(), getTokenHeader = get(), dateFormatter = get(), summaryRepository = get()) }
-    single { GetSummaryState(schedulers = get(), getSummary = get(), connectivityStatusProvider = get()) }
-    single { GetDefaultSummaryRange(dateProvider = get(), dateFormatter = get(), schedulers = get()) }
-    viewModel { SummaryViewModel(getDefaultSummaryRange = get(), getSummaryState = get()) }
+    single {
+        get<Retrofit>(Api).create<SummaryService>()
+    }
+    single {
+        GetAverage(
+                schedulersContainer = get(),
+                rangeStatsRepository = get(),
+                getTokenHeaderValue = get()
+        )
+    }
+    single {
+        SummaryDataConverter(
+                dateFormatter = get(),
+                getAverage = get()
+        )
+    }
+    single {
+        SummaryResponseConverter(summaryDataConverter = get<SummaryDataConverter>())
+    }
+    single {
+        SummaryRepository(
+                summaryService = get(),
+                summaryResponseConverter = get<SummaryResponseConverter>()
+        )
+    }
+    single {
+        GetSummary(
+                schedulers = get(),
+                getTokenHeader = get(),
+                dateFormatter = get(),
+                summaryRepository = get()
+        )
+    }
+    single {
+        GetSummaryState(
+                schedulers = get(),
+                getSummary = get(),
+                connectivityStatusProvider = get()
+        )
+    }
+    single {
+        GetDefaultSummaryRange(
+                dateProvider = get(),
+                dateFormatter = get(),
+                schedulers = get()
+        )
+    }
+    viewModel {
+        SummaryViewModel(
+                getDefaultSummaryRange = get(),
+                getSummaryState = get()
+        )
+    }
 }

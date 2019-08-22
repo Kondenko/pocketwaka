@@ -12,11 +12,11 @@ data class SummaryRangeDto(
         val range: DateRangeString,
         override val isFromCache: Boolean = false,
         override val isEmpty: Boolean = false,
-        override val data: List<SummaryDto>
-) : CacheableModel<List<SummaryDto>>
+        override val data: List<SummaryDbModel>
+) : CacheableModel<List<SummaryDbModel>>
 
 @Entity(tableName = "summary")
-data class SummaryDto(
+data class SummaryDbModel(
         @PrimaryKey
         val date: String,
         override val isFromCache: Boolean = false,

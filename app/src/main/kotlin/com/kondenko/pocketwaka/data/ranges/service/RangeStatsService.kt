@@ -9,7 +9,7 @@ import retrofit2.http.Path
 
 private const val PATH_RANGE = "range"
 
-interface StatsService {
+interface RangeStatsService {
 
     @GET("users/current/stats/{$PATH_RANGE}")
     fun getCurrentUserStats(

@@ -6,7 +6,7 @@ import com.kondenko.pocketwaka.data.ranges.dao.StatsDao
 import com.kondenko.pocketwaka.data.ranges.model.database.StatsDbModel
 import com.kondenko.pocketwaka.data.ranges.model.server.Stats
 import com.kondenko.pocketwaka.data.ranges.model.server.StatsServerModel
-import com.kondenko.pocketwaka.data.ranges.service.StatsService
+import com.kondenko.pocketwaka.data.ranges.service.RangeStatsService
 import com.kondenko.pocketwaka.testutils.TestException
 import com.kondenko.pocketwaka.utils.extensions.testWithLogging
 import com.nhaarman.mockito_kotlin.*
@@ -19,17 +19,17 @@ import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class StatsRepositoryTest {
+class RangeStatsRepositoryTest {
 
-    private val service = mock<StatsService>()
+    private val service = mock<RangeStatsService>()
 
     private val dao = mock<StatsDao>()
 
-    private val serverModelConverter: ModelConverter<StatsRepository.Params, StatsServerModel, StatsDbModel?> = mock()
+    private val serverModelConverter: ModelConverter<RangeStatsRepository.Params, StatsServerModel, StatsDbModel?> = mock()
 
     private val dbModelConverter: ModelConverter<Nothing?, StatsDbModel, StatsDbModel> = RangeDomainModelConverter()
 
-    private val repository = StatsRepository(
+    private val repository = RangeStatsRepository(
             service,
             dao,
             serverModelConverter,
@@ -56,7 +56,7 @@ class StatsRepositoryTest {
                 .doReturn(Single.just(StatsServerModel(newStatsResponse)))
         whenever(dao.cacheStats(anyOrNull()))
                 .doReturn(Completable.complete())
-        with(repository.getData(StatsRepository.Params(token, range)).testWithLogging()) {
+        with(repository.getData(RangeStatsRepository.Params(token, range)).testWithLogging()) {
             assertNoErrors()
             assertValueAt(0) { it.isFromCache }
             assertValueAt(1) { !it.isFromCache }
@@ -70,7 +70,7 @@ class StatsRepositoryTest {
                 .doReturn(Maybe.just(cachedStats))
         whenever(service.getCurrentUserStats(token, range))
                 .doReturn(Single.error(TestException()))
-        with(repository.getData(StatsRepository.Params(token, range)).testWithLogging()) {
+        with(repository.getData(RangeStatsRepository.Params(token, range)).testWithLogging()) {
             assertValue { it.isFromCache }
             assertTerminated()
         }
@@ -85,7 +85,7 @@ class StatsRepositoryTest {
                 .doReturn(Single.just(newStatsResponse))
         whenever(dao.cacheStats(anyOrNull()))
                 .doReturn(Completable.complete())
-        with(repository.getData(StatsRepository.Params(token, range)).testWithLogging()) {
+        with(repository.getData(RangeStatsRepository.Params(token, range)).testWithLogging()) {
             verify(dao, times(1)).getCachedStats(range)
             inOrder(service, dao) {
                 verify(dao).getCachedStats(range)
@@ -104,7 +104,7 @@ class StatsRepositoryTest {
                 .doReturn(Maybe.empty())
         whenever(service.getCurrentUserStats(token, range))
                 .doReturn(Single.error(error))
-        with(repository.getData(StatsRepository.Params(token, range)).testWithLogging()) {
+        with(repository.getData(RangeStatsRepository.Params(token, range)).testWithLogging()) {
             verify(dao, times(1)).getCachedStats(range)
             inOrder(service, dao) {
                 verify(dao).getCachedStats(range)

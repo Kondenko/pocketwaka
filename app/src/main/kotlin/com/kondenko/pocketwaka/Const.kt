@@ -33,3 +33,10 @@ object Const {
     const val MAX_SHADOW_OPACITY = .2f
 
 }
+
+enum class StatsRange(val value: String) {
+    Week("last_7_days"),
+    Month("last_30_days"),
+    HalfYear("last_6_months"),
+    Year("last_year"),
+}

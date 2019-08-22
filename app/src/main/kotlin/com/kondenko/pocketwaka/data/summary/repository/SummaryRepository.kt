@@ -15,7 +15,7 @@ class SummaryRepository(
         serverDataProvider = { (tokenHeader, start, end, project, branches): Params ->
             summaryService.getSummaries(tokenHeader, start, end, project, branches)
         },
-        cachedDataProvider = { Maybe.error(NotImplementedError("Implement cache retrieval")) },
+        cachedDataProvider = { Maybe.empty() }, // Implement cache retrieval
         serviceResponseConverter = summaryResponseConverter
 ) {
 
@@ -27,7 +27,7 @@ class SummaryRepository(
             val branches: String? = null
     )
 
-    override fun cacheData(data: SummaryRangeDto): Completable = Completable.error(NotImplementedError("Implement caching"))
+    override fun cacheData(data: SummaryRangeDto): Completable = Completable.complete() // Implement caching
 
     override fun setIsFromCache(model: SummaryRangeDto, isFromCache: Boolean): SummaryRangeDto = model.copy(isFromCache = isFromCache)
 

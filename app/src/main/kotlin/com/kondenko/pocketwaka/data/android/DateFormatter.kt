@@ -22,7 +22,7 @@ class DateFormatter(private val context: Context) {
         )
     }
 
-    fun formatDateForDisplay(seconds: Float): String {
+    fun formatDateForDisplay(seconds: Int): String {
         return DateUtils.formatDateTime(
                 context,
                 TimeUnit.SECONDS.toMillis(seconds.toLong()),

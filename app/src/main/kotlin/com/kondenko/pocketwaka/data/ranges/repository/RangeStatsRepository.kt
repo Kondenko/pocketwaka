@@ -1,25 +1,33 @@
 package com.kondenko.pocketwaka.data.ranges.repository
 
+import com.kondenko.pocketwaka.StatsRange
 import com.kondenko.pocketwaka.data.ModelConverter
 import com.kondenko.pocketwaka.data.Repository
 import com.kondenko.pocketwaka.data.ranges.dao.StatsDao
 import com.kondenko.pocketwaka.data.ranges.model.database.StatsDbModel
 import com.kondenko.pocketwaka.data.ranges.model.server.StatsServerModel
-import com.kondenko.pocketwaka.data.ranges.service.StatsService
+import com.kondenko.pocketwaka.data.ranges.service.RangeStatsService
 import io.reactivex.Completable
+import io.reactivex.Maybe
 
-class StatsRepository(
-        private val service: StatsService,
+class RangeStatsRepository(
+        private val service: RangeStatsService,
         private val dao: StatsDao,
         serverModelConverter: ModelConverter<Params, StatsServerModel, StatsDbModel?>,
         dbModelConverter: ModelConverter<Nothing?, StatsDbModel, StatsDbModel> // Dto now serves as a domain model as well but will be refactored later
-) : Repository<StatsRepository.Params, StatsServerModel, StatsDbModel>(
+) : Repository<RangeStatsRepository.Params, StatsServerModel, StatsDbModel>(
         serverDataProvider = { (tokenHeader, range) -> service.getCurrentUserStats(tokenHeader, range) },
         cachedDataProvider = { dao.getCachedStats(it.range) },
         serviceResponseConverter = serverModelConverter
 ) {
 
     data class Params(val tokenHeader: String, val range: String)
+
+    fun getDailyAverage(tokenHeader: String, averageRange: StatsRange): Maybe<Int> =
+            service.getCurrentUserStats(tokenHeader, averageRange.value)
+                    .flatMapMaybe {
+                        it.stats?.dailyAverage?.let { Maybe.just(it) } ?: Maybe.empty()
+                    }
 
     override fun cacheData(data: StatsDbModel): Completable = dao.cacheStats(data)
 

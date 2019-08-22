@@ -4,7 +4,7 @@ import androidx.annotation.IntRange
 
 sealed class SummaryUiModel {
 
-    sealed class Status(val lastUpdated: Long? = null) {
+    sealed class Status(val lastUpdated: Long? = null) : SummaryUiModel() {
         class Loading(lastUpdated: Long? = null) : Status(lastUpdated)
         class Offline(lastUpdated: Long? = null) : Status(lastUpdated)
     }
@@ -12,9 +12,11 @@ sealed class SummaryUiModel {
     data class TimeTracked(val time: String, @IntRange(from = -100, to = 100) val percentDelta: Int)
         : SummaryUiModel()
 
-    object ProjectsBlock
+    object ProjectsSubtitle
+        : SummaryUiModel()
 
     data class Projects(val projects: List<Project>)
+        : SummaryUiModel()
 
 }
 

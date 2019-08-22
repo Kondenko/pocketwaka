@@ -4,8 +4,8 @@ import android.content.Context
 import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.ranges.converter.RangeDomainModelConverter
 import com.kondenko.pocketwaka.data.ranges.converter.RangeResponseConverter
-import com.kondenko.pocketwaka.data.ranges.repository.StatsRepository
-import com.kondenko.pocketwaka.data.ranges.service.StatsService
+import com.kondenko.pocketwaka.data.ranges.repository.RangeStatsRepository
+import com.kondenko.pocketwaka.data.ranges.service.RangeStatsService
 import com.kondenko.pocketwaka.di.qualifiers.Api
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsForRanges
@@ -21,7 +21,7 @@ import retrofit2.Retrofit
 
 object StatsModule {
     fun create(context: Context) = module {
-        single { get<Retrofit>(Api).create<StatsService>() }
+        single { get<Retrofit>(Api).create<RangeStatsService>() }
         single { ColorProvider(context) }
         single { DateFormatter(context) }
         single {
@@ -36,7 +36,7 @@ object StatsModule {
             RangeDomainModelConverter()
         }
         single {
-            StatsRepository(
+            RangeStatsRepository(
                     service = get(),
                     dao = get(),
                     serverModelConverter = get<RangeResponseConverter>(),
@@ -54,7 +54,7 @@ object StatsModule {
             GetStatsForRanges(
                     schedulers = get(),
                     getTokenHeader = get() as GetTokenHeaderValue,
-                    statsRepository = get()
+                    rangeStatsRepository = get()
             )
         }
         factory {

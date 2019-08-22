@@ -8,7 +8,7 @@ import com.kondenko.pocketwaka.data.common.model.database.StatsEntity
 import com.kondenko.pocketwaka.data.ranges.model.database.StatsDbModel
 import com.kondenko.pocketwaka.data.ranges.model.server.Stats
 import com.kondenko.pocketwaka.data.ranges.model.server.StatsServerModel
-import com.kondenko.pocketwaka.data.ranges.repository.StatsRepository
+import com.kondenko.pocketwaka.data.ranges.repository.RangeStatsRepository
 import com.kondenko.pocketwaka.domain.ranges.model.StatsItem
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
 import com.kondenko.pocketwaka.utils.ColorProvider
@@ -22,13 +22,13 @@ class RangeResponseConverter(
         private val colorProvider: ColorProvider,
         private val dateFormatter: DateFormatter,
         private val dateProvider: DateProvider
-) : ModelConverter<StatsRepository.Params, StatsServerModel, StatsDbModel?> {
+) : ModelConverter<RangeStatsRepository.Params, StatsServerModel, StatsDbModel?> {
 
     private enum class StatsType {
         Editors, Languages, Projects, OperatingSystems
     }
 
-    override fun convert(response: StatsServerModel, params: StatsRepository.Params) =
+    override fun convert(response: StatsServerModel, params: RangeStatsRepository.Params) =
             toDomainModel(params.range, response.stats)
 
     private fun toDomainModel(range: String, stats: Stats?): StatsDbModel? {

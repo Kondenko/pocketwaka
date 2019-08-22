@@ -1,6 +1,6 @@
 package com.kondenko.pocketwaka.domain.ranges
 
-import com.kondenko.pocketwaka.data.ranges.repository.StatsRepository
+import com.kondenko.pocketwaka.data.ranges.repository.RangeStatsRepository
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsForRanges
 import com.kondenko.pocketwaka.testutils.testSchedulers
@@ -16,9 +16,9 @@ class GetStatsForRangesTest {
 
     private val getTokenHeader: GetTokenHeaderValue = mock()
 
-    private val statsRepository: StatsRepository = mock()
+    private val rangeStatsRepository: RangeStatsRepository = mock()
 
-    private val useCase = GetStatsForRanges(testSchedulers, getTokenHeader, statsRepository)
+    private val useCase = GetStatsForRanges(testSchedulers, getTokenHeader, rangeStatsRepository)
 
     private val header = "foo"
 
@@ -28,9 +28,9 @@ class GetStatsForRangesTest {
     fun `should fetch token first`() {
         whenever(getTokenHeader.build()).doReturn(header.toSingle())
         useCase.invoke(GetStatsForRanges.Params(range))
-        inOrder(getTokenHeader, statsRepository) {
+        inOrder(getTokenHeader, rangeStatsRepository) {
             verify(getTokenHeader).build()
-            verify(statsRepository).getData(StatsRepository.Params(header, range))
+            verify(rangeStatsRepository).getData(RangeStatsRepository.Params(header, range))
         }
     }
 
