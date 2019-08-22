@@ -27,7 +27,7 @@ class StatsRepositoryTest {
 
     private val serverModelConverter: ModelConverter<StatsRepository.Params, StatsServerModel, StatsDbModel?> = mock()
 
-    private val dbModelConverter: ModelConverter<Nothing?, StatsDbModel, StatsDomainModel> = RangeDomainModelConverter()
+    private val dbModelConverter: ModelConverter<Nothing?, StatsDbModel, StatsDbModel> = RangeDomainModelConverter()
 
     private val repository = StatsRepository(
             service,
