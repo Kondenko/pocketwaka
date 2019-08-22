@@ -1,6 +1,7 @@
 package com.kondenko.pocketwaka.domain.ranges.usecase
 
 import com.kondenko.pocketwaka.data.ranges.model.database.StatsDbModel
+import com.kondenko.pocketwaka.data.ranges.model.server.StatsServerModel
 import com.kondenko.pocketwaka.data.ranges.repository.RangeStatsRepository
 import com.kondenko.pocketwaka.domain.StatefulUseCase
 import com.kondenko.pocketwaka.domain.UseCaseObservable
@@ -12,7 +13,8 @@ import io.reactivex.Observable
 class GetStatsForRanges(
         schedulers: SchedulersContainer,
         private val getTokenHeader: GetTokenHeaderValue,
-        private val rangeStatsRepository: RangeStatsRepository
+        private val rangeStatsRepository: RangeStatsRepository,
+        private val serverModelConverter: (RangeStatsRepository.Params, StatsServerModel) -> StatsDbModel?
 ) : UseCaseObservable<GetStatsForRanges.Params, StatsDbModel>(schedulers) {
 
     class Params(val range: String?, refreshRate: Int = 1, retryAttempts: Int = 3) : StatefulUseCase.ParamsWrapper(refreshRate, retryAttempts) {
@@ -21,7 +23,7 @@ class GetStatsForRanges(
 
     override fun build(params: Params?): Observable<StatsDbModel> =
             getTokenHeader.build().flatMapObservable { header ->
-                rangeStatsRepository.getData(RangeStatsRepository.Params(header, params!!.range!!))
+                rangeStatsRepository.getData(RangeStatsRepository.Params(header, params!!.range!!), serverModelConverter)
             }
 
 }

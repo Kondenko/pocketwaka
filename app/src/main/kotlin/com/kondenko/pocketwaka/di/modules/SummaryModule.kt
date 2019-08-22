@@ -36,17 +36,15 @@ val summaryModule = module {
         SummaryResponseConverter(summaryDataConverter = get<SummaryDataConverter>())
     }
     single {
-        SummaryRepository(
-                summaryService = get(),
-                summaryResponseConverter = get<SummaryResponseConverter>()
-        )
+        SummaryRepository(summaryService = get())
     }
     single {
         GetSummary(
                 schedulers = get(),
                 getTokenHeader = get(),
                 dateFormatter = get(),
-                summaryRepository = get()
+                summaryRepository = get(),
+                summaryResponseConverter = get<SummaryResponseConverter>()
         )
     }
     single {

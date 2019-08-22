@@ -9,13 +9,23 @@ import timber.log.Timber
 
 abstract class Repository<Params, ServerModel, DbModel : CacheableModel<*>>(
         private val serverDataProvider: (Params) -> Single<ServerModel>,
-        private val cachedDataProvider: (Params) -> Maybe<DbModel>,
-        private val serviceResponseConverter: ModelConverter<Params, ServerModel, DbModel?>
+        private val cachedDataProvider: (Params) -> Maybe<DbModel>
 ) {
 
-    fun getData(params: Params): Observable<DbModel> {
+    fun getData(params: Params, converter: (Params, ServerModel) -> DbModel?): Observable<DbModel> {
         val cache = getDataFromCache(params)
         val server = getDataFromServer(params)
+                .flatMap {
+                    val dto = converter(params, it)
+                    if (dto != null) Observable.just(dto)
+                    else Observable.error(NullPointerException("Converted DTO is null"))
+                }
+                .doOnNext { dto: DbModel ->
+                    cacheData(dto).subscribeBy(
+                            onComplete = { Timber.d("Data cached: $dto") },
+                            onError = { Timber.w(it, "Failed to cache data") }
+                    )
+                }
                 .onErrorResumeNext { error: Throwable ->
                     // Pass the network error down the stream if cache is empty
                     cache.switchIfEmpty(Observable.error(error))
@@ -24,19 +34,9 @@ abstract class Repository<Params, ServerModel, DbModel : CacheableModel<*>>(
                 .distinctUntilChanged()
     }
 
-    private fun getDataFromServer(params: Params): Observable<DbModel> =
+    private fun getDataFromServer(params: Params): Observable<ServerModel> =
             serverDataProvider.invoke(params)
-                    .flatMapObservable {
-                        val dto = serviceResponseConverter.convert(it, params)
-                        if (dto != null) Observable.just(dto)
-                        else Observable.error(NullPointerException("Converted DTO is null"))
-                    }
-                    .doOnNext { dto: DbModel ->
-                        cacheData(dto).subscribeBy(
-                                onComplete = { Timber.d("Data cached: $dto") },
-                                onError = { Timber.w(it, "Failed to cache data") }
-                        )
-                    }
+                    .toObservable()
 
     private fun getDataFromCache(params: Params): Observable<DbModel> =
             cachedDataProvider.invoke(params)

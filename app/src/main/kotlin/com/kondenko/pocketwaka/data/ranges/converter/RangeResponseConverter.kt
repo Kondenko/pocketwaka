@@ -2,7 +2,6 @@ package com.kondenko.pocketwaka.data.ranges.converter
 
 import android.content.Context
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.data.ModelConverter
 import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.common.model.database.StatsEntity
 import com.kondenko.pocketwaka.data.ranges.model.database.StatsDbModel
@@ -22,13 +21,13 @@ class RangeResponseConverter(
         private val colorProvider: ColorProvider,
         private val dateFormatter: DateFormatter,
         private val dateProvider: DateProvider
-) : ModelConverter<RangeStatsRepository.Params, StatsServerModel, StatsDbModel?> {
+) : (RangeStatsRepository.Params, StatsServerModel) -> StatsDbModel? {
 
     private enum class StatsType {
         Editors, Languages, Projects, OperatingSystems
     }
 
-    override fun convert(response: StatsServerModel, params: RangeStatsRepository.Params) =
+    override fun invoke(params: RangeStatsRepository.Params, response: StatsServerModel) =
             toDomainModel(params.range, response.stats)
 
     private fun toDomainModel(range: String, stats: Stats?): StatsDbModel? {

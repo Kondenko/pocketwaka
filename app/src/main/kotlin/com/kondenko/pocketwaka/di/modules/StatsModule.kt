@@ -2,7 +2,6 @@ package com.kondenko.pocketwaka.di.modules
 
 import android.content.Context
 import com.kondenko.pocketwaka.data.android.DateFormatter
-import com.kondenko.pocketwaka.data.ranges.converter.RangeDomainModelConverter
 import com.kondenko.pocketwaka.data.ranges.converter.RangeResponseConverter
 import com.kondenko.pocketwaka.data.ranges.repository.RangeStatsRepository
 import com.kondenko.pocketwaka.data.ranges.service.RangeStatsService
@@ -33,14 +32,9 @@ object StatsModule {
             )
         }
         single {
-            RangeDomainModelConverter()
-        }
-        single {
             RangeStatsRepository(
                     service = get(),
-                    dao = get(),
-                    serverModelConverter = get<RangeResponseConverter>(),
-                    dbModelConverter = get<RangeDomainModelConverter>()
+                    dao = get()
             )
         }
         factory {
@@ -54,7 +48,8 @@ object StatsModule {
             GetStatsForRanges(
                     schedulers = get(),
                     getTokenHeader = get() as GetTokenHeaderValue,
-                    rangeStatsRepository = get()
+                    rangeStatsRepository = get(),
+                    serverModelConverter = get<RangeResponseConverter>()
             )
         }
         factory {

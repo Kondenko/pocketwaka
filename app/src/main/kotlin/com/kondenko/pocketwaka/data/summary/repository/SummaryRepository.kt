@@ -1,6 +1,5 @@
 package com.kondenko.pocketwaka.data.summary.repository
 
-import com.kondenko.pocketwaka.data.ModelConverter
 import com.kondenko.pocketwaka.data.Repository
 import com.kondenko.pocketwaka.data.summary.model.database.SummaryRangeDto
 import com.kondenko.pocketwaka.data.summary.model.server.Summary
@@ -8,16 +7,13 @@ import com.kondenko.pocketwaka.data.summary.service.SummaryService
 import io.reactivex.Completable
 import io.reactivex.Maybe
 
-class SummaryRepository(
-        summaryService: SummaryService,
-        summaryResponseConverter: ModelConverter<Params, Summary, SummaryRangeDto?>
-) : Repository<SummaryRepository.Params, Summary, SummaryRangeDto>(
-        serverDataProvider = { (tokenHeader, start, end, project, branches): Params ->
-            summaryService.getSummaries(tokenHeader, start, end, project, branches)
-        },
-        cachedDataProvider = { Maybe.empty() }, // Implement cache retrieval
-        serviceResponseConverter = summaryResponseConverter
-) {
+class SummaryRepository(summaryService: SummaryService) :
+        Repository<SummaryRepository.Params, Summary, SummaryRangeDto>(
+                serverDataProvider = { (tokenHeader, start, end, project, branches): Params ->
+                    summaryService.getSummaries(tokenHeader, start, end, project, branches)
+                },
+                cachedDataProvider = { Maybe.empty() } // Implement cache retrieval
+        ) {
 
     data class Params(
             val tokenHeader: String,

@@ -1,7 +1,6 @@
 package com.kondenko.pocketwaka.data.summary.converters
 
 import com.kondenko.pocketwaka.StatsRange
-import com.kondenko.pocketwaka.data.ModelConverter
 import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.common.model.database.StatsEntity
 import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
@@ -20,11 +19,11 @@ import kotlin.math.roundToInt
 class SummaryDataConverter(
         private val getAverage: GetAverage,
         private val dateFormatter: DateFormatter
-) : ModelConverter<SummaryRepository.Params, SummaryData, SummaryDbModel> {
+) : (SummaryRepository.Params, SummaryData) -> SummaryDbModel {
 
     private val averageRange = StatsRange.Month
 
-    override fun convert(model: SummaryData, param: SummaryRepository.Params): SummaryDbModel {
+    override fun invoke(param: SummaryRepository.Params, model: SummaryData): SummaryDbModel {
         val isEmpty = model.grandTotal.totalSeconds == 0f
         val uiModels = mutableListOf<SummaryUiModel>()
         uiModels += convertTimeTracked(model)

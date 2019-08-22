@@ -1,7 +1,6 @@
 package com.kondenko.pocketwaka.data.ranges.repository
 
 import com.kondenko.pocketwaka.StatsRange
-import com.kondenko.pocketwaka.data.ModelConverter
 import com.kondenko.pocketwaka.data.Repository
 import com.kondenko.pocketwaka.data.ranges.dao.StatsDao
 import com.kondenko.pocketwaka.data.ranges.model.database.StatsDbModel
@@ -12,13 +11,10 @@ import io.reactivex.Maybe
 
 class RangeStatsRepository(
         private val service: RangeStatsService,
-        private val dao: StatsDao,
-        serverModelConverter: ModelConverter<Params, StatsServerModel, StatsDbModel?>,
-        dbModelConverter: ModelConverter<Nothing?, StatsDbModel, StatsDbModel> // Dto now serves as a domain model as well but will be refactored later
+        private val dao: StatsDao
 ) : Repository<RangeStatsRepository.Params, StatsServerModel, StatsDbModel>(
         serverDataProvider = { (tokenHeader, range) -> service.getCurrentUserStats(tokenHeader, range) },
-        cachedDataProvider = { dao.getCachedStats(it.range) },
-        serviceResponseConverter = serverModelConverter
+        cachedDataProvider = { dao.getCachedStats(it.range) }
 ) {
 
     data class Params(val tokenHeader: String, val range: String)
