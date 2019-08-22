@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.data.ranges.dto
+package com.kondenko.pocketwaka.data.ranges.model.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -7,7 +7,7 @@ import com.kondenko.pocketwaka.data.CacheableModel
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
 
 @Entity(tableName = "stats_cache")
-data class StatsDto(
+data class StatsDbModel(
         @PrimaryKey
         val range: String,
         @ColumnInfo(name = "date_updated")

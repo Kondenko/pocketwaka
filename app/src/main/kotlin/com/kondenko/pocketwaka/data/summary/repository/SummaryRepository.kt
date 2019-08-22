@@ -2,8 +2,8 @@ package com.kondenko.pocketwaka.data.summary.repository
 
 import com.kondenko.pocketwaka.data.ModelConverter
 import com.kondenko.pocketwaka.data.Repository
-import com.kondenko.pocketwaka.data.summary.dto.SummaryRangeDto
-import com.kondenko.pocketwaka.data.summary.model.Summary
+import com.kondenko.pocketwaka.data.summary.model.database.SummaryRangeDto
+import com.kondenko.pocketwaka.data.summary.model.server.Summary
 import com.kondenko.pocketwaka.data.summary.service.SummaryService
 import io.reactivex.Completable
 import io.reactivex.Maybe

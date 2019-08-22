@@ -23,7 +23,6 @@ class DateFormatter(private val context: Context) {
     }
 
     fun formatDateForDisplay(seconds: Float): String {
-        val locale = context.getCurrentLocale()
         return DateUtils.formatDateTime(
                 context,
                 TimeUnit.SECONDS.toMillis(seconds.toLong()),

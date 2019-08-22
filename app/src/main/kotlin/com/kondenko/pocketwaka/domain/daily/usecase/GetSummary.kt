@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.domain.daily.usecase
 
 import com.kondenko.pocketwaka.data.android.DateFormatter
-import com.kondenko.pocketwaka.data.summary.dto.SummaryRangeDto
+import com.kondenko.pocketwaka.data.summary.model.database.SummaryRangeDto
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.domain.StatefulUseCase
 import com.kondenko.pocketwaka.domain.UseCaseObservable

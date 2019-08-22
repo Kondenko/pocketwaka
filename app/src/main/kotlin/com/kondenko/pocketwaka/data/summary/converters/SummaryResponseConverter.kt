@@ -1,10 +1,10 @@
 package com.kondenko.pocketwaka.data.summary.converters
 
 import com.kondenko.pocketwaka.data.ModelConverter
-import com.kondenko.pocketwaka.data.summary.dto.SummaryDto
-import com.kondenko.pocketwaka.data.summary.dto.SummaryRangeDto
-import com.kondenko.pocketwaka.data.summary.model.Summary
-import com.kondenko.pocketwaka.data.summary.model.SummaryData
+import com.kondenko.pocketwaka.data.summary.model.database.SummaryDto
+import com.kondenko.pocketwaka.data.summary.model.database.SummaryRangeDto
+import com.kondenko.pocketwaka.data.summary.model.server.Summary
+import com.kondenko.pocketwaka.data.summary.model.server.SummaryData
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.utils.date.DateRangeString
 

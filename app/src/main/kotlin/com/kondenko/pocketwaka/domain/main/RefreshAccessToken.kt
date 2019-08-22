@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.domain.main
 
 import com.kondenko.pocketwaka.Const
-import com.kondenko.pocketwaka.data.auth.model.AccessToken
+import com.kondenko.pocketwaka.data.auth.model.server.AccessToken
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.domain.auth.GetAppId

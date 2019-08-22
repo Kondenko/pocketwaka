@@ -1,6 +1,6 @@
 package com.kondenko.pocketwaka.data.auth.service
 
-import com.kondenko.pocketwaka.data.auth.model.AccessToken
+import com.kondenko.pocketwaka.data.auth.model.server.AccessToken
 import io.reactivex.Single
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded

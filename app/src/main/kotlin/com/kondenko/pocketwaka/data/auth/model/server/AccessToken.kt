@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.data.auth.model
+package com.kondenko.pocketwaka.data.auth.model.server
 
 import com.google.gson.annotations.SerializedName
 

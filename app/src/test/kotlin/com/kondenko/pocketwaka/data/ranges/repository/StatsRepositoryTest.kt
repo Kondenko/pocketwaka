@@ -3,9 +3,9 @@ package com.kondenko.pocketwaka.data.ranges.repository
 import com.kondenko.pocketwaka.data.ModelConverter
 import com.kondenko.pocketwaka.data.ranges.converter.RangeDomainModelConverter
 import com.kondenko.pocketwaka.data.ranges.dao.StatsDao
-import com.kondenko.pocketwaka.data.ranges.dto.StatsDto
-import com.kondenko.pocketwaka.data.ranges.model.Stats
-import com.kondenko.pocketwaka.data.ranges.model.StatsServiceResponse
+import com.kondenko.pocketwaka.data.ranges.model.database.StatsDbModel
+import com.kondenko.pocketwaka.data.ranges.model.server.Stats
+import com.kondenko.pocketwaka.data.ranges.model.server.StatsServerModel
 import com.kondenko.pocketwaka.data.ranges.service.StatsService
 import com.kondenko.pocketwaka.testutils.TestException
 import com.kondenko.pocketwaka.utils.extensions.testWithLogging
@@ -25,26 +25,26 @@ class StatsRepositoryTest {
 
     private val dao = mock<StatsDao>()
 
-    private val serviceResponseConverter: ModelConverter<StatsRepository.Params, StatsServiceResponse, StatsDto?> = mock()
+    private val serverModelConverter: ModelConverter<StatsRepository.Params, StatsServerModel, StatsDbModel?> = mock()
 
-    private val dtoConverter: ModelConverter<Nothing?, StatsDto, StatsDomainModel> = RangeDomainModelConverter()
+    private val dbModelConverter: ModelConverter<Nothing?, StatsDbModel, StatsDomainModel> = RangeDomainModelConverter()
 
     private val repository = StatsRepository(
             service,
             dao,
-            serviceResponseConverter,
-            dtoConverter
+            serverModelConverter,
+            dbModelConverter
     )
 
     private val token = "token"
 
     private val range = "7_days"
 
-    private val cachedStats = StatsDto(range, 0, false, false, emptyList())
+    private val cachedStats = StatsDbModel(range, 0, false, false, emptyList())
 
     @Before
     fun setupConverters() {
-        whenever(serviceResponseConverter.convert(model = any(), param = any())).doReturn(cachedStats)
+        whenever(serverModelConverter.convert(model = any(), param = any())).doReturn(cachedStats)
     }
 
     @Test
@@ -53,7 +53,7 @@ class StatsRepositoryTest {
         whenever(dao.getCachedStats(range))
                 .doReturn(Maybe.just(cachedStats))
         whenever(service.getCurrentUserStats(token, range))
-                .doReturn(Single.just(StatsServiceResponse(newStatsResponse)))
+                .doReturn(Single.just(StatsServerModel(newStatsResponse)))
         whenever(dao.cacheStats(anyOrNull()))
                 .doReturn(Completable.complete())
         with(repository.getData(StatsRepository.Params(token, range)).testWithLogging()) {
@@ -78,7 +78,7 @@ class StatsRepositoryTest {
 
     @Test
     fun `should only show stats from the server`() {
-        val newStatsResponse = StatsServiceResponse(Stats())
+        val newStatsResponse = StatsServerModel(Stats())
         whenever(dao.getCachedStats(range))
                 .doReturn(Maybe.empty())
         whenever(service.getCurrentUserStats(token, range))

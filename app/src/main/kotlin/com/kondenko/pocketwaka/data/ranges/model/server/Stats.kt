@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.data.ranges.model
+package com.kondenko.pocketwaka.data.ranges.model.server
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

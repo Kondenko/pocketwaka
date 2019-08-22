@@ -4,10 +4,10 @@ import android.content.Context
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.ModelConverter
 import com.kondenko.pocketwaka.data.android.DateFormatter
-import com.kondenko.pocketwaka.data.common.model.StatsEntity
-import com.kondenko.pocketwaka.data.ranges.dto.StatsDto
-import com.kondenko.pocketwaka.data.ranges.model.Stats
-import com.kondenko.pocketwaka.data.ranges.model.StatsServiceResponse
+import com.kondenko.pocketwaka.data.common.model.database.StatsEntity
+import com.kondenko.pocketwaka.data.ranges.model.database.StatsDbModel
+import com.kondenko.pocketwaka.data.ranges.model.server.Stats
+import com.kondenko.pocketwaka.data.ranges.model.server.StatsServerModel
 import com.kondenko.pocketwaka.data.ranges.repository.StatsRepository
 import com.kondenko.pocketwaka.domain.ranges.model.StatsItem
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
@@ -22,16 +22,16 @@ class RangeResponseConverter(
         private val colorProvider: ColorProvider,
         private val dateFormatter: DateFormatter,
         private val dateProvider: DateProvider
-) : ModelConverter<StatsRepository.Params, StatsServiceResponse, StatsDto?> {
+) : ModelConverter<StatsRepository.Params, StatsServerModel, StatsDbModel?> {
 
     private enum class StatsType {
         Editors, Languages, Projects, OperatingSystems
     }
 
-    override fun convert(response: StatsServiceResponse, params: StatsRepository.Params) =
+    override fun convert(response: StatsServerModel, params: StatsRepository.Params) =
             toDomainModel(params.range, response.stats)
 
-    private fun toDomainModel(range: String, stats: Stats?): StatsDto? {
+    private fun toDomainModel(range: String, stats: Stats?): StatsDbModel? {
         if (stats == null) return null
 
         operator fun MutableList<StatsUiModel>.plusAssign(item: StatsUiModel?) {
@@ -51,7 +51,7 @@ class RangeResponseConverter(
         list += stats.editors?.toDomainModel(StatsType.Editors)
         list += stats.operatingSystems?.toDomainModel(StatsType.OperatingSystems)
 
-        return StatsDto(
+        return StatsDbModel(
                 range = range,
                 dateUpdated = dateProvider.getCurrentTimeMillis(),
                 isFromCache = false,

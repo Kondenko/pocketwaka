@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.data.auth.repository
 
 import android.content.SharedPreferences
-import com.kondenko.pocketwaka.data.auth.model.AccessToken
+import com.kondenko.pocketwaka.data.auth.model.server.AccessToken
 import com.kondenko.pocketwaka.data.auth.service.AccessTokenService
 import com.kondenko.pocketwaka.utils.extensions.edit
 import com.kondenko.pocketwaka.utils.extensions.getStringOrThrow

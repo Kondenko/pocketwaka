@@ -39,8 +39,8 @@ object StatsModule {
             StatsRepository(
                     service = get(),
                     dao = get(),
-                    serviceResponseConverter = get<RangeResponseConverter>(),
-                    dtoConverter = get<RangeDomainModelConverter>()
+                    serverModelConverter = get<RangeResponseConverter>(),
+                    dbModelConverter = get<RangeDomainModelConverter>()
             )
         }
         factory {

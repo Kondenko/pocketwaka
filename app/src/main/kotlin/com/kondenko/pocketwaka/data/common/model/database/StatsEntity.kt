@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.data.common.model
+package com.kondenko.pocketwaka.data.common.model.database
 
 import com.google.gson.annotations.SerializedName
 

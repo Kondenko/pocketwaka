@@ -1,27 +1,35 @@
-package com.kondenko.pocketwaka.data.summary.model
+package com.kondenko.pocketwaka.data.summary.model.server
 
 import com.google.gson.annotations.SerializedName
-import com.kondenko.pocketwaka.data.common.model.StatsEntity
+import com.kondenko.pocketwaka.data.common.model.database.StatsEntity
 
 data class Summary(
-        @SerializedName("data")
-        val summaryData: List<SummaryData>,
         val end: String,
-        val start: String
+        val start: String,
+        @SerializedName("data")
+        val summaryData: List<SummaryData>
 )
 
 data class SummaryData(
-        val categories: List<Any>,
-        val dependencies: List<Any>,
-        val editors: List<Any>,
+        val range: Range,
         @SerializedName("grand_total")
         val grandTotal: GrandTotal,
+        val categories: List<StatsEntity>,
+        val dependencies: List<StatsEntity>,
+        val editors: List<StatsEntity>,
         val languages: List<StatsEntity>,
         val machines: List<StatsEntity>,
         @SerializedName("operatingSystems")
         val operatingSystems: List<StatsEntity>,
-        val projects: List<StatsEntity>,
-        val range: Range
+        val projects: List<StatsEntity>
+)
+
+data class Range(
+        val date: String,
+        val end: String,
+        val start: String,
+        val text: String,
+        val timezone: String
 )
 
 data class GrandTotal(
@@ -31,12 +39,4 @@ data class GrandTotal(
         val text: String,
         @SerializedName("total_seconds")
         val totalSeconds: Float
-)
-
-data class Range(
-        val date: String,
-        val end: String,
-        val start: String,
-        val text: String,
-        val timezone: String
 )

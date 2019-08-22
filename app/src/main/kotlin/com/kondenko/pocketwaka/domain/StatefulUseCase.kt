@@ -18,16 +18,16 @@ import java.util.concurrent.TimeUnit
  *
  * @param UI_MODEL the class to be passed to a ViewModel and rendered
  * @param INTERMEDIATE_MODEL the class stored in the database
- * @param DOMAIN_MODEL the class returned from a repository
+ * @param DATABASE_MODEL the class returned from a repository
  */
 abstract class StatefulUseCase<
         PARAMS : StatefulUseCase.ParamsWrapper,
         UI_MODEL,
         INTERMEDIATE_MODEL,
-        DOMAIN_MODEL : CacheableModel<INTERMEDIATE_MODEL>>
+        DATABASE_MODEL : CacheableModel<INTERMEDIATE_MODEL>>
 (
         private val schedulers: SchedulersContainer,
-        private val useCase: UseCaseObservable<PARAMS, DOMAIN_MODEL>,
+        private val useCase: UseCaseObservable<PARAMS, DATABASE_MODEL>,
         private val modelMapper: (INTERMEDIATE_MODEL) -> UI_MODEL,
         private val connectivityStatusProvider: ConnectivityStatusProvider
 ) : UseCaseObservable<PARAMS, State<UI_MODEL>>(schedulers) {
@@ -58,17 +58,17 @@ abstract class StatefulUseCase<
                 .subscribeOn(schedulers.workerScheduler)
     }
 
-    private fun getData(params: PARAMS, retryAttempts: Int, isConnected: Boolean): Observable<State<UI_MODEL>> =
+    protected open fun getData(params: PARAMS, retryAttempts: Int, isConnected: Boolean): Observable<State<UI_MODEL>> =
             useCase.build(params)
                     .retry(retryAttempts.toLong())
                     .map {
-                        val data = modelMapper(it.data)
+                        val uiModel = modelMapper(it.data)
                         if (it.isFromCache) {
-                            if (isConnected) Loading(data)
-                            else Offline(data)
+                            if (isConnected) Loading(uiModel)
+                            else Offline(uiModel)
                         } else {
                             if (it.isEmpty) Empty
-                            else Success(data)
+                            else Success(uiModel)
                         }
                     }
                     .onErrorReturn { t ->

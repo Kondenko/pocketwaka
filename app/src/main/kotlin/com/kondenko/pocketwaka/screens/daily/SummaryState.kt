@@ -1,6 +1,6 @@
 package com.kondenko.pocketwaka.screens.daily
 
-import com.kondenko.pocketwaka.data.summary.model.Summary
+import com.kondenko.pocketwaka.data.summary.model.server.Summary
 import com.kondenko.pocketwaka.screens.State
 
 sealed class SummaryState(data: Summary?) : State<Summary>(data) {

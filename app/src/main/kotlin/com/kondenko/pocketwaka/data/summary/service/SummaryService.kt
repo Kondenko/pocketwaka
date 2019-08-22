@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.data.summary.service
 
 import com.kondenko.pocketwaka.Const
-import com.kondenko.pocketwaka.data.summary.model.Summary
+import com.kondenko.pocketwaka.data.summary.model.server.Summary
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Header

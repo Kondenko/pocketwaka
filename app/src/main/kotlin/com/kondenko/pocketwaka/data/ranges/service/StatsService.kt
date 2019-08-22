@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.data.ranges.service
 
 import com.kondenko.pocketwaka.Const
-import com.kondenko.pocketwaka.data.ranges.model.StatsServiceResponse
+import com.kondenko.pocketwaka.data.ranges.model.server.StatsServerModel
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -15,6 +15,6 @@ interface StatsService {
     fun getCurrentUserStats(
             @Header(Const.HEADER_BEARER_NAME) tokenHeaderValue: String,
             @Path(PATH_RANGE) range: String
-    ): Single<StatsServiceResponse>
+    ): Single<StatsServerModel>
 
 }

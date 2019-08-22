@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.domain.ranges
 
 import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
-import com.kondenko.pocketwaka.data.ranges.dto.StatsDto
+import com.kondenko.pocketwaka.data.ranges.model.database.StatsDbModel
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
 import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsForRanges
 import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsState
@@ -55,9 +55,9 @@ class GetStatsStateTest {
             StatsUiModel.Info("1h", "1h")
     )
 
-    private val cacheDto = StatsDto(range, 0, true, false, cachedModel)
+    private val cacheDto = StatsDbModel(range, 0, true, false, cachedModel)
 
-    private val serverDto = StatsDto(range, 0, false, false, actualModel)
+    private val serverDto = StatsDbModel(range, 0, false, false, actualModel)
 
     @After
     fun validate() {
@@ -66,7 +66,7 @@ class GetStatsStateTest {
 
     @Test
     fun `should show an empty state`() {
-        val emptyDto = StatsDto(range, 0, false, true, actualModel)
+        val emptyDto = StatsDbModel(range, 0, false, true, actualModel)
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
         whenever(getStatsForRanges.build(params)).doReturn(Observable.just(emptyDto))
         with(getState.invoke(params).testWithLogging()) {

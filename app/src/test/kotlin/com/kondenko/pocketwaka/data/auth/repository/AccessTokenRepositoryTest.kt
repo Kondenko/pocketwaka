@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.data.auth.repository
 
 import android.content.SharedPreferences
-import com.kondenko.pocketwaka.data.auth.model.AccessToken
+import com.kondenko.pocketwaka.data.auth.model.server.AccessToken
 import com.kondenko.pocketwaka.data.auth.service.AccessTokenService
 import com.kondenko.pocketwaka.testutils.RxRule
 import com.kondenko.pocketwaka.testutils.getAccessTokenMock
@@ -28,7 +28,7 @@ class AccessTokenRepositoryTest {
 
     @Test
     fun `should acquire new token`() {
-        val token:AccessToken = mock()
+        val token: AccessToken = mock()
         whenever(accessTokenService.getAccessToken(anyString(), anyString(), anyString(), anyString(), anyString()))
                 .doReturn(Single.just(token))
         val tokenSingle = accessTokenRepository.getNewAccessToken("string", "string", "string", "string", "string")
