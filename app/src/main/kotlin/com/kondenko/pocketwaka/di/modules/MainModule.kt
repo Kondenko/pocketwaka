@@ -9,21 +9,29 @@ import com.kondenko.pocketwaka.utils.encryption.TokenEncryptor
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-object MainModule {
-
-    fun create() = module {
-        factory { GetStoredAccessToken(
+val mainModule = module {
+    factory {
+        GetStoredAccessToken(
                 schedulers = get(),
                 accessTokenRepository = get(),
                 tokenEncryptor = get<TokenEncryptor>()
-        ) }
-        factory { CheckIfUserIsLoggedIn(schedulers = get(), repository = get()) }
-        factory { ClearCache(
+        )
+    }
+    factory {
+        CheckIfUserIsLoggedIn(
+                schedulers = get(),
+                repository = get()
+        )
+    }
+    factory {
+        ClearCache(
                 schedulers = get(),
                 tokenRepository = get(),
                 statsDao = get()
-        ) }
-        single { RefreshAccessToken(
+        )
+    }
+    single {
+        RefreshAccessToken(
                 schedulers = get(),
                 dateProvider = get(),
                 tokenEncryptor = get<TokenEncryptor>(),
@@ -31,8 +39,13 @@ object MainModule {
                 getStoredAccessToken = get(),
                 getAppId = get(),
                 getAppSecret = get()
-        ) }
-        viewModel { MainViewModel(get(), get(), get()) }
+        )
     }
-
+    viewModel {
+        MainViewModel(
+                checkIfUserIsLoggedIn = get(),
+                clearCache = get(),
+                refreshAccessToken = get()
+        )
+    }
 }

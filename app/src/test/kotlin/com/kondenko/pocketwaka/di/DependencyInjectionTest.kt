@@ -20,7 +20,7 @@ class DependencyInjectionTest : KoinTest {
         koinApplication {
             val context = ApplicationProvider.getApplicationContext<Context>()
             androidContext(context)
-            modules(getModuleList(context))
+            modules(koinModules)
         }.checkModules {
             create<RangesViewModel> { parametersOf("7_days") }
         }
