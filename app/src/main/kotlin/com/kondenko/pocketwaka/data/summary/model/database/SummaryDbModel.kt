@@ -7,7 +7,7 @@ import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
 import com.kondenko.pocketwaka.utils.date.DateRangeString
 
 @Entity(tableName = "summaries_range")
-data class SummaryRangeDto(
+data class SummaryRangeDbModel(
         @PrimaryKey
         val range: DateRangeString,
         override val isFromCache: Boolean = false,

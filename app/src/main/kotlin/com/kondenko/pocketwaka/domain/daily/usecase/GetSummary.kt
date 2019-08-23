@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.domain.daily.usecase
 
 import com.kondenko.pocketwaka.data.android.DateFormatter
-import com.kondenko.pocketwaka.data.summary.model.database.SummaryRangeDto
+import com.kondenko.pocketwaka.data.summary.model.database.SummaryRangeDbModel
 import com.kondenko.pocketwaka.data.summary.model.server.Summary
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.domain.StatefulUseCase
@@ -17,8 +17,8 @@ class GetSummary(
         private val getTokenHeader: GetTokenHeaderValue,
         private val dateFormatter: DateFormatter,
         private val summaryRepository: SummaryRepository,
-        private val summaryResponseConverter: (SummaryRepository.Params, Summary) -> SummaryRangeDto?
-) : UseCaseObservable<GetSummary.Params, SummaryRangeDto>(schedulers) {
+        private val summaryResponseConverter: (SummaryRepository.Params, Summary) -> SummaryRangeDbModel?
+) : UseCaseObservable<GetSummary.Params, SummaryRangeDbModel>(schedulers) {
 
     data class Params(
             val dateRange: DateRange,
@@ -30,7 +30,7 @@ class GetSummary(
         override fun isValid(): Boolean = dateRange.end >= dateRange.start
     }
 
-    override fun build(params: Params?): Observable<SummaryRangeDto> =
+    override fun build(params: Params?): Observable<SummaryRangeDbModel> =
             params?.run {
                 val startDate = dateFormatter.formatDateAsParameter(Date(params.dateRange.start))
                 val endDate = dateFormatter.formatDateAsParameter(Date(params.dateRange.end))

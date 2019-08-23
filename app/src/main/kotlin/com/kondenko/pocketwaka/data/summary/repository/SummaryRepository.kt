@@ -1,14 +1,14 @@
 package com.kondenko.pocketwaka.data.summary.repository
 
 import com.kondenko.pocketwaka.data.Repository
-import com.kondenko.pocketwaka.data.summary.model.database.SummaryRangeDto
+import com.kondenko.pocketwaka.data.summary.model.database.SummaryRangeDbModel
 import com.kondenko.pocketwaka.data.summary.model.server.Summary
 import com.kondenko.pocketwaka.data.summary.service.SummaryService
 import io.reactivex.Completable
 import io.reactivex.Maybe
 
 class SummaryRepository(summaryService: SummaryService) :
-        Repository<SummaryRepository.Params, Summary, SummaryRangeDto>(
+        Repository<SummaryRepository.Params, Summary, SummaryRangeDbModel>(
                 serverDataProvider = { (tokenHeader, start, end, project, branches): Params ->
                     summaryService.getSummaries(tokenHeader, start, end, project, branches)
                 },
@@ -23,8 +23,8 @@ class SummaryRepository(summaryService: SummaryService) :
             val branches: String? = null
     )
 
-    override fun cacheData(data: SummaryRangeDto): Completable = Completable.complete() // Implement caching
+    override fun cacheData(data: SummaryRangeDbModel): Completable = Completable.complete() // Implement caching
 
-    override fun setIsFromCache(model: SummaryRangeDto, isFromCache: Boolean): SummaryRangeDto = model.copy(isFromCache = isFromCache)
+    override fun setIsFromCache(model: SummaryRangeDbModel, isFromCache: Boolean): SummaryRangeDbModel = model.copy(isFromCache = isFromCache)
 
 }
