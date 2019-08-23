@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.di.modules
 
-import com.kondenko.pocketwaka.data.summary.converters.SummaryDataConverter
 import com.kondenko.pocketwaka.data.summary.converters.SummaryResponseConverter
+import com.kondenko.pocketwaka.data.summary.converters.TimeTrackedConverter
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.data.summary.service.SummaryService
 import com.kondenko.pocketwaka.di.qualifiers.Api
@@ -27,13 +27,13 @@ val summaryModule = module {
         )
     }
     single {
-        SummaryDataConverter(
+        TimeTrackedConverter(
                 dateFormatter = get(),
                 getAverage = get()
         )
     }
     single {
-        SummaryResponseConverter(summaryDataConverter = get<SummaryDataConverter>())
+        SummaryResponseConverter()
     }
     single {
         SummaryRepository(summaryService = get())
@@ -41,10 +41,12 @@ val summaryModule = module {
     single {
         GetSummary(
                 schedulers = get(),
+                summaryRepository = get(),
+                commitsRepository = get(),
                 getTokenHeader = get(),
                 dateFormatter = get(),
-                summaryRepository = get(),
-                summaryResponseConverter = get<SummaryResponseConverter>()
+                summaryResponseConverter = get<SummaryResponseConverter>(),
+                timeTrackedConverter = get<TimeTrackedConverter>()
         )
     }
     single {

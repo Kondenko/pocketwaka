@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.data.ranges.repository
 
 import com.kondenko.pocketwaka.StatsRange
-import com.kondenko.pocketwaka.data.Repository
+import com.kondenko.pocketwaka.data.CacheBackedRepository
 import com.kondenko.pocketwaka.data.ranges.dao.StatsDao
 import com.kondenko.pocketwaka.data.ranges.model.database.StatsDbModel
 import com.kondenko.pocketwaka.data.ranges.model.server.StatsServerModel
@@ -12,7 +12,7 @@ import io.reactivex.Maybe
 class RangeStatsRepository(
         private val service: RangeStatsService,
         private val dao: StatsDao
-) : Repository<RangeStatsRepository.Params, StatsServerModel, StatsDbModel>(
+) : CacheBackedRepository<RangeStatsRepository.Params, StatsServerModel, StatsDbModel>(
         serverDataProvider = { (tokenHeader, range) -> service.getCurrentUserStats(tokenHeader, range) },
         cachedDataProvider = { dao.getCachedStats(it.range) }
 ) {

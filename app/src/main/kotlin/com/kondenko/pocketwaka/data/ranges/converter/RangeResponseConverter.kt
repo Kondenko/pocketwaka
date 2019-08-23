@@ -13,6 +13,8 @@ import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
 import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.extensions.notNull
+import io.reactivex.Maybe
+import io.reactivex.rxkotlin.toMaybe
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
@@ -21,14 +23,14 @@ class RangeResponseConverter(
         private val colorProvider: ColorProvider,
         private val dateFormatter: DateFormatter,
         private val dateProvider: DateProvider
-) : (RangeStatsRepository.Params, StatsServerModel) -> StatsDbModel? {
+) : (RangeStatsRepository.Params, StatsServerModel) -> Maybe<StatsDbModel> {
 
     private enum class StatsType {
         Editors, Languages, Projects, OperatingSystems
     }
 
-    override fun invoke(params: RangeStatsRepository.Params, response: StatsServerModel) =
-            toDomainModel(params.range, response.stats)
+    override fun invoke(params: RangeStatsRepository.Params, response: StatsServerModel): Maybe<StatsDbModel> =
+            toDomainModel(params.range, response.stats).toMaybe()
 
     private fun toDomainModel(range: String, stats: Stats?): StatsDbModel? {
         if (stats == null) return null

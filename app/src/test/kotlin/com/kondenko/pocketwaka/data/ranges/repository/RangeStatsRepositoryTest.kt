@@ -23,7 +23,7 @@ class RangeStatsRepositoryTest {
 
     private val dao = mock<StatsDao>()
 
-    private val serverModelConverter: (RangeStatsRepository.Params, StatsServerModel) -> StatsDbModel? = mock()
+    private val serverModelConverter: (RangeStatsRepository.Params, StatsServerModel) -> Maybe<StatsDbModel> = mock()
 
     private val repository = RangeStatsRepository(
             service,
@@ -38,7 +38,7 @@ class RangeStatsRepositoryTest {
 
     @Before
     fun setupConverters() {
-        whenever(serverModelConverter(any(), any())).doReturn(cachedStats)
+        whenever(serverModelConverter(any(), any())).doReturn(Maybe.just(cachedStats))
     }
 
     @Test

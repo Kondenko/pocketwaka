@@ -10,5 +10,6 @@ fun getModuleList(context: Context) = mutableListOf(
         MainModule.create(),
         AuthModule.create(),
         StatsModule.create(context),
-        summaryModule
+        summaryModule,
+        commitsModule
 )
