@@ -23,6 +23,7 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.Maybes
 import io.reactivex.rxkotlin.toObservable
 import java.sql.Date
+import kotlin.math.roundToLong
 
 class GetSummary(
         schedulers: SchedulersContainer,
@@ -68,12 +69,12 @@ class GetSummary(
     }
 
     private fun convert(tokenHeader: String, params: SummaryRepository.Params, data: Summary): Maybe<SummaryRangeDbModel> {
-        return data.summaryData.let {
-            it.map {
+        return data.summaryData.let { summariesByDays ->
+            summariesByDays.map {
                 val timeTrackedMaybe = timeTrackedConverter(params, it)
                 val projectsMaybe = getProjects(tokenHeader, it)
                 Maybes.zip(timeTrackedMaybe, projectsMaybe, this::merge)
-            }.let { summaryResponseConverter(params, it) }
+            }.let { dbModelsByDays -> summaryResponseConverter(params, dbModelsByDays) }
         }
     }
 
@@ -94,7 +95,7 @@ class GetSummary(
                                 ?: throw NullPointerException("A project with a null name wasn't filtered out: $project")
                         commitsRepository.getData(CommitsRepository.Params(tokenHeader, name))
                                 .map { commits ->
-                                    val timeTracked = project.totalSeconds?.let { dateFormatter.formatDateForDisplay(it.toInt()) }
+                                    val timeTracked = project.totalSeconds?.roundToLong()?.let(dateFormatter::secondsToHumanReadableTime)
                                     val isRepoConnected = commits.isRepoConnected()
                                     val branches = commits.groupByBranches()
                                     Project(name, timeTracked, isRepoConnected, branches)
@@ -112,21 +113,25 @@ class GetSummary(
 
     private fun Commits.isRepoConnected() = error?.contains(noRepoError, ignoreCase = true) == true
 
-    private fun Commits.groupByBranches(): List<Branch> {
-        return this.commits.groupBy { it.ref }.mapNotNull { (ref, commitsServerModel) ->
-            ref?.let {
-                val name = it.refToBranchName()
-                val timeTracked = commitsServerModel.sumBy { it.totalSeconds }.let(dateFormatter::formatDateForDisplay)
-                val commits = commitsServerModel.map { Commit(it.message, dateFormatter.formatDateForDisplay(it.totalSeconds)) }
-                Branch(name, timeTracked, commits)
-            }
-        }
-    }
+    private fun Commits.groupByBranches(): List<Branch> =
+            this.commits
+                    .groupBy { it.ref }
+                    .mapNotNull { (ref, commitsServerModel) ->
+                        ref?.let {
+                            val name = it.refToBranchName()
+                            val timeTracked = commitsServerModel
+                                    .sumBy { it.totalSeconds }
+                                    .let { dateFormatter.secondsToHumanReadableTime(it.toLong()) }
+                            val commits = commitsServerModel
+                                    .map { Commit(it.message, dateFormatter.secondsToHumanReadableTime(it.totalSeconds.toLong())) }
+                            Branch(name, timeTracked, commits)
+                        }
+                    }
 
     private fun String?.refToBranchName(): String {
         val branchNameDelimiter = "head"
         return this
-                ?.substringOrNull(0, indexOf(branchNameDelimiter) + branchNameDelimiter.length)
+                ?.substringOrNull(startIndex = indexOf(branchNameDelimiter) + branchNameDelimiter.length + 1)
                 ?: this
                 ?: commitsRepository.getUnknownBranchName()
     }

@@ -15,14 +15,13 @@ import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.extensions.notNull
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.toMaybe
-import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
 class RangeResponseConverter(
         private val context: Context,
         private val colorProvider: ColorProvider,
-        private val dateFormatter: DateFormatter,
-        private val dateProvider: DateProvider
+        private val dateProvider: DateProvider,
+        private val dateFormatter: DateFormatter
 ) : (RangeStatsRepository.Params, StatsServerModel) -> Maybe<StatsDbModel> {
 
     private enum class StatsType {
@@ -41,8 +40,8 @@ class RangeResponseConverter(
 
         val list = arrayListOf<StatsUiModel>(
                 StatsUiModel.Info(
-                        stats.dailyAverage?.toLong()?.secondsToHumanReadableTime(),
-                        stats.totalSeconds?.roundToLong()?.secondsToHumanReadableTime()
+                        stats.dailyAverage?.toLong()?.let(dateFormatter::secondsToHumanReadableTime),
+                        stats.totalSeconds?.roundToLong()?.let(dateFormatter::secondsToHumanReadableTime)
                 )
         )
 
@@ -71,7 +70,7 @@ class RangeResponseConverter(
     private fun Stats.convertBestDay(dailyAverageSec: Int?): StatsUiModel.BestDay? = bestDay?.let { bestDay ->
         val date = bestDay.date?.let(dateFormatter::formatDateForDisplay)
         val timeSec = bestDay.totalSeconds?.roundToLong()
-        val timeHumanReadable = timeSec?.secondsToHumanReadableTime()
+        val timeHumanReadable = timeSec?.let(dateFormatter::secondsToHumanReadableTime)
         val percentAboveAverage = calculatePercentAboveAverage(timeSec, dailyAverageSec)
         if (notNull(date, timeHumanReadable, percentAboveAverage)) {
             StatsUiModel.BestDay(date!!, timeHumanReadable!!, percentAboveAverage!!)
@@ -83,25 +82,6 @@ class RangeResponseConverter(
     private fun calculatePercentAboveAverage(bestDayTotalSec: Long?, dailyAverageSec: Int?): Int? {
         if (bestDayTotalSec == null || dailyAverageSec == null) return null
         return (bestDayTotalSec * 100 / dailyAverageSec - 100).toInt()
-    }
-
-    private fun Long.secondsToHumanReadableTime(): String {
-        val hours = TimeUnit.SECONDS.toHours(this)
-        val minutes = TimeUnit.SECONDS.toMinutes(this) - TimeUnit.HOURS.toMinutes(hours)
-        val templateHours = getHoursTemplate(hours.toInt())
-        val templateMinutes = getMinutesTemplate(minutes.toInt())
-        val timeBuilder = StringBuilder()
-        if (hours > 0) timeBuilder.append(templateHours.format(hours)).append(' ')
-        if (minutes > 0) timeBuilder.append(templateMinutes.format(minutes))
-        return timeBuilder.toString()
-    }
-
-    private fun getHoursTemplate(hours: Int): String {
-        return context.resources.getQuantityString(R.plurals.stats_time_format_hours, hours)
-    }
-
-    private fun getMinutesTemplate(minutes: Int): String {
-        return context.resources.getQuantityString(R.plurals.stats_time_format_minutes, minutes)
     }
 
     private fun getCardTitle(statsType: StatsType): String = when (statsType) {

@@ -2,12 +2,13 @@ package com.kondenko.pocketwaka.data.android
 
 import android.content.Context
 import android.text.format.DateUtils
+import com.kondenko.pocketwaka.utils.StringProvider
 import com.kondenko.pocketwaka.utils.extensions.getCurrentLocale
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class DateFormatter(private val context: Context) {
+class DateFormatter(private val context: Context, private val stringProvider: StringProvider) {
 
     fun formatDateAsParameter(date: Date): String =
             SimpleDateFormat("yyyy-MM-dd").format(date.time)
@@ -28,6 +29,17 @@ class DateFormatter(private val context: Context) {
                 TimeUnit.SECONDS.toMillis(seconds.toLong()),
                 DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_MONTH
         )
+    }
+
+    fun secondsToHumanReadableTime(seconds: Long): String {
+        val hours = TimeUnit.SECONDS.toHours(seconds)
+        val minutes = TimeUnit.SECONDS.toMinutes(seconds) - TimeUnit.HOURS.toMinutes(hours)
+        val templateHours = stringProvider.getHoursTemplate(hours.toInt())
+        val templateMinutes = stringProvider.getMinutesTemplate(minutes.toInt())
+        val timeBuilder = StringBuilder()
+        if (hours > 0) timeBuilder.append(templateHours.format(hours)).append(' ')
+        if (minutes > 0) timeBuilder.append(templateMinutes.format(minutes))
+        return timeBuilder.toString()
     }
 
 }

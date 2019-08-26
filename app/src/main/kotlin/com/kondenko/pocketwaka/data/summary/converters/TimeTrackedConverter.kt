@@ -32,7 +32,7 @@ class TimeTrackedConverter(
         val averageSecondsSingle = getAverage(averageRange)
         return averageSecondsSingle.map { averageSeconds ->
             val averageDelta = getAverageDelta(totalSeconds, averageSeconds)
-            val formattedTime = dateFormatter.formatDateForDisplay(totalSeconds)
+            val formattedTime = dateFormatter.secondsToHumanReadableTime(totalSeconds.toLong())
             SummaryUiModel.TimeTracked(formattedTime, averageDelta)
         }
     }

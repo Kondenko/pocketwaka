@@ -1,6 +1,5 @@
 package com.kondenko.pocketwaka.di.modules
 
-import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.ranges.converter.RangeResponseConverter
 import com.kondenko.pocketwaka.data.ranges.repository.RangeStatsRepository
 import com.kondenko.pocketwaka.data.ranges.service.RangeStatsService
@@ -21,13 +20,12 @@ import retrofit2.Retrofit
 val rangeStatsModule = module {
     single { get<Retrofit>(Api).create<RangeStatsService>() }
     single { ColorProvider(androidContext()) }
-    single { DateFormatter(androidContext()) }
     single {
         RangeResponseConverter(
                 context = androidContext(),
                 colorProvider = get(),
-                dateFormatter = get(),
-                dateProvider = get()
+                dateProvider = get(),
+                dateFormatter = get()
         )
     }
     single {

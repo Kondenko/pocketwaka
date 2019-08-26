@@ -79,6 +79,6 @@ fun Disposable?.attachToLifecycle(lifecycle: LifecycleOwner) {
 fun SharedPreferences.getStringOrThrow(key: String) =
         getString(key, null)?: throw NullPointerException("Preference with key $key not found")
 
-fun String.substringOrNull(startIndex: Int, endIndex: Int) = takeIf {
-    startIndex > 0 && endIndex < length && endIndex - startIndex > 0
+fun String.substringOrNull(startIndex: Int = 0, endIndex: Int = length) = takeIf {
+    startIndex >= 0 && endIndex <= length && endIndex >= startIndex
 }?.substring(startIndex, endIndex)
