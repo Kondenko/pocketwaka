@@ -1,14 +1,8 @@
 package com.kondenko.pocketwaka.screens.ranges.adapter
 
 import android.content.Context
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.AbsoluteSizeSpan
-import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
@@ -18,16 +12,18 @@ import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
 import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.utils.diffutil.SimpleCallback
-import com.kondenko.pocketwaka.utils.extensions.component1
-import com.kondenko.pocketwaka.utils.extensions.component2
 import com.kondenko.pocketwaka.utils.extensions.setInvisible
+import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
 import kotlinx.android.synthetic.main.item_status.view.*
 import kotlinx.android.synthetic.main.layout_stats_best_day.view.*
 import kotlinx.android.synthetic.main.layout_stats_card.view.*
 import kotlinx.android.synthetic.main.layout_stats_info.view.*
-import kotlin.math.roundToInt
 
-class StatsAdapter(context: Context, showSkeleton: Boolean) : SkeletonAdapter<StatsUiModel, StatsAdapter.ViewHolder>(context, showSkeleton) {
+class StatsAdapter(
+        context: Context,
+        showSkeleton: Boolean,
+        private val timeSpannableCreator: SpannableCreator
+) : SkeletonAdapter<StatsUiModel, StatsAdapter.ViewHolder>(context, showSkeleton) {
 
     private enum class ViewType(val type: Int) {
         Status(0), Info(1), BestDay(2), Stats(3)
@@ -116,14 +112,14 @@ class StatsAdapter(context: Context, showSkeleton: Boolean) : SkeletonAdapter<St
         }
 
         private fun View.render(item: StatsUiModel.Info) {
-            textview_stats_time_total.text = item.humanReadableTotal.timeToSpannable()
-            textview_stats_daily_average.text = item.humanReadableDailyAverage.timeToSpannable()
+            textview_stats_time_total.text = timeSpannableCreator.create(item.humanReadableTotal)
+            textview_stats_daily_average.text = timeSpannableCreator.create(item.humanReadableDailyAverage)
             super.bind(item)
         }
 
         private fun View.render(item: StatsUiModel.BestDay) {
             textview_bestday_date.text = item.date
-            textview_bestday_time.text = item.time.timeToSpannable()
+            textview_bestday_time.text = timeSpannableCreator.create(item.time)
             imageview_bestday_illustration.isVisible = !showSkeleton
             val caption = context.getString(R.string.stats_caption_best_day, item.percentAboveAverage)
             if (item.percentAboveAverage > 0) textview_bestday_caption.text = caption
@@ -142,44 +138,6 @@ class StatsAdapter(context: Context, showSkeleton: Boolean) : SkeletonAdapter<St
                 }
             }
             super.bind(item)
-        }
-
-        private fun String?.timeToSpannable(): Spannable? {
-            if (this == null) return null
-            val sb = SpannableStringBuilder(this)
-            // Set spans for regular text
-            sb.setSpan(
-                    AbsoluteSizeSpan(context.resources.getDimension(R.dimen.textsize_stats_info_text).roundToInt()),
-                    0,
-                    length,
-                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-            )
-            sb.setSpan(
-                    ForegroundColorSpan(ContextCompat.getColor(context, R.color.color_text_black_secondary)),
-                    0,
-                    length,
-                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-            )
-            // Find start and end indices of numbers
-            val numberRegex = "\\d+".toRegex()
-            val numberIndices = numberRegex.findAll(this).map { it.range }
-            // Highlight numbers with spans
-            for ((from, to) in numberIndices) {
-                val toActual = to + 1
-                sb.setSpan(
-                        AbsoluteSizeSpan(context.resources.getDimension(R.dimen.textsize_stats_info_number).roundToInt()),
-                        from,
-                        toActual,
-                        Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-                )
-                sb.setSpan(
-                        ForegroundColorSpan(ContextCompat.getColor(context, R.color.color_text_black_primary)),
-                        from,
-                        toActual,
-                        Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-                )
-            }
-            return sb
         }
 
     }

@@ -32,6 +32,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_stats_range.*
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -56,7 +57,7 @@ class FragmentStatsTab : Fragment() {
 
     private val scrollDirection = BehaviorSubject.create<ScrollDirection>()
 
-    private lateinit var listSkeleton: RecyclerViewSkeleton<StatsUiModel, StatsAdapter>
+    private lateinit var listSkeleton: RecyclerViewSkeleton<StatsUiModel, StatsAdapter.ViewHolder, StatsAdapter>
 
     private lateinit var statsAdapter: StatsAdapter
 
@@ -96,12 +97,7 @@ class FragmentStatsTab : Fragment() {
 
     private fun setupUi(context: Context) {
         with(stats_range_recyclerview) {
-            listSkeleton = RecyclerViewSkeleton(
-                    recyclerView = this,
-                    actualAdapter = StatsAdapter(context, false),
-                    skeletonAdapter = StatsAdapter(context, true),
-                    skeletonItems = skeletonItems
-            )
+            listSkeleton = get { parametersOf(this@with, skeletonItems) }
             statsAdapter = listSkeleton.actualAdapter
             layoutManager = LinearLayoutManager(context)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {

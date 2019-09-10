@@ -20,12 +20,12 @@ class SummaryAdapter(context: Context) : SkeletonAdapter<SummaryUiModel, Summary
     }
 
     override fun getItemViewType(position: Int): Int = when(items[position]) {
-        is SummaryUiModel.Status.Offline -> ViewType.Status.type
-        is SummaryUiModel.TimeTracked -> ViewType.TimeTracked.type
-        is SummaryUiModel.ProjectsSubtitle -> ViewType.ProjectsSubtitle.type
-        is SummaryUiModel.Projects -> ViewType.Projects.type
+        is SummaryUiModel.Status.Offline -> ViewType.Status
+        is SummaryUiModel.TimeTracked -> ViewType.TimeTracked
+        is SummaryUiModel.ProjectsSubtitle -> ViewType.ProjectsSubtitle
+        is SummaryUiModel.Projects -> ViewType.Projects
         else -> throw IllegalViewTypeException()
-    }
+    }.type
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SummaryViewHolder<SummaryUiModel> =
             when(ViewType.values().getOrNull(viewType)) {

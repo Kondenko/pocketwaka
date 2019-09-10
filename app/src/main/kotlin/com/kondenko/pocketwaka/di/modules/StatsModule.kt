@@ -1,19 +1,28 @@
 package com.kondenko.pocketwaka.di.modules
 
+import android.content.Context
+import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.data.android.ColorProvider
 import com.kondenko.pocketwaka.data.ranges.converter.RangeResponseConverter
 import com.kondenko.pocketwaka.data.ranges.repository.RangeStatsRepository
 import com.kondenko.pocketwaka.data.ranges.service.RangeStatsService
+import com.kondenko.pocketwaka.di.qualifiers.Actual
 import com.kondenko.pocketwaka.di.qualifiers.Api
+import com.kondenko.pocketwaka.di.qualifiers.Skeleton
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
+import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
 import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsForRanges
 import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsState
 import com.kondenko.pocketwaka.screens.ranges.RangesViewModel
+import com.kondenko.pocketwaka.screens.ranges.adapter.StatsAdapter
+import com.kondenko.pocketwaka.ui.skeleton.RecyclerViewSkeleton
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.encryption.StringEncryptor
 import com.kondenko.pocketwaka.utils.extensions.create
+import com.kondenko.pocketwaka.utils.spannable.TimeSpannableCreator
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
@@ -54,6 +63,20 @@ val rangeStatsModule = module {
                 schedulers = get(),
                 getStatsForRanges = get(),
                 connectivityStatusProvider = get()
+        )
+    }
+    factory(Actual) { (context: Context) ->
+        StatsAdapter(context, false, get<TimeSpannableCreator>())
+    }
+    factory(Skeleton) { (context: Context) ->
+        StatsAdapter(context, true, get<TimeSpannableCreator>())
+    }
+    factory { (recyclerView: RecyclerView, skeletonItems: List<StatsUiModel>) ->
+        RecyclerViewSkeleton(
+                recyclerView = recyclerView,
+                actualAdapter = get<StatsAdapter>(Actual) { parametersOf(recyclerView.context) },
+                skeletonAdapter = get<StatsAdapter>(Skeleton) { parametersOf(recyclerView.context) },
+                skeletonItems = skeletonItems
         )
     }
     viewModel { (range: String?) ->
