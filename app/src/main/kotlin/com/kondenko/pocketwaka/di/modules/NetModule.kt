@@ -10,6 +10,7 @@ import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
+import org.koin.core.scope.Scope
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -38,3 +39,5 @@ val netModule = module {
     single(Auth) { get<Retrofit.Builder>().baseUrl(Const.BASE_URL).build() }
     single(Api) { get<Retrofit.Builder>().baseUrl(Const.URL_API).build() }
 }
+
+fun Scope.getApiRetrofit() = get<Retrofit>(Api)

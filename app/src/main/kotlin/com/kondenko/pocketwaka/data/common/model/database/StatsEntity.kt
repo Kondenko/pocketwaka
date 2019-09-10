@@ -13,14 +13,15 @@ import com.google.gson.annotations.SerializedName
  *
  * @see com.kondenko.pocketwaka.ui.CardStatsListAdapter
  */
-open class StatsEntity  {
-    var digital: String? = null
-    var hours: Int? = null
-    var minutes: Int? = null
-    var seconds: Int? = null
-    var name: String? = null
-    var percent: Double? = null
-    var text: String? = null
+// TODO Replace vars with vals
+open class StatsEntity {
+    open var digital: String? = null
+    open var hours: Int? = null
+    open var minutes: Int? = null
+    open var seconds: Int? = null
+    open var name: String? = null
+    open var percent: Double? = null
+    open var text: String? = null
     @SerializedName("total_seconds")
-    var totalSeconds: Float? = null
+    open var totalSeconds: Float? = null
 }

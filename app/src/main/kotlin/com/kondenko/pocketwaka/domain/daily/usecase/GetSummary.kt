@@ -1,8 +1,10 @@
 package com.kondenko.pocketwaka.domain.daily.usecase
 
 import com.kondenko.pocketwaka.data.android.DateFormatter
+import com.kondenko.pocketwaka.data.branches.DurationsRepository
+import com.kondenko.pocketwaka.data.branches.model.Duration
 import com.kondenko.pocketwaka.data.commits.CommitsRepository
-import com.kondenko.pocketwaka.data.commits.model.Commits
+import com.kondenko.pocketwaka.data.commits.model.CommitsServiceModel
 import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
 import com.kondenko.pocketwaka.data.summary.model.database.SummaryRangeDbModel
 import com.kondenko.pocketwaka.data.summary.model.server.Summary
@@ -17,17 +19,18 @@ import com.kondenko.pocketwaka.domain.daily.model.Project
 import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.date.DateRange
-import com.kondenko.pocketwaka.utils.extensions.substringOrNull
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.Maybes
 import io.reactivex.rxkotlin.toObservable
 import java.sql.Date
 import kotlin.math.roundToLong
+import com.kondenko.pocketwaka.data.commits.model.Commit as CommitServerModel
 
 class GetSummary(
         schedulers: SchedulersContainer,
         private val summaryRepository: SummaryRepository,
+        private val durationsRepository: DurationsRepository,
         private val commitsRepository: CommitsRepository,
         private val getTokenHeader: GetTokenHeaderValue,
         private val dateFormatter: DateFormatter,
@@ -52,8 +55,9 @@ class GetSummary(
                     ?: Observable.error(NullPointerException("Params are null"))
 
     private fun getSummary(params: Params): Observable<SummaryRangeDbModel> {
-        val startDate = dateFormatter.formatDateAsParameter(Date(params.dateRange.start))
-        val endDate = dateFormatter.formatDateAsParameter(Date(params.dateRange.end))
+        // STOPSHIP
+        val startDate =  dateFormatter.formatDateAsParameter(Date(params.dateRange.start)) // "2019-09-05"
+        val endDate =  dateFormatter.formatDateAsParameter(Date(params.dateRange.end)) // "2019-09-05"
         return getTokenHeader.build().flatMapObservable { tokenHeader ->
             val repoParams = SummaryRepository.Params(
                     tokenHeader,
@@ -86,54 +90,58 @@ class GetSummary(
                     data = timeTrackedModel.data + projectsModel.data
             )
 
-    private fun getProjects(tokenHeader: String, summaryData: SummaryData): Maybe<SummaryDbModel> =
+    private fun getProjects(token: String, summaryData: SummaryData): Maybe<SummaryDbModel> =
             summaryData.projects
                     .toObservable()
                     .filter { it.name != null }
-                    .flatMapSingle { project ->
-                        val name = project.name
+                    .flatMapMaybe { project ->
+                        val date = summaryData.range.date
+                        val projectName = project.name
                                 ?: throw NullPointerException("A project with a null name wasn't filtered out: $project")
-                        commitsRepository.getData(CommitsRepository.Params(tokenHeader, name))
-                                .map { commits ->
-                                    val timeTracked = project.totalSeconds?.roundToLong()?.let(dateFormatter::secondsToHumanReadableTime)
-                                    val isRepoConnected = commits.isRepoConnected()
-                                    val branches = commits.groupByBranches()
-                                    Project(name, timeTracked, isRepoConnected, branches)
-                                }
+                        val branchesSingle =
+                                durationsRepository.getData(DurationsRepository.Params(token, date, projectName))
+                                        .toMaybe()
+                        val commitsSingle =
+                                commitsRepository.getData(CommitsRepository.Params(token, projectName))
+                                        .toMaybe()
+                                        .onErrorComplete()
+                        Maybes.zip(branchesSingle, commitsSingle) { branchesServerModel, commitsServerModel ->
+                            val timeTracked = project.totalSeconds
+                                    ?.roundToLong()
+                                    ?.let(dateFormatter::secondsToHumanReadableTime)
+                            val isRepoConnected = commitsServerModel.isRepoConnected()
+                            val commits = commitsServerModel.commits.filter { it.authorDate.contains(date) }
+                            val branches = groupByBranches(
+                                    branchesServerModel.branchesData,
+                                    commits
+                            )
+                            Project(projectName, timeTracked, isRepoConnected, branches)
+                        }
                     }
                     .toList()
-                    .flatMapMaybe {
-                        if (it.isNotEmpty()) {
-                            Maybe.just(listOf(SummaryUiModel.ProjectsSubtitle) + SummaryUiModel.Projects(it))
+                    .flatMapMaybe { projects ->
+                        if (projects.isNotEmpty()) {
+                            Maybe.just(listOf(SummaryUiModel.ProjectsSubtitle) + SummaryUiModel.Projects(projects))
                         } else {
                             Maybe.empty()
                         }
                     }
                     .map { SummaryDbModel(summaryData.range.date, false, it.isEmpty(), it) }
 
-    private fun Commits.isRepoConnected() = error?.contains(noRepoError, ignoreCase = true) == true
-
-    private fun Commits.groupByBranches(): List<Branch> =
-            this.commits
-                    .groupBy { it.ref }
-                    .mapNotNull { (ref, commitsServerModel) ->
-                        ref?.let {
-                            val name = it.refToBranchName()
-                            val timeTracked = commitsServerModel
-                                    .sumBy { it.totalSeconds }
-                                    .let { dateFormatter.secondsToHumanReadableTime(it.toLong()) }
-                            val commits = commitsServerModel
+    private fun groupByBranches(branches: Iterable<Duration>, commits: Iterable<CommitServerModel>): List<Branch> =
+            branches
+                    .groupBy { it.branch }
+                    .map { (name, durations) -> name to durations.sumByDouble { it.duration } }
+                    .map { (branch: String, duration) ->
+                        val durationHumanReadable = dateFormatter.secondsToHumanReadableTime(duration.roundToLong())
+                        val commitsFromBranch = branch?.let { name ->
+                            commits
+                                    .filter { it.ref?.contains(name) == true }
                                     .map { Commit(it.message, dateFormatter.secondsToHumanReadableTime(it.totalSeconds.toLong())) }
-                            Branch(name, timeTracked, commits)
                         }
+                        Branch(branch, durationHumanReadable, commitsFromBranch)
                     }
 
-    private fun String?.refToBranchName(): String {
-        val branchNameDelimiter = "head"
-        return this
-                ?.substringOrNull(startIndex = indexOf(branchNameDelimiter) + branchNameDelimiter.length + 1)
-                ?: this
-                ?: commitsRepository.getUnknownBranchName()
-    }
+    private fun CommitsServiceModel.isRepoConnected() = error?.contains(noRepoError, ignoreCase = true) == false
 
 }

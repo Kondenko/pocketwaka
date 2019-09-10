@@ -43,6 +43,7 @@ val summaryModule = module {
                 schedulers = get(),
                 summaryRepository = get(),
                 commitsRepository = get(),
+                durationsRepository = get(),
                 getTokenHeader = get(),
                 dateFormatter = get(),
                 summaryResponseConverter = get<SummaryResponseConverter>(),

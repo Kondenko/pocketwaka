@@ -10,5 +10,6 @@ val koinModules = listOf(
         authModule,
         rangeStatsModule,
         summaryModule,
-        commitsModule
+        commitsModule,
+        durationsModule
 )
