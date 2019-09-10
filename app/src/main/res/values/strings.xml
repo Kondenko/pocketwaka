@@ -69,8 +69,10 @@
     <string name="stats_card_less_than_1_percent" formatted="false" translatable="false">&lt; 1%</string>
     <string name="stats_card_percent_format_int" formatted="false" translatable="false">%.0f%%</string>
 
+    <!-- SUMMARIES -->
 
     <!-- Commits -->
     <string name="commits_branch_name_unknown">Unknown</string>
+    <string name="summary_title_time_tracked">Time tracked</string>
 
 </resources>

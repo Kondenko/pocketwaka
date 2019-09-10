@@ -97,7 +97,7 @@ class StatsAdapter(context: Context, showSkeleton: Boolean) : SkeletonAdapter<St
         )
     }
 
-    inner class ViewHolder(val view: View, skeleton: Skeleton?) : SkeletonViewHolder(view, skeleton) {
+    inner class ViewHolder(val view: View, skeleton: Skeleton?) : SkeletonViewHolder<StatsUiModel>(view, skeleton) {
 
         override fun bind(item: StatsUiModel) {
             when (item) {

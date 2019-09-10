@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/stats_header_total"
-            android:textAppearance="@style/TextAppearance.App.Stats.Header"
+            android:textAppearance="@style/TextAppearance.App.Text.Header"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintLeft_toLeftOf="@+id/textview_stats_time_total"
             app:layout_constraintRight_toRightOf="@+id/textview_stats_time_total"
@@ -36,7 +36,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:text="@string/stats_header_daily_average"
-            android:textAppearance="@style/TextAppearance.App.Stats.Header"
+            android:textAppearance="@style/TextAppearance.App.Text.Header"
             app:layout_constraintBaseline_toBaselineOf="@+id/textview_stats_header_total"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guidelineCenterVertical" />

@@ -37,7 +37,7 @@ class CardStatsListAdapter(context: Context, showSkeleton: Boolean) : SkeletonAd
         return Skeleton(context, view, transform = transformation)
     }
 
-    inner class ViewHolder(itemView: View, skeleton: Skeleton) : SkeletonViewHolder(itemView, skeleton) {
+    inner class ViewHolder(itemView: View, skeleton: Skeleton) : SkeletonViewHolder<StatsItem>(itemView, skeleton) {
 
         override fun bind(item: StatsItem) {
             super.bind(item)

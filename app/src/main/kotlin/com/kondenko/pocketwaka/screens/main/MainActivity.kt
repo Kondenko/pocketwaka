@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.kondenko.pocketwaka.FragmentMenu
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.screens.daily.FragmentDayStats
+import com.kondenko.pocketwaka.screens.daily.FragmentSummary
 import com.kondenko.pocketwaka.screens.login.LoginActivity
 import com.kondenko.pocketwaka.screens.ranges.FragmentRanges
 import com.kondenko.pocketwaka.utils.extensions.report
@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     private val rangesFragment = FragmentRanges()
     private val tagRanges = "ranges"
 
-    private val dailyFragment = FragmentDayStats()
+    private val dailyFragment = FragmentSummary()
     private val tagDaily = "day"
 
     private val menuFragment = FragmentMenu()
