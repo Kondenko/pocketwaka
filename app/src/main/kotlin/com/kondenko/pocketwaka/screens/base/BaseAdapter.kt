@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.kondenko.pocketwaka.utils.SimpleCallback
-import com.kondenko.pocketwaka.utils.delegates.diffUtil
+import com.kondenko.pocketwaka.utils.diffutil.SimpleCallback
+import com.kondenko.pocketwaka.utils.diffutil.diffUtil
 
 abstract class BaseAdapter<T, VH : BaseAdapter<T, VH>.BaseViewHolder<T>>(protected val context: Context)
     : RecyclerView.Adapter<VH>() {

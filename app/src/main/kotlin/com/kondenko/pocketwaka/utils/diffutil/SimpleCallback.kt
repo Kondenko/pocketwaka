@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.utils
+package com.kondenko.pocketwaka.utils.diffutil
 
 import androidx.recyclerview.widget.DiffUtil
 
