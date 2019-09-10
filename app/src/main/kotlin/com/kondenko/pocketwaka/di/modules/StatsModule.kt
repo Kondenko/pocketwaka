@@ -1,5 +1,6 @@
 package com.kondenko.pocketwaka.di.modules
 
+import com.kondenko.pocketwaka.data.android.ColorProvider
 import com.kondenko.pocketwaka.data.ranges.converter.RangeResponseConverter
 import com.kondenko.pocketwaka.data.ranges.repository.RangeStatsRepository
 import com.kondenko.pocketwaka.data.ranges.service.RangeStatsService
@@ -8,7 +9,6 @@ import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsForRanges
 import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsState
 import com.kondenko.pocketwaka.screens.ranges.RangesViewModel
-import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.encryption.StringEncryptor
 import com.kondenko.pocketwaka.utils.extensions.create

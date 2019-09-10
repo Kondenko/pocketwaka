@@ -2,6 +2,7 @@ package com.kondenko.pocketwaka.data.ranges.converter
 
 import android.content.Context
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.data.android.ColorProvider
 import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.common.model.database.StatsEntity
 import com.kondenko.pocketwaka.data.ranges.model.database.StatsDbModel
@@ -10,7 +11,6 @@ import com.kondenko.pocketwaka.data.ranges.model.server.StatsServerModel
 import com.kondenko.pocketwaka.data.ranges.repository.RangeStatsRepository
 import com.kondenko.pocketwaka.domain.ranges.model.StatsItem
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
-import com.kondenko.pocketwaka.utils.ColorProvider
 import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.extensions.notNull
 import io.reactivex.Maybe

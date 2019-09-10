@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.utils
+package com.kondenko.pocketwaka.data.android
 
 import android.content.Context
 import com.kondenko.pocketwaka.R

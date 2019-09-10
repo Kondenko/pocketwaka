@@ -2,7 +2,6 @@ package com.kondenko.pocketwaka.data.android
 
 import android.content.Context
 import android.text.format.DateUtils
-import com.kondenko.pocketwaka.utils.StringProvider
 import com.kondenko.pocketwaka.utils.extensions.getCurrentLocale
 import java.text.SimpleDateFormat
 import java.util.*
