@@ -36,7 +36,7 @@ abstract class CacheBackedRepository<Params, ServerModel, DbModel : CacheableMod
                 .flatMapMaybe { converter(params, it) }
                 .doOnNext { dto: DbModel ->
                     cacheData(dto).subscribeBy(
-                            onComplete = { Timber.d("Data cached: $dto") },
+                            onComplete = { Timber.d("Data cached: ${dto::class}") },
                             onError = { Timber.w(it, "Failed to cache data") }
                     )
                 }
