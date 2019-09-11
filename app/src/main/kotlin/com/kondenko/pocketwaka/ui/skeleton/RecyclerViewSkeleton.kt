@@ -5,15 +5,16 @@ import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
 
 class RecyclerViewSkeleton<T, VH : SkeletonAdapter<T, VH>.SkeletonViewHolder<T>, ADAPTER : SkeletonAdapter<T, VH>>(
         private val recyclerView: RecyclerView,
-        val actualAdapter: ADAPTER,
-        val skeletonAdapter: ADAPTER,
-        private val skeletonItems: List<T>
+        adapterCreator: (Boolean) -> ADAPTER,
+        skeletonItems: List<T>
 ) {
 
+    val actualAdapter: ADAPTER = adapterCreator(false)
+
+    private val skeletonAdapter: ADAPTER = adapterCreator(true)
+
     init {
-        skeletonAdapter.apply {
-            items = skeletonItems
-        }
+        skeletonAdapter.items = skeletonItems
     }
 
     var isShown = false

@@ -10,7 +10,4 @@ val persistenceModule = module {
     single {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, databaseName).build()
     }
-    single {
-        get<AppDatabase>().statsDao()
-    }
 }

@@ -8,9 +8,11 @@ import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
 import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
+import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
 import kotlinx.android.synthetic.main.item_summary_time_tracked.view.*
 
-class SummaryAdapter(context: Context) : SkeletonAdapter<SummaryUiModel, SummaryAdapter.SummaryViewHolder<SummaryUiModel>>(context) {
+class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSpannableCreator: SpannableCreator)
+    : SkeletonAdapter<SummaryUiModel, SummaryAdapter.SummaryViewHolder<SummaryUiModel>>(context, showSkeleton) {
 
     private enum class ViewType(val type: Int) {
         Status(0),
@@ -19,7 +21,7 @@ class SummaryAdapter(context: Context) : SkeletonAdapter<SummaryUiModel, Summary
         Projects(3)
     }
 
-    override fun getItemViewType(position: Int): Int = when(items[position]) {
+    override fun getItemViewType(position: Int): Int = when (items[position]) {
         is SummaryUiModel.Status.Offline -> ViewType.Status
         is SummaryUiModel.TimeTracked -> ViewType.TimeTracked
         is SummaryUiModel.ProjectsSubtitle -> ViewType.ProjectsSubtitle
@@ -28,7 +30,7 @@ class SummaryAdapter(context: Context) : SkeletonAdapter<SummaryUiModel, Summary
     }.type
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SummaryViewHolder<SummaryUiModel> =
-            when(ViewType.values().getOrNull(viewType)) {
+            when (ViewType.values().getOrNull(viewType)) {
                 ViewType.Status -> TODO()
                 ViewType.TimeTracked -> TimeTrackedViewHolder(inflate(R.layout.item_summary_time_tracked, parent), null)
                 ViewType.ProjectsSubtitle -> TODO()
@@ -37,7 +39,7 @@ class SummaryAdapter(context: Context) : SkeletonAdapter<SummaryUiModel, Summary
             }
 
     override fun createSkeleton(view: View): Skeleton {
-        return Skeleton(context)
+        return Skeleton(context, view)
     }
 
     abstract inner class SummaryViewHolder<out T : SummaryUiModel>(view: View, skeleton: Skeleton?)

@@ -4,10 +4,7 @@ import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.data.auth.repository.EncryptedKeysRepository
 import com.kondenko.pocketwaka.data.auth.service.AccessTokenService
 import com.kondenko.pocketwaka.di.qualifiers.Auth
-import com.kondenko.pocketwaka.domain.auth.GetAccessToken
-import com.kondenko.pocketwaka.domain.auth.GetAppId
-import com.kondenko.pocketwaka.domain.auth.GetAppSecret
-import com.kondenko.pocketwaka.domain.auth.GetAuthUrl
+import com.kondenko.pocketwaka.domain.auth.*
 import com.kondenko.pocketwaka.screens.login.LoginPresenter
 import com.kondenko.pocketwaka.utils.encryption.StringEncryptor
 import com.kondenko.pocketwaka.utils.encryption.TokenEncryptor
@@ -34,5 +31,6 @@ val authModule = module {
                 getAppSecret = get()
         )
     }
-    single { LoginPresenter(get() as GetAuthUrl, get() as GetAccessToken) }
+    factory { GetTokenHeaderValue(schedulers = get(), stringEncryptor = get<StringEncryptor>(), accessTokenRepository = get()) }
+    single { LoginPresenter(getAuthUrl = get(), getAccessToken = get()) }
 }

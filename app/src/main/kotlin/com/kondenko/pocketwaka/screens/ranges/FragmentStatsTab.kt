@@ -32,8 +32,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_stats_range.*
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.scope.currentScope
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class FragmentStatsTab : Fragment() {
@@ -42,7 +42,26 @@ class FragmentStatsTab : Fragment() {
         const val ARG_RANGE = "range"
     }
 
-    private lateinit var vm: RangesViewModel
+    private val vm: RangesViewModel by viewModel {
+        parametersOf(arguments?.getString(ARG_RANGE))
+    }
+
+    private lateinit var listSkeleton: RecyclerViewSkeleton<StatsUiModel, StatsAdapter.ViewHolder, StatsAdapter>
+
+    private lateinit var statsAdapter: StatsAdapter
+
+    private val skeletonStatsCard = mutableListOf(StatsItem("", null, null, null)) * 3
+
+    private val skeletonItems = listOf(
+            StatsUiModel.Info(null, null),
+            StatsUiModel.BestDay("", "", 0),
+            StatsUiModel.Stats("", skeletonStatsCard),
+            StatsUiModel.Stats("", skeletonStatsCard)
+    )
+
+    private val scrollDirection = BehaviorSubject.create<ScrollDirection>()
+
+    private var shadowAnimationNeeded = true
 
     /**
      * The minimum value the RecyclerView has to be scrolled for
@@ -53,33 +72,12 @@ class FragmentStatsTab : Fragment() {
         context?.adjustForDensity(value) ?: value
     }
 
-    private var shadowAnimationNeeded = true
-
-    private val scrollDirection = BehaviorSubject.create<ScrollDirection>()
-
-    private lateinit var listSkeleton: RecyclerViewSkeleton<StatsUiModel, StatsAdapter.ViewHolder, StatsAdapter>
-
-    private lateinit var statsAdapter: StatsAdapter
-
-    private val skeletonStatsCard = mutableListOf(StatsItem("", null, null, null)) * 3
-    private val skeletonItems = listOf(
-            StatsUiModel.Info(null, null),
-            StatsUiModel.BestDay("", "", 0),
-            StatsUiModel.Stats("", skeletonStatsCard),
-            StatsUiModel.Stats("", skeletonStatsCard)
-    )
-
     private val fragmentState: StateFragment by lazy {
         val fragment = StateFragment()
         childFragmentManager.transaction {
             add(fragment, null)
         }
         fragment
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        vm = getViewModel { parametersOf(arguments?.getString(ARG_RANGE)) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -97,7 +95,7 @@ class FragmentStatsTab : Fragment() {
 
     private fun setupUi(context: Context) {
         with(stats_range_recyclerview) {
-            listSkeleton = get { parametersOf(this@with, skeletonItems) }
+            listSkeleton = currentScope.get { parametersOf(this@with, skeletonItems) }
             statsAdapter = listSkeleton.actualAdapter
             layoutManager = LinearLayoutManager(context)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {

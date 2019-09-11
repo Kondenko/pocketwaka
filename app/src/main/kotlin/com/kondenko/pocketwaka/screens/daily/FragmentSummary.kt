@@ -12,7 +12,9 @@ import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.report
 import kotlinx.android.synthetic.main.fragment_summary.view.*
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
 class FragmentSummary : Fragment() {
@@ -31,7 +33,7 @@ class FragmentSummary : Fragment() {
         setupList(view, view.context)
         vm.state.observe(viewLifecycleOwner) {
             Timber.d("New summary state: $it")
-            when(it) {
+            when (it) {
                 is State.Success -> summaryAdapter.items = it.data.filterIsInstance<SummaryUiModel.TimeTracked>() // TODO Remove filtering
                 is State.Failure -> it.exception?.report()
             }
@@ -39,7 +41,7 @@ class FragmentSummary : Fragment() {
     }
 
     private fun setupList(view: View, context: Context) {
-        summaryAdapter = SummaryAdapter(context)
+        summaryAdapter = get { parametersOf(context, false) }
         with(view.recyclerview_summary) {
             adapter = summaryAdapter
         }

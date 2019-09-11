@@ -3,8 +3,6 @@ package com.kondenko.pocketwaka.di
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.kondenko.pocketwaka.di.qualifiers.Actual
-import com.kondenko.pocketwaka.di.qualifiers.Skeleton
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
 import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
 import com.kondenko.pocketwaka.screens.ranges.RangesViewModel
@@ -27,8 +25,6 @@ class DependencyInjectionTest : KoinTest {
             val context = ApplicationProvider.getApplicationContext<Context>()
             androidContext(context)
             modules(koinModules)
-            declareMock<StatsAdapter>(Actual)
-            declareMock<StatsAdapter>(Skeleton)
             declareMock<SkeletonAdapter<StatsUiModel, StatsAdapter.ViewHolder>>()
         }.checkModules {
             create<RangesViewModel> { parametersOf("7_days") }
