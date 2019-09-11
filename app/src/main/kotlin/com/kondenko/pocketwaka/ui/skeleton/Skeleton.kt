@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.InsetDrawable
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.updateLayoutParams
 import com.kondenko.pocketwaka.R
@@ -19,16 +20,16 @@ class Skeleton(
         private val context: Context,
         private val root: View? = null,
         var skeletonBackground: Drawable =
-                context.getDrawable(R.drawable.all_skeleton_text)
-                        ?: ColorDrawable(Color.TRANSPARENT),
+                context.getDrawable(R.drawable.all_skeleton_text) ?: ColorDrawable(Color.TRANSPARENT),
         var skeletonHeight: Int =
-                context.resources.getDimension(R.dimen.height_all_skeleton_text).toInt(),
-        var transform: ((View, Boolean) -> Unit)? = null
+                context.resources.getDimension(R.dimen.height_all_skeleton_text).roundToInt(),
+        var skeletonStateChanged: ((View, Boolean) -> Unit)? = null
 ) {
 
     private data class InitialState(
             val text: CharSequence?,
             val backgroundDrawable: Drawable?,
+            val imageSource: Drawable?,
             val width: Int
     )
 
@@ -63,7 +64,13 @@ class Skeleton(
                     ?.toMutableMap()
                     ?: mutableMapOf()
 
-    private fun View.getInitialState() = InitialState((this as? TextView)?.text, this.background, width)
+    private fun View.getInitialState() =
+            InitialState(
+                    text = (this as? TextView)?.text,
+                    backgroundDrawable = this.background,
+                    imageSource = (this as? ImageView)?.drawable,
+                    width = width
+            )
 
     fun show() {
         initialStates.keys
@@ -89,10 +96,11 @@ class Skeleton(
             this.updateLayoutParams {
                 width = finalWidth
             }
-            if (isShown) transform?.invoke(this, true)
+            if (isShown) skeletonStateChanged?.invoke(this, true)
             val verticalInset = -((height - skeletonHeight) / 2)
             background = InsetDrawable(skeletonBackground, 0, verticalInset, 0, verticalInset)
             (this as? TextView)?.text = null
+            (this as? ImageView)?.setImageBitmap(null)
         }
     }
 
@@ -101,9 +109,10 @@ class Skeleton(
             updateLayoutParams {
                 this.width = it.width
             }
-            if (!isShown) transform?.invoke(this, false)
+            if (!isShown) skeletonStateChanged?.invoke(this, false)
             background = it.backgroundDrawable
             (this as? TextView)?.text = it.text
+            (this as? ImageView)?.setImageDrawable(it.imageSource)
         }
     }
 
