@@ -132,7 +132,8 @@ class GetSummary(
             branches
                     .groupBy { it.branch }
                     .map { (name, durations) -> name to durations.sumByDouble { it.duration } }
-                    .map { (branch: String, duration) ->
+                    .filter { (branch, duration) -> branch != null }
+                    .map { (branch: String?, duration) ->
                         val durationHumanReadable = dateFormatter.secondsToHumanReadableTime(duration.roundToLong())
                         val commitsFromBranch = branch?.let { name ->
                             commits
