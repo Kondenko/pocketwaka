@@ -42,3 +42,7 @@ fun <T> View.findViewsWithTag(id: Int, value: T? = null): List<View> {
 fun View.setInvisible() {
     visibility = View.INVISIBLE
 }
+
+fun setViewsVisibility(visibility: Int, vararg views: View) = views.forEach { it.visibility = visibility }
+
+fun setGone(gone: Boolean, vararg views: View) = setViewsVisibility(View.GONE, *views)

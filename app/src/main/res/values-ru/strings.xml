@@ -52,4 +52,7 @@
     <string name="main_bottomnav_ranges">Периоды</string>
     <string name="commits_branch_name_unknown">Ветка без имени</string>
     <string name="summary_title_time_tracked">Время</string>
+    <string name="summary_template_average_delta">%d%% %s среднего за месяц</string>
+    <string name="summary_template_average_delta_above">выше</string>
+    <string name="summary_template_average_delta_below">ниже</string>
 </resources>

@@ -7,6 +7,7 @@
     android:padding="@dimen/padding_all_card_inner"
     >
 
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
@@ -14,7 +15,6 @@
         android:text="@string/summary_title_time_tracked"
         android:textAppearance="@style/TextAppearance.App.Text.Header"
         />
-
 
     <TextView
         android:id="@+id/textview_summary_time"
@@ -32,20 +32,36 @@
             />
     </TextView>
 
-    <TextView
-        android:id="@+id/textview_summary_average_delta"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:drawableStart="@drawable/ic_arrow_down"
-        android:textAlignment="viewStart"
-        tools:text="71% above monthly average"
+        android:gravity="center_vertical"
         >
 
-        <tag
-            android:id="@id/tag_skeleton_width_key"
-            android:value="@integer/width_stats_skeleton_text_best_day_time"
+        <ImageView
+            android:id="@+id/imageview_summary_delta_icon"
+            android:layout_width="@dimen/size_all_icon"
+            android:layout_height="@dimen/size_all_icon"
+            android:src="@drawable/ic_arrow_down"
             />
-    </TextView>
+
+
+        <TextView
+            android:layout_marginStart="4dp"
+            android:id="@+id/textview_summary_average_delta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="viewStart"
+            tools:text="71% above monthly average"
+            >
+
+            <tag
+                android:id="@id/tag_skeleton_width_key"
+                android:value="@integer/width_stats_skeleton_text_best_day_time"
+                />
+        </TextView>
+
+    </LinearLayout>
 
 </LinearLayout>

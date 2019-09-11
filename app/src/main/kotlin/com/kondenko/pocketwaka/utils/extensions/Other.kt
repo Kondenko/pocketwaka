@@ -1,10 +1,8 @@
 package com.kondenko.pocketwaka.utils.extensions
 
-import android.app.Activity
 import android.content.SharedPreferences
 import android.graphics.Matrix
 import android.graphics.Path
-import android.graphics.Rect
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -30,11 +28,6 @@ inline fun SharedPreferences.edit(crossinline action: SharedPreferences.Editor.(
 
 inline fun FragmentManager.transaction(crossinline action: androidx.fragment.app.FragmentTransaction.() -> androidx.fragment.app.FragmentTransaction) {
     this.beginTransaction().action().commit()
-}
-
-fun Activity?.getStatusBarHeight(): Int? = Rect().let {
-    this?.window?.decorView?.getWindowVisibleDisplayFrame(it) ?: return@let null
-    it.top
 }
 
 /**
@@ -77,8 +70,5 @@ fun Disposable?.attachToLifecycle(lifecycle: LifecycleOwner) {
 }
 
 fun SharedPreferences.getStringOrThrow(key: String) =
-        getString(key, null)?: throw NullPointerException("Preference with key $key not found")
+        getString(key, null) ?: throw NullPointerException("Preference with key $key not found")
 
-fun String.substringOrNull(startIndex: Int = 0, endIndex: Int = length) = takeIf {
-    startIndex >= 0 && endIndex <= length && endIndex >= startIndex
-}?.substring(startIndex, endIndex)

@@ -1,15 +1,15 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="height_all_statusbar_fallback">24dp</dimen>
-
     <dimen name="margin_all_vertical_small">8dp</dimen>
-
     <dimen name="width_all_divider_vertical">1dp</dimen>
+    <dimen name="padding_all_card_inner">16dp</dimen>
+    <dimen name="size_all_icon">24dp</dimen>
+    <dimen name="size_all_icon_small">16dp</dimen>
+
 
     <dimen name="height_all_skeleton_text">11dp</dimen>
     <item name="width_all_skeleton_text_match_parent" type="integer">-1</item>
-
-    <dimen name="padding_all_card_inner">16dp</dimen>
 
     <dimen name="padding_state_screen_horizontal">16dp</dimen>
     <dimen name="size_state_screen_image">200dp</dimen>
