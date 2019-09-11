@@ -3,7 +3,7 @@
     package="com.kondenko.pocketwaka">
 
     <application
-        android:name=".DebugApp"
+        android:name=".App"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
         tools:replace="android:name">
         <meta-data
