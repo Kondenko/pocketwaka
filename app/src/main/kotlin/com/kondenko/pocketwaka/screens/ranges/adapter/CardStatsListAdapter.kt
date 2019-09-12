@@ -27,14 +27,14 @@ class CardStatsListAdapter(context: Context, showSkeleton: Boolean) : SkeletonAd
     }
 
     override fun createSkeleton(view: View): Skeleton {
-        val transformation = { v: View, isSkeleton: Boolean ->
+        val skeletonStateChanged = { v: View, isSkeleton: Boolean ->
             when (v.id) {
                 R.id.textview_stats_item_name -> {
                     v.translationX += 8f.adjustValue(isSkeleton)
                 }
             }
         }
-        return Skeleton(context, view, transform = transformation)
+        return Skeleton(context, view, skeletonStateChanged = skeletonStateChanged)
     }
 
     inner class ViewHolder(itemView: View, skeleton: Skeleton) : SkeletonViewHolder<StatsItem>(itemView, skeleton) {

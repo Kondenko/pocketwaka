@@ -76,7 +76,7 @@ class StatsAdapter(
     }
 
     override fun createSkeleton(view: View): Skeleton {
-        val transformation = { v: View, isSkeleton: Boolean ->
+        val skeletonStateChanged = { v: View, isSkeleton: Boolean ->
             when (v.id) {
                 R.id.textview_bestday_time -> {
                     v.translationY += 3f.adjustValue(isSkeleton)
@@ -89,7 +89,7 @@ class StatsAdapter(
         return Skeleton(
                 context,
                 view,
-                transform = transformation
+                skeletonStateChanged = skeletonStateChanged
         )
     }
 

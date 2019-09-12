@@ -37,14 +37,31 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SummaryViewHolder<SummaryUiModel> =
             when (ViewType.values().getOrNull(viewType)) {
                 ViewType.Status -> TODO()
-                ViewType.TimeTracked -> TimeTrackedViewHolder(inflate(R.layout.item_summary_time_tracked, parent), null)
+                ViewType.TimeTracked -> {
+                    val view = inflate(R.layout.item_summary_time_tracked, parent)
+                    TimeTrackedViewHolder(view, createSkeleton(view))
+                }
                 ViewType.ProjectsSubtitle -> TODO()
                 ViewType.Projects -> TODO()
                 else -> throw IllegalArgumentException()
             }
 
     override fun createSkeleton(view: View): Skeleton {
-        return Skeleton(context, view)
+        val skeletonStateChanged = { v: View, isSkeleton: Boolean ->
+            when(v.id) {
+                R.id.textview_summary_time -> {
+                    v.y += 4f.adjustValue(isSkeleton)
+                }
+                R.id.linearlayout_delta_container -> {
+                    v.y += 16f.adjustValue(isSkeleton)
+                }
+            }
+        }
+        return Skeleton(
+                context,
+                view,
+                skeletonStateChanged = skeletonStateChanged
+        )
     }
 
     abstract inner class SummaryViewHolder<out T : SummaryUiModel>(view: View, skeleton: Skeleton?)
@@ -62,6 +79,7 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
                     setViewsVisibility(View.GONE, textview_summary_average_delta, imageview_summary_delta_icon)
                 }
                 textview_summary_time.text = timeSpannableCreator.create(item.time)
+                super.bind(item)
             }
         }
 

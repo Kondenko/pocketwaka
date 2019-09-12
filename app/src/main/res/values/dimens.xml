@@ -17,6 +17,7 @@
     <dimen name="margin_state_screen_button_bottom">24dp</dimen>
     <dimen name="margin_state_screen_button_top">40dp</dimen>
 
+
     <!--Login-->
     <dimen name="size_login_loading_dot">6dp</dimen>
     <dimen name="padding_login_loading_view_side">24dp</dimen>
@@ -57,5 +58,8 @@
     <dimen name="margin_card_stats_label_bottom">1dp</dimen>
 
     <dimen name="height_stats_card_item">40dp</dimen>
+
+    <!-- Summary -->
+    <item name="height_skeleton_time_tracked" type="integer">14</item>
 
 </resources>

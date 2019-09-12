@@ -46,7 +46,7 @@ class FragmentStatsTab : Fragment() {
         parametersOf(arguments?.getString(ARG_RANGE))
     }
 
-    private lateinit var listSkeleton: RecyclerViewSkeleton<StatsUiModel, StatsAdapter.ViewHolder, StatsAdapter>
+    private lateinit var listSkeleton: RecyclerViewSkeleton<StatsUiModel, StatsAdapter>
 
     private lateinit var statsAdapter: StatsAdapter
 

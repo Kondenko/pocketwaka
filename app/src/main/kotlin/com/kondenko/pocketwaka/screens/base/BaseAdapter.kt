@@ -25,7 +25,9 @@ abstract class BaseAdapter<T, VH : BaseAdapter<T, VH>.BaseViewHolder<T>>(protect
     protected fun inflate(layoutId: Int, parent: ViewGroup): View = LayoutInflater.from(context).inflate(layoutId, parent, false)
 
     abstract inner class BaseViewHolder<in Item : T>(view: View) : RecyclerView.ViewHolder(view) {
+
         abstract fun bind(item: Item)
+
     }
 
 }

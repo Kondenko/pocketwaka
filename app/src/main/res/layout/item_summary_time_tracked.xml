@@ -28,11 +28,18 @@
 
         <tag
             android:id="@id/tag_skeleton_width_key"
-            android:value="@integer/width_stats_skeleton_text_best_day_time"
+            android:value="130"
             />
+
+        <tag
+            android:id="@id/tag_skeleton_height_key"
+            android:value="@integer/height_skeleton_time_tracked"
+            />
+
     </TextView>
 
     <LinearLayout
+        android:id="@+id/linearlayout_delta_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -44,7 +51,19 @@
             android:layout_width="@dimen/size_all_icon"
             android:layout_height="@dimen/size_all_icon"
             android:src="@drawable/ic_arrow_down"
-            />
+            >
+
+            <tag
+                android:id="@id/tag_skeleton_width_key"
+                android:value="@integer/height_skeleton_time_tracked"
+                />
+
+            <tag
+                android:id="@id/tag_skeleton_height_key"
+                android:value="@integer/height_skeleton_time_tracked"
+                />
+
+        </ImageView>
 
 
         <TextView
@@ -58,8 +77,14 @@
 
             <tag
                 android:id="@id/tag_skeleton_width_key"
-                android:value="@integer/width_stats_skeleton_text_best_day_time"
+                android:value="112"
                 />
+
+            <tag
+                android:id="@id/tag_skeleton_height_key"
+                android:value="@integer/height_skeleton_time_tracked"
+                />
+
         </TextView>
 
     </LinearLayout>

@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.InsetDrawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -19,18 +18,17 @@ import kotlin.math.roundToInt
 class Skeleton(
         private val context: Context,
         private val root: View? = null,
-        var skeletonBackground: Drawable =
-                context.getDrawable(R.drawable.all_skeleton_text) ?: ColorDrawable(Color.TRANSPARENT),
-        var skeletonHeight: Int =
-                context.resources.getDimension(R.dimen.height_all_skeleton_text).roundToInt(),
+        var skeletonBackground: Drawable = context.getDrawable(R.drawable.all_skeleton_text)
+                ?: ColorDrawable(Color.TRANSPARENT),
         var skeletonStateChanged: ((View, Boolean) -> Unit)? = null
 ) {
 
     private data class InitialState(
-            val text: CharSequence?,
+            val width: Int,
+            val height: Int,
             val backgroundDrawable: Drawable?,
-            val imageSource: Drawable?,
-            val width: Int
+            val text: CharSequence?,
+            val imageSource: Drawable?
     )
 
     var animDuration: Long = 300
@@ -66,18 +64,18 @@ class Skeleton(
 
     private fun View.getInitialState() =
             InitialState(
-                    text = (this as? TextView)?.text,
+                    width,
+                    height,
                     backgroundDrawable = this.background,
-                    imageSource = (this as? ImageView)?.drawable,
-                    width = width
+                    text = (this as? TextView)?.text,
+                    imageSource = (this as? ImageView)?.drawable
             )
 
     fun show() {
-        initialStates.keys
-                .forEach {
-                    it.showSkeleton()
-                    it.playPulseAnimation()
-                }
+        initialStates.keys.forEach {
+            it.showSkeleton()
+            it.playPulseAnimation()
+        }
         isShown = true
     }
 
@@ -87,18 +85,25 @@ class Skeleton(
         isShown = false
     }
 
+    private fun View.getDimenFromTag(tagId: Int): Int? =
+            (getTag(tagId) as? String?)
+                    ?.toIntOrNull()
+                    ?.takeIf { it >= 0 }
+                    ?.let(context::adjustForDensity)
+                    ?.roundToInt()
+
     private fun View.showSkeleton() {
-        val dimenWidth = (getTag(R.id.tag_skeleton_width_key) as String?)?.toInt()
-        val finalWidth = this@Skeleton.context.adjustForDensity(dimenWidth)?.roundToInt().let {
-            if (it == null || it < 0) width else it
-        }
+        val fallbackWidth = width
+        val skeletonWidth = getDimenFromTag(R.id.tag_skeleton_width_key) ?: fallbackWidth
+        val fallbackHeight = resources.getDimension(R.dimen.height_all_skeleton_text).roundToInt()
+        val skeletonHeight = getDimenFromTag(R.id.tag_skeleton_height_key) ?: fallbackHeight
         animateIn {
             this.updateLayoutParams {
-                width = finalWidth
+                width = skeletonWidth
+                height = skeletonHeight
             }
             if (isShown) skeletonStateChanged?.invoke(this, true)
-            val verticalInset = -((height - skeletonHeight) / 2)
-            background = InsetDrawable(skeletonBackground, 0, verticalInset, 0, verticalInset)
+            background = skeletonBackground
             (this as? TextView)?.text = null
             (this as? ImageView)?.setImageBitmap(null)
         }
@@ -108,6 +113,7 @@ class Skeleton(
         animateIn {
             updateLayoutParams {
                 this.width = it.width
+                this.height = it.height
             }
             if (!isShown) skeletonStateChanged?.invoke(this, false)
             background = it.backgroundDrawable
