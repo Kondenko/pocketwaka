@@ -53,15 +53,19 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
 
     override fun createSkeleton(view: View) = Skeleton(context, view).apply {
         onSkeletonShown { isSkeleton: Boolean ->
-            view.textview_summary_time.y += 8f.adjustValue(isSkeleton).roundToInt()
-            view.linearlayout_delta_container.y += 16f.adjustValue(isSkeleton).roundToInt()
+            view.textview_summary_time?.run {
+                y += 8f.adjustValue(isSkeleton).roundToInt()
+            }
+            view.linearlayout_delta_container?.run {
+                y += 16f.adjustValue(isSkeleton).roundToInt()
+            }
         }
     }
 
     abstract inner class SummaryViewHolder<out T : SummaryUiModel>(view: View, skeleton: Skeleton?)
         : SkeletonViewHolder<T>(view, skeleton)
 
-    inner class TimeTrackedViewHolder(view: View, skeleton: Skeleton?) : SummaryViewHolder<SummaryUiModel.TimeTracked>(view, skeleton) {
+    inner class TimeTrackedViewHolder(view: View, skeleton: Skeleton) : SummaryViewHolder<SummaryUiModel.TimeTracked>(view, skeleton) {
 
         override fun bind(item: SummaryUiModel.TimeTracked) {
             with(itemView) {
@@ -108,7 +112,9 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
     inner class ProjectsTitleViewHolder(view: View) : SummaryViewHolder<SummaryUiModel.ProjectsTitle>(view, null)
 
     inner class ProjectsViewHolder(view: View, skeleton: Skeleton?) : SummaryViewHolder<SummaryUiModel.Projects>(view, skeleton) {
-
+        override fun bind(item: SummaryUiModel.Projects) {
+            super.bind(item)
+        }
     }
 
 }

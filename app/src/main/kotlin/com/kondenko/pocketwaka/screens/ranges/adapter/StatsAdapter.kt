@@ -30,12 +30,6 @@ class StatsAdapter(
         Status(0), Info(1), BestDay(2), Stats(3)
     }
 
-    override var items: List<StatsUiModel> = super.items
-        set(value) {
-            field = value
-            super.items = value
-        }
-
     init {
         setHasStableIds(true)
     }
@@ -55,8 +49,7 @@ class StatsAdapter(
             ViewType.Stats.type -> inflate(R.layout.item_all_entities_card, parent)
             else -> throw IllegalArgumentException("Unknown view type $viewType")
         }
-        val skeleton = if (showSkeleton) createSkeleton(view) else null
-        return ViewHolder(view, skeleton)
+        return ViewHolder(view, createSkeleton(view))
     }
 
     override fun getItemId(position: Int): Long = items[position].hashCode().toLong()
@@ -65,14 +58,7 @@ class StatsAdapter(
         return SimpleCallback(
                 oldList,
                 newList,
-                areItemsTheSame = { a, b ->
-                    when (a) {
-                        is StatsUiModel.Status -> b is StatsUiModel.Status
-                        is StatsUiModel.Info -> b is StatsUiModel.Info
-                        is StatsUiModel.BestDay -> b is StatsUiModel.BestDay
-                        else -> false
-                    }
-                }
+                areItemsTheSame = { a, b -> a::class == b::class }
         )
     }
 
@@ -83,7 +69,7 @@ class StatsAdapter(
         }
     }
 
-    inner class ViewHolder(val view: View, skeleton: Skeleton?) : SkeletonViewHolder<StatsUiModel>(view, skeleton) {
+    inner class ViewHolder(val view: View, skeleton: Skeleton) : SkeletonViewHolder<StatsUiModel>(view, skeleton) {
 
         override fun bind(item: StatsUiModel) {
             when (item) {

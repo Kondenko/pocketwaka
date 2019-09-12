@@ -63,7 +63,6 @@ val rangeStatsModule = module {
     scope(named<FragmentStatsTab>()) {
         scoped { (recyclerView: RecyclerView, skeletonItems: List<StatsUiModel>) ->
             RecyclerViewSkeleton(
-                    recyclerView = recyclerView,
                     adapterCreator = { showSkeleton: Boolean -> get<StatsAdapter> { parametersOf(recyclerView.context, showSkeleton) } },
                     skeletonItems = skeletonItems
             )

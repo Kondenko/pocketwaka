@@ -21,7 +21,7 @@ class FragmentSummary : Fragment() {
 
     private val vm: SummaryViewModel by viewModel()
 
-    private lateinit var recyclerSkeleton: RecyclerViewSkeleton<SummaryUiModel, SummaryAdapter>
+    private lateinit var listSkeleton: RecyclerViewSkeleton<SummaryUiModel, SummaryAdapter>
 
     private val skeletonItems = listOf(
             SummaryUiModel.TimeTracked("", 1)
@@ -40,10 +40,10 @@ class FragmentSummary : Fragment() {
 
     private fun State<List<SummaryUiModel>>.render() {
         Timber.d("New summary state: $this")
-        recyclerSkeleton.show((this as? State.Loading)?.isInterrupting == true)
+        listSkeleton.show((this as? State.Loading)?.isInterrupting == true)
         when (this) {
             is State.Success -> {
-                recyclerSkeleton.actualAdapter.items = data
+                listSkeleton.adapter.items = data
             }
             is State.Failure -> exception?.report()
         }
@@ -51,8 +51,8 @@ class FragmentSummary : Fragment() {
 
     private fun setupList(view: View) {
         with(view.recyclerview_summary) {
-            recyclerSkeleton = currentScope.get { parametersOf(this, skeletonItems) }
-            adapter = recyclerSkeleton.actualAdapter
+            listSkeleton = currentScope.get { parametersOf(this, skeletonItems) }
+            adapter = listSkeleton.adapter
         }
     }
 

@@ -49,8 +49,6 @@ class FragmentStatsTab : Fragment() {
 
     private lateinit var listSkeleton: RecyclerViewSkeleton<StatsUiModel, StatsAdapter>
 
-    private lateinit var statsAdapter: StatsAdapter
-
     private val skeletonStatsCard = mutableListOf(StatsItem("", null, null, null)) * 3
 
     private val skeletonItems = listOf(
@@ -97,7 +95,7 @@ class FragmentStatsTab : Fragment() {
     private fun setupUi(context: Context) {
         with(stats_range_recyclerview) {
             listSkeleton = currentScope.get { parametersOf(this@with, skeletonItems) }
-            statsAdapter = listSkeleton.actualAdapter
+            adapter = listSkeleton.adapter
             layoutManager = LinearLayoutManager(context)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -164,8 +162,8 @@ class FragmentStatsTab : Fragment() {
         fragmentState.setState(this, ::openPlugins)
     }
 
-    private fun updateStats(data: List<StatsUiModel>?) = stats_range_recyclerview.apply {
-        data?.let { statsAdapter.items = it }
+    private fun updateStats(data: List<StatsUiModel>?) {
+        data?.let { listSkeleton.adapter.items = it }
     }
 
     private fun showData(show: Boolean) {

@@ -6,13 +6,12 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.updateLayoutParams
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import com.kondenko.pocketwaka.utils.extensions.findViewsWithTag
+import com.kondenko.pocketwaka.utils.extensions.setSize
 import kotlin.math.roundToInt
 
 class Skeleton(
@@ -36,7 +35,7 @@ class Skeleton(
 
     private val pulseAnimations: MutableSet<ValueAnimator> = mutableSetOf()
 
-    private val initialStates: MutableMap<View, InitialState> by lazy { findViews(root) }
+    private val initialStates: MutableMap<View, InitialState?> by lazy { findViews(root) }
 
     private var onSkeletonShown: ((Boolean) -> Unit)? = null
 
@@ -47,46 +46,38 @@ class Skeleton(
         onSkeletonShown = callback
     }
 
-    fun cleanup() {
-        onSkeletonShown = null
-        initialStates.clear()
-    }
-
-    fun addViews(root: ViewGroup) {
-        findViews(root).forEach { (view, state) ->
-            if (!initialStates.containsKey(view)) {
-                initialStates[view] = state
-            }
-        }
-    }
-
-    fun addView(view: View) {
-        if (view.getTag(R.id.tag_skeleton_width_key) != null) {
-            initialStates[view] = view.getInitialState()
-        }
-    }
-
     fun show() {
-        onSkeletonShown?.invoke(true)
-        initialStates.keys.forEach {
-            it.showSkeleton()
-            it.playPulseAnimation()
+        updateInitialStates()
+        if (!isShown) {
+            onSkeletonShown?.invoke(true)
+            initialStates.keys.forEach {
+                it.showSkeleton()
+                it.playPulseAnimation()
+            }
+            isShown = true
         }
-        isShown = true
     }
 
     fun hide() {
-        initialStates.keys.forEach { it.hideSkeleton() }
-        stopPulseAnimations()
-        onSkeletonShown?.invoke(false)
-        isShown = false
+        if (isShown) {
+            initialStates.keys.forEach { it.hideSkeleton() }
+            stopPulseAnimations()
+            onSkeletonShown?.invoke(false)
+            isShown = false
+        }
     }
 
-    private fun findViews(root: View?) =
-            root?.findViewsWithTag(R.id.tag_skeleton_width_key, null)
-                    ?.associateWith { it.getInitialState() }
+    private fun findViews(root: View?): MutableMap<View, InitialState?> =
+            root?.findViewsWithTag<Nothing>(R.id.tag_skeleton_width_key)
+                    ?.associateWith<View, InitialState?> { null }
                     ?.toMutableMap()
                     ?: mutableMapOf()
+
+    private fun updateInitialStates() {
+        initialStates.forEach { (view, _) ->
+            initialStates[view] = view.getInitialState()
+        }
+    }
 
     private fun View.getInitialState() =
             InitialState(
@@ -103,10 +94,7 @@ class Skeleton(
         val fallbackHeight = resources.getDimension(R.dimen.height_all_skeleton_text).roundToInt()
         val skeletonHeight = getDimenFromTag(R.id.tag_skeleton_height_key) ?: fallbackHeight
         animateIn {
-            this.updateLayoutParams {
-                width = skeletonWidth
-                height = skeletonHeight
-            }
+            setSize(skeletonWidth, skeletonHeight)
             background = skeletonBackground
             (this as? TextView)?.text = null
             (this as? ImageView)?.setImageBitmap(null)
@@ -115,10 +103,7 @@ class Skeleton(
 
     private fun View.hideSkeleton() = initialStates[this]?.let {
         animateIn {
-            updateLayoutParams {
-                this.width = it.width
-                this.height = it.height
-            }
+            setSize(it.width, it.height)
             background = it.backgroundDrawable
             (this as? TextView)?.text = it.text
             (this as? ImageView)?.setImageDrawable(it.imageSource)

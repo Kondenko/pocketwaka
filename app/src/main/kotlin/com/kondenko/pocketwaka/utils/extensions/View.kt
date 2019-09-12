@@ -46,12 +46,7 @@ fun View.setInvisible() {
 
 fun setViewsVisibility(visibility: Int, vararg views: View) = views.forEach { it.visibility = visibility }
 
-fun setGone(gone: Boolean, vararg views: View) = setViewsVisibility(View.GONE, *views)
-
-var View.currentHeight: Int
-    get() = height
-    set(value) {
-        updateLayoutParams {
-            height = value
-        }
-    }
+fun View.setSize(width: Int? = null, height: Int? = null) = updateLayoutParams {
+    width?.let { this.width = it }
+    height?.let { this.height = it }
+}

@@ -77,7 +77,6 @@ val summaryModule = module {
     scope(named<FragmentSummary>()) {
         scoped { (recyclerView: RecyclerView, skeletonItems: List<SummaryUiModel>) ->
             RecyclerViewSkeleton(
-                    recyclerView = recyclerView,
                     adapterCreator = { showSkeleton: Boolean -> get<SummaryAdapter> { parametersOf(recyclerView.context, showSkeleton) } },
                     skeletonItems = skeletonItems
             )
