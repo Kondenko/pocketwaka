@@ -11,7 +11,7 @@ class RecyclerViewSkeleton<T, ADAPTER : SkeletonAdapter<T, *>>(
 
     val actualAdapter: ADAPTER = adapterCreator(false)
 
-    private val skeletonAdapter: ADAPTER = adapterCreator(true)
+    val skeletonAdapter: ADAPTER = adapterCreator(true)
 
     init {
         skeletonAdapter.items = skeletonItems

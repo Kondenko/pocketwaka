@@ -12,7 +12,7 @@ import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.utils.extensions.getColorCompat
 import com.kondenko.pocketwaka.utils.extensions.setInvisible
-import kotlinx.android.synthetic.main.item_stats_item.view.*
+import kotlinx.android.synthetic.main.item_stats_entity.view.*
 
 class CardStatsListAdapter(context: Context, showSkeleton: Boolean) : SkeletonAdapter<StatsItem, CardStatsListAdapter.ViewHolder>(context, showSkeleton) {
 
@@ -21,20 +21,17 @@ class CardStatsListAdapter(context: Context, showSkeleton: Boolean) : SkeletonAd
     private val textParamsCache = mutableMapOf<StatsItem, TextParams>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = inflate(R.layout.item_stats_item, parent)
+        val view = inflate(R.layout.item_stats_entity, parent)
         val skeleton = createSkeleton(view)
         return ViewHolder(view, skeleton)
     }
 
-    override fun createSkeleton(view: View): Skeleton {
-        val skeletonStateChanged = { v: View, isSkeleton: Boolean ->
-            when (v.id) {
-                R.id.textview_stats_item_name -> {
-                    v.translationX += 8f.adjustValue(isSkeleton)
-                }
+    override fun createSkeleton(view: View) = Skeleton(context, view).apply {
+        onSkeletonShown { isSkeleton: Boolean ->
+            view.textview_stats_item_name?.run {
+                translationX += 8f.adjustValue(isSkeleton)
             }
         }
-        return Skeleton(context, view, skeletonStateChanged = skeletonStateChanged)
     }
 
     inner class ViewHolder(itemView: View, skeleton: Skeleton) : SkeletonViewHolder<StatsItem>(itemView, skeleton) {

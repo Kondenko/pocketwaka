@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StyleableRes
 import androidx.core.view.children
+import androidx.core.view.updateLayoutParams
 
 fun View.useAttributes(attrs: AttributeSet?, @StyleableRes styleable: IntArray, defStyleAttr: Int = 0, defStyleRes: Int = 0, actions: TypedArray.() -> Unit) {
     attrs?.let {
@@ -46,3 +47,11 @@ fun View.setInvisible() {
 fun setViewsVisibility(visibility: Int, vararg views: View) = views.forEach { it.visibility = visibility }
 
 fun setGone(gone: Boolean, vararg views: View) = setViewsVisibility(View.GONE, *views)
+
+var View.currentHeight: Int
+    get() = height
+    set(value) {
+        updateLayoutParams {
+            height = value
+        }
+    }

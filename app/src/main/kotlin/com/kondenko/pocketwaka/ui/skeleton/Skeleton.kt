@@ -19,8 +19,7 @@ class Skeleton(
         private val context: Context,
         private val root: View? = null,
         var skeletonBackground: Drawable = context.getDrawable(R.drawable.all_skeleton_text)
-                ?: ColorDrawable(Color.TRANSPARENT),
-        var skeletonStateChanged: ((View, Boolean) -> Unit)? = null
+                ?: ColorDrawable(Color.TRANSPARENT)
 ) {
 
     private data class InitialState(
@@ -39,8 +38,19 @@ class Skeleton(
 
     private val initialStates: MutableMap<View, InitialState> by lazy { findViews(root) }
 
+    private var onSkeletonShown: ((Boolean) -> Unit)? = null
+
     var isShown: Boolean = false
         private set
+
+    fun onSkeletonShown(callback: ((Boolean) -> Unit)) {
+        onSkeletonShown = callback
+    }
+
+    fun cleanup() {
+        onSkeletonShown = null
+        initialStates.clear()
+    }
 
     fun addViews(root: ViewGroup) {
         findViews(root).forEach { (view, state) ->
@@ -54,6 +64,22 @@ class Skeleton(
         if (view.getTag(R.id.tag_skeleton_width_key) != null) {
             initialStates[view] = view.getInitialState()
         }
+    }
+
+    fun show() {
+        onSkeletonShown?.invoke(true)
+        initialStates.keys.forEach {
+            it.showSkeleton()
+            it.playPulseAnimation()
+        }
+        isShown = true
+    }
+
+    fun hide() {
+        initialStates.keys.forEach { it.hideSkeleton() }
+        stopPulseAnimations()
+        onSkeletonShown?.invoke(false)
+        isShown = false
     }
 
     private fun findViews(root: View?) =
@@ -71,27 +97,6 @@ class Skeleton(
                     imageSource = (this as? ImageView)?.drawable
             )
 
-    fun show() {
-        initialStates.keys.forEach {
-            it.showSkeleton()
-            it.playPulseAnimation()
-        }
-        isShown = true
-    }
-
-    fun hide() {
-        initialStates.keys.forEach { it.hideSkeleton() }
-        stopPulseAnimations()
-        isShown = false
-    }
-
-    private fun View.getDimenFromTag(tagId: Int): Int? =
-            (getTag(tagId) as? String?)
-                    ?.toIntOrNull()
-                    ?.takeIf { it >= 0 }
-                    ?.let(context::adjustForDensity)
-                    ?.roundToInt()
-
     private fun View.showSkeleton() {
         val fallbackWidth = width
         val skeletonWidth = getDimenFromTag(R.id.tag_skeleton_width_key) ?: fallbackWidth
@@ -102,7 +107,6 @@ class Skeleton(
                 width = skeletonWidth
                 height = skeletonHeight
             }
-            if (isShown) skeletonStateChanged?.invoke(this, true)
             background = skeletonBackground
             (this as? TextView)?.text = null
             (this as? ImageView)?.setImageBitmap(null)
@@ -115,7 +119,6 @@ class Skeleton(
                 this.width = it.width
                 this.height = it.height
             }
-            if (!isShown) skeletonStateChanged?.invoke(this, false)
             background = it.backgroundDrawable
             (this as? TextView)?.text = it.text
             (this as? ImageView)?.setImageDrawable(it.imageSource)
@@ -134,6 +137,13 @@ class Skeleton(
             updateView()
         }
     }
+
+    private fun View.getDimenFromTag(tagId: Int): Int? =
+            (getTag(tagId) as? String?)
+                    ?.toIntOrNull()
+                    ?.takeIf { it >= 0 }
+                    ?.let(context::adjustForDensity)
+                    ?.roundToInt()
 
     private fun View.playPulseAnimation() {
         val alphaDimmed = 0.59f
@@ -160,6 +170,5 @@ class Skeleton(
     override fun hashCode(): Int {
         return root?.hashCode() ?: 0
     }
-
 
 }

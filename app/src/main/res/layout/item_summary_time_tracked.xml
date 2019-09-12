@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="106dp"
     android:orientation="vertical"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:padding="@dimen/padding_all_card_inner"
     >
 
@@ -13,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/summary_title_time_tracked"
-        android:textAppearance="@style/TextAppearance.App.Text.Header"
+        android:textAppearance="@style/TextAppearance.App.Text.Title"
         />
 
     <TextView
@@ -22,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textAlignment="viewStart"
+        android:clipToPadding="false"
         android:textAppearance="@style/TextAppearance.App.Display.Time"
         tools:text="8 hrs 8 mins"
         >
@@ -44,6 +48,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:gravity="center_vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         >
 
         <ImageView
@@ -51,6 +57,8 @@
             android:layout_width="@dimen/size_all_icon"
             android:layout_height="@dimen/size_all_icon"
             android:src="@drawable/ic_arrow_down"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             >
 
             <tag
@@ -71,6 +79,8 @@
             android:id="@+id/textview_summary_average_delta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:clipChildren="false"
             android:textAlignment="viewStart"
             tools:text="71% above monthly average"
             >

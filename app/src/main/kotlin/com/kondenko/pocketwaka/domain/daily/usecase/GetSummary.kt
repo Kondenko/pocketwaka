@@ -121,7 +121,7 @@ class GetSummary(
                     .toList()
                     .flatMapMaybe { projects ->
                         if (projects.isNotEmpty()) {
-                            Maybe.just(listOf(SummaryUiModel.ProjectsSubtitle) + SummaryUiModel.Projects(projects))
+                            Maybe.just(listOf(SummaryUiModel.ProjectsTitle) + SummaryUiModel.Projects(projects))
                         } else {
                             Maybe.empty()
                         }

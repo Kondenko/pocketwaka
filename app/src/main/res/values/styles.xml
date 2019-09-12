@@ -18,7 +18,7 @@
 
     <!-- Common -->
 
-    <style name="TextAppearance.App.Text.Header" parent="TextAppearance.AppCompat">
+    <style name="TextAppearance.App.Text.Title" parent="TextAppearance.AppCompat">
         <item name="android:gravity">start</item>
         <item name="android:textColor">@color/color_accent</item>
         <item name="android:fontFamily">sans-serif-medium</item>

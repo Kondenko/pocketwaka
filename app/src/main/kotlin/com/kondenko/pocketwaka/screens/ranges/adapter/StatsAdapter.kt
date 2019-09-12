@@ -9,15 +9,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
+import com.kondenko.pocketwaka.screens.ScreenStatus
 import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.utils.diffutil.SimpleCallback
 import com.kondenko.pocketwaka.utils.extensions.setInvisible
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
+import kotlinx.android.synthetic.main.item_all_entities_card.view.*
+import kotlinx.android.synthetic.main.item_stats_best_day.view.*
+import kotlinx.android.synthetic.main.item_stats_info.view.*
 import kotlinx.android.synthetic.main.item_status.view.*
-import kotlinx.android.synthetic.main.layout_stats_best_day.view.*
-import kotlinx.android.synthetic.main.layout_stats_card.view.*
-import kotlinx.android.synthetic.main.layout_stats_info.view.*
 
 class StatsAdapter(
         context: Context,
@@ -49,9 +50,9 @@ class StatsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = when (viewType) {
             ViewType.Status.type -> inflate(R.layout.item_status, parent)
-            ViewType.Info.type -> inflate(R.layout.layout_stats_info, parent)
-            ViewType.BestDay.type -> inflate(R.layout.layout_stats_best_day, parent)
-            ViewType.Stats.type -> inflate(R.layout.layout_stats_card, parent)
+            ViewType.Info.type -> inflate(R.layout.item_stats_info, parent)
+            ViewType.BestDay.type -> inflate(R.layout.item_stats_best_day, parent)
+            ViewType.Stats.type -> inflate(R.layout.item_all_entities_card, parent)
             else -> throw IllegalArgumentException("Unknown view type $viewType")
         }
         val skeleton = if (showSkeleton) createSkeleton(view) else null
@@ -75,22 +76,11 @@ class StatsAdapter(
         )
     }
 
-    override fun createSkeleton(view: View): Skeleton {
-        val skeletonStateChanged = { v: View, isSkeleton: Boolean ->
-            when (v.id) {
-                R.id.textview_bestday_time -> {
-                    v.translationY += 3f.adjustValue(isSkeleton)
-                }
-                R.id.textview_stats_card_title -> {
-                    v.translationY += 8f.adjustValue(isSkeleton)
-                }
-            }
+    override fun createSkeleton(view: View) = Skeleton(context, view).apply {
+        onSkeletonShown { isSkeleton: Boolean ->
+            view.textview_bestday_time?.run { translationY += 3f.adjustValue(isSkeleton) }
+            view.textview_all_entities_card_title?.run { translationY += 8f.adjustValue(isSkeleton) }
         }
-        return Skeleton(
-                context,
-                view,
-                skeletonStateChanged = skeletonStateChanged
-        )
     }
 
     inner class ViewHolder(val view: View, skeleton: Skeleton?) : SkeletonViewHolder<StatsUiModel>(view, skeleton) {
@@ -105,7 +95,7 @@ class StatsAdapter(
         }
 
         private fun View.render(item: StatsUiModel.Status) {
-            val isOffline = item is StatsUiModel.Status.Offline
+            val isOffline = item.status is ScreenStatus.Offline
             textview_status_description.setText(if (isOffline) R.string.status_offline else R.string.status_updating)
             imageView_status_offline.isInvisible = !isOffline
             progressbar_status_loading.isInvisible = isOffline
@@ -128,8 +118,8 @@ class StatsAdapter(
         }
 
         private fun View.render(item: StatsUiModel.Stats) {
-            textview_stats_card_title.text = item.cardTitle
-            with(view.statsCardRecyclerView) {
+            textview_all_entities_card_title.text = item.cardTitle
+            with(view.recyclerview_all_entitites) {
                 layoutManager = object : LinearLayoutManager(context) {
                     override fun canScrollVertically() = false
                 }

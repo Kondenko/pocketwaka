@@ -12,7 +12,7 @@ sealed class SummaryUiModel {
     data class TimeTracked(val time: String, @IntRange(from = -100, to = 100) val percentDelta: Int)
         : SummaryUiModel()
 
-    object ProjectsSubtitle
+    object ProjectsTitle
         : SummaryUiModel()
 
     data class Projects(val projects: List<Project>)

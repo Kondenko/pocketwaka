@@ -55,4 +55,5 @@
     <string name="summary_template_average_delta">%d%% %s среднего за месяц</string>
     <string name="summary_template_average_delta_above">выше</string>
     <string name="summary_template_average_delta_below">ниже</string>
+    <string name="summary_title_projects">Проекты</string>
 </resources>

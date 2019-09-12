@@ -71,9 +71,10 @@
 
     <!-- SUMMARIES -->
 
-    <!-- Commits -->
-    <string name="commits_branch_name_unknown">Unknown</string>
     <string name="summary_title_time_tracked">Time tracked</string>
+    <string name="summary_title_projects">Projects</string>
+
+    <string name="commits_branch_name_unknown">Unknown</string>
     <string name="summary_template_average_delta_above" formatted="false">above</string>
     <string name="summary_template_average_delta_below" formatted="false">below</string>
     <string name="summary_template_average_delta" formatted="false">%d%% %s monthly average</string>

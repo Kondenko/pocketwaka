@@ -43,10 +43,7 @@ class FragmentSummary : Fragment() {
         recyclerSkeleton.show((this as? State.Loading)?.isInterrupting == true)
         when (this) {
             is State.Success -> {
-                // TODO Remove filtering
-                recyclerSkeleton.actualAdapter.items = data.filterIsInstance<SummaryUiModel.TimeTracked>()
-            }
-            is State.Loading -> {
+                recyclerSkeleton.actualAdapter.items = data
             }
             is State.Failure -> exception?.report()
         }

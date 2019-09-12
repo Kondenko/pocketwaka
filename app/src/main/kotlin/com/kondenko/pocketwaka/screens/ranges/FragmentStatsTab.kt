@@ -19,6 +19,7 @@ import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.ranges.model.StatsItem
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
+import com.kondenko.pocketwaka.screens.ScreenStatus
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.StateFragment
 import com.kondenko.pocketwaka.screens.ranges.adapter.StatsAdapter
@@ -122,7 +123,7 @@ class FragmentStatsTab : Fragment() {
     private fun State.Loading<List<StatsUiModel>>.render() {
         showData(true)
         if (!isInterrupting) {
-            updateStats(listOf(StatsUiModel.Status.Loading()) + (data ?: emptyList()))
+            updateStats(listOf(StatsUiModel.Status(ScreenStatus.Loading())) + (data ?: emptyList()))
         }
     }
 
@@ -154,7 +155,7 @@ class FragmentStatsTab : Fragment() {
         if (data == null) {
             fragmentState.setState(this)
         } else {
-            updateStats(listOf(StatsUiModel.Status.Offline()) + data)
+            updateStats(listOf(StatsUiModel.Status(ScreenStatus.Offline())) + data)
         }
     }
 

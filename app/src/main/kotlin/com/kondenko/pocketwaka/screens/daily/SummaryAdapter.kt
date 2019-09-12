@@ -15,6 +15,7 @@ import com.kondenko.pocketwaka.utils.extensions.setViewsVisibility
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
 import kotlinx.android.synthetic.main.item_summary_time_tracked.view.*
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
 class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSpannableCreator: SpannableCreator)
     : SkeletonAdapter<SummaryUiModel, SummaryAdapter.SummaryViewHolder<SummaryUiModel>>(context, showSkeleton) {
@@ -22,46 +23,39 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
     private enum class ViewType(val type: Int) {
         Status(0),
         TimeTracked(1),
-        ProjectsSubtitle(2),
+        ProjectsTitle(2),
         Projects(3)
     }
 
     override fun getItemViewType(position: Int): Int = when (items[position]) {
         is SummaryUiModel.Status.Offline -> ViewType.Status
         is SummaryUiModel.TimeTracked -> ViewType.TimeTracked
-        is SummaryUiModel.ProjectsSubtitle -> ViewType.ProjectsSubtitle
+        is SummaryUiModel.ProjectsTitle -> ViewType.ProjectsTitle
         is SummaryUiModel.Projects -> ViewType.Projects
         else -> throw IllegalViewTypeException()
     }.type
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SummaryViewHolder<SummaryUiModel> =
-            when (ViewType.values().getOrNull(viewType)) {
-                ViewType.Status -> TODO()
-                ViewType.TimeTracked -> {
-                    val view = inflate(R.layout.item_summary_time_tracked, parent)
-                    TimeTrackedViewHolder(view, createSkeleton(view))
-                }
-                ViewType.ProjectsSubtitle -> TODO()
-                ViewType.Projects -> TODO()
-                else -> throw IllegalArgumentException()
-            }
-
-    override fun createSkeleton(view: View): Skeleton {
-        val skeletonStateChanged = { v: View, isSkeleton: Boolean ->
-            when(v.id) {
-                R.id.textview_summary_time -> {
-                    v.y += 4f.adjustValue(isSkeleton)
-                }
-                R.id.linearlayout_delta_container -> {
-                    v.y += 16f.adjustValue(isSkeleton)
-                }
-            }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (ViewType.values().getOrNull(viewType)) {
+        ViewType.Status -> TODO()
+        ViewType.TimeTracked -> {
+            val view = inflate(R.layout.item_summary_time_tracked, parent)
+            TimeTrackedViewHolder(view, createSkeleton(view))
         }
-        return Skeleton(
-                context,
-                view,
-                skeletonStateChanged = skeletonStateChanged
-        )
+        ViewType.ProjectsTitle -> {
+            ProjectsTitleViewHolder(inflate(R.layout.item_summary_projects_title, parent))
+        }
+        ViewType.Projects -> {
+            val view = inflate(R.layout.item_all_entities_card, parent)
+            ProjectsViewHolder(view, createSkeleton(view))
+        }
+        else -> throw IllegalArgumentException()
+    }
+
+    override fun createSkeleton(view: View) = Skeleton(context, view).apply {
+        onSkeletonShown { isSkeleton: Boolean ->
+            view.textview_summary_time.y += 8f.adjustValue(isSkeleton).roundToInt()
+            view.linearlayout_delta_container.y += 16f.adjustValue(isSkeleton).roundToInt()
+        }
     }
 
     abstract inner class SummaryViewHolder<out T : SummaryUiModel>(view: View, skeleton: Skeleton?)
@@ -108,6 +102,12 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
                     val color = if (isBelowAverage) R.color.color_descent else R.color.color_growth
                     setTint(ContextCompat.getColor(context, color))
                 }
+
+    }
+
+    inner class ProjectsTitleViewHolder(view: View) : SummaryViewHolder<SummaryUiModel.ProjectsTitle>(view, null)
+
+    inner class ProjectsViewHolder(view: View, skeleton: Skeleton?) : SummaryViewHolder<SummaryUiModel.Projects>(view, skeleton) {
 
     }
 
