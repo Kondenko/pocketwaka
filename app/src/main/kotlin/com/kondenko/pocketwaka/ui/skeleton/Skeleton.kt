@@ -9,10 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.updateLayoutParams
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import com.kondenko.pocketwaka.utils.extensions.findViewsWithTag
+import com.kondenko.pocketwaka.utils.extensions.setSize
 import kotlin.math.roundToInt
 
 class Skeleton(
@@ -103,10 +103,7 @@ class Skeleton(
         val fallbackHeight = resources.getDimension(R.dimen.height_all_skeleton_text).roundToInt()
         val skeletonHeight = getDimenFromTag(R.id.tag_skeleton_height_key) ?: fallbackHeight
         animateIn {
-            this.updateLayoutParams {
-                width = skeletonWidth
-                height = skeletonHeight
-            }
+            setSize(skeletonWidth, skeletonHeight)
             background = skeletonBackground
             (this as? TextView)?.text = null
             (this as? ImageView)?.setImageBitmap(null)
@@ -115,10 +112,7 @@ class Skeleton(
 
     private fun View.hideSkeleton() = initialStates[this]?.let {
         animateIn {
-            updateLayoutParams {
-                this.width = it.width
-                this.height = it.height
-            }
+            setSize(it.width, it.height)
             background = it.backgroundDrawable
             (this as? TextView)?.text = it.text
             (this as? ImageView)?.setImageDrawable(it.imageSource)
