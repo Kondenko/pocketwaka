@@ -1,18 +1,26 @@
 package com.kondenko.pocketwaka.screens.daily
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.domain.daily.model.ProjectModel
 import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
 import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
+import com.kondenko.pocketwaka.utils.createAdapter
 import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
 import com.kondenko.pocketwaka.utils.extensions.setViewsVisibility
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
+import kotlinx.android.synthetic.main.item_summary_project.view.*
+import kotlinx.android.synthetic.main.item_summary_project_branch.view.*
+import kotlinx.android.synthetic.main.item_summary_project_commit.view.*
+import kotlinx.android.synthetic.main.item_summary_project_name.view.*
 import kotlinx.android.synthetic.main.item_summary_time_tracked.view.*
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -31,7 +39,7 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
         is SummaryUiModel.Status.Offline -> ViewType.Status
         is SummaryUiModel.TimeTracked -> ViewType.TimeTracked
         is SummaryUiModel.ProjectsTitle -> ViewType.ProjectsTitle
-        is SummaryUiModel.Projects -> ViewType.Projects
+        is SummaryUiModel.Project -> ViewType.Projects
         else -> throw IllegalViewTypeException()
     }.type
 
@@ -45,7 +53,7 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
             ProjectsTitleViewHolder(inflate(R.layout.item_summary_projects_title, parent))
         }
         ViewType.Projects -> {
-            val view = inflate(R.layout.item_all_entities_card, parent)
+            val view = inflate(R.layout.item_summary_project, parent)
             ProjectsViewHolder(view, createSkeleton(view))
         }
         else -> throw IllegalArgumentException()
@@ -53,15 +61,19 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
 
     override fun createSkeleton(view: View) = Skeleton(context, view).apply {
         onSkeletonShown { isSkeleton: Boolean ->
-            view.textview_summary_time.y += 8f.adjustValue(isSkeleton).roundToInt()
-            view.linearlayout_delta_container.y += 16f.adjustValue(isSkeleton).roundToInt()
+            view.textview_summary_time?.run {
+                y += 8f.adjustValue(isSkeleton).roundToInt()
+            }
+            view.linearlayout_delta_container?.run {
+                y += 16f.adjustValue(isSkeleton).roundToInt()
+            }
         }
     }
 
     abstract inner class SummaryViewHolder<out T : SummaryUiModel>(view: View, skeleton: Skeleton?)
         : SkeletonViewHolder<T>(view, skeleton)
 
-    inner class TimeTrackedViewHolder(view: View, skeleton: Skeleton?) : SummaryViewHolder<SummaryUiModel.TimeTracked>(view, skeleton) {
+    inner class TimeTrackedViewHolder(view: View, skeleton: Skeleton) : SummaryViewHolder<SummaryUiModel.TimeTracked>(view, skeleton) {
 
         override fun bind(item: SummaryUiModel.TimeTracked) {
             with(itemView) {
@@ -107,7 +119,33 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
 
     inner class ProjectsTitleViewHolder(view: View) : SummaryViewHolder<SummaryUiModel.ProjectsTitle>(view, null)
 
-    inner class ProjectsViewHolder(view: View, skeleton: Skeleton?) : SummaryViewHolder<SummaryUiModel.Projects>(view, skeleton) {
+    inner class ProjectsViewHolder(view: View, skeleton: Skeleton?) : SummaryViewHolder<SummaryUiModel.Project>(view, skeleton) {
+
+        override fun bind(item: SummaryUiModel.Project) {
+            super.bind(item)
+            itemView.recyclerview_summary_project.adapter = createAdapter<ProjectModel>(context) {
+                bindItem<ProjectModel.ProjectName>(R.layout.item_summary_project_name) { item ->
+                    textview_summary_project_name.text = item.name
+                }
+                bindItem<ProjectModel.Branch>(R.layout.item_summary_project_branch) { item ->
+                    textview_summary_project_branch.text = item.name
+                }
+                bindItem<ProjectModel.Commit>(R.layout.item_summary_project_commit) { item ->
+                    textview_summary_project_commit_message.text = item.message
+                }
+                bindItem<ProjectModel.ConnectRepoAction>(R.layout.item_summary_project_connect_repo) { item ->
+                    itemView.setOnClickListener {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item.url)))
+                    }
+                }
+                bindItem<ProjectModel.MoreCommitsAction>(R.layout.item_summary_project_connect_more_commits) { item ->
+//                    itemView.textview_summary_show_more_commits.text =
+//                            context.getString(R.string.summary_projects_template_more_commits, item)
+                }
+            }.also {
+                it.items = item.models
+            }
+        }
 
     }
 

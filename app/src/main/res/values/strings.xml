@@ -74,6 +74,9 @@
     <string name="summary_title_time_tracked">Time tracked</string>
     <string name="summary_title_projects">Projects</string>
 
+    <string name="summary_projects_label_no_repo">Connect repository to see commits</string>
+    <string name="summary_projects_template_more_commits">Show %d more commites</string>
+
     <string name="commits_branch_name_unknown">Unknown</string>
     <string name="summary_template_average_delta_above" formatted="false">above</string>
     <string name="summary_template_average_delta_below" formatted="false">below</string>

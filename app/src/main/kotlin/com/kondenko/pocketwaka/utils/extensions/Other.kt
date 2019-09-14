@@ -72,3 +72,7 @@ fun Disposable?.attachToLifecycle(lifecycle: LifecycleOwner) {
 fun SharedPreferences.getStringOrThrow(key: String) =
         getString(key, null) ?: throw NullPointerException("Preference with key $key not found")
 
+
+fun <K, V> Map<K, V>.findKey(predicate: (V) -> Boolean): K? {
+    return entries.find { (k, v) -> predicate(v) }?.key
+}

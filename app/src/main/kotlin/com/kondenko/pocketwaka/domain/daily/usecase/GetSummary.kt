@@ -13,10 +13,7 @@ import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.domain.StatefulUseCase
 import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
-import com.kondenko.pocketwaka.domain.daily.model.Branch
-import com.kondenko.pocketwaka.domain.daily.model.Commit
-import com.kondenko.pocketwaka.domain.daily.model.Project
-import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
+import com.kondenko.pocketwaka.domain.daily.model.*
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.date.DateRange
 import io.reactivex.Maybe
@@ -56,8 +53,8 @@ class GetSummary(
 
     private fun getSummary(params: Params): Observable<SummaryRangeDbModel> {
         // STOPSHIP
-        val startDate =  dateFormatter.formatDateAsParameter(Date(params.dateRange.start)) // "2019-09-05"
-        val endDate =  dateFormatter.formatDateAsParameter(Date(params.dateRange.end)) // "2019-09-05"
+        val startDate = dateFormatter.formatDateAsParameter(Date(params.dateRange.start)) // "2019-09-05"
+        val endDate = dateFormatter.formatDateAsParameter(Date(params.dateRange.end)) // "2019-09-05"
         return getTokenHeader.build().flatMapObservable { tokenHeader ->
             val repoParams = SummaryRepository.Params(
                     tokenHeader,
@@ -121,12 +118,31 @@ class GetSummary(
                     .toList()
                     .flatMapMaybe { projects ->
                         if (projects.isNotEmpty()) {
-                            Maybe.just(listOf(SummaryUiModel.ProjectsTitle) + SummaryUiModel.Projects(projects))
+                            Maybe.just<List<SummaryUiModel>>(
+                                    listOf(SummaryUiModel.ProjectsTitle) +
+                                            projects.map<Project, SummaryUiModel.Project> {
+                                                SummaryUiModel.Project(it.toUiModel())
+                                            }
+                            )
                         } else {
                             Maybe.empty()
                         }
                     }
                     .map { SummaryDbModel(summaryData.range.date, false, it.isEmpty(), it) }
+
+    private fun Project.toUiModel(): List<ProjectModel> {
+        var projectModel = listOf(ProjectModel.ProjectName(name, timeTracked)) +
+                branches.flatMap<Branch, ProjectModel> {
+                    listOf(ProjectModel.Branch(it.name, it.timeTracked)) +
+                            it.commits.map<Commit, ProjectModel> {
+                                ProjectModel.Commit(it.message, it.timeTracked)
+                            }
+                }
+        if (!this.isRepoConnected) {
+            projectModel = projectModel + listOf(ProjectModel.ConnectRepoAction(connectRepoLink(name)))
+        }
+        return projectModel
+    }
 
     private fun groupByBranches(branches: Iterable<Duration>, commits: Iterable<CommitServerModel>): List<Branch> =
             branches
@@ -144,5 +160,7 @@ class GetSummary(
                     }
 
     private fun CommitsServiceModel.isRepoConnected() = error?.contains(noRepoError, ignoreCase = true) == false
+
+    private fun connectRepoLink(project: String) = "https://wakatime.com/projects/$project/edit"
 
 }

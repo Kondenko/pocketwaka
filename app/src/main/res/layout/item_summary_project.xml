@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/App.CardView.Light"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/margin_stats_card_horizontal"
+    android:layout_marginTop="@dimen/margin_stats_card_vertical"
+    android:layout_marginEnd="@dimen/margin_stats_card_horizontal"
+    android:layout_marginBottom="@dimen/margin_stats_card_vertical"
+    app:contentPadding="@dimen/padding_all_card_inner"
+    >
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_summary_project"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        />
+
+</com.google.android.material.card.MaterialCardView>
