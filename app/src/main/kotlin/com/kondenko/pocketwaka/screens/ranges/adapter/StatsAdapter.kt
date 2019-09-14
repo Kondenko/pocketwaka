@@ -30,12 +30,6 @@ class StatsAdapter(
         Status(0), Info(1), BestDay(2), Stats(3)
     }
 
-    override var items: List<StatsUiModel> = super.items
-        set(value) {
-            field = value
-            super.items = value
-        }
-
     init {
         setHasStableIds(true)
     }
