@@ -42,8 +42,14 @@ class Builder<T : Any> {
 
     val declarations = mutableListOf<ItemDeclaration<out T>>()
 
+    var items: List<T>? = null
+
     inline fun <reified I : T> bindItem(layoutRes: Int, noinline binder: Binder<I>) {
         declarations.add(ItemDeclaration(I::class, layoutRes, binder))
+    }
+
+    fun items(itemsProvider: () -> List<T>) {
+        items = itemsProvider()
     }
 
 }
@@ -59,5 +65,7 @@ fun <T : Any> createAdapter(context: Context, binders: Builder<T>.() -> Unit): G
             .associate { (viewType, declaration) ->
                 viewType to declaration
             }
-    return GenericAdapter(context, itemDeclarations)
+    val adapter =  GenericAdapter(context, itemDeclarations)
+    builder.items?.let { adapter.items = it }
+    return adapter
 }
