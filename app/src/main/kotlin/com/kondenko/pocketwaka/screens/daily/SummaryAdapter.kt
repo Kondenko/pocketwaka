@@ -142,6 +142,7 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item.url)))
                     }
                 }
+                bindItem<ProjectModel.NoCommitsLabel>(R.layout.item_summary_project_no_commits)
 //                bindItem<ProjectModel.MoreCommitsAction>(R.layout.item_summary_project_connect_more_commits) { item ->
 //                    itemView.textview_summary_show_more_commits.text = context.getString(R.string.summary_projects_template_more_commits, item)
 //                }

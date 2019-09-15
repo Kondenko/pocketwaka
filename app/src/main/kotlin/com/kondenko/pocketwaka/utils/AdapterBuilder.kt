@@ -11,7 +11,7 @@ private typealias Binder<T> = View.(T) -> Unit
 
 private typealias ItemDeclarations<T> = Map<Int, ItemDeclaration<out T>>
 
-data class ItemDeclaration<T : Any>(val itemClass: KClass<T>, val itemLayoutRes: Int, val binder: View.(T) -> Unit)
+data class ItemDeclaration<T : Any>(val itemClass: KClass<T>, val itemLayoutRes: Int, val binder: (View.(T) -> Unit)?)
 
 class GenericAdapter<T : Any>(context: Context, private val itemDeclarations: ItemDeclarations<T>)
     : BaseAdapter<T, GenericAdapter<T>.GenericViewHolder>(context) {
@@ -31,7 +31,7 @@ class GenericAdapter<T : Any>(context: Context, private val itemDeclarations: It
     inner class GenericViewHolder(view: View, private val viewType: Int) : BaseViewHolder<T>(view) {
         override fun bind(item: T) {
             (itemDeclarations[viewType] as? ItemDeclaration<T>)?.let {
-                it.binder(itemView, item)
+                it.binder?.invoke(itemView, item)
             }
         }
     }
@@ -44,7 +44,7 @@ class Builder<T : Any> {
 
     var items: List<T>? = null
 
-    inline fun <reified I : T> bindItem(layoutRes: Int, noinline binder: Binder<I>) {
+    inline fun <reified I : T> bindItem(layoutRes: Int, noinline binder: Binder<I>? = null) {
         declarations.add(ItemDeclaration(I::class, layoutRes, binder))
     }
 

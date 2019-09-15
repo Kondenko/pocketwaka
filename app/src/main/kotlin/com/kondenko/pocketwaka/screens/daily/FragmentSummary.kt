@@ -45,6 +45,11 @@ class FragmentSummary : Fragment() {
             is State.Success -> {
                 recyclerSkeleton.actualAdapter.items = data
             }
+            is State.Loading -> {
+                data?.let {
+                    recyclerSkeleton.actualAdapter.items = it
+                }
+            }
             is State.Failure -> exception?.report()
         }
     }

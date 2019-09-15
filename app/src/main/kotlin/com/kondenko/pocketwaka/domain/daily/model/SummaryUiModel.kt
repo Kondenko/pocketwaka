@@ -19,11 +19,12 @@ sealed class SummaryUiModel {
 
 }
 
-sealed class ProjectModel() {
+sealed class ProjectModel {
     data class ProjectName(val name: String, val timeTracked: String?) : ProjectModel()
     data class Branch(val name: String, val timeTracked: String?) : ProjectModel()
     data class Commit(val message: String, val timeTracked: String?) : ProjectModel()
     data class ConnectRepoAction(val url: String) : ProjectModel()
     object MoreCommitsAction : ProjectModel()
+    object NoCommitsLabel : ProjectModel()
 }
 

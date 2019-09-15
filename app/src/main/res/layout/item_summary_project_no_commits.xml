@@ -5,7 +5,7 @@
     android:layout_centerVertical="true"
     android:paddingStart="@dimen/padding_summary_project_no_repo_message"
     android:paddingEnd="@dimen/padding_summary_project_no_repo_message"
-    android:text="@string/summary_projects_label_no_repo"
+    android:text="@string/summary_projects_label_no_commits"
     android:gravity="center_vertical"
     android:textColor="@color/color_text_secondary"
     android:textSize="14sp"

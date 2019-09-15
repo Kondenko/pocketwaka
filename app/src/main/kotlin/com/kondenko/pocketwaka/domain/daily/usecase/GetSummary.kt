@@ -138,17 +138,21 @@ class GetSummary(
                             Maybe.empty()
                         }
                     }
-                    .map { SummaryDbModel(summaryData.range.date, false, it.isEmpty(), it) }
+                    .map { SummaryDbModel(summaryData.range.date, false, it.isEmpty(), it) } // TODO specify if the data is from cache and if it's empty
 
     private fun Project.toUiModel(): List<ProjectModel> {
         var projectModel = listOf(ProjectModel.ProjectName(name, timeTracked)) +
                 branches.flatMap {
                     listOf(ProjectModel.Branch(it.name, it.timeTracked)) +
-                            it.commits.map<Commit, ProjectModel> { (message, timeTracked) ->
-                                ProjectModel.Commit(message, timeTracked)
+                            if (it.commits.isEmpty() && isRepoConnected) {
+                                listOf(ProjectModel.NoCommitsLabel)
+                            } else {
+                                it.commits.map<Commit, ProjectModel> { (message, timeTracked) ->
+                                    ProjectModel.Commit(message, timeTracked)
+                                }
                             }
                 }
-        if (!this.isRepoConnected) {
+        if (!isRepoConnected && branches.isNotEmpty()) {
             projectModel = projectModel + listOf(ProjectModel.ConnectRepoAction(connectRepoLink(name)))
         }
         return projectModel
