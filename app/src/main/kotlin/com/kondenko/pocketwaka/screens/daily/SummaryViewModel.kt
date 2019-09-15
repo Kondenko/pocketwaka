@@ -25,7 +25,7 @@ class SummaryViewModel(
     fun getSummaryForRange(range: DateRange? = null) {
         val rangeSource = range?.toSingle() ?: getDefaultSummaryRange()
         disposables += rangeSource.flatMapObservable { range ->
-            getSummaryState(GetSummary.Params(range, refreshRate = refreshRate, retryAttempts = retryAttempts))
+            getSummaryState.build(GetSummary.Params(range, refreshRate = refreshRate, retryAttempts = retryAttempts))
         }.subscribe(_state::postValue, this::handleError)
     }
 
