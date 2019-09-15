@@ -14,6 +14,7 @@ import com.kondenko.pocketwaka.domain.StatefulUseCase
 import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.daily.model.*
+import com.kondenko.pocketwaka.utils.KOptional
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.date.DateRange
 import io.reactivex.Maybe
@@ -98,18 +99,27 @@ class GetSummary(
                         val branchesSingle =
                                 durationsRepository.getData(DurationsRepository.Params(token, date, projectName))
                                         .toMaybe()
+                                        .map { KOptional.of(it) }
+                                        .onErrorReturnItem(KOptional.empty())
+                                        .defaultIfEmpty(KOptional.empty())
                         val commitsSingle =
                                 commitsRepository.getData(CommitsRepository.Params(token, projectName))
                                         .toMaybe()
                                         .onErrorComplete()
+                                        .map { KOptional.of(it) }
+                                        .onErrorReturnItem(KOptional.empty())
+                                        .defaultIfEmpty(KOptional.empty())
                         Maybes.zip(branchesSingle, commitsSingle) { branchesServerModel, commitsServerModel ->
                             val timeTracked = project.totalSeconds
                                     ?.roundToLong()
                                     ?.let { seconds -> dateFormatter.secondsToHumanReadableTime(seconds, DateFormatter.Format.Short) }
-                            val isRepoConnected = commitsServerModel.isRepoConnected()
-                            val commits = commitsServerModel.commits.filter { it.authorDate.contains(date) }
+                            val isRepoConnected = commitsServerModel.item?.isRepoConnected() == true
+                            val commits = (commitsServerModel.item?.commits ?: emptyList())
+                                    .filter { it.authorDate.contains(date) }
+                            val branchesData = branchesServerModel?.item?.branchesData
+                                    ?: emptyList()
                             val branches = groupByBranches(
-                                    branchesServerModel.branchesData,
+                                    branchesData,
                                     commits
                             )
                             Project(projectName, timeTracked, isRepoConnected, branches)
