@@ -132,10 +132,10 @@ class GetSummary(
 
     private fun Project.toUiModel(): List<ProjectModel> {
         var projectModel = listOf(ProjectModel.ProjectName(name, timeTracked)) +
-                branches.flatMap<Branch, ProjectModel> {
+                branches.flatMap {
                     listOf(ProjectModel.Branch(it.name, it.timeTracked)) +
-                            it.commits.map<Commit, ProjectModel> {
-                                ProjectModel.Commit(it.message, it.timeTracked)
+                            it.commits.map<Commit, ProjectModel> { (message, timeTracked) ->
+                                ProjectModel.Commit(message, timeTracked)
                             }
                 }
         if (!this.isRepoConnected) {
@@ -148,18 +148,16 @@ class GetSummary(
             branches
                     .groupBy { it.branch }
                     .map { (name, durations) -> name to durations.sumByDouble { it.duration } }
-                    .filter { (branch, duration) -> branch != null }
-                    .map { (branch: String?, duration) ->
+                    .filter { (branch, _) -> branch != null }
+                    .map { (branch: String, duration) ->
                         val durationHumanReadable = dateFormatter.secondsToHumanReadableTime(duration.roundToLong())
-                        val commitsFromBranch = branch?.let { name ->
-                            commits
-                                    .filter { it.ref?.contains(name) == true }
-                                    .map { Commit(it.message, dateFormatter.secondsToHumanReadableTime(it.totalSeconds.toLong())) }
-                        }
+                        val commitsFromBranch = commits
+                                .filter { it.ref?.contains(branch) == true }
+                                .map { Commit(it.message, dateFormatter.secondsToHumanReadableTime(it.totalSeconds.toLong())) }
                         Branch(branch, durationHumanReadable, commitsFromBranch)
                     }
 
-    private fun CommitsServiceModel.isRepoConnected() = error?.contains(noRepoError, ignoreCase = true) == false
+    private fun CommitsServiceModel.isRepoConnected() = error == null || !error.contains(noRepoError, ignoreCase = true)
 
     private fun connectRepoLink(project: String) = "https://wakatime.com/projects/$project/edit"
 
