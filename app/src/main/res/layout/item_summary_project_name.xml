@@ -1,9 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/textview_summary_project_name"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/padding_all_card_inner"
-    android:layout_marginEnd="@dimen/padding_all_card_inner"
-    android:textAppearance="@style/TextAppearance.App.Text.Title"
-    />
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:gravity="center_vertical"
+    android:paddingStart="@dimen/padding_all_card_inner"
+    android:paddingEnd="@dimen/padding_all_card_inner"
+    >
+
+    <TextView
+        android:id="@+id/textview_summary_project_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_summary_project_item_title_end"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:lines="1"
+        android:textColor="@color/color_text_primary"
+        android:textSize="24sp"
+        tools:text="@string/app_name"
+        />
+
+    <TextView
+        android:id="@+id/textview_summary_project_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/textview_summary_project_name"
+        android:layout_toEndOf="@id/textview_summary_project_name"
+        android:textColor="@color/color_text_primary"
+        android:textSize="18sp"
+        tools:text="10h 5m"
+        />
+
+</RelativeLayout>

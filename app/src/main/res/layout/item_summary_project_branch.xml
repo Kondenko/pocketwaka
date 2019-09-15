@@ -1,8 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/textview_summary_project_branch"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/padding_all_card_inner"
-    android:layout_marginEnd="@dimen/padding_all_card_inner"
-    />
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:gravity="center_vertical"
+    android:paddingStart="@dimen/padding_all_card_inner"
+    android:paddingEnd="@dimen/padding_all_card_inner"
+    >
+
+    <ImageView
+        android:id="@+id/imageview_summary_project_branch_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="@dimen/margin_summary_project_branch_icon"
+        android:layout_marginEnd="@dimen/margin_summary_project_branch_icon"
+        android:layout_marginBottom="@dimen/margin_summary_project_branch_icon"
+        android:src="@drawable/ic_branch"
+        />
+
+    <TextView
+        android:id="@+id/textview_summary_project_branch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/margin_summary_project_item_title_end"
+        android:layout_toEndOf="@+id/imageview_summary_project_branch_icon"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/color_text_primary"
+        android:textSize="16sp"
+        android:lines="1"
+        android:ellipsize="end"
+        tools:text="@string/app_name"
+        />
+
+    <TextView
+        android:id="@+id/textview_summary_project_branch_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/textview_summary_project_branch"
+        android:layout_toEndOf="@id/textview_summary_project_branch"
+        android:textColor="@color/color_text_primary"
+        android:textSize="14sp"
+        tools:text="10h 5m"
+        />
+
+</RelativeLayout>

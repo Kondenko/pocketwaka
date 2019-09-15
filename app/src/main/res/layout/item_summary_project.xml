@@ -8,7 +8,6 @@
     android:layout_marginTop="@dimen/margin_stats_card_vertical"
     android:layout_marginEnd="@dimen/margin_stats_card_horizontal"
     android:layout_marginBottom="@dimen/margin_stats_card_vertical"
-    app:contentPadding="@dimen/padding_all_card_inner"
     >
 
     <androidx.recyclerview.widget.RecyclerView

@@ -37,7 +37,7 @@
 
         <tag
             android:id="@id/tag_skeleton_height_key"
-            android:value="@integer/height_skeleton_time_tracked"
+            android:value="@integer/height_summary_skeleton_time_tracked"
             />
 
     </TextView>
@@ -63,12 +63,12 @@
 
             <tag
                 android:id="@id/tag_skeleton_width_key"
-                android:value="@integer/height_skeleton_time_tracked"
+                android:value="@integer/height_summary_skeleton_time_tracked"
                 />
 
             <tag
                 android:id="@id/tag_skeleton_height_key"
-                android:value="@integer/height_skeleton_time_tracked"
+                android:value="@integer/height_summary_skeleton_time_tracked"
                 />
 
         </ImageView>
@@ -92,7 +92,7 @@
 
             <tag
                 android:id="@id/tag_skeleton_height_key"
-                android:value="@integer/height_skeleton_time_tracked"
+                android:value="@integer/height_summary_skeleton_time_tracked"
                 />
 
         </TextView>

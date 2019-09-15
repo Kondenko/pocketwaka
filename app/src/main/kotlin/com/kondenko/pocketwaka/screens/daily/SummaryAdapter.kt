@@ -56,7 +56,7 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
             val view = inflate(R.layout.item_summary_project, parent)
             ProjectsViewHolder(view, createSkeleton(view))
         }
-        else -> throw IllegalArgumentException()
+        else -> throw IllegalViewTypeException()
     }
 
     override fun createSkeleton(view: View) = Skeleton(context, view).apply {
@@ -124,26 +124,27 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
         override fun bind(item: SummaryUiModel.Project) {
             super.bind(item)
             itemView.recyclerview_summary_project.adapter = createAdapter<ProjectModel>(context) {
+                items { item.models }
                 bindItem<ProjectModel.ProjectName>(R.layout.item_summary_project_name) { item ->
                     textview_summary_project_name.text = item.name
+                    textview_summary_project_time.text = item.timeTracked
                 }
                 bindItem<ProjectModel.Branch>(R.layout.item_summary_project_branch) { item ->
                     textview_summary_project_branch.text = item.name
+                    textview_summary_project_branch_time.text = item.timeTracked
                 }
                 bindItem<ProjectModel.Commit>(R.layout.item_summary_project_commit) { item ->
                     textview_summary_project_commit_message.text = item.message
+                    textview_summary_project_commit_time.text = item.timeTracked
                 }
                 bindItem<ProjectModel.ConnectRepoAction>(R.layout.item_summary_project_connect_repo) { item ->
                     itemView.setOnClickListener {
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item.url)))
                     }
                 }
-                bindItem<ProjectModel.MoreCommitsAction>(R.layout.item_summary_project_connect_more_commits) { item ->
-//                    itemView.textview_summary_show_more_commits.text =
-//                            context.getString(R.string.summary_projects_template_more_commits, item)
-                }
-            }.also {
-                it.items = item.models
+//                bindItem<ProjectModel.MoreCommitsAction>(R.layout.item_summary_project_connect_more_commits) { item ->
+//                    itemView.textview_summary_show_more_commits.text = context.getString(R.string.summary_projects_template_more_commits, item)
+//                }
             }
         }
 
