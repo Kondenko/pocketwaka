@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="32dp"
@@ -10,25 +11,33 @@
 
     <TextView
         android:id="@+id/textview_summary_project_commit_message"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_summary_project_item_title_end"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/color_text_primary"
         android:textSize="14sp"
-        tools:text="@string/app_name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textview_summary_project_commit_time"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="This commit message is too long to fit into a single line and needs to be truncatedв"
         />
 
     <TextView
         android:id="@+id/textview_summary_project_commit_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/textview_summary_project_commit_message"
-        android:layout_toEndOf="@id/textview_summary_project_commit_message"
         android:textColor="@color/color_text_secondary"
         android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textview_summary_project_commit_message"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="10h 5m"
         />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
