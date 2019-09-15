@@ -20,6 +20,7 @@ import com.kondenko.pocketwaka.utils.date.DateRange
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.Maybes
+import io.reactivex.rxkotlin.Singles
 import io.reactivex.rxkotlin.toObservable
 import java.sql.Date
 import kotlin.math.roundToLong
@@ -92,24 +93,19 @@ class GetSummary(
             summaryData.projects
                     .toObservable()
                     .filter { it.name != null }
-                    .flatMapMaybe { project ->
+                    .flatMapSingle { project ->
                         val date = summaryData.range.date
                         val projectName = project.name
                                 ?: throw NullPointerException("A project with a null name wasn't filtered out: $project")
                         val branchesSingle =
                                 durationsRepository.getData(DurationsRepository.Params(token, date, projectName))
-                                        .toMaybe()
                                         .map { KOptional.of(it) }
                                         .onErrorReturnItem(KOptional.empty())
-                                        .defaultIfEmpty(KOptional.empty())
                         val commitsSingle =
                                 commitsRepository.getData(CommitsRepository.Params(token, projectName))
-                                        .toMaybe()
-                                        .onErrorComplete()
                                         .map { KOptional.of(it) }
                                         .onErrorReturnItem(KOptional.empty())
-                                        .defaultIfEmpty(KOptional.empty())
-                        Maybes.zip(branchesSingle, commitsSingle) { branchesServerModel, commitsServerModel ->
+                        Singles.zip(branchesSingle, commitsSingle) { branchesServerModel, commitsServerModel ->
                             val timeTracked = project.totalSeconds
                                     ?.roundToLong()
                                     ?.let { seconds -> dateFormatter.secondsToHumanReadableTime(seconds, DateFormatter.Format.Short) }
