@@ -10,6 +10,9 @@
         <item quantity="other">%d mins</item>
     </plurals>
 
+    <string name="stats_time_format_hours_short">%dh</string>
+    <string name="stats_time_format_minutes_short">%dm</string>
+
     <string name="all_app_name" translatable="false">PocketWaka</string>
     <string name="screen_stats">Your stats</string>
 

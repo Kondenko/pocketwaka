@@ -58,4 +58,6 @@
     <string name="summary_title_projects">Проекты</string>
     <string name="summary_projects_label_no_repo">Добавьтерепозиторий, чтобы увидеть коммиты</string>
     <string name="summary_projects_template_more_commits">Ещё %d коммитов</string>
+    <string name="stats_time_format_hours_short">%dч</string>
+    <string name="stats_time_format_minutes_short">%dм</string>
 </resources>

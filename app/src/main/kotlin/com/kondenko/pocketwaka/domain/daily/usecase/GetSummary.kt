@@ -105,7 +105,7 @@ class GetSummary(
                         Maybes.zip(branchesSingle, commitsSingle) { branchesServerModel, commitsServerModel ->
                             val timeTracked = project.totalSeconds
                                     ?.roundToLong()
-                                    ?.let(dateFormatter::secondsToHumanReadableTime)
+                                    ?.let { seconds -> dateFormatter.secondsToHumanReadableTime(seconds, DateFormatter.Format.Short) }
                             val isRepoConnected = commitsServerModel.isRepoConnected()
                             val commits = commitsServerModel.commits.filter { it.authorDate.contains(date) }
                             val branches = groupByBranches(
@@ -150,10 +150,18 @@ class GetSummary(
                     .map { (name, durations) -> name to durations.sumByDouble { it.duration } }
                     .filter { (branch, _) -> branch != null }
                     .map { (branch: String, duration) ->
-                        val durationHumanReadable = dateFormatter.secondsToHumanReadableTime(duration.roundToLong())
+                        val durationHumanReadable = dateFormatter.secondsToHumanReadableTime(
+                                duration.roundToLong(),
+                                DateFormatter.Format.Short
+                        )
                         val commitsFromBranch = commits
                                 .filter { it.ref?.contains(branch) == true }
-                                .map { Commit(it.message, dateFormatter.secondsToHumanReadableTime(it.totalSeconds.toLong())) }
+                                .map {
+                                    Commit(it.message, dateFormatter.secondsToHumanReadableTime(
+                                            it.totalSeconds.toLong(),
+                                            DateFormatter.Format.Short
+                                    ))
+                                }
                         Branch(branch, durationHumanReadable, commitsFromBranch)
                     }
 

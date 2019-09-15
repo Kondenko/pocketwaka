@@ -9,6 +9,10 @@ import java.util.concurrent.TimeUnit
 
 class DateFormatter(private val context: Context, private val stringProvider: StringProvider) {
 
+    enum class Format {
+        Short, Long
+    }
+
     fun formatDateAsParameter(date: Date): String =
             SimpleDateFormat("yyyy-MM-dd").format(date.time)
 
@@ -30,11 +34,23 @@ class DateFormatter(private val context: Context, private val stringProvider: St
         )
     }
 
-    fun secondsToHumanReadableTime(seconds: Long): String {
+    /**
+     * A shorthand version of [secondsToHumanReadableTime] which uses [Format.Long] by default.
+     * This overload is necessary to keep supporting method references to this method.
+     */
+    fun secondsToHumanReadableTime(seconds: Long): String = secondsToHumanReadableTime(seconds, Format.Long)
+
+    fun secondsToHumanReadableTime(seconds: Long, format: Format = Format.Long): String {
         val hours = TimeUnit.SECONDS.toHours(seconds)
         val minutes = TimeUnit.SECONDS.toMinutes(seconds) - TimeUnit.HOURS.toMinutes(hours)
-        val templateHours = stringProvider.getHoursTemplate(hours.toInt())
-        val templateMinutes = stringProvider.getMinutesTemplate(minutes.toInt())
+        val templateHours = when (format) {
+            Format.Long -> stringProvider.getHoursTemplate(hours.toInt())
+            Format.Short -> stringProvider.getHoursTemplateShort(hours.toInt())
+        }
+        val templateMinutes = when (format) {
+            Format.Long -> stringProvider.getMinutesTemplate(minutes.toInt())
+            Format.Short -> stringProvider.getMinutesTemplateShort(minutes.toInt())
+        }
         val timeBuilder = StringBuilder()
         if (hours > 0) timeBuilder.append(templateHours.format(hours)).append(' ')
         if (minutes > 0) timeBuilder.append(templateMinutes.format(minutes))
