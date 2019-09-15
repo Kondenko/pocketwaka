@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.kondenko.pocketwaka.screens.base.BaseAdapter
 import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
-import com.kondenko.pocketwaka.utils.extensions.findKey
 import kotlin.reflect.KClass
 
 private typealias Binder<T> = View.(T) -> Unit
@@ -17,9 +16,10 @@ data class ItemDeclaration<T : Any>(val itemClass: KClass<T>, val itemLayoutRes:
 class GenericAdapter<T : Any>(context: Context, private val itemDeclarations: ItemDeclarations<T>)
     : BaseAdapter<T, GenericAdapter<T>.GenericViewHolder>(context) {
 
-    override fun getItemViewType(position: Int): Int =
-            itemDeclarations.findKey { items[position]::class == it.itemClass }
-                    ?: throw IllegalViewTypeException("Couldn't find the type of ${items[position]}")
+    private val viewTypes = itemDeclarations.entries.associate { (k, v) -> v.itemClass to k }
+
+    override fun getItemViewType(position: Int): Int = viewTypes[items[position]::class]
+            ?: throw IllegalViewTypeException("Couldn't find the type of ${items[position]}")
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenericViewHolder {
         val declaration = itemDeclarations[viewType]
