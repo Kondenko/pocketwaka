@@ -7,8 +7,7 @@ import com.kondenko.pocketwaka.data.summary.service.SummaryService
 import io.reactivex.Completable
 import io.reactivex.Maybe
 
-class SummaryRepository(summaryService: SummaryService)
-    : CacheBackedRepository<SummaryRepository.Params, Summary, SummaryRangeDbModel>(
+class SummaryRepository(summaryService: SummaryService) : CacheBackedRepository<SummaryRepository.Params, Summary, SummaryRangeDbModel>(
         serverDataProvider = { (tokenHeader, start, end, project, branches): Params ->
             summaryService.getSummaries(tokenHeader, start, end, project, branches)
         },

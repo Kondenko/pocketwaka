@@ -54,9 +54,8 @@ class GetSummary(
                     ?: Observable.error(NullPointerException("Params are null"))
 
     private fun getSummary(params: Params): Observable<SummaryRangeDbModel> {
-        // STOPSHIP
-        val startDate = dateFormatter.formatDateAsParameter(Date(params.dateRange.start)) // "2019-09-05"
-        val endDate = dateFormatter.formatDateAsParameter(Date(params.dateRange.end)) // "2019-09-05"
+        val startDate = dateFormatter.formatDateAsParameter(Date(params.dateRange.start))
+        val endDate = dateFormatter.formatDateAsParameter(Date(params.dateRange.end))
         return getTokenHeader.build().flatMapObservable { tokenHeader ->
             val repoParams = SummaryRepository.Params(
                     tokenHeader,
