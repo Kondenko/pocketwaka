@@ -10,10 +10,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.kondenko.pocketwaka.FragmentMenu
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.screens.daily.FragmentSummary
 import com.kondenko.pocketwaka.screens.login.LoginActivity
+import com.kondenko.pocketwaka.screens.menu.FragmentMenu
 import com.kondenko.pocketwaka.screens.ranges.FragmentRanges
 import com.kondenko.pocketwaka.utils.extensions.report
 import com.kondenko.pocketwaka.utils.extensions.transaction
