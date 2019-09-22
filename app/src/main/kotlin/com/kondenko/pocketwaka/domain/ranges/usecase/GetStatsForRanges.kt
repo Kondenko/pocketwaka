@@ -24,7 +24,11 @@ class GetStatsForRanges(
 
     override fun build(params: Params?): Observable<StatsDbModel> =
             getTokenHeader.build().flatMapObservable { header ->
-                rangeStatsRepository.getData(RangeStatsRepository.Params(header, params!!.range!!), serverModelConverter)
+                rangeStatsRepository.getData(RangeStatsRepository.Params(header, params!!.range!!)) { params ->
+                    flatMapMaybe {
+                        serverModelConverter(params, it)
+                    }
+                }
             }
 
 }

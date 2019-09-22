@@ -23,17 +23,16 @@ abstract class CacheBackedRepository<Params, ServerModel, DbModel : CacheableMod
         private val serverDataProvider: (Params) -> Single<ServerModel>,
         private val cachedDataProvider: (Params) -> Maybe<DbModel>
 ) {
-
     /**
      * First returns data from cache if it's available. Then returns data from server and caches it.
      *
      * @param params parameters to fetch data with
      * @param converter a function to convert [ServerModel] to [DbModel]
      */
-    fun getData(params: Params, converter: (Params, ServerModel) -> Maybe<DbModel>?): Observable<DbModel> {
+    fun getData(params: Params, mapper: Observable<ServerModel>.(Params) -> Observable<DbModel>): Observable<DbModel> {
         val cache = getDataFromCache(params)
         val server = getDataFromServer(params)
-                .flatMapMaybe { converter(params, it) }
+                .mapper(params)
                 .doOnNext { dto: DbModel ->
                     cacheData(dto).subscribeBy(
                             onComplete = { Timber.d("Data cached: ${dto::class}") },

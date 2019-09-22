@@ -26,7 +26,7 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSpannableCreator: SpannableCreator)
-    : SkeletonAdapter<SummaryUiModel, SummaryAdapter.SummaryViewHolder<SummaryUiModel>>(context, showSkeleton) {
+    : SkeletonAdapter<SummaryUiModel, SummaryAdapter.ViewHolder<SummaryUiModel>>(context, showSkeleton) {
 
     private enum class ViewType(val type: Int) {
         Status(0),
@@ -70,10 +70,10 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
         }
     }
 
-    abstract inner class SummaryViewHolder<out T : SummaryUiModel>(view: View, skeleton: Skeleton?)
+    abstract inner class ViewHolder<out T : SummaryUiModel>(view: View, skeleton: Skeleton?)
         : SkeletonViewHolder<T>(view, skeleton)
 
-    inner class TimeTrackedViewHolder(view: View, skeleton: Skeleton) : SummaryViewHolder<SummaryUiModel.TimeTracked>(view, skeleton) {
+    inner class TimeTrackedViewHolder(view: View, skeleton: Skeleton) : ViewHolder<SummaryUiModel.TimeTracked>(view, skeleton) {
 
         override fun bind(item: SummaryUiModel.TimeTracked) {
             with(itemView) {
@@ -117,9 +117,9 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
 
     }
 
-    inner class ProjectsTitleViewHolder(view: View) : SummaryViewHolder<SummaryUiModel.ProjectsTitle>(view, null)
+    inner class ProjectsTitleViewHolder(view: View) : ViewHolder<SummaryUiModel.ProjectsTitle>(view, null)
 
-    inner class ProjectsViewHolder(view: View, skeleton: Skeleton?) : SummaryViewHolder<SummaryUiModel.Project>(view, skeleton) {
+    inner class ProjectsViewHolder(view: View, skeleton: Skeleton?) : ViewHolder<SummaryUiModel.Project>(view, skeleton) {
 
         override fun bind(item: SummaryUiModel.Project) {
             super.bind(item)

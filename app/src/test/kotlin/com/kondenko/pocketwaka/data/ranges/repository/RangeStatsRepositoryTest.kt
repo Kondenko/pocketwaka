@@ -10,6 +10,7 @@ import com.kondenko.pocketwaka.utils.extensions.testWithLogging
 import com.nhaarman.mockito_kotlin.*
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
@@ -23,12 +24,12 @@ class RangeStatsRepositoryTest {
 
     private val dao = mock<StatsDao>()
 
-    private val serverModelConverter: (RangeStatsRepository.Params, StatsServerModel) -> Maybe<StatsDbModel> = mock()
-
     private val repository = RangeStatsRepository(
             service,
             dao
     )
+
+    private val serverModelConverter: Observable<StatsServerModel>.(RangeStatsRepository.Params) -> Observable<StatsDbModel> = mock()
 
     private val token = "token"
 
@@ -38,7 +39,7 @@ class RangeStatsRepositoryTest {
 
     @Before
     fun setupConverters() {
-        whenever(serverModelConverter(any(), any())).doReturn(Maybe.just(cachedStats))
+        whenever(serverModelConverter(any(), any())).doReturn(Observable.just(cachedStats))
     }
 
     @Test
@@ -98,6 +99,8 @@ class RangeStatsRepositoryTest {
                 .doReturn(Maybe.empty())
         whenever(service.getCurrentUserStats(token, range))
                 .doReturn(Single.error(error))
+        whenever(serverModelConverter(any(), any()))
+                .doReturn(Observable.error(error))
         with(repository.getData(RangeStatsRepository.Params(token, range), serverModelConverter).testWithLogging()) {
             verify(dao, times(1)).getCachedStats(range)
             inOrder(service, dao) {

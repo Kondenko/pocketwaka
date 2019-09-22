@@ -4,17 +4,16 @@ import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
 import com.kondenko.pocketwaka.data.summary.model.database.SummaryRangeDbModel
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.utils.date.DateRangeString
-import io.reactivex.Maybe
+import io.reactivex.Observable
 
 /**
  * Converts [com.kondenko.pocketwaka.data.summary.service.SummaryService]'s response to a DbModel.
  */
-class SummaryResponseConverter : (SummaryRepository.Params, List<Maybe<SummaryDbModel>>) -> Maybe<SummaryRangeDbModel> {
+class SummaryResponseConverter : (SummaryRepository.Params, List<Observable<SummaryDbModel>>) -> Observable<SummaryRangeDbModel> {
 
-    override fun invoke(param: SummaryRepository.Params, model: List<Maybe<SummaryDbModel>>): Maybe<SummaryRangeDbModel> =
-            Maybe.merge(model)
+    override fun invoke(param: SummaryRepository.Params, model: List<Observable<SummaryDbModel>>): Observable<SummaryRangeDbModel> =
+            Observable.merge(model)
                     .toList()
-                    .toMaybe()
                     .map {
                         SummaryRangeDbModel(
                                 range = DateRangeString(param.start, param.end),
@@ -23,5 +22,6 @@ class SummaryResponseConverter : (SummaryRepository.Params, List<Maybe<SummaryDb
                                 data = it
                         )
                     }
+                    .toObservable()
 }
 

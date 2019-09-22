@@ -2,6 +2,7 @@ package com.kondenko.pocketwaka.di.modules
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
+import com.kondenko.pocketwaka.data.summary.converters.FetchProjects
 import com.kondenko.pocketwaka.data.summary.converters.SummaryResponseConverter
 import com.kondenko.pocketwaka.data.summary.converters.TimeTrackedConverter
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
@@ -48,15 +49,22 @@ val summaryModule = module {
         SummaryRepository(summaryService = get())
     }
     single {
+        FetchProjects(
+                schedulersContainer = get(),
+                durationsRepository = get(),
+                commitsRepository = get(),
+                dateFormatter = get()
+        )
+    }
+    single {
         GetSummary(
                 schedulers = get(),
                 summaryRepository = get(),
-                commitsRepository = get(),
-                durationsRepository = get(),
                 getTokenHeader = get(),
                 dateFormatter = get(),
                 summaryResponseConverter = get<SummaryResponseConverter>(),
-                timeTrackedConverter = get<TimeTrackedConverter>()
+                timeTrackedConverter = get<TimeTrackedConverter>(),
+                fetchProjects = get()
         )
     }
     single {
