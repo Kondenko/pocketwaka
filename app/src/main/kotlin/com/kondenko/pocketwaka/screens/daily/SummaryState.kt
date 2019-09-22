@@ -1,11 +1,11 @@
 package com.kondenko.pocketwaka.screens.daily
 
-import com.kondenko.pocketwaka.data.summary.model.server.Summary
+import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
 import com.kondenko.pocketwaka.screens.State
 
-sealed class SummaryState(data: Summary?) : State<Summary>(data) {
+sealed class SummaryState(data: List<SummaryUiModel>?) : State<List<SummaryUiModel>>(data) {
     sealed class Empty : SummaryState(null) {
-        object EmptyDate : Empty()
+        object EmptyRange : Empty()
         object EmptyAccount : Empty()
     }
 }

@@ -34,6 +34,7 @@
                     android:scheme="pocketwaka" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".screens.main.MainActivity"
             android:label="@string/all_app_name">

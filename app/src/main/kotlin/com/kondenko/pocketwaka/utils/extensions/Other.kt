@@ -17,7 +17,7 @@ fun notNull(vararg values: Any?): Boolean = values.all { it != null }
 
 fun Float.negateIfTrue(condition: Boolean) = if (condition) -this else this
 
-fun <T> T?.singleOrErrorIfNull(exception: Throwable): Single<T> = this?.let { Single.just(it) }
+fun <T> T?.singleOrErrorIfNull(exception: Throwable = NullPointerException("Couldn't convert a null object to a Single")): Single<T> = this?.let { Single.just(it) }
         ?: Single.error(exception)
 
 inline fun SharedPreferences.edit(crossinline action: SharedPreferences.Editor.() -> Unit) {

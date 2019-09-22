@@ -9,8 +9,9 @@ import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
 data class SummaryDbModel(
         @PrimaryKey
         val date: Long?,
+        val isAccountEmpty: Boolean? = null,
         override val isFromCache: Boolean = false,
-        override val isEmpty: Boolean = false,
+        override val isEmpty: Boolean? = null,
         override val data: List<SummaryUiModel>
 ) : CacheableModel<List<SummaryUiModel>>
 

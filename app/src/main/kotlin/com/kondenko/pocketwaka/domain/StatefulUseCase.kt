@@ -23,7 +23,8 @@ import java.util.concurrent.TimeUnit
 abstract class StatefulUseCase<
         PARAMS : StatefulUseCase.ParamsWrapper,
         UI_MODEL,
-        DATABASE_MODEL : CacheableModel<UI_MODEL>>(
+        DATABASE_MODEL : CacheableModel<UI_MODEL>
+        >(
         private val schedulers: SchedulersContainer,
         private val useCase: UseCaseObservable<PARAMS, DATABASE_MODEL>,
         private val connectivityStatusProvider: ConnectivityStatusProvider
@@ -55,24 +56,26 @@ abstract class StatefulUseCase<
                 .subscribeOn(schedulers.workerScheduler)
     }
 
-    protected open fun getData(params: PARAMS, retryAttempts: Int, isConnected: Boolean): Observable<State<UI_MODEL>> =
+    private fun getData(params: PARAMS, retryAttempts: Int, isConnected: Boolean): Observable<State<UI_MODEL>> =
             useCase.build(params)
                     .retry(retryAttempts.toLong())
-                    .map {
-                        val uiModel = it.data
-                        if (it.isFromCache) {
-                            if (isConnected) Loading(uiModel)
-                            else Offline(uiModel)
-                        } else {
-                            if (it.isEmpty) Empty
-                            else Success(uiModel)
-                        }
-                    }
+                    .map { databaseModelToState(it, isConnected) }
                     .onErrorReturn { t ->
                         if (isConnected) Failure.Unknown(exception = t)
                         else Failure.NoNetwork(exception = t)
                     }
                     .subscribeOn(schedulers.workerScheduler)
+
+    protected open fun databaseModelToState(model: DATABASE_MODEL, isConnected: Boolean): State<UI_MODEL> {
+        val uiModel = model.data
+        return if (model.isFromCache) {
+            if (isConnected) Loading(uiModel)
+            else Offline(uiModel)
+        } else {
+            if (model.isEmpty == true) Empty
+            else Success(uiModel)
+        }
+    }
 
     private fun equal(old: State<UI_MODEL>, new: State<UI_MODEL>) = when {
         old is Failure<*> && new is Failure<*> -> old.exception == new.exception

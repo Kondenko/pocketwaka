@@ -1,12 +1,10 @@
 package com.kondenko.pocketwaka.di.modules
 
-import android.content.Context
+import com.kondenko.pocketwaka.data.ranges.service.RangeStatsService
 import com.kondenko.pocketwaka.data.stats.service.MockStatsService
-import com.kondenko.pocketwaka.data.stats.service.StatsService
-import org.koin.dsl.module.applicationContext
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module
 
-object MockStatsModule {
-    fun create(context: Context) = module {
-        single { MockStatsService(context, get()) as StatsService }
-    }
+val mockStatsModule = module {
+    single(override=true) { MockStatsService(androidContext(), get()) as RangeStatsService }
 }

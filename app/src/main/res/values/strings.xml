@@ -1,19 +1,7 @@
 <resources>
 
-    <plurals name="stats_time_format_hours" formatted="false">
-        <item quantity="one">%d hr</item>
-        <item quantity="other">%d hrs</item>
-    </plurals>
-
-    <plurals name="stats_time_format_minutes" formatted="false">
-        <item quantity="one">%d min</item>
-        <item quantity="other">%d mins</item>
-    </plurals>
-
-    <string name="stats_time_format_hours_short">%dh</string>
-    <string name="stats_time_format_minutes_short">%dm</string>
-
     <string name="all_app_name" translatable="false">PocketWaka</string>
+
     <string name="screen_stats">Your stats</string>
 
     <string name="main_action_logout">Log out</string>
@@ -85,5 +73,20 @@
     <string name="summary_template_average_delta_above" formatted="false">above</string>
     <string name="summary_template_average_delta_below" formatted="false">below</string>
     <string name="summary_template_average_delta" formatted="false">%d%% %s monthly average</string>
+
+    <!-- OTHER -->
+
+    <plurals name="stats_time_format_hours" formatted="false">
+        <item quantity="one">%d hr</item>
+        <item quantity="other">%d hrs</item>
+    </plurals>
+
+    <plurals name="stats_time_format_minutes" formatted="false">
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d mins</item>
+    </plurals>
+
+    <string name="stats_time_format_hours_short">%dh</string>
+    <string name="stats_time_format_minutes_short">%dm</string>
 
 </resources>

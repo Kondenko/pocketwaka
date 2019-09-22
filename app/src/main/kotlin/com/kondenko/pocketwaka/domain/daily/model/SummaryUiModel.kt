@@ -9,7 +9,7 @@ sealed class SummaryUiModel {
         class Offline(lastUpdated: Long? = null) : Status(lastUpdated)
     }
 
-    data class TimeTracked(val time: String, @IntRange(from = -100, to = 100) val percentDelta: Int)
+    data class TimeTracked(val time: String, @IntRange(from = -100, to = 100) val percentDelta: Int?)
         : SummaryUiModel()
 
     object ProjectsTitle

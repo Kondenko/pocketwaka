@@ -35,7 +35,7 @@ class FetchProjects(
         return params?.let {
             getProjects(params.tokenHeader, params.summaryData).map {
                 val date = dateFormatter.parseDateParameter(params.summaryData.range.date)
-                SummaryDbModel(date, false, false, listOf(it))
+                SummaryDbModel(date, data = listOf(it))
             }
         } ?: Observable.error(NullPointerException("Params are null"))
     }
