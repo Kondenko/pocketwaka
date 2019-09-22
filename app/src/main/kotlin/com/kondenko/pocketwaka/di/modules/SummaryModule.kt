@@ -75,10 +75,10 @@ val summaryModule = module {
     }
     factory { (context: Context, showSkeleton: Boolean) -> SummaryAdapter(context, showSkeleton, get<TimeSpannableCreator>()) }
     scope(named<FragmentSummary>()) {
-        scoped { (recyclerView: RecyclerView, skeletonItems: List<SummaryUiModel>) ->
+        scoped { (recyclerView: RecyclerView, context: Context, skeletonItems: List<SummaryUiModel>) ->
             RecyclerViewSkeleton(
                     recyclerView = recyclerView,
-                    adapterCreator = { showSkeleton: Boolean -> get<SummaryAdapter> { parametersOf(recyclerView.context, showSkeleton) } },
+                    adapterCreator = { showSkeleton: Boolean -> get<SummaryAdapter> { parametersOf(context, showSkeleton) } },
                     skeletonItems = skeletonItems
             )
         }

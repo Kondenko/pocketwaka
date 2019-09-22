@@ -56,7 +56,7 @@ class FragmentSummary : Fragment() {
 
     private fun setupList(view: View) {
         with(view.recyclerview_summary) {
-            recyclerSkeleton = currentScope.get { parametersOf(this, skeletonItems) }
+            recyclerSkeleton = currentScope.get { parametersOf(this, context, skeletonItems) }
             adapter = recyclerSkeleton.actualAdapter
         }
     }

@@ -61,10 +61,10 @@ val rangeStatsModule = module {
     }
     factory { (context: Context, showSkeleton: Boolean) -> StatsAdapter(context, showSkeleton, get<TimeSpannableCreator>()) }
     scope(named<FragmentStatsTab>()) {
-        scoped { (recyclerView: RecyclerView, skeletonItems: List<StatsUiModel>) ->
-            RecyclerViewSkeleton(
+        scoped { (recyclerView: RecyclerView, context: Context, skeletonItems: List<StatsUiModel>) ->
+            RecyclerViewSkeleton<StatsUiModel, StatsAdapter>(
                     recyclerView = recyclerView,
-                    adapterCreator = { showSkeleton: Boolean -> get<StatsAdapter> { parametersOf(recyclerView.context, showSkeleton) } },
+                    adapterCreator = { showSkeleton: Boolean -> get { parametersOf(context, showSkeleton) } },
                     skeletonItems = skeletonItems
             )
         }

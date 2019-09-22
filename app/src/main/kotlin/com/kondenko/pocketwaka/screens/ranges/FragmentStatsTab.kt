@@ -96,7 +96,7 @@ class FragmentStatsTab : Fragment() {
 
     private fun setupUi(context: Context) {
         with(stats_range_recyclerview) {
-            listSkeleton = currentScope.get { parametersOf(this@with, skeletonItems) }
+            listSkeleton = currentScope.get { parametersOf(this@with, context, skeletonItems) }
             statsAdapter = listSkeleton.actualAdapter
             layoutManager = LinearLayoutManager(context)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
