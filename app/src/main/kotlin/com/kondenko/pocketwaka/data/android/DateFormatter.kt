@@ -3,18 +3,31 @@ package com.kondenko.pocketwaka.data.android
 import android.content.Context
 import android.text.format.DateUtils
 import com.kondenko.pocketwaka.utils.extensions.getCurrentLocale
+import timber.log.Timber
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 class DateFormatter(private val context: Context, private val stringProvider: StringProvider) {
 
+    private val paramDateFormat = SimpleDateFormat("yyyy-MM-dd")
+
     enum class Format {
         Short, Long
     }
 
     fun formatDateAsParameter(date: Date): String =
-            SimpleDateFormat("yyyy-MM-dd").format(date.time)
+            paramDateFormat.format(date.time)
+
+    fun parseDateParameter(date: String): Long? {
+        return try {
+            paramDateFormat.parse(date).time
+        } catch (e: ParseException) {
+            Timber.w("Couldn't parse date $date")
+            null
+        }
+    }
 
     fun formatDateForDisplay(date: String): String {
         val locale = context.getCurrentLocale()

@@ -22,8 +22,10 @@ class TimeTrackedConverter(
 
     override fun invoke(param: SummaryRepository.Params, model: SummaryData): Maybe<SummaryDbModel> {
         val isEmpty = model.grandTotal.totalSeconds == 0f
-        return convertTimeTracked(model).map {
-            SummaryDbModel(model.range.date, false, isEmpty, listOf(it))
+        return convertTimeTracked(model).flatMap { uiModel ->
+            val date: Long? = dateFormatter.parseDateParameter(model.range.date)
+            date?.let { Maybe.just(SummaryDbModel(it, false, isEmpty, listOf(uiModel))) }
+                    ?: Maybe.empty()
         }
     }
 

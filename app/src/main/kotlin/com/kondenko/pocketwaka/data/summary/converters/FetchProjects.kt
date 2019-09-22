@@ -79,7 +79,8 @@ class FetchProjects(
                         } else {
                             listOf(SummaryUiModel.ProjectsTitle) + it
                         }
-                        SummaryDbModel(summaryData.range.date, false, uiModels.isEmpty(), uiModels)
+                        val date = dateFormatter.parseDateParameter(summaryData.range.date)
+                        SummaryDbModel(date, false, uiModels.isEmpty(), uiModels)
                     }
 
     private fun Project.toUiModel(): SummaryUiModel.Project {

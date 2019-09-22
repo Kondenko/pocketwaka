@@ -18,7 +18,7 @@ data class SummaryRangeDbModel(
 @Entity(tableName = "summary")
 data class SummaryDbModel(
         @PrimaryKey
-        val date: String,
+        val date: Long?,
         override val isFromCache: Boolean = false,
         override val isEmpty: Boolean = false,
         override val data: List<SummaryUiModel>
