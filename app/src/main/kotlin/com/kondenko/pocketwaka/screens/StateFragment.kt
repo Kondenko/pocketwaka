@@ -31,7 +31,7 @@ class StateFragment : Fragment() {
                 button_state_action_open_plugins.isVisible = false
             }
             State.Empty -> {
-                drawableRes = R.drawable.state_empty_img
+                drawableRes = R.drawable.img_state_empty
                 titleRes = R.string.empty_state_title
                 subtitleRes = R.string.empty_state_subtitle
                 button_state_action_open_plugins.isVisible = true
@@ -41,7 +41,7 @@ class StateFragment : Fragment() {
                 }
             }
             is State.Failure.InvalidParams, is State.Failure.Unknown -> {
-                drawableRes = R.drawable.state_error_img
+                drawableRes = R.drawable.img_state_error
                 titleRes = R.string.error_state_title
                 subtitleRes = R.string.error_state_subtitle
                 button_state_action_retry.isVisible = true
