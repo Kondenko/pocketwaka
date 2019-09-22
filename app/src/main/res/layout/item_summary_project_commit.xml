@@ -25,7 +25,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="This commit message is too long to fit into a single line and needs to be truncatedв"
-        />
+        >
+
+        <tag android:id="@+id/tag_skeleton_width_key" android:value="200"/>
+
+    </TextView>
 
     <TextView
         android:id="@+id/textview_summary_project_commit_time"

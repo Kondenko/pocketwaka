@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.domain.daily.model.ProjectModel
 import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.ui.skeleton.RecyclerViewSkeleton
@@ -23,8 +24,18 @@ class FragmentSummary : Fragment() {
 
     private lateinit var recyclerSkeleton: RecyclerViewSkeleton<SummaryUiModel, SummaryAdapter>
 
+    private val projectSkeleton = listOf(
+            ProjectModel.ProjectName("", null),
+            ProjectModel.Commit("", null),
+            ProjectModel.Commit("", null),
+            ProjectModel.Commit("", null)
+    ).let(SummaryUiModel::Project)
+
     private val skeletonItems = listOf(
-            SummaryUiModel.TimeTracked("", 1)
+            SummaryUiModel.TimeTracked("", 1),
+            SummaryUiModel.ProjectsTitle,
+            projectSkeleton,
+            projectSkeleton
     )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

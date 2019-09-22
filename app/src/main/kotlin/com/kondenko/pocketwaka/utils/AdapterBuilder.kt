@@ -3,7 +3,8 @@ package com.kondenko.pocketwaka.utils
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import com.kondenko.pocketwaka.screens.base.BaseAdapter
+import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
+import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
 import kotlin.reflect.KClass
 
@@ -11,10 +12,12 @@ private typealias Binder<T> = View.(T) -> Unit
 
 private typealias ItemDeclarations<T> = Map<Int, ItemDeclaration<out T>>
 
+private typealias SkeletonCreator = (View) -> Skeleton
+
 data class ItemDeclaration<T : Any>(val itemClass: KClass<T>, val itemLayoutRes: Int, val binder: (View.(T) -> Unit)?)
 
-class GenericAdapter<T : Any>(context: Context, private val itemDeclarations: ItemDeclarations<T>)
-    : BaseAdapter<T, GenericAdapter<T>.GenericViewHolder>(context) {
+class GenericAdapter<T : Any>(context: Context, private val skeletonCreator: SkeletonCreator? = null, private val itemDeclarations: ItemDeclarations<T>)
+    : SkeletonAdapter<T, GenericAdapter<T>.GenericViewHolder>(context, skeletonCreator != null) {
 
     private val viewTypes = itemDeclarations.entries.associate { (k, v) -> v.itemClass to k }
 
@@ -25,14 +28,18 @@ class GenericAdapter<T : Any>(context: Context, private val itemDeclarations: It
         val declaration = itemDeclarations[viewType]
                 ?: throw IllegalViewTypeException("View type $viewType wasn't found in $itemDeclarations")
         val view = inflate(declaration.itemLayoutRes, parent)
-        return GenericViewHolder(view, viewType)
+        val skeleton = createSkeleton(view)
+        return GenericViewHolder(view, viewType, skeleton)
     }
 
-    inner class GenericViewHolder(view: View, private val viewType: Int) : BaseViewHolder<T>(view) {
+    override fun createSkeleton(view: View): Skeleton? = skeletonCreator?.invoke(view)
+
+    inner class GenericViewHolder(view: View, private val viewType: Int, val skeleton: Skeleton?) : SkeletonViewHolder<T>(view, skeleton) {
         override fun bind(item: T) {
             (itemDeclarations[viewType] as? ItemDeclaration<T>)?.let {
                 it.binder?.invoke(itemView, item)
             }
+            super.bind(item)
         }
     }
 
@@ -42,7 +49,9 @@ class Builder<T : Any> {
 
     val declarations = mutableListOf<ItemDeclaration<out T>>()
 
-    var items: List<T>? = null
+    var items: List<T> = emptyList()
+
+    var skeletonCreator: SkeletonCreator? = null
 
     inline fun <reified I : T> bindItem(layoutRes: Int, noinline binder: Binder<I>? = null) {
         declarations.add(ItemDeclaration(I::class, layoutRes, binder))
@@ -52,11 +61,14 @@ class Builder<T : Any> {
         items = itemsProvider()
     }
 
+    fun skeleton(skeletonCreator: SkeletonCreator) {
+        this.skeletonCreator = skeletonCreator
+    }
+
 }
 
 fun <T : Any> createAdapter(context: Context, binders: Builder<T>.() -> Unit): GenericAdapter<T> {
-    val builder = Builder<T>()
-    builder.binders()
+    val builder = Builder<T>().apply(binders)
     val itemDeclarations = builder.declarations
             .distinctBy { (layoutRes, _) -> layoutRes }
             .mapIndexed { index, declaration ->
@@ -65,7 +77,7 @@ fun <T : Any> createAdapter(context: Context, binders: Builder<T>.() -> Unit): G
             .associate { (viewType, declaration) ->
                 viewType to declaration
             }
-    val adapter =  GenericAdapter(context, itemDeclarations)
-    builder.items?.let { adapter.items = it }
-    return adapter
+    return GenericAdapter(context, builder.skeletonCreator, itemDeclarations).apply {
+        items = builder.items
+    }
 }

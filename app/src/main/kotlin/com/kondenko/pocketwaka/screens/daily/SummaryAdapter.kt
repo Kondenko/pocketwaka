@@ -125,6 +125,17 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
             super.bind(item)
             itemView.recyclerview_summary_project.adapter = createAdapter<ProjectModel>(context) {
                 items { item.models }
+                if (showSkeleton) {
+                    skeleton { view ->
+                        Skeleton(context, view).apply {
+                            onSkeletonShown { isSkeleton ->
+                                view.textview_summary_project_name?.run {
+                                    y += 12f.adjustValue(isSkeleton)
+                                }
+                            }
+                        }
+                    }
+                }
                 bindItem<ProjectModel.ProjectName>(R.layout.item_summary_project_name) { item ->
                     textview_summary_project_name.text = item.name
                     textview_summary_project_time.text = item.timeTracked
