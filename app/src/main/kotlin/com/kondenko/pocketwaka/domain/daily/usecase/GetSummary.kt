@@ -58,8 +58,7 @@ class GetSummary(
     }
 
     /**
-     * Fecthes the time tracked for the specified period of time and for each project individually.
-     *
+     * Fetches the time tracked for the specified period of time and for each project individually.
      */
     private fun convert(tokenHeader: String, params: SummaryRepository.Params, data: Summary): Observable<SummaryDbModel> {
         return data.summaryData

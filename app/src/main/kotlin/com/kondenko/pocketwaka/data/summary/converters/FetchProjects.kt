@@ -13,6 +13,7 @@ import com.kondenko.pocketwaka.domain.daily.model.*
 import com.kondenko.pocketwaka.utils.KOptional
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.extensions.concatMapEagerDelayError
+import com.kondenko.pocketwaka.utils.extensions.startWithIfNotEmpty
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.Singles
 import io.reactivex.rxkotlin.toObservable
@@ -32,11 +33,14 @@ class FetchProjects(
 
     override fun build(params: Params?): Observable<SummaryDbModel> {
         return params?.let {
-            getProjects(params.tokenHeader, params.summaryData)
+            getProjects(params.tokenHeader, params.summaryData).map {
+                val date = dateFormatter.parseDateParameter(params.summaryData.range.date)
+                SummaryDbModel(date, false, false, listOf(it))
+            }
         } ?: Observable.error(NullPointerException("Params are null"))
     }
 
-    private fun getProjects(token: String, summaryData: SummaryData): Observable<SummaryDbModel> =
+    private fun getProjects(token: String, summaryData: SummaryData): Observable<SummaryUiModel> =
             summaryData.projects
                     .toObservable()
                     .filter { it.name != null }
@@ -47,13 +51,13 @@ class FetchProjects(
                         val branchesSingle =
                                 durationsRepository.getData(DurationsRepository.Params(token, date, projectName))
                                         .subscribeOn(schedulersContainer.workerScheduler)
-                                        .doOnError { Timber.w(it, "Durations not fetched because of an error") }
+                                        .doOnError { Timber.w(it, "Durations were not fetched because of an error") }
                                         .map { KOptional.of(it) }
                                         .onErrorReturnItem(KOptional.empty())
                         val commitsSingle =
                                 commitsRepository.getData(CommitsRepository.Params(token, projectName))
                                         .subscribeOn(schedulersContainer.workerScheduler)
-                                        .doOnError { Timber.w(it, "Commits not fetched because of an error") }
+                                        .doOnError { Timber.w(it, "Commits were not fetched because of an error") }
                                         .map { KOptional.of(it) }
                                         .onErrorReturnItem(KOptional.empty())
                         Singles.zip(branchesSingle, commitsSingle) { branchesServerModel, commitsServerModel ->
@@ -73,17 +77,9 @@ class FetchProjects(
                         }.toObservable()
                     }
                     .map { it.toUiModel() }
-                    .map {
-                        val uiModels = if (it.models.isEmpty()) {
-                            emptyList()
-                        } else {
-                            listOf(SummaryUiModel.ProjectsTitle) + it
-                        }
-                        val date = dateFormatter.parseDateParameter(summaryData.range.date)
-                        SummaryDbModel(date, false, uiModels.isEmpty(), uiModels)
-                    }
+                    .startWithIfNotEmpty(SummaryUiModel.ProjectsTitle)
 
-    private fun Project.toUiModel(): SummaryUiModel.Project {
+    private fun Project.toUiModel(): SummaryUiModel {
         var projectModel = listOf(ProjectModel.ProjectName(name, timeTracked)) +
                 branches.flatMap {
                     listOf(ProjectModel.Branch(it.name, it.timeTracked)) +
