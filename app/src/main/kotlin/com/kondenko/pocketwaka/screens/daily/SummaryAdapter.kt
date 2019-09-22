@@ -77,7 +77,7 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
 
         override fun bind(item: SummaryUiModel.TimeTracked) {
             with(itemView) {
-                val isBelowAverage = item.percentDelta < 0
+                val isBelowAverage = (item.percentDelta ?: 0) < 0
                 if (item.percentDelta != 0) {
                     setupIcon(isBelowAverage)
                     setupText(isBelowAverage, item.percentDelta)
@@ -99,14 +99,18 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
             }
         }
 
-        private fun View.setupText(isBelowAverage: Boolean, delta: Int) = with(textview_summary_average_delta) {
-            val directionRes = if (isBelowAverage) {
-                R.string.summary_template_average_delta_below
+        private fun View.setupText(isBelowAverage: Boolean, delta: Int?) = with(textview_summary_average_delta) {
+            if (delta != null) {
+                val directionRes = if (isBelowAverage) {
+                    R.string.summary_template_average_delta_below
+                } else {
+                    R.string.summary_template_average_delta_above
+                }
+                val deltaText = context.getString(directionRes)
+                text = context.getString(R.string.summary_template_average_delta, abs(delta), deltaText)
             } else {
-                R.string.summary_template_average_delta_above
+                isGone = true
             }
-            val deltaText = context.getString(directionRes)
-            text = context.getString(R.string.summary_template_average_delta, abs(delta), deltaText)
         }
 
         private fun getDeltaIcon(isBelowAverage: Boolean): Drawable? =

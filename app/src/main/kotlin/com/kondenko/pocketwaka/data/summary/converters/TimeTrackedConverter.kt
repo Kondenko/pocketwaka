@@ -39,8 +39,8 @@ class TimeTrackedConverter(
         }
     }
 
-    private fun getAverageDelta(totalSeconds: Int, averageSec: Int): Int {
-        return totalSeconds * 100 / averageSec - 100
+    private fun getAverageDelta(totalSeconds: Int, averageSec: Int): Int? {
+        return if (averageSec != 0) totalSeconds * 100 / averageSec - 100 else null
     }
 
 
