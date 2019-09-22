@@ -53,7 +53,7 @@ class Builder<T : Any> {
 
     var skeletonCreator: SkeletonCreator? = null
 
-    inline fun <reified I : T> bindItem(layoutRes: Int, noinline binder: Binder<I>? = null) {
+    inline fun <reified I : T> viewHolder(layoutRes: Int, noinline binder: Binder<I>? = null) {
         declarations.add(ItemDeclaration(I::class, layoutRes, binder))
     }
 
