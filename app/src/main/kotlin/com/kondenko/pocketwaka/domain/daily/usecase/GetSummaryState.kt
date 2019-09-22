@@ -10,9 +10,8 @@ class GetSummaryState(
         schedulers: SchedulersContainer,
         getSummary: GetSummary,
         connectivityStatusProvider: ConnectivityStatusProvider
-) : StatefulUseCase<GetSummary.Params, List<SummaryUiModel>, List<SummaryUiModel>, SummaryDbModel>(
+) : StatefulUseCase<GetSummary.Params, List<SummaryUiModel>, SummaryDbModel>(
         schedulers = schedulers,
         useCase = getSummary,
-        modelMapper = { dbModelList: List<SummaryUiModel> -> dbModelList },
         connectivityStatusProvider = connectivityStatusProvider
 )

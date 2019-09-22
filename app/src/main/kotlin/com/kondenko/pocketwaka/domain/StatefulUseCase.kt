@@ -23,12 +23,9 @@ import java.util.concurrent.TimeUnit
 abstract class StatefulUseCase<
         PARAMS : StatefulUseCase.ParamsWrapper,
         UI_MODEL,
-        INTERMEDIATE_MODEL,
-        DATABASE_MODEL : CacheableModel<INTERMEDIATE_MODEL>>
-(
+        DATABASE_MODEL : CacheableModel<UI_MODEL>>(
         private val schedulers: SchedulersContainer,
         private val useCase: UseCaseObservable<PARAMS, DATABASE_MODEL>,
-        private val modelMapper: (INTERMEDIATE_MODEL) -> UI_MODEL,
         private val connectivityStatusProvider: ConnectivityStatusProvider
 ) : UseCaseObservable<PARAMS, State<UI_MODEL>>(schedulers) {
 
@@ -62,7 +59,7 @@ abstract class StatefulUseCase<
             useCase.build(params)
                     .retry(retryAttempts.toLong())
                     .map {
-                        val uiModel = modelMapper(it.data)
+                        val uiModel = it.data
                         if (it.isFromCache) {
                             if (isConnected) Loading(uiModel)
                             else Offline(uiModel)

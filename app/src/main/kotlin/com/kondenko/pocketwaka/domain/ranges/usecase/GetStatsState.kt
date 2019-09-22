@@ -10,9 +10,8 @@ class GetStatsState(
         schedulers: SchedulersContainer,
         getStatsForRanges: GetStatsForRanges,
         connectivityStatusProvider: ConnectivityStatusProvider
-) : StatefulUseCase<GetStatsForRanges.Params, List<StatsUiModel>, List<StatsUiModel>, StatsDbModel>(
+) : StatefulUseCase<GetStatsForRanges.Params, List<StatsUiModel>, StatsDbModel>(
         schedulers,
         getStatsForRanges,
-        { it },
         connectivityStatusProvider
 )
