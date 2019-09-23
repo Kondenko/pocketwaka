@@ -5,6 +5,6 @@ interface StatusMarker {
 }
 
 sealed class ScreenStatus(val lastUpdated: Long? = null) {
-    class Loading(lastUpdated: Long? = null): ScreenStatus(lastUpdated)
-    class Offline(lastUpdated: Long? = null): ScreenStatus(lastUpdated)
+    class Loading(lastUpdated: Long? = null) : ScreenStatus(lastUpdated)
+    class Offline(lastUpdated: Long? = null) : ScreenStatus(lastUpdated)
 }

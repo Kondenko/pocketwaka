@@ -8,8 +8,8 @@ import androidx.core.view.doOnPreDraw
 import androidx.core.view.updateLayoutParams
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.ranges.model.StatsItem
-import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
+import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.extensions.getColorCompat
 import com.kondenko.pocketwaka.utils.extensions.setInvisible
 import kotlinx.android.synthetic.main.item_stats_entity.view.*

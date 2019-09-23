@@ -11,8 +11,8 @@ import androidx.core.view.isGone
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.daily.model.ProjectModel
 import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
-import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
+import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.createAdapter
 import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
 import com.kondenko.pocketwaka.utils.extensions.setViewsVisibility
@@ -36,11 +36,10 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
     }
 
     override fun getItemViewType(position: Int): Int = when (items[position]) {
-        is SummaryUiModel.Status.Offline -> ViewType.Status
+        is SummaryUiModel.Status -> ViewType.Status
         is SummaryUiModel.TimeTracked -> ViewType.TimeTracked
         is SummaryUiModel.ProjectsTitle -> ViewType.ProjectsTitle
         is SummaryUiModel.Project -> ViewType.Projects
-        else -> throw IllegalViewTypeException()
     }.type
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (ViewType.values().getOrNull(viewType)) {

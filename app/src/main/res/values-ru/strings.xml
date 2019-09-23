@@ -61,4 +61,5 @@
     <string name="stats_time_format_hours_short">%dч</string>
     <string name="stats_time_format_minutes_short">%dм</string>
     <string name="summary_projects_label_no_commits">Нет коммитов на сервере</string>
+    <string name="summary_projects_state_empty_today_title">Нет активности за сегодня</string>
 </resources>

@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
 import com.kondenko.pocketwaka.screens.ScreenStatus
-import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
+import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.diffutil.SimpleCallback
 import com.kondenko.pocketwaka.utils.extensions.setInvisible
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator

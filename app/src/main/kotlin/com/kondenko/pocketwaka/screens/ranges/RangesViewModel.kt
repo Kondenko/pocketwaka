@@ -1,16 +1,17 @@
 package com.kondenko.pocketwaka.screens.ranges
 
+import com.kondenko.pocketwaka.data.ranges.model.database.StatsDbModel
+import com.kondenko.pocketwaka.domain.StatefulUseCase
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
 import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsForRanges
-import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsState
-import com.kondenko.pocketwaka.screens.BaseViewModel
+import com.kondenko.pocketwaka.screens.base.BaseViewModel
 import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.plusAssign
 import java.util.concurrent.TimeUnit
 
 class RangesViewModel(
         private val range: String?,
-        private val getStats: GetStatsState,
+        private val getStats: StatefulUseCase<GetStatsForRanges.Params, List<StatsUiModel>, StatsDbModel>,
         private val uiScheduler: Scheduler
 ) : BaseViewModel<List<StatsUiModel>>() {
 

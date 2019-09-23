@@ -1,9 +1,9 @@
-package com.kondenko.pocketwaka.screens.base
+package com.kondenko.pocketwaka.ui.skeleton
 
 import android.content.Context
 import android.view.View
 import androidx.core.view.doOnPreDraw
-import com.kondenko.pocketwaka.ui.skeleton.Skeleton
+import com.kondenko.pocketwaka.screens.base.BaseAdapter
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
 import com.kondenko.pocketwaka.utils.extensions.negateIfTrue
 

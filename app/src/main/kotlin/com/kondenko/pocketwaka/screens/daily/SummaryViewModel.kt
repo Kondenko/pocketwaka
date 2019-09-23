@@ -4,7 +4,7 @@ import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
 import com.kondenko.pocketwaka.domain.daily.usecase.GetDefaultSummaryRange
 import com.kondenko.pocketwaka.domain.daily.usecase.GetSummary
 import com.kondenko.pocketwaka.domain.daily.usecase.GetSummaryState
-import com.kondenko.pocketwaka.screens.BaseViewModel
+import com.kondenko.pocketwaka.screens.base.BaseViewModel
 import com.kondenko.pocketwaka.utils.date.DateRange
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.toSingle

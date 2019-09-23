@@ -20,8 +20,8 @@ class GetSummaryState(
 
     override fun databaseModelToState(model: SummaryDbModel, isConnected: Boolean): State<List<SummaryUiModel>> {
         return when {
-            model.isEmpty == true -> SummaryState.Empty.EmptyRange
-            model.isAccountEmpty == true ->  SummaryState.Empty.EmptyAccount
+            model.isEmpty == true -> SummaryState.EmptyRange
+            model.isAccountEmpty == true -> State.Empty
             else -> super.databaseModelToState(model, isConnected)
         }
     }

@@ -3,8 +3,8 @@ package com.kondenko.pocketwaka.utils
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
+import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
 import kotlin.reflect.KClass
 

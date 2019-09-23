@@ -1,7 +1,6 @@
 package com.kondenko.pocketwaka.ui.skeleton
 
 import androidx.recyclerview.widget.RecyclerView
-import com.kondenko.pocketwaka.screens.base.SkeletonAdapter
 
 class RecyclerViewSkeleton<T, ADAPTER : SkeletonAdapter<T, *>>(
         private val recyclerView: RecyclerView,

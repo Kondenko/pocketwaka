@@ -1,8 +1,9 @@
-package com.kondenko.pocketwaka.screens
+package com.kondenko.pocketwaka.screens.base
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.kondenko.pocketwaka.screens.State
 import io.reactivex.disposables.CompositeDisposable
 
 abstract class BaseViewModel<T> : ViewModel() {

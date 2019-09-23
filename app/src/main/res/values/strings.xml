@@ -65,6 +65,8 @@
     <string name="summary_title_time_tracked">Time tracked</string>
     <string name="summary_title_projects">Projects</string>
 
+    <string name="summary_projects_state_empty_today_title">No activity today</string>
+
     <string name="summary_projects_label_no_commits">No commits pushed this day</string>
     <string name="summary_projects_label_no_repo">Connect repository to see commits</string>
     <string name="summary_projects_template_more_commits">Show %d more commites</string>
