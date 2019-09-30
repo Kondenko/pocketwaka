@@ -10,10 +10,10 @@ import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
 import com.kondenko.pocketwaka.data.summary.model.server.SummaryData
 import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.daily.model.*
-import com.kondenko.pocketwaka.utils.KOptional
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.extensions.concatMapEagerDelayError
 import com.kondenko.pocketwaka.utils.extensions.startWithIfNotEmpty
+import com.kondenko.pocketwaka.utils.types.KOptional
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.Singles
 import io.reactivex.rxkotlin.toObservable

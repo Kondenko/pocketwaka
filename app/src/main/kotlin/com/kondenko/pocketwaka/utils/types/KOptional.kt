@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.utils
+package com.kondenko.pocketwaka.utils.types
 
 class KOptional<T>(val item: T?) {
 

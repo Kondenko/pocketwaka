@@ -1,6 +1,9 @@
 package com.kondenko.pocketwaka.di.modules
 
+import android.net.ConnectivityManager
 import android.preference.PreferenceManager
+import androidx.core.content.getSystemService
+import com.kondenko.pocketwaka.data.android.AppConnectivityStatusProvider
 import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
 import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.android.StringProvider
@@ -11,7 +14,8 @@ import org.koin.dsl.module
 
 val appModule = module {
     single { PreferenceManager.getDefaultSharedPreferences(androidContext()) }
-    single { ConnectivityStatusProvider(androidContext()) }
+    single { androidContext().getSystemService<ConnectivityManager>() }
+    single<ConnectivityStatusProvider> { AppConnectivityStatusProvider(get()) }
     single { StringProvider(androidContext()) }
     single { DateProvider() }
     single { TimeSpannableCreator(androidContext()) }

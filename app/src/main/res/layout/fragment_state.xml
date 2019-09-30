@@ -13,14 +13,14 @@
         android:layout_marginTop="30dp"
         android:adjustViewBounds="true"
         android:cropToPadding="true"
-        android:scaleType="centerCrop"
+        android:maxHeight="360dp"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@+id/textview_state_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintVertical_chainStyle="packed"
-        app:srcCompat="@drawable/img_state_empty_today"
         />
 
     <TextView
@@ -86,6 +86,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginBottom="32dp"
         android:text="@string/error_state_action"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textview_state_subtitle"
         app:layout_constraintStart_toStartOf="@+id/textview_state_subtitle"

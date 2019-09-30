@@ -16,6 +16,7 @@
     <dimen name="height_state_screen_button">52dp</dimen>
     <dimen name="margin_state_screen_button_bottom">24dp</dimen>
     <dimen name="margin_state_screen_button_top">40dp</dimen>
+    <dimen name="margin_state_screen_image_offline">76dp</dimen>
 
 
     <!--Login-->
