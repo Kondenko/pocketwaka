@@ -94,7 +94,7 @@ val summaryModule = module {
     viewModel {
         SummaryViewModel(
                 getDefaultSummaryRange = get(),
-                getSummaryState = get()
+                getSummaryState = get<GetSummaryState>()
         )
     }
 }

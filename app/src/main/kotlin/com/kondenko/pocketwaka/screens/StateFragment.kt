@@ -4,22 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.IdRes
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.utils.extensions.transaction
 import kotlinx.android.synthetic.main.fragment_state.*
-import kotlinx.android.synthetic.main.fragment_state.view.*
 import timber.log.Timber
-
-fun Fragment.lazyStateFragment(@IdRes containerId: Int, fragmentSupplier: (() -> StateFragment)? = null) = lazy {
-    val fragment = fragmentSupplier?.invoke() ?: StateFragment()
-    childFragmentManager.transaction {
-        add(containerId, fragment, null)
-    }
-    fragment
-}
 
 open class StateFragment : Fragment() {
 

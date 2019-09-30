@@ -17,4 +17,5 @@ class SummaryStateFragment : StateFragment() {
             super.setState(state, onActionClick)
         }
     }
+
 }

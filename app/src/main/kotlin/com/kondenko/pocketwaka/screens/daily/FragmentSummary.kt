@@ -8,9 +8,7 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.daily.model.ProjectModel
 import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
 import com.kondenko.pocketwaka.screens.ScreenStatus
-import com.kondenko.pocketwaka.screens.StateFragment
 import com.kondenko.pocketwaka.screens.base.BaseFragment
-import com.kondenko.pocketwaka.screens.lazyStateFragment
 import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.toListOrEmpty
 import kotlinx.android.synthetic.main.fragment_summary.*
@@ -24,9 +22,9 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
 
     private val vm: SummaryViewModel by viewModel()
 
-    override val stateFragment: StateFragment by lazyStateFragment(R.id.framelayout_summary_root) {
-        SummaryStateFragment()
-    }
+    override val containerId: Int = R.id.framelayout_summary_root
+
+    override val stateFragment = SummaryStateFragment()
 
     private val projectSkeleton = listOf(
             ProjectModel.ProjectName("", null),

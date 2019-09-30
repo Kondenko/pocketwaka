@@ -1,6 +1,7 @@
 package com.kondenko.pocketwaka.screens.base
 
 import android.net.Uri
+import android.os.Bundle
 import android.view.View
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
@@ -19,7 +20,9 @@ import com.kondenko.pocketwaka.utils.extensions.transaction
 
 abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> : Fragment() {
 
-    protected abstract val stateFragment: StateFragment
+    protected open val stateFragment = StateFragment()
+
+    protected abstract val containerId: Int
 
     protected lateinit var listSkeleton: RecyclerViewSkeleton<T, A>
 
@@ -28,6 +31,13 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
     protected abstract fun reloadScreen()
 
     protected abstract fun provideDataView(): View
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        childFragmentManager.transaction {
+            add(containerId, stateFragment, null)
+        }
+    }
 
     protected fun State<ST>.render() {
         listSkeleton.show((this as? State.Loading<*>)?.isInterrupting == true)

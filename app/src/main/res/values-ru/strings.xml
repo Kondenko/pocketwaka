@@ -4,7 +4,7 @@
     <string name="main_action_refresh">Обновить</string>
     <string name="error_refreshing_token">Пожалуйста, войдите снова</string>
     <string name="error_state_title">Не получилось загрузить данные</string>
-    <string name="error_state_subtitle">Пожвлуйста, попробуйте позже</string>
+    <string name="error_state_subtitle">Пожалуйста, попробуйте позже</string>
     <string name="error_state_action">Попробовать снова</string>
     <string name="empty_state_title">Кажется, у вас нет статистики</string>
     <string name="empty_state_subtitle">Установите плагин для вашего редактора кода и она появится</string>
@@ -56,7 +56,7 @@
     <string name="summary_template_average_delta_above">выше</string>
     <string name="summary_template_average_delta_below">ниже</string>
     <string name="summary_title_projects">Проекты</string>
-    <string name="summary_projects_label_no_repo">Добавьтерепозиторий, чтобы увидеть коммиты</string>
+    <string name="summary_projects_label_no_repo">Добавьте репозиторий, чтобы увидеть коммиты</string>
     <string name="summary_projects_template_more_commits">Ещё %d коммитов</string>
     <string name="stats_time_format_hours_short">%dч</string>
     <string name="stats_time_format_minutes_short">%dм</string>

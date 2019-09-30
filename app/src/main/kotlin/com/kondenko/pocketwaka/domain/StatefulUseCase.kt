@@ -88,12 +88,10 @@ abstract class StatefulUseCase<
         else -> new
     }
 
-    private fun transitionToLoadingState(old: State<UI_MODEL>, new: Loading<UI_MODEL>) =
-            new.copy(
-                    new.data
-                            ?: old.data, // keep showing old data while displaying a loading indicator
-                    old.data == null // show an full-screen loading indicator if no data is present
-            )
+    private fun transitionToLoadingState(old: State<UI_MODEL>, new: Loading<UI_MODEL>) = new.copy(
+            new.data ?: old.data, // keep showing old data while displaying a loading indicator
+            old.data == null // show an full-screen loading indicator if no data is present
+    )
 
     private fun transitionToNewState(old: Loading<UI_MODEL>, new: State<UI_MODEL>) = when (new) {
         // If there was any data present, go to the new state while still showing the data

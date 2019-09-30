@@ -13,9 +13,7 @@ import com.kondenko.pocketwaka.domain.ranges.model.StatsItem
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
 import com.kondenko.pocketwaka.screens.ScreenStatus
 import com.kondenko.pocketwaka.screens.State
-import com.kondenko.pocketwaka.screens.StateFragment
 import com.kondenko.pocketwaka.screens.base.BaseFragment
-import com.kondenko.pocketwaka.screens.lazyStateFragment
 import com.kondenko.pocketwaka.screens.ranges.adapter.StatsAdapter
 import com.kondenko.pocketwaka.screens.ranges.model.ScrollDirection
 import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
@@ -41,7 +39,7 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
         parametersOf(arguments?.getString(ARG_RANGE))
     }
 
-    override val stateFragment: StateFragment by lazyStateFragment(R.id.framelayout_stats_range_root)
+    override val containerId: Int = R.id.framelayout_stats_range_root
 
     private val skeletonStatsCard = mutableListOf(StatsItem("", null, null, null)) * 3
 

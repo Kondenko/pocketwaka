@@ -10,7 +10,6 @@ import com.kondenko.pocketwaka.data.ranges.model.server.StatsServerModel
 import com.kondenko.pocketwaka.data.ranges.repository.RangeStatsRepository
 import com.kondenko.pocketwaka.data.ranges.service.RangeStatsService
 import com.kondenko.pocketwaka.di.qualifiers.Api
-import com.kondenko.pocketwaka.domain.StatefulUseCase
 import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
@@ -57,7 +56,7 @@ val rangeStatsModule = module {
                 serverModelConverter = get()
         )
     }
-    factory<StatefulUseCase<GetStatsForRanges.Params, List<StatsUiModel>, StatsDbModel>> {
+    factory {
         GetStatsState(
                 schedulers = get(),
                 getStatsForRanges = get(),
@@ -76,8 +75,8 @@ val rangeStatsModule = module {
     }
     viewModel { (range: String?) ->
         RangesViewModel(
-                range,
-                getStats = get(),
+                range = range,
+                getStats = get<GetStatsState>(),
                 uiScheduler = get<SchedulersContainer>().uiScheduler
         )
     }
