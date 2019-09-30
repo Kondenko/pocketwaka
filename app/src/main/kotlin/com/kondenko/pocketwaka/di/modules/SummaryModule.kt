@@ -68,17 +68,17 @@ val summaryModule = module {
         )
     }
     single {
-        GetSummaryState(
-                schedulers = get(),
-                getSummary = get(),
-                connectivityStatusProvider = get()
-        )
-    }
-    single {
         GetDefaultSummaryRange(
                 dateProvider = get(),
                 dateFormatter = get(),
                 schedulers = get()
+        )
+    }
+    single {
+        GetSummaryState(
+                schedulers = get(),
+                getSummary = get<GetSummary>(),
+                connectivityStatusProvider = get()
         )
     }
     factory { (context: Context, showSkeleton: Boolean) -> SummaryAdapter(context, showSkeleton, get<TimeSpannableCreator>()) }

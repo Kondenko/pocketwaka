@@ -5,13 +5,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.data.android.ColorProvider
 import com.kondenko.pocketwaka.data.persistence.AppDatabase
 import com.kondenko.pocketwaka.data.ranges.converter.RangeResponseConverter
-import com.kondenko.pocketwaka.data.ranges.model.database.StatsDbModel
-import com.kondenko.pocketwaka.data.ranges.model.server.StatsServerModel
 import com.kondenko.pocketwaka.data.ranges.repository.RangeStatsRepository
 import com.kondenko.pocketwaka.data.ranges.service.RangeStatsService
 import com.kondenko.pocketwaka.di.qualifiers.Api
-import com.kondenko.pocketwaka.domain.UseCaseObservable
-import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
 import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsForRanges
 import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsState
@@ -22,7 +18,6 @@ import com.kondenko.pocketwaka.ui.skeleton.RecyclerViewSkeleton
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.extensions.create
 import com.kondenko.pocketwaka.utils.spannable.TimeSpannableCreator
-import io.reactivex.Maybe
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.parameter.parametersOf
@@ -40,7 +35,7 @@ val rangeStatsModule = module {
         )
     }
     factory { ColorProvider(androidContext()) }
-    factory<(RangeStatsRepository.Params, StatsServerModel) -> Maybe<StatsDbModel>?> {
+    factory {
         RangeResponseConverter(
                 context = androidContext(),
                 colorProvider = get(),
@@ -48,18 +43,18 @@ val rangeStatsModule = module {
                 dateFormatter = get()
         )
     }
-    factory<UseCaseObservable<GetStatsForRanges.Params, StatsDbModel>> {
+    factory {
         GetStatsForRanges(
                 schedulers = get(),
-                getTokenHeader = get() as GetTokenHeaderValue,
+                getTokenHeader = get(),
                 rangeStatsRepository = get(),
-                serverModelConverter = get()
+                serverModelConverter = get<RangeResponseConverter>()
         )
     }
     factory {
         GetStatsState(
                 schedulers = get(),
-                getStatsForRanges = get(),
+                getStatsForRanges = get<GetStatsForRanges>(),
                 connectivityStatusProvider = get()
         )
     }
