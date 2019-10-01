@@ -15,10 +15,10 @@
         android:layout_marginEnd="@dimen/margin_summary_project_item_title_end"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
-        android:lines="1"
+        android:maxLines="1"
         android:textColor="@color/color_text_primary"
         android:textSize="24sp"
-        tools:text="@string/app_name"
+        tools:text="Ridiculously long project name no one will read"
         >
 
         <tag android:id="@+id/tag_skeleton_width_key" android:value="248"/>

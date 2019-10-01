@@ -8,13 +8,13 @@ import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
 import kotlin.reflect.KClass
 
-private typealias Binder<T> = View.(T) -> Unit
+private typealias Binder<T> = View.(T, Int) -> Unit
 
 private typealias ItemDeclarations<T> = Map<Int, ItemDeclaration<out T>>
 
 private typealias SkeletonCreator = (View) -> Skeleton
 
-data class ItemDeclaration<T : Any>(val itemClass: KClass<T>, val itemLayoutRes: Int, val binder: (View.(T) -> Unit)?)
+data class ItemDeclaration<T : Any>(val itemClass: KClass<T>, val itemLayoutRes: Int, val binder: Binder<T>?)
 
 class GenericAdapter<T : Any>(context: Context, private val skeletonCreator: SkeletonCreator? = null, private val itemDeclarations: ItemDeclarations<T>)
     : SkeletonAdapter<T, GenericAdapter<T>.GenericViewHolder>(context, skeletonCreator != null) {
@@ -37,7 +37,7 @@ class GenericAdapter<T : Any>(context: Context, private val skeletonCreator: Ske
     inner class GenericViewHolder(view: View, private val viewType: Int, val skeleton: Skeleton?) : SkeletonViewHolder<T>(view, skeleton) {
         override fun bind(item: T) {
             (itemDeclarations[viewType] as? ItemDeclaration<T>)?.let {
-                it.binder?.invoke(itemView, item)
+                it.binder?.invoke(itemView, item, adapterPosition)
             }
             super.bind(item)
         }

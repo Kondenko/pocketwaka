@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/padding_all_card_inner"
     android:layout_marginEnd="@dimen/padding_all_card_inner"
-    android:layout_marginTop="@dimen/padding_summary_projects_section_title_vertical"
-    android:layout_marginBottom="@dimen/padding_summary_projects_section_title_vertical"
+    android:layout_marginTop="@dimen/margin_summary_projects_section_title_top"
+    android:layout_marginBottom="@dimen/margin_summary_projects_section_title_bottom"
     android:text="@string/summary_title_projects"
     android:textAppearance="@style/TextAppearance.App.Text.Title"
     />

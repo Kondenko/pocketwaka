@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="32dp"
     android:gravity="center_vertical"
     android:paddingStart="@dimen/padding_all_card_inner"
     android:paddingEnd="@dimen/padding_all_card_inner"
@@ -10,12 +10,12 @@
 
     <ImageView
         android:id="@+id/imageview_summary_project_branch_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/size_all_icon_small"
+        android:layout_height="@dimen/size_all_icon_small"
         android:layout_centerVertical="true"
         android:layout_marginTop="@dimen/margin_summary_project_branch_icon"
-        android:layout_marginEnd="@dimen/margin_summary_project_branch_icon"
         android:layout_marginBottom="@dimen/margin_summary_project_branch_icon"
+        android:layout_marginEnd="@dimen/margin_summary_project_branch_icon"
         android:src="@drawable/ic_branch"
         />
 
@@ -31,7 +31,7 @@
         android:textSize="16sp"
         android:lines="1"
         android:ellipsize="end"
-        tools:text="@string/app_name"
+        tools:text="@string/all_app_name"
         />
 
     <TextView

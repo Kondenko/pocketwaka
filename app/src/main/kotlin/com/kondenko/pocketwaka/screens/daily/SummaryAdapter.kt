@@ -133,6 +133,24 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
             super.bind(item)
             itemView.recyclerview_summary_project.adapter = createAdapter<ProjectModel>(context) {
                 items { item.models }
+                viewHolder<ProjectModel.ProjectName>(R.layout.item_summary_project_name) { item, _ ->
+                    textview_summary_project_name.text = item.name
+                    textview_summary_project_time.text = item.timeTracked
+                }
+                viewHolder<ProjectModel.Branch>(R.layout.item_summary_project_branch) { item, _ ->
+                    textview_summary_project_branch.text = item.name
+                    textview_summary_project_branch_time.text = item.timeTracked
+                }
+                viewHolder<ProjectModel.Commit>(R.layout.item_summary_project_commit) { item, _ ->
+                    textview_summary_project_commit_message.text = item.message
+                    textview_summary_project_commit_time.text = item.timeTracked
+                }
+                viewHolder<ProjectModel.ConnectRepoAction>(R.layout.item_summary_project_connect_repo) { item, _ ->
+                    itemView.setOnClickListener {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item.url)))
+                    }
+                }
+                viewHolder<ProjectModel.NoCommitsLabel>(R.layout.item_summary_project_no_commits)
                 if (showSkeleton) {
                     skeleton { view ->
                         Skeleton(context, view).apply {
@@ -144,27 +162,6 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
                         }
                     }
                 }
-                viewHolder<ProjectModel.ProjectName>(R.layout.item_summary_project_name) { item ->
-                    textview_summary_project_name.text = item.name
-                    textview_summary_project_time.text = item.timeTracked
-                }
-                viewHolder<ProjectModel.Branch>(R.layout.item_summary_project_branch) { item ->
-                    textview_summary_project_branch.text = item.name
-                    textview_summary_project_branch_time.text = item.timeTracked
-                }
-                viewHolder<ProjectModel.Commit>(R.layout.item_summary_project_commit) { item ->
-                    textview_summary_project_commit_message.text = item.message
-                    textview_summary_project_commit_time.text = item.timeTracked
-                }
-                viewHolder<ProjectModel.ConnectRepoAction>(R.layout.item_summary_project_connect_repo) { item ->
-                    itemView.setOnClickListener {
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item.url)))
-                    }
-                }
-                viewHolder<ProjectModel.NoCommitsLabel>(R.layout.item_summary_project_no_commits)
-//                viewHolder<ProjectModel.MoreCommitsAction>(R.layout.item_summary_project_connect_more_commits) { item ->
-//                    itemView.textview_summary_show_more_commits.text = context.getString(R.string.summary_projects_template_more_commits, item)
-//                }
             }
         }
 

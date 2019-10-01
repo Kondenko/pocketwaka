@@ -63,7 +63,8 @@
     <!-- Summary -->
     <item name="height_summary_skeleton_time_tracked" type="integer">14</item>
 
-    <dimen name="padding_summary_projects_section_title_vertical">8dp</dimen>
+    <dimen name="margin_summary_projects_section_title_top">4dp</dimen>
+    <dimen name="margin_summary_projects_section_title_bottom">8dp</dimen>
 
     <dimen name="padding_summary_project_card_vertical">8dp</dimen>
     <dimen name="margin_summary_project_item_title_end">8dp</dimen>

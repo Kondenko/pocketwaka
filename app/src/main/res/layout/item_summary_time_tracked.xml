@@ -46,19 +46,19 @@
         android:id="@+id/linearlayout_delta_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:gravity="center_vertical"
+        android:layout_marginTop="16dp"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:gravity="center_vertical"
         >
 
         <ImageView
             android:id="@+id/imageview_summary_delta_icon"
             android:layout_width="@dimen/size_all_icon"
             android:layout_height="@dimen/size_all_icon"
-            android:src="@drawable/ic_arrow_down"
             android:clipChildren="false"
             android:clipToPadding="false"
+            android:src="@drawable/ic_arrow_down"
             >
 
             <tag
@@ -75,12 +75,12 @@
 
 
         <TextView
-            android:layout_marginStart="4dp"
             android:id="@+id/textview_summary_average_delta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
+            android:layout_marginStart="4dp"
             android:clipChildren="false"
+            android:clipToPadding="false"
             android:textAlignment="viewStart"
             tools:text="71% above monthly average"
             >
