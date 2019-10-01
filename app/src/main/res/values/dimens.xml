@@ -6,6 +6,7 @@
     <dimen name="padding_all_card_inner">16dp</dimen>
     <dimen name="size_all_icon">24dp</dimen>
     <dimen name="size_all_icon_small">16dp</dimen>
+    <dimen name="radius_all_card">4dp</dimen>
 
 
     <dimen name="height_all_skeleton_text">11dp</dimen>

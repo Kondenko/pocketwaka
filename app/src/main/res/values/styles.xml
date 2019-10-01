@@ -2,6 +2,7 @@
 
     <style name="App.CardView.Light" parent="CardView.Light">
         <item name="android:padding">@dimen/padding_all_card_inner</item>
+        <item name="cardCornerRadius">@dimen/radius_all_card</item>
     </style>
 
     <style name="App.Button" parent="Widget.MaterialComponents.Button">
