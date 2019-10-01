@@ -14,7 +14,7 @@
         android:id="@+id/imageview_summary_project_branch_icon"
         android:layout_width="@dimen/size_all_icon_small"
         android:layout_height="@dimen/size_all_icon_small"
-        android:layout_marginTop="@dimen/margin_summary_project_branch_icon"
+        android:layout_marginTop="@dimen/margin_summary_project_branch_icon_top"
         android:layout_marginBottom="@dimen/margin_summary_project_branch_icon"
         android:src="@drawable/ic_branch"
         app:layout_constraintBottom_toBottomOf="parent"
