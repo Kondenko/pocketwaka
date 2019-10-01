@@ -18,7 +18,7 @@ import kotlin.math.roundToInt
 class Skeleton(
         private val context: Context,
         private val root: View? = null,
-        var skeletonBackground: Drawable = context.getDrawable(R.drawable.all_skeleton_text)
+        private val skeletonBackground: Drawable = context.getDrawable(R.drawable.all_skeleton)
                 ?: ColorDrawable(Color.TRANSPARENT)
 ) {
 

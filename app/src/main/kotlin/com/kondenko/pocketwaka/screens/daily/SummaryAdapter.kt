@@ -63,10 +63,10 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
     override fun createSkeleton(view: View) = Skeleton(context, view).apply {
         onSkeletonShown { isSkeleton: Boolean ->
             view.textview_summary_time?.run {
-                y += 8f.adjustValue(isSkeleton).roundToInt()
+                y += 16f.adjustValue(isSkeleton).roundToInt()
             }
             view.linearlayout_delta_container?.run {
-                y += 16f.adjustValue(isSkeleton).roundToInt()
+                y += 32f.adjustValue(isSkeleton).roundToInt()
             }
         }
     }
@@ -134,6 +134,17 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
             super.bind(item)
             itemView.recyclerview_summary_project.adapter = createAdapter<ProjectModel>(context) {
                 items { item.models }
+                if (showSkeleton) {
+                    skeleton { view ->
+                        Skeleton(context, view).apply {
+                            onSkeletonShown { isSkeleton ->
+                                view.textview_summary_project_name?.run {
+                                    y += 4f.adjustValue(isSkeleton)
+                                }
+                            }
+                        }
+                    }
+                }
                 viewHolder<ProjectModel.ProjectName>(R.layout.item_summary_project_name) { item, _ ->
                     textview_summary_project_name.text = item.name
                     textview_summary_project_time.text = item.timeTracked
@@ -155,17 +166,6 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
                     }
                 }
                 viewHolder<ProjectModel.NoCommitsLabel>(R.layout.item_summary_project_no_commits)
-                if (showSkeleton) {
-                    skeleton { view ->
-                        Skeleton(context, view).apply {
-                            onSkeletonShown { isSkeleton ->
-                                view.textview_summary_project_name?.run {
-                                    y += 12f.adjustValue(isSkeleton)
-                                }
-                            }
-                        }
-                    }
-                }
             }
         }
 

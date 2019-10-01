@@ -33,6 +33,11 @@
             android:value="200"
             />
 
+        <tag
+            android:id="@id/tag_skeleton_height_key"
+            android:value="@integer/height_summary_skeleton"
+            />
+
     </TextView>
 
     <TextView

@@ -10,7 +10,7 @@
 
     <color name="color_tab_text_default">@color/color_primary</color>
 
-    <color name="color_skeleton_text">#1435434F</color>
+    <color name="color_skeleton">#1435434F</color>
 
     <color name="color_all_divider">#1F000000</color>
     <color name="color_summary_project_divider">#DE000000</color>

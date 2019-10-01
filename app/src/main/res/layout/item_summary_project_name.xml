@@ -47,6 +47,11 @@
             android:value="248"
             />
 
+        <tag
+            android:id="@id/tag_skeleton_height_key"
+            android:value="@integer/height_summary_skeleton"
+            />
+
     </TextView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

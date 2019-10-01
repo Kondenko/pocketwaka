@@ -46,6 +46,6 @@ class GetSummaryStateMock(
     )
 
     override fun build(params: GetSummary.Params?): Observable<State<List<SummaryUiModel>>> =
-            Observable.just<State<List<SummaryUiModel>>>(State.Empty)
+            Observable.just<State<List<SummaryUiModel>>>(State.Loading(isInterrupting = true))
 
 }
