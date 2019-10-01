@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="32dp"
     android:gravity="center_vertical"
@@ -12,37 +14,46 @@
         android:id="@+id/imageview_summary_project_branch_icon"
         android:layout_width="@dimen/size_all_icon_small"
         android:layout_height="@dimen/size_all_icon_small"
-        android:layout_centerVertical="true"
         android:layout_marginTop="@dimen/margin_summary_project_branch_icon"
         android:layout_marginBottom="@dimen/margin_summary_project_branch_icon"
-        android:layout_marginEnd="@dimen/margin_summary_project_branch_icon"
         android:src="@drawable/ic_branch"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textview_summary_project_branch"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         />
 
     <TextView
         android:id="@+id/textview_summary_project_branch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/margin_summary_project_branch_icon"
         android:layout_marginEnd="@dimen/margin_summary_project_item_title_end"
-        android:layout_toEndOf="@+id/imageview_summary_project_branch_icon"
+        android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
+        android:lines="1"
         android:textColor="@color/color_text_primary"
         android:textSize="16sp"
-        android:lines="1"
-        android:ellipsize="end"
-        tools:text="@string/all_app_name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textview_summary_project_branch_time"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/imageview_summary_project_branch_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/commits_branch_name_unknown"
         />
 
     <TextView
         android:id="@+id/textview_summary_project_branch_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/textview_summary_project_branch"
-        android:layout_toEndOf="@id/textview_summary_project_branch"
         android:textColor="@color/color_text_primary"
         android:textSize="14sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/textview_summary_project_branch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/textview_summary_project_branch"
         tools:text="10h 5m"
         />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

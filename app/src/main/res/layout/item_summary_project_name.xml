@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="48dp"
@@ -7,6 +8,20 @@
     android:paddingStart="@dimen/padding_all_card_inner"
     android:paddingEnd="@dimen/padding_all_card_inner"
     >
+
+
+    <TextView
+        android:id="@+id/textview_summary_project_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_text_primary"
+        android:textSize="18sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textview_summary_project_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textview_summary_project_name"
+        tools:text="10h 5m"
+        />
+
 
     <TextView
         android:id="@+id/textview_summary_project_name"
@@ -18,22 +33,20 @@
         android:maxLines="1"
         android:textColor="@color/color_text_primary"
         android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textview_summary_project_time"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="Ridiculously long project name no one will read"
         >
 
-        <tag android:id="@+id/tag_skeleton_width_key" android:value="248"/>
+        <tag
+            android:id="@+id/tag_skeleton_width_key"
+            android:value="248"
+            />
 
     </TextView>
 
-    <TextView
-        android:id="@+id/textview_summary_project_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/textview_summary_project_name"
-        android:layout_toEndOf="@id/textview_summary_project_name"
-        android:textColor="@color/color_text_primary"
-        android:textSize="18sp"
-        tools:text="10h 5m"
-        />
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

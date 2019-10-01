@@ -16,6 +16,7 @@ import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.createAdapter
 import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
+import com.kondenko.pocketwaka.utils.extensions.limitWidthBy
 import com.kondenko.pocketwaka.utils.extensions.setViewsVisibility
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
 import kotlinx.android.synthetic.main.item_summary_project.view.*
@@ -136,14 +137,17 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
                 viewHolder<ProjectModel.ProjectName>(R.layout.item_summary_project_name) { item, _ ->
                     textview_summary_project_name.text = item.name
                     textview_summary_project_time.text = item.timeTracked
+                    textview_summary_project_name limitWidthBy textview_summary_project_time
                 }
                 viewHolder<ProjectModel.Branch>(R.layout.item_summary_project_branch) { item, _ ->
                     textview_summary_project_branch.text = item.name
                     textview_summary_project_branch_time.text = item.timeTracked
+                    textview_summary_project_branch limitWidthBy textview_summary_project_branch_time
                 }
                 viewHolder<ProjectModel.Commit>(R.layout.item_summary_project_commit) { item, _ ->
                     textview_summary_project_commit_message.text = item.message
                     textview_summary_project_commit_time.text = item.timeTracked
+                    textview_summary_project_commit_message limitWidthBy textview_summary_project_commit_time
                 }
                 viewHolder<ProjectModel.ConnectRepoAction>(R.layout.item_summary_project_connect_repo) { item, _ ->
                     itemView.setOnClickListener {
