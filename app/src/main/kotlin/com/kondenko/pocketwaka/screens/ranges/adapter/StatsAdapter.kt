@@ -3,13 +3,12 @@ package com.kondenko.pocketwaka.screens.ranges.adapter
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
-import com.kondenko.pocketwaka.screens.ScreenStatus
+import com.kondenko.pocketwaka.screens.renderStatus
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.diffutil.SimpleCallback
@@ -18,7 +17,6 @@ import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
 import kotlinx.android.synthetic.main.item_all_entities_card.view.*
 import kotlinx.android.synthetic.main.item_stats_best_day.view.*
 import kotlinx.android.synthetic.main.item_stats_info.view.*
-import kotlinx.android.synthetic.main.item_status.view.*
 
 class StatsAdapter(
         context: Context,
@@ -88,12 +86,7 @@ class StatsAdapter(
             }
         }
 
-        private fun View.render(item: StatsUiModel.Status) {
-            val isOffline = item.status is ScreenStatus.Offline
-            textview_status_description.setText(if (isOffline) R.string.status_offline else R.string.status_updating)
-            imageView_status_offline.isInvisible = !isOffline
-            progressbar_status_loading.isInvisible = isOffline
-        }
+        private fun View.render(item: StatsUiModel.Status) = renderStatus(item.status)
 
         private fun View.render(item: StatsUiModel.Info) {
             textview_stats_time_total.text = timeSpannableCreator.create(item.humanReadableTotal)

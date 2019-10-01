@@ -11,6 +11,7 @@ import androidx.core.view.isGone
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.daily.model.ProjectModel
 import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
+import com.kondenko.pocketwaka.screens.renderStatus
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.createAdapter
@@ -43,7 +44,7 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
     }.type
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (ViewType.values().getOrNull(viewType)) {
-        ViewType.Status -> TODO()
+        ViewType.Status -> StatusViewHolder(inflate(R.layout.item_status, parent))
         ViewType.TimeTracked -> {
             val view = inflate(R.layout.item_summary_time_tracked, parent)
             TimeTrackedViewHolder(view, createSkeleton(view))
@@ -71,6 +72,10 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
 
     abstract inner class ViewHolder<out T : SummaryUiModel>(view: View, skeleton: Skeleton?)
         : SkeletonViewHolder<T>(view, skeleton)
+
+    private inner class StatusViewHolder(private val view: View) : ViewHolder<SummaryUiModel.Status>(view, null) {
+        override fun bind(item: SummaryUiModel.Status) = view.renderStatus(item.status)
+    }
 
     inner class TimeTrackedViewHolder(view: View, skeleton: Skeleton) : ViewHolder<SummaryUiModel.TimeTracked>(view, skeleton) {
 
