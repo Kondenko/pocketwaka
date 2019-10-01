@@ -1,9 +1,7 @@
 package com.kondenko.pocketwaka.screens.daily
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -19,9 +17,12 @@ import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
 import com.kondenko.pocketwaka.utils.extensions.limitWidthBy
 import com.kondenko.pocketwaka.utils.extensions.setViewsVisibility
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.item_summary_project.view.*
 import kotlinx.android.synthetic.main.item_summary_project_branch.view.*
 import kotlinx.android.synthetic.main.item_summary_project_commit.view.*
+import kotlinx.android.synthetic.main.item_summary_project_connect_repo.view.*
 import kotlinx.android.synthetic.main.item_summary_project_name.view.*
 import kotlinx.android.synthetic.main.item_summary_time_tracked.view.*
 import kotlin.math.abs
@@ -36,6 +37,10 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
         ProjectsTitle(2),
         Projects(3)
     }
+
+    private val connectRepoClicks = PublishSubject.create<String>()
+
+    fun connectRepoClicks(): Observable<String> = connectRepoClicks
 
     override fun getItemViewType(position: Int): Int = when (items[position]) {
         is SummaryUiModel.Status -> ViewType.Status
@@ -161,8 +166,8 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
                     textview_summary_project_commit_message limitWidthBy textview_summary_project_commit_time
                 }
                 viewHolder<ProjectModel.ConnectRepoAction>(R.layout.item_summary_project_connect_repo) { item, _ ->
-                    itemView.setOnClickListener {
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item.url)))
+                    button_summary_project_connect_repo.setOnClickListener {
+                        connectRepoClicks.onNext(item.url)
                     }
                 }
                 viewHolder<ProjectModel.NoCommitsLabel>(R.layout.item_summary_project_no_commits)

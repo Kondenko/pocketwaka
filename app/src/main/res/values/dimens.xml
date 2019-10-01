@@ -77,4 +77,7 @@
     <dimen name="margin_summary_project_branch_icon_top">12dp</dimen>
     <dimen name="padding_summary_project_no_repo_message">16dp</dimen>
 
+    <dimen name="size_summary_icon_connect_repo">32dp</dimen>
+    <dimen name="margin_summary_icon_connect_repo_horizontal">16dp</dimen>
+
 </resources>
