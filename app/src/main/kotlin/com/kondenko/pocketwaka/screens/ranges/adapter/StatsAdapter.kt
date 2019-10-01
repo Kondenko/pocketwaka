@@ -14,8 +14,8 @@ import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.diffutil.SimpleCallback
 import com.kondenko.pocketwaka.utils.extensions.setInvisible
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
-import kotlinx.android.synthetic.main.item_all_entities_card.view.*
 import kotlinx.android.synthetic.main.item_stats_best_day.view.*
+import kotlinx.android.synthetic.main.item_stats_entities_card.view.*
 import kotlinx.android.synthetic.main.item_stats_info.view.*
 
 class StatsAdapter(
@@ -44,7 +44,7 @@ class StatsAdapter(
             ViewType.Status.type -> inflate(R.layout.item_status, parent)
             ViewType.Info.type -> inflate(R.layout.item_stats_info, parent)
             ViewType.BestDay.type -> inflate(R.layout.item_stats_best_day, parent)
-            ViewType.Stats.type -> inflate(R.layout.item_all_entities_card, parent)
+            ViewType.Stats.type -> inflate(R.layout.item_stats_entities_card, parent)
             else -> throw IllegalArgumentException("Unknown view type $viewType")
         }
         val skeleton = if (showSkeleton) createSkeleton(view) else null
@@ -77,9 +77,9 @@ class StatsAdapter(
 
     inner class ViewHolder(val view: View, skeleton: Skeleton?) : SkeletonViewHolder<StatsUiModel>(view, skeleton) {
 
-        private val digitsSizeDimenId = R.dimen.textsize_stats_info_text
+        private val digitsSizeDimenId = R.dimen.textsize_stats_info_number
 
-        private val textSizeDimenId = R.dimen.textsize_stats_info_number
+        private val textSizeDimenId = R.dimen.textsize_stats_info_text
 
         override fun bind(item: StatsUiModel) {
             when (item) {
