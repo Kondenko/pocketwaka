@@ -66,6 +66,9 @@
     <dimen name="margin_summary_projects_section_title_top">4dp</dimen>
     <dimen name="margin_summary_projects_section_title_bottom">8dp</dimen>
 
+    <dimen name="textsize_summary_number">29sp</dimen> <!-- Total and average time -->
+    <dimen name="textsize_summary_text">18sp</dimen>
+
     <dimen name="padding_summary_project_card_vertical">8dp</dimen>
     <dimen name="margin_summary_project_item_title_end">8dp</dimen>
     <dimen name="margin_summary_project_branch_icon">8dp</dimen>

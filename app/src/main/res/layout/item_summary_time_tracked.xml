@@ -7,7 +7,9 @@
     android:orientation="vertical"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:padding="@dimen/padding_all_card_inner"
+    android:paddingStart="@dimen/padding_all_card_inner"
+    android:paddingEnd="@dimen/padding_all_card_inner"
+    android:paddingBottom="@dimen/padding_all_card_inner"
     >
 
 
@@ -23,9 +25,9 @@
         android:id="@+id/textview_summary_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textAlignment="viewStart"
+        android:layout_marginTop="8dp"
         android:clipToPadding="false"
+        android:textAlignment="viewStart"
         android:textAppearance="@style/TextAppearance.App.Display.Time"
         tools:text="8 hrs 8 mins"
         >
@@ -46,7 +48,7 @@
         android:id="@+id/linearlayout_delta_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:gravity="center_vertical"

@@ -17,7 +17,7 @@ class GetSummaryStateMock(
 ) : StatefulUseCase<GetSummary.Params, List<SummaryUiModel>, SummaryDbModel>(schedulers, useCase, connectivityStatusProvider) {
 
     private val mockModels = listOf(
-            SummaryUiModel.TimeTracked("11 hrs 55 mins", 71),
+            SummaryUiModel.TimeTracked("11 hrs 55 mins", -71),
             SummaryUiModel.ProjectsTitle,
             SummaryUiModel.Project(
                     listOf(

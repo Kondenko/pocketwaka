@@ -77,6 +77,10 @@ class StatsAdapter(
 
     inner class ViewHolder(val view: View, skeleton: Skeleton?) : SkeletonViewHolder<StatsUiModel>(view, skeleton) {
 
+        private val digitsSizeDimenId = R.dimen.textsize_stats_info_text
+
+        private val textSizeDimenId = R.dimen.textsize_stats_info_number
+
         override fun bind(item: StatsUiModel) {
             when (item) {
                 is StatsUiModel.Status -> view.render(item)
@@ -89,14 +93,14 @@ class StatsAdapter(
         private fun View.render(item: StatsUiModel.Status) = renderStatus(item.status)
 
         private fun View.render(item: StatsUiModel.Info) {
-            textview_stats_time_total.text = timeSpannableCreator.create(item.humanReadableTotal)
-            textview_stats_daily_average.text = timeSpannableCreator.create(item.humanReadableDailyAverage)
+            textview_stats_time_total.text = timeSpannableCreator.create(item.humanReadableTotal, digitsSizeDimenId, textSizeDimenId)
+            textview_stats_daily_average.text = timeSpannableCreator.create(item.humanReadableDailyAverage, digitsSizeDimenId, textSizeDimenId)
             super.bind(item)
         }
 
         private fun View.render(item: StatsUiModel.BestDay) {
             textview_bestday_date.text = item.date
-            textview_bestday_time.text = timeSpannableCreator.create(item.time)
+            textview_bestday_time.text = timeSpannableCreator.create(item.time, digitsSizeDimenId, textSizeDimenId)
             imageview_bestday_illustration.isVisible = !showSkeleton
             val caption = context.getString(R.string.stats_caption_best_day, item.percentAboveAverage)
             if (item.percentAboveAverage > 0) textview_bestday_caption.text = caption

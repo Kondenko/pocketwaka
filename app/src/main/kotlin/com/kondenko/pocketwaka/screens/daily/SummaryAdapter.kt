@@ -89,7 +89,7 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
                 } else {
                     setViewsVisibility(View.GONE, textview_summary_average_delta, imageview_summary_delta_icon)
                 }
-                textview_summary_time.text = timeSpannableCreator.create(item.time)
+                textview_summary_time.text = timeSpannableCreator.create(item.time, R.dimen.textsize_summary_number, R.dimen.textsize_summary_text)
                 super.bind(item)
             }
         }

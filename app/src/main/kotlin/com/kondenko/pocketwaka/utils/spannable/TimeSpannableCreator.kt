@@ -6,6 +6,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
+import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.utils.extensions.component1
@@ -14,13 +15,13 @@ import kotlin.math.roundToInt
 
 class TimeSpannableCreator(private val context: Context) : SpannableCreator {
 
-    override fun create(string: String?): Spannable? {
+    override fun create(string: String?, @DimenRes digitsSize: Int, @DimenRes textSize: Int): Spannable? {
         if (string == null) return null
         val sb = SpannableStringBuilder(string)
 
         // Set spans for regular text
         sb.setSpan(
-                AbsoluteSizeSpan(context.resources.getDimension(R.dimen.textsize_stats_info_text).roundToInt()),
+                AbsoluteSizeSpan(context.resources.getDimension(textSize).roundToInt()),
                 0,
                 string.length,
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE
@@ -40,7 +41,7 @@ class TimeSpannableCreator(private val context: Context) : SpannableCreator {
         for ((from, to) in numberIndices) {
             val toActual = to + 1
             sb.setSpan(
-                    AbsoluteSizeSpan(context.resources.getDimension(R.dimen.textsize_stats_info_number).roundToInt()),
+                    AbsoluteSizeSpan(context.resources.getDimension(digitsSize).roundToInt()),
                     from,
                     toActual,
                     Spanned.SPAN_INCLUSIVE_EXCLUSIVE
