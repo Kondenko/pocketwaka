@@ -10,7 +10,6 @@ import com.kondenko.pocketwaka.utils.extensions.testWithLogging
 import com.nhaarman.mockito_kotlin.*
 import io.reactivex.Completable
 import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
@@ -29,7 +28,7 @@ class RangeStatsRepositoryTest {
             dao
     )
 
-    private val serverModelConverter: Observable<StatsServerModel>.(RangeStatsRepository.Params) -> Observable<StatsDbModel> = mock()
+    private val serverModelConverter: Single<StatsServerModel>.(RangeStatsRepository.Params) -> Single<StatsDbModel> = mock()
 
     private val token = "token"
 
@@ -39,7 +38,7 @@ class RangeStatsRepositoryTest {
 
     @Before
     fun setupConverters() {
-        whenever(serverModelConverter(any(), any())).doReturn(Observable.just(cachedStats))
+        whenever(serverModelConverter(any(), any())).doReturn(Single.just(cachedStats))
     }
 
     @Test
@@ -100,7 +99,7 @@ class RangeStatsRepositoryTest {
         whenever(service.getCurrentUserStats(token, range))
                 .doReturn(Single.error(error))
         whenever(serverModelConverter(any(), any()))
-                .doReturn(Observable.error(error))
+                .doReturn(Single.error(error))
         with(repository.getData(RangeStatsRepository.Params(token, range), serverModelConverter).testWithLogging()) {
             verify(dao, times(1)).getCachedStats(range)
             inOrder(service, dao) {
@@ -113,6 +112,6 @@ class RangeStatsRepositoryTest {
         }
     }
 
-    // TODO Ann a test case for empty data
+    // TODO Add a test case for empty data
 
 }

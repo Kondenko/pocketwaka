@@ -10,10 +10,10 @@ class SummaryResponseConverter : (SummaryRepository.Params, SummaryDbModel, Summ
 
     override fun invoke(param: SummaryRepository.Params, first: SummaryDbModel, second: SummaryDbModel): SummaryDbModel =
             SummaryDbModel(
-                    date = null,
-                    isAccountEmpty = first.isAccountEmpty ?: second.isAccountEmpty ?: false,
-                    isFromCache = first.isFromCache && second.isFromCache,
+                    date = first.date,
                     isEmpty = first.isEmpty ?: second.isEmpty ?: false,
+                    isAccountEmpty = first.isAccountEmpty ?: second.isAccountEmpty ?: false,
+                    isFromCache = first.isFromCache || second.isFromCache,
                     data = first.data + second.data
             )
 

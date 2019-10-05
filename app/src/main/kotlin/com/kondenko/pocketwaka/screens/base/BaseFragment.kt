@@ -42,11 +42,11 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
     protected fun State<ST>.render() {
         listSkeleton.show((this as? State.Loading<*>)?.isInterrupting == true)
         when (this) {
-            is State.Success -> this.render()
-            is State.Loading -> this.render()
-            is State.Offline -> this.render()
-            is State.Empty -> this.render()
-            is State.Failure -> this.render()
+            is State.Success -> render()
+            is State.Loading -> render()
+            is State.Offline -> render()
+            is State.Empty -> render()
+            is State.Failure -> render()
         }
     }
 

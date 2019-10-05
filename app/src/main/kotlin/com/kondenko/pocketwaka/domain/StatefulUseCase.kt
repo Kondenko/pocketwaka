@@ -90,7 +90,7 @@ abstract class StatefulUseCase<
 
     private fun transitionToLoadingState(old: State<UI_MODEL>, new: Loading<UI_MODEL>) = new.copy(
             new.data ?: old.data, // keep showing old data while displaying a loading indicator
-            old.data == null // show an full-screen loading indicator if no data is present
+            old.data == null // show a full-screen loading indicator if no data is present
     )
 
     private fun transitionToNewState(old: Loading<UI_MODEL>, new: State<UI_MODEL>) = when (new) {
@@ -114,6 +114,5 @@ abstract class StatefulUseCase<
             new
         }
     }
-
 
 }

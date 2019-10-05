@@ -24,3 +24,27 @@ fun <T> Observable<T>.startWithIfNotEmpty(item: T): Observable<T> {
         else this
     }
 }
+
+fun <T> Observable<T>.doOnComplete(onComplete: (List<T>) -> Unit): Observable<T> = compose {
+    val buffer = mutableListOf<T>()
+    it.doOnNext { buffer += it }.doOnComplete { onComplete(buffer) }
+}
+
+class AssertInOrder<T> {
+
+    val predicates = mutableListOf<(T) -> Boolean>()
+
+    fun assert(predicate: (T) -> Boolean) = predicates.add(predicate)
+
+}
+
+fun <T> TestObserver<T>.assertInOrder(assertions: AssertInOrder<T>.() -> Unit) {
+    AssertInOrder<T>()
+            .apply(assertions)
+            .predicates
+            .mapIndexed { index, predicate ->
+                assertValueAt(index, predicate)
+            }
+}
+
+operator fun <T> Observable<T>.plus(observable: Observable<T>) = this.concatWith(observable)

@@ -1,11 +1,12 @@
 package com.kondenko.pocketwaka.data
 
+import com.kondenko.pocketwaka.utils.WakaLog
+import com.kondenko.pocketwaka.utils.extensions.doOnComplete
 import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.Observable
+import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 /**
@@ -20,9 +21,11 @@ import java.util.concurrent.TimeUnit
  * @param cachedDataProvider a function to fetch data from cache
  *
  */
-abstract class CacheBackedRepository<Params, ServerModel, DbModel>(
+abstract class ContinuousCacheBackedRepository<Params, ServerModel, DbModel>(
+        private val workerScheduler: Scheduler,
         private val serverDataProvider: (Params) -> Single<ServerModel>,
-        private val cachedDataProvider: (Params) -> Maybe<DbModel>,
+        private val continuousCachedDataProvider: (Params) -> Observable<DbModel>,
+        private val reduceModels: (Params, DbModel, DbModel) -> DbModel,
         private val cacheRetrievalTimeoutMs: Long = 3000
 ) {
     /**
@@ -31,23 +34,30 @@ abstract class CacheBackedRepository<Params, ServerModel, DbModel>(
      * @param params parameters to fetch data with
      * @param converter a function to convert [ServerModel] to [DbModel]
      */
-    fun getData(params: Params, mapper: Single<ServerModel>.(Params) -> Single<DbModel>): Observable<DbModel> {
+    fun getData(params: Params, map: Single<ServerModel>.(Params) -> Observable<DbModel>): Observable<DbModel> {
         val cache = getDataFromCache(params)
+                .onErrorResumeNext(Observable.empty())
         val server = getDataFromServer(params)
-                .mapper(params)
-                .doOnSuccess { dto: DbModel ->
-                    cacheData(dto).subscribeBy(
-                            onComplete = { Timber.d("Data cached: $dto") },
-                            onError = { Timber.w(it, "Failed to cache data") }
-                    )
+                .map(params)
+                .doOnNext { WakaLog.d("Mapped a server model: $it") }
+                .doOnComplete { dto: List<DbModel> ->
+                    dto.reduce { a, b -> reduceModels(params, a, b) }.let {
+                        cacheData(it)
+                                .subscribeOn(workerScheduler)
+                                .subscribeBy(
+                                        onComplete = { WakaLog.d("Data cached: $dto") },
+                                        onError = { WakaLog.w("Failed to cache data") }
+                                )
+                    }
                 }
                 .onErrorResumeNext { error: Throwable ->
+                    WakaLog.w("Error retrieving data from server")
                     // Pass the network error down the stream if cache is empty
-                    cache.switchIfEmpty(Single.error(error))
+                    cache.switchIfEmpty(Observable.error(error))
                 }
-        return Maybe.concatArrayEager(cache, server.toMaybe())
+        return server
                 .distinctUntilChanged()
-                .toObservable()
+                .doOnComplete { WakaLog.d("Repo observable completed") }
     }
 
     /**
@@ -56,12 +66,12 @@ abstract class CacheBackedRepository<Params, ServerModel, DbModel>(
     private fun getDataFromServer(params: Params): Single<ServerModel> =
             serverDataProvider.invoke(params)
 
-    private fun getDataFromCache(params: Params): Maybe<DbModel> =
-            cachedDataProvider.invoke(params)
+    private fun getDataFromCache(params: Params): Observable<DbModel> =
+            continuousCachedDataProvider.invoke(params)
                     .map { setIsFromCache(it, true) }
                     .timeout(cacheRetrievalTimeoutMs, TimeUnit.MILLISECONDS)
-                    .doOnSuccess { Timber.d("Retrieved a model from cache: $it") }
-                    .doOnError { Timber.d("Error retrieving a model from cache: $it") }
+                    .doOnNext { WakaLog.d("Retrieved a model from cache: $it") }
+                    .doOnError { WakaLog.d("Error retrieving a model from cache: $it") }
 
     /**
      * Put [data] into cache

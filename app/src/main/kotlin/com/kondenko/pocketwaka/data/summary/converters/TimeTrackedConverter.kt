@@ -51,5 +51,4 @@ class TimeTrackedConverter(
         return if (averageSec != 0) totalSeconds * 100 / averageSec - 100 else null
     }
 
-
 }

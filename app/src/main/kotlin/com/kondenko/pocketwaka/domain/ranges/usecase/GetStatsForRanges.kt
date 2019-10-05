@@ -15,7 +15,7 @@ class GetStatsForRanges(
         schedulers: SchedulersContainer,
         private val getTokenHeader: GetTokenHeaderValue,
         private val rangeStatsRepository: RangeStatsRepository,
-        private val serverModelConverter: (RangeStatsRepository.Params, StatsServerModel) -> Maybe<StatsDbModel>?
+        private val serverModelConverter: (RangeStatsRepository.Params, StatsServerModel) -> Maybe<StatsDbModel>
 ) : UseCaseObservable<GetStatsForRanges.Params, StatsDbModel>(schedulers) {
 
     class Params(val range: String?, refreshRate: Int = 1, retryAttempts: Int = 3) : StatefulUseCase.ParamsWrapper(refreshRate, retryAttempts) {
@@ -25,8 +25,8 @@ class GetStatsForRanges(
     override fun build(params: Params?): Observable<StatsDbModel> =
             getTokenHeader.build().flatMapObservable { header ->
                 rangeStatsRepository.getData(RangeStatsRepository.Params(header, params!!.range!!)) { params ->
-                    flatMapMaybe {
-                        serverModelConverter(params, it)
+                    flatMap {
+                        serverModelConverter(params, it).toSingle()
                     }
                 }
             }

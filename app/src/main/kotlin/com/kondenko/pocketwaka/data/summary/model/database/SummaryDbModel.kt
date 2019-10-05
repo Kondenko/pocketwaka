@@ -8,7 +8,7 @@ import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
 @Entity(tableName = "summary")
 data class SummaryDbModel(
         @PrimaryKey
-        val date: Long?,
+        val date: Long,
         val isAccountEmpty: Boolean? = null,
         override val isFromCache: Boolean = false,
         override val isEmpty: Boolean? = null,

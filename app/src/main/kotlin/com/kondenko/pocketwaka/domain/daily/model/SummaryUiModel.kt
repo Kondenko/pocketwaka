@@ -7,11 +7,9 @@ sealed class SummaryUiModel {
 
     data class Status(override val status: ScreenStatus) : SummaryUiModel(), StatusMarker
 
-    data class TimeTracked(val time: String, val percentDelta: Int?)
-        : SummaryUiModel()
+    data class TimeTracked(val time: String, val percentDelta: Int?) : SummaryUiModel()
 
-    object ProjectsTitle
-        : SummaryUiModel()
+    object ProjectsTitle : SummaryUiModel()
 
     data class Project(val models: List<ProjectModel>) : SummaryUiModel()
 

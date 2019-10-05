@@ -32,12 +32,14 @@ class FetchProjects(
     data class Params(val tokenHeader: String, val summaryData: SummaryData)
 
     override fun build(params: Params?): Observable<SummaryDbModel> {
-        return params?.let {
+        val date = params?.summaryData?.range?.date?.let(dateFormatter::parseDateParameter)
+        return if (params != null && date != null) {
             getProjects(params.tokenHeader, params.summaryData).map {
-                val date = dateFormatter.parseDateParameter(params.summaryData.range.date)
                 SummaryDbModel(date, data = listOf(it))
             }
-        } ?: Observable.error(NullPointerException("Params are null"))
+        } else {
+            Observable.error(NullPointerException("Params are null"))
+        }
     }
 
     private fun getProjects(token: String, summaryData: SummaryData): Observable<SummaryUiModel> =

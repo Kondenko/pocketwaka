@@ -2,12 +2,15 @@ package com.kondenko.pocketwaka.di.modules
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
+import com.kondenko.pocketwaka.data.persistence.AppDatabase
 import com.kondenko.pocketwaka.data.summary.converters.FetchProjects
 import com.kondenko.pocketwaka.data.summary.converters.SummaryResponseConverter
 import com.kondenko.pocketwaka.data.summary.converters.TimeTrackedConverter
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.data.summary.service.SummaryService
 import com.kondenko.pocketwaka.di.qualifiers.Api
+import com.kondenko.pocketwaka.di.qualifiers.Worker
+import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
 import com.kondenko.pocketwaka.domain.daily.usecase.GetAverage
 import com.kondenko.pocketwaka.domain.daily.usecase.GetDefaultSummaryRange
@@ -30,6 +33,9 @@ val summaryModule = module {
         get<Retrofit>(Api).create<SummaryService>()
     }
     single {
+        get<AppDatabase>().summaryDao()
+    }
+    single {
         GetAverage(
                 schedulersContainer = get(),
                 rangeStatsRepository = get(),
@@ -46,7 +52,7 @@ val summaryModule = module {
         SummaryResponseConverter()
     }
     single {
-        SummaryRepository(summaryService = get())
+        SummaryRepository(summaryService = get(), summaryDao = get(), workerScheduler = get(Worker), reduceModels = get<SummaryResponseConverter>())
     }
     single {
         FetchProjects(
@@ -59,18 +65,17 @@ val summaryModule = module {
     single {
         GetSummary(
                 schedulers = get(),
-                summaryRepository = get(),
-                getTokenHeader = get(),
+                summaryRepository = get<SummaryRepository>(),
+                getTokenHeader = get<GetTokenHeaderValue>(),
                 dateFormatter = get(),
                 summaryResponseConverter = get<SummaryResponseConverter>(),
                 timeTrackedConverter = get<TimeTrackedConverter>(),
-                fetchProjects = get()
+                fetchProjects = get<FetchProjects>()
         )
     }
     single {
         GetDefaultSummaryRange(
                 dateProvider = get(),
-                dateFormatter = get(),
                 schedulers = get()
         )
     }

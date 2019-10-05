@@ -25,7 +25,7 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
 
     private val vm: SummaryViewModel by viewModel()
 
-    private val browserWindow: BrowserWindow by inject { parametersOf(requireContext(), viewLifecycleOwner) }
+    private val browserWindow: BrowserWindow by inject { parametersOf(context, viewLifecycleOwner) }
 
     override val containerId: Int = R.id.framelayout_summary_root
 
