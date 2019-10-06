@@ -43,10 +43,12 @@ android {
             def configFiles = fileTree(dir: "./proguard", include: ["*.pro"]).asList()
             configFiles.add(getDefaultProguardFile('proguard-android.txt'))
             proguardFiles configFiles.toArray()
+            manifestPlaceholders = [enableCrashReporting: "true"]
         }
         debug {
             shrinkResources false
             minifyEnabled false
+            manifestPlaceholders = [enableCrashReporting: "false"]
         }
         mock {
             initWith debug

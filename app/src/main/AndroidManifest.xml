@@ -17,6 +17,8 @@
             android:name="google_analytics_adid_collection_enabled"
             android:value="false" />
 
+        <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="${enableCrashReporting}" />
+
         <uses-library android:name="android.test.runner"
             android:required="false" />
 
