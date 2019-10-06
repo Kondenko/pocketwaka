@@ -9,7 +9,6 @@ import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.screens.daily.FragmentSummary
 import com.kondenko.pocketwaka.screens.login.LoginActivity
@@ -48,23 +47,14 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar_main)
         val visibility = window.decorView.systemUiVisibility or SYSTEM_UI_FLAG_LAYOUT_STABLE or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         window.decorView.systemUiVisibility = visibility
-        main_bottom_navigation.setOnNavigationItemSelectedListener {
-            refreshEventsDisposable?.dispose()
-            when (it.itemId) {
-                R.id.bottomnav_item_today -> showSummaries()
-                R.id.bottomnav_item_ranges -> showRanges()
-                R.id.bottomnav_item_menu -> showMenu()
-            }
-            true
-        }
-        main_bottom_navigation.selectedItemId = R.id.bottomnav_item_today
-        vm.states().observe(this, Observer {
+        vm.states().observe(this) {
             when (it) {
+                is MainState.ShowData -> showData()
                 is MainState.ShowLoginScreen -> showLoginScreen()
                 is MainState.LogOut -> logout()
                 is MainState.Error -> showError(it.cause)
             }
-        })
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -79,20 +69,33 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun showData() {
+        main_bottom_navigation.setOnNavigationItemSelectedListener {
+            refreshEventsDisposable?.dispose()
+            when (it.itemId) {
+                R.id.bottomnav_item_today -> showSummaries()
+                R.id.bottomnav_item_ranges -> showRanges()
+                R.id.bottomnav_item_menu -> showMenu()
+            }
+            true
+        }
+        main_bottom_navigation.selectedItemId = R.id.bottomnav_item_today
+    }
+
     private fun showLoginScreen() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }
 
-    private fun showError(throwable: Throwable?) {
-        throwable?.report()
-        Toast.makeText(this, R.string.error_refreshing_token, Toast.LENGTH_LONG).show()
-    }
-
     private fun logout() {
         finish()
         startActivity<LoginActivity>()
+    }
+
+    private fun showError(throwable: Throwable?) {
+        throwable?.report()
+        Toast.makeText(this, R.string.error_refreshing_token, Toast.LENGTH_LONG).show()
     }
 
     private fun showSummaries() {
@@ -115,7 +118,6 @@ class MainActivity : AppCompatActivity() {
     private fun setFragment(fragment: Fragment, tag: String) {
         if (supportFragmentManager.findFragmentByTag(tag) == null) {
             supportFragmentManager.transaction {
-                setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 replace(R.id.main_container, fragment, tag)
             }
         }

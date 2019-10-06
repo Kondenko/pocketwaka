@@ -28,7 +28,7 @@ class MainViewModel(
                 onSuccess = { isLoggedIn ->
                     if (isLoggedIn) {
                         refreshAccessToken.invoke()
-                        state.value = ShowStats
+                        state.value = ShowData
                     } else {
                         state.value = ShowLoginScreen
                     }
