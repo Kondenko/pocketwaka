@@ -62,4 +62,9 @@
     <string name="stats_time_format_minutes_short">%dм</string>
     <string name="summary_projects_label_no_commits">Нет коммитов на сервере</string>
     <string name="summary_projects_state_empty_today_title">Нет активности за сегодня</string>
+    <string name="menu_action_logout">Выйти</string>
+    <string name="menu_action_open_github">PocketWaka на Github</string>
+    <string name="menu_action_rate">Оценить PocketWaka</string>
+    <string name="menu_action_send_feedback">Отправить отзыв</string>
+    <string name="menu_version_template">Версия %s</string>
 </resources>

@@ -8,8 +8,9 @@ val koinModules = listOf(
         persistenceModule,
         mainModule,
         authModule,
-        rangeStatsModule,
         summaryModule,
+        rangeStatsModule,
+        menuModule,
         commitsModule,
         durationsModule
 )

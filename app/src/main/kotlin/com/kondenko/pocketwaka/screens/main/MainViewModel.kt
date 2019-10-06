@@ -23,10 +23,6 @@ class MainViewModel(
 
     fun states(): LiveData<MainState> = state
 
-    fun logout() {
-        clearCache(onFinish = { state.value = LogOut })
-    }
-
     private fun checkIfLoggedIn() {
         checkIfUserIsLoggedIn(
                 onSuccess = { isLoggedIn ->
@@ -38,15 +34,15 @@ class MainViewModel(
                     }
                 },
                 onError = { error ->
-                    state.value = Error(error)
-                    logout()
+                    clearCache(onFinish = {
+                        state.value = LogOut
+                    })
                 }
         )
     }
 
     override fun onCleared() {
         checkIfUserIsLoggedIn.dispose()
-        clearCache.dispose()
         refreshAccessToken.dispose()
         super.onCleared()
     }

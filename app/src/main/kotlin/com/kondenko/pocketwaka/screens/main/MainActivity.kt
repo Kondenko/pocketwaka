@@ -16,8 +16,7 @@ import com.kondenko.pocketwaka.screens.login.LoginActivity
 import com.kondenko.pocketwaka.screens.menu.FragmentMenu
 import com.kondenko.pocketwaka.screens.ranges.FragmentRanges
 import com.kondenko.pocketwaka.utils.WakaLog
-import com.kondenko.pocketwaka.utils.extensions.report
-import com.kondenko.pocketwaka.utils.extensions.transaction
+import com.kondenko.pocketwaka.utils.extensions.*
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
@@ -46,7 +45,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        supportActionBar?.elevation = 0f
+        setSupportActionBar(toolbar_main)
         val visibility = window.decorView.systemUiVisibility or SYSTEM_UI_FLAG_LAYOUT_STABLE or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         window.decorView.systemUiVisibility = visibility
         main_bottom_navigation.setOnNavigationItemSelectedListener {
@@ -75,7 +74,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.action_logout -> vm.logout()
             R.id.action_refresh -> refreshEvents.onNext(Any())
         }
         return super.onOptionsItemSelected(item)
@@ -94,26 +92,30 @@ class MainActivity : AppCompatActivity() {
 
     private fun logout() {
         finish()
-        startActivity(Intent(this, LoginActivity::class.java))
+        startActivity<LoginActivity>()
     }
 
     private fun showSummaries() {
+        toolbar_main.visible()
         setFragment(fragmentSummary, tagDaily)
         refreshEventsDisposable = fragmentSummary.subscribeToRefreshEvents(refreshEvents)
     }
 
     private fun showRanges() {
+        toolbar_main.visible()
         setFragment(fragmentRanges, tagRanges)
         refreshEventsDisposable = fragmentRanges.subscribeToRefreshEvents(refreshEvents)
     }
 
     private fun showMenu() {
         setFragment(fragmentMenu, tagMenu)
+        toolbar_main.gone()
     }
 
     private fun setFragment(fragment: Fragment, tag: String) {
         if (supportFragmentManager.findFragmentByTag(tag) == null) {
             supportFragmentManager.transaction {
+                setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 replace(R.id.main_container, fragment, tag)
             }
         }

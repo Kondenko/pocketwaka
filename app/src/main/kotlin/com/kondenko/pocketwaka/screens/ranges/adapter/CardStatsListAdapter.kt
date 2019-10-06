@@ -11,7 +11,7 @@ import com.kondenko.pocketwaka.domain.ranges.model.StatsItem
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.extensions.getColorCompat
-import com.kondenko.pocketwaka.utils.extensions.setInvisible
+import com.kondenko.pocketwaka.utils.extensions.invisible
 import kotlinx.android.synthetic.main.item_stats_entity.view.*
 
 class CardStatsListAdapter(context: Context, showSkeleton: Boolean) : SkeletonAdapter<StatsItem, CardStatsListAdapter.ViewHolder>(context, showSkeleton) {
@@ -41,7 +41,7 @@ class CardStatsListAdapter(context: Context, showSkeleton: Boolean) : SkeletonAd
             with(itemView) {
                 textview_stats_item_percent?.apply {
                     if (item.percent != null) setPercentValue(item.percent)
-                    else if (!showSkeleton) setInvisible()
+                    else if (!showSkeleton) invisible()
                 }
                 textview_stats_item_name.text = item.name
                 progressbar_stats_item_percentage.color = item.color

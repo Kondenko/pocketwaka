@@ -1,11 +1,17 @@
 package com.kondenko.pocketwaka.utils.extensions
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.util.TypedValue
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import java.util.*
+
+inline fun <reified T : Activity> Context.startActivity() {
+    startActivity(Intent(this, T::class.java))
+}
 
 fun Context.getCurrentLocale(): Locale = resources.configuration.run {
     @Suppress("DEPRECATION")
