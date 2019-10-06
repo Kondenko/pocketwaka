@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.ranges.model.StatsItem
 import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
+import com.kondenko.pocketwaka.screens.Refreshable
 import com.kondenko.pocketwaka.screens.ScreenStatus
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.base.BaseFragment
@@ -29,7 +30,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
-class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapter, State<List<StatsUiModel>>>() {
+class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapter, State<List<StatsUiModel>>>(), Refreshable {
 
     companion object {
         const val ARG_RANGE = "range"
@@ -114,7 +115,7 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
 
     fun scrollDirection(): Observable<ScrollDirection> = scrollDirection
 
-    fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Disposable {
+    override fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Disposable {
         return refreshEvents.subscribe {
             vm.update()
         }

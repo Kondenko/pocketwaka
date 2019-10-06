@@ -7,11 +7,15 @@ import android.view.ViewGroup
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.daily.model.ProjectModel
 import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
+import com.kondenko.pocketwaka.screens.Refreshable
 import com.kondenko.pocketwaka.screens.ScreenStatus
 import com.kondenko.pocketwaka.screens.base.BaseFragment
 import com.kondenko.pocketwaka.utils.BrowserWindow
+import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.toListOrEmpty
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_summary.*
 import kotlinx.android.synthetic.main.fragment_summary.view.*
@@ -19,9 +23,8 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import timber.log.Timber
 
-class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, SummaryAdapter, SummaryState>() {
+class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, SummaryAdapter, SummaryState>(), Refreshable {
 
     private val vm: SummaryViewModel by viewModel()
 
@@ -56,7 +59,7 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
         super.onViewCreated(view, savedInstanceState)
         setupList(view)
         vm.state.observe(viewLifecycleOwner) {
-            Timber.d("New summary state: $it")
+            WakaLog.d("New summary state: $it")
             when (it) {
                 is SummaryState.EmptyRange -> {
                     showData(false)
@@ -71,7 +74,7 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
         with(view.recyclerview_summary) {
             listSkeleton = currentScope.get { parametersOf(this, context, skeletonItems) }
             adapter = listSkeleton.actualAdapter.apply {
-                connectRepoClicks().subscribeBy(onNext = ::connectRepo, onError = Timber::w)
+                connectRepoClicks().subscribeBy(onNext = ::connectRepo, onError = WakaLog::w)
             }
         }
     }
@@ -84,6 +87,12 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
         recyclerview_summary.apply {
             val statusModel = status?.let(SummaryUiModel::Status).toListOrEmpty()
             data?.let { listSkeleton.actualAdapter.items = statusModel + it }
+        }
+    }
+
+    override fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Disposable {
+        return refreshEvents.subscribe {
+            reloadScreen()
         }
     }
 

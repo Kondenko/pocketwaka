@@ -15,8 +15,10 @@ import com.kondenko.pocketwaka.screens.daily.FragmentSummary
 import com.kondenko.pocketwaka.screens.login.LoginActivity
 import com.kondenko.pocketwaka.screens.menu.FragmentMenu
 import com.kondenko.pocketwaka.screens.ranges.FragmentRanges
+import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.extensions.report
 import com.kondenko.pocketwaka.utils.extensions.transaction
+import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -26,15 +28,19 @@ class MainActivity : AppCompatActivity() {
 
     private val vm: MainViewModel by viewModel()
 
-    private val refreshEvents = PublishSubject.create<Any>()
+    private val refreshEvents = PublishSubject.create<Any>().apply {
+        doOnDispose { WakaLog.d("Disposing of refresh events") }
+    }
 
-    private val rangesFragment = FragmentRanges()
-    private val tagRanges = "ranges"
+    private var refreshEventsDisposable: Disposable? = null
 
-    private val dailyFragment = FragmentSummary()
+    private val fragmentSummary = FragmentSummary()
     private val tagDaily = "day"
 
-    private val menuFragment = FragmentMenu()
+    private val fragmentRanges = FragmentRanges()
+    private val tagRanges = "ranges"
+
+    private val fragmentMenu = FragmentMenu()
     private val tagMenu = "menu"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +50,9 @@ class MainActivity : AppCompatActivity() {
         val visibility = window.decorView.systemUiVisibility or SYSTEM_UI_FLAG_LAYOUT_STABLE or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         window.decorView.systemUiVisibility = visibility
         main_bottom_navigation.setOnNavigationItemSelectedListener {
-            when(it.itemId) {
-                R.id.bottomnav_item_today -> showDailyStats()
+            refreshEventsDisposable?.dispose()
+            when (it.itemId) {
+                R.id.bottomnav_item_today -> showSummaries()
                 R.id.bottomnav_item_ranges -> showRanges()
                 R.id.bottomnav_item_menu -> showMenu()
             }
@@ -90,17 +97,18 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(this, LoginActivity::class.java))
     }
 
-    private fun showDailyStats() {
-        setFragment(dailyFragment, tagDaily)
+    private fun showSummaries() {
+        setFragment(fragmentSummary, tagDaily)
+        refreshEventsDisposable = fragmentSummary.subscribeToRefreshEvents(refreshEvents)
     }
 
     private fun showRanges() {
-        rangesFragment.subscribeToRefreshEvents(refreshEvents)
-        setFragment(rangesFragment, tagRanges)
+        setFragment(fragmentRanges, tagRanges)
+        refreshEventsDisposable = fragmentRanges.subscribeToRefreshEvents(refreshEvents)
     }
 
     private fun showMenu() {
-        setFragment(menuFragment, tagMenu)
+        setFragment(fragmentMenu, tagMenu)
     }
 
     private fun setFragment(fragment: Fragment, tag: String) {

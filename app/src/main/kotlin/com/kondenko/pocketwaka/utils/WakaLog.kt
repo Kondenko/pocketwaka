@@ -23,6 +23,16 @@ object WakaLog {
         }
     }
 
+    inline fun w(throwable: Throwable? = null) {
+        Timber.w(throwable)
+        ifNoTimber {
+            throwable?.let {
+                println("Exception:")
+                it.printStackTrace()
+            }
+        }
+    }
+
     inline fun ifNoTimber(action: () -> Unit) {
         if (Timber.treeCount() == 0) action()
     }

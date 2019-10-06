@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.screens.Refreshable
 import com.kondenko.pocketwaka.screens.ranges.model.ScrollDirection
 import com.kondenko.pocketwaka.screens.ranges.model.TabsElevationState
 import com.kondenko.pocketwaka.utils.extensions.getColorCompat
@@ -28,7 +29,7 @@ import kotlinx.android.synthetic.main.fragment_stats_container.*
 import timber.log.Timber
 
 
-class FragmentRanges : Fragment() {
+class FragmentRanges : Fragment(), Refreshable {
 
     private val refreshEvents = PublishSubject.create<Any>()
 
@@ -143,7 +144,10 @@ class FragmentRanges : Fragment() {
                 .start()
     }
 
-    fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Observable<Any> = refreshEvents.subscribeWith(this.refreshEvents)
+    override fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Disposable? {
+        refreshEvents.subscribeWith(this.refreshEvents)
+        return refreshSubscription
+    }
 
     private fun FragmentPagerItems.Creator.addFragment(@StringRes title: Int, range: String): FragmentPagerItems.Creator {
         return this.add(title, FragmentStatsTab::class.java, Bundler().putString(FragmentStatsTab.ARG_RANGE, range).get())
