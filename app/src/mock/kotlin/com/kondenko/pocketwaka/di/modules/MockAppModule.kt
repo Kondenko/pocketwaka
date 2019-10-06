@@ -1,10 +1,11 @@
 package com.kondenko.pocketwaka.di.modules
 
 import com.google.gson.GsonBuilder
-import org.koin.dsl.module.applicationContext
+import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
+import com.kondenko.pocketwaka.data.android.MockConnectivityStatusProvider
+import org.koin.dsl.module
 
-object MockAppModule {
-    fun create() = module {
-        single { GsonBuilder().create() }
-    }
+val mockAppModule = module(override = true) {
+    single { GsonBuilder().create() }
+    single<ConnectivityStatusProvider> { MockConnectivityStatusProvider() }
 }

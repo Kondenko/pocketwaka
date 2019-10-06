@@ -1,10 +1,11 @@
 package com.kondenko.pocketwaka.di
 
-import android.content.Context
-import com.kondenko.pocketwaka.di.modules.MockAppModule
-import com.kondenko.pocketwaka.di.modules.MockStatsModule
+import com.kondenko.pocketwaka.di.modules.mockAppModule
+import com.kondenko.pocketwaka.di.modules.mockStatsModule
+import com.kondenko.pocketwaka.di.modules.mockSummaryModule
 
-fun mockModulesList(context: Context): List<() -> org.koin.dsl.context.Context> = modulesList(context).apply {
-    add(MockAppModule.create())
-    add(MockStatsModule.create(context))
-}
+val mockModules = listOf(
+        mockAppModule,
+        mockStatsModule,
+        mockSummaryModule
+)

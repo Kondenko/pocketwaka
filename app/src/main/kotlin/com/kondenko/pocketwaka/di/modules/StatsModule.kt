@@ -1,57 +1,79 @@
 package com.kondenko.pocketwaka.di.modules
 
 import android.content.Context
-import com.kondenko.pocketwaka.data.android.DateFormatter
-import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
-import com.kondenko.pocketwaka.data.stats.service.StatsService
-import com.kondenko.pocketwaka.di.Api
-import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
-import com.kondenko.pocketwaka.domain.stats.FetchStats
-import com.kondenko.pocketwaka.domain.stats.GetStatsState
-import com.kondenko.pocketwaka.screens.stats.StatsViewModel
-import com.kondenko.pocketwaka.utils.ColorProvider
+import androidx.recyclerview.widget.RecyclerView
+import com.kondenko.pocketwaka.data.android.ColorProvider
+import com.kondenko.pocketwaka.data.persistence.AppDatabase
+import com.kondenko.pocketwaka.data.ranges.converter.RangeResponseConverter
+import com.kondenko.pocketwaka.data.ranges.repository.RangeStatsRepository
+import com.kondenko.pocketwaka.data.ranges.service.RangeStatsService
+import com.kondenko.pocketwaka.di.qualifiers.Api
+import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
+import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsForRanges
+import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsState
+import com.kondenko.pocketwaka.screens.ranges.FragmentStatsTab
+import com.kondenko.pocketwaka.screens.ranges.RangesViewModel
+import com.kondenko.pocketwaka.screens.ranges.adapter.StatsAdapter
+import com.kondenko.pocketwaka.ui.skeleton.RecyclerViewSkeleton
 import com.kondenko.pocketwaka.utils.SchedulersContainer
-import com.kondenko.pocketwaka.utils.encryption.StringEncryptor
 import com.kondenko.pocketwaka.utils.extensions.create
+import com.kondenko.pocketwaka.utils.spannable.TimeSpannableCreator
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
-object StatsModule {
-    fun create(context: Context) = module {
-        single { get<Retrofit>(Api).create<StatsService>() }
-        single { ColorProvider(context) }
-        single { DateFormatter(context) }
-        single { StatsRepository(
-                context = context,
+val rangeStatsModule = module {
+    factory { get<Retrofit>(Api).create<RangeStatsService>() }
+    factory { get<AppDatabase>().statsDao() }
+    factory {
+        RangeStatsRepository(
                 service = get(),
-                dao = get(),
+                dao = get()
+        )
+    }
+    factory { ColorProvider(androidContext()) }
+    factory {
+        RangeResponseConverter(
+                context = androidContext(),
                 colorProvider = get(),
-                dateFormatter = get(),
-                timeProvider = get()
-        ) }
-        factory {
-            GetTokenHeaderValue(
-                    schedulers = get(),
-                    stringEncryptor = get<StringEncryptor>(),
-                    accessTokenRepository = get()
+                dateProvider = get(),
+                dateFormatter = get()
+        )
+    }
+    factory {
+        GetStatsForRanges(
+                schedulers = get(),
+                getTokenHeader = get(),
+                rangeStatsRepository = get(),
+                serverModelConverter = get<RangeResponseConverter>()
+        )
+    }
+    factory {
+        GetStatsState(
+                schedulers = get(),
+                getStatsForRanges = get<GetStatsForRanges>(),
+                connectivityStatusProvider = get()
+        )
+    }
+    factory { (context: Context, showSkeleton: Boolean) -> StatsAdapter(context, showSkeleton, get<TimeSpannableCreator>()) }
+    scope(named<FragmentStatsTab>()) {
+        scoped { (recyclerView: RecyclerView, context: Context, skeletonItems: List<StatsUiModel>) ->
+            RecyclerViewSkeleton<StatsUiModel, StatsAdapter>(
+                    recyclerView = recyclerView,
+                    adapterCreator = { showSkeleton: Boolean -> get { parametersOf(context, showSkeleton) } },
+                    skeletonItems = skeletonItems
             )
         }
-        factory {
-            FetchStats(
-                    schedulers = get(),
-                    getTokenHeader = get() as GetTokenHeaderValue,
-                    statsRepository = get()
-            )
-        }
-        factory {
-            GetStatsState(
-                    schedulers = get(),
-                    fetchStats = get(),
-                    connectivityStatusProvider = get()
-            )
-        }
-        viewModel { (range: String?) -> StatsViewModel(range, get() as GetStatsState, get<SchedulersContainer>().uiScheduler) }
+    }
+    viewModel { (range: String?) ->
+        RangesViewModel(
+                range = range,
+                getStats = get<GetStatsState>(),
+                uiScheduler = get<SchedulersContainer>().uiScheduler
+        )
     }
 
 }

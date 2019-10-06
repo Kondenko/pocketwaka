@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="24dp"
+    android:layout_centerVertical="true"
+    android:paddingStart="@dimen/padding_summary_project_no_repo_message"
+    android:paddingEnd="@dimen/padding_summary_project_no_repo_message"
+    android:text="@string/summary_projects_label_no_commits"
+    android:gravity="center_vertical"
+    android:textColor="@color/color_text_secondary"
+    android:textSize="14sp"
+    />

@@ -2,7 +2,7 @@ package com.kondenko.pocketwaka
 
 const val databaseName = "pocketwaka-database"
 
-const val databaseVersion = 1
+const val databaseVersion = 2
 
 // TODO Remove top Const object
 object Const {
@@ -14,7 +14,7 @@ object Const {
     const val URL_PLUGINS = "https://wakatime.com/editors"
 
     const val BASE_URL = "https://wakatime.com/" // Used when a user is not authenticated yet
-    const val URL_API = "$BASE_URL/api/v1/" // Used for all API calls
+    const val URL_API = "${BASE_URL}api/v1/" // Used for all API calls
 
     /* Authorization */
 
@@ -32,4 +32,11 @@ object Const {
 
     const val MAX_SHADOW_OPACITY = .2f
 
+}
+
+enum class StatsRange(val value: String) {
+    Week("last_7_days"),
+    Month("last_30_days"),
+    HalfYear("last_6_months"),
+    Year("last_year"),
 }

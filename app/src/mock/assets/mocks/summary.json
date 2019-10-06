@@ -1,0 +1,477 @@
+{
+  "data": [
+    {
+      "categories": [
+        {
+          "digital": "4:13:48",
+          "hours": 4,
+          "minutes": 13,
+          "name": "Coding",
+          "percent": 100,
+          "seconds": 48,
+          "text": "4 hrs 13 mins",
+          "total_seconds": 15228.129
+        }
+      ],
+      "dependencies": [
+        {
+          "digital": "0:37:34",
+          "hours": 0,
+          "minutes": 37,
+          "name": "com.kondenko",
+          "percent": 14.27,
+          "seconds": 34,
+          "text": "37 mins",
+          "total_seconds": 2254.213201
+        },
+        {
+          "digital": "0:28:57",
+          "hours": 0,
+          "minutes": 28,
+          "name": "junit.Assert",
+          "percent": 11,
+          "seconds": 57,
+          "text": "28 mins",
+          "total_seconds": 1737.059538
+        },
+        {
+          "digital": "0:27:08",
+          "hours": 0,
+          "minutes": 27,
+          "name": "junit.Test",
+          "percent": 10.31,
+          "seconds": 8,
+          "text": "27 mins",
+          "total_seconds": 1628.078538
+        },
+        {
+          "digital": "0:25:55",
+          "hours": 0,
+          "minutes": 25,
+          "name": "junit.Before",
+          "percent": 9.85,
+          "seconds": 55,
+          "text": "25 mins",
+          "total_seconds": 1555.012538
+        },
+        {
+          "digital": "0:23:05",
+          "hours": 0,
+          "minutes": 23,
+          "name": "io.reactivex",
+          "percent": 8.77,
+          "seconds": 5,
+          "text": "23 mins",
+          "total_seconds": 1385.182479
+        },
+        {
+          "digital": "0:16:07",
+          "hours": 0,
+          "minutes": 16,
+          "name": "kotlin.Pair",
+          "percent": 6.12,
+          "seconds": 7,
+          "text": "16 mins",
+          "total_seconds": 967.082
+        },
+        {
+          "digital": "0:11:22",
+          "hours": 0,
+          "minutes": 11,
+          "name": "android.view",
+          "percent": 4.32,
+          "seconds": 22,
+          "text": "11 mins",
+          "total_seconds": 682.737722
+        },
+        {
+          "digital": "0:10:22",
+          "hours": 0,
+          "minutes": 10,
+          "name": "com.google",
+          "percent": 3.94,
+          "seconds": 22,
+          "text": "10 mins",
+          "total_seconds": 622.612148
+        },
+        {
+          "digital": "0:09:42",
+          "hours": 0,
+          "minutes": 9,
+          "name": "org.koin",
+          "percent": 3.69,
+          "seconds": 42,
+          "text": "9 mins",
+          "total_seconds": 582.791
+        },
+        {
+          "digital": "0:09:32",
+          "hours": 0,
+          "minutes": 9,
+          "name": "android.content",
+          "percent": 3.62,
+          "seconds": 32,
+          "text": "9 mins",
+          "total_seconds": 572.081148
+        },
+        {
+          "digital": "0:09:07",
+          "hours": 0,
+          "minutes": 9,
+          "name": "kotlinx.android",
+          "percent": 3.46,
+          "seconds": 7,
+          "text": "9 mins",
+          "total_seconds": 547.125722
+        },
+        {
+          "digital": "0:07:45",
+          "hours": 0,
+          "minutes": 7,
+          "name": "android.os",
+          "percent": 2.95,
+          "seconds": 45,
+          "text": "7 mins",
+          "total_seconds": 465.411722
+        },
+        {
+          "digital": "0:07:45",
+          "hours": 0,
+          "minutes": 7,
+          "name": "androidx.annotation",
+          "percent": 2.95,
+          "seconds": 45,
+          "text": "7 mins",
+          "total_seconds": 465.237722
+        },
+        {
+          "digital": "0:07:05",
+          "hours": 0,
+          "minutes": 7,
+          "name": "timber.log",
+          "percent": 2.69,
+          "seconds": 5,
+          "text": "7 mins",
+          "total_seconds": 425.346722
+        },
+        {
+          "digital": "0:07:03",
+          "hours": 0,
+          "minutes": 7,
+          "name": "princeton.cs",
+          "percent": 2.68,
+          "seconds": 3,
+          "text": "7 mins",
+          "total_seconds": 423.286
+        },
+        {
+          "digital": "0:06:13",
+          "hours": 0,
+          "minutes": 6,
+          "name": "androidx.core",
+          "percent": 2.36,
+          "seconds": 13,
+          "text": "6 mins",
+          "total_seconds": 373.071722
+        },
+        {
+          "digital": "0:05:22",
+          "hours": 0,
+          "minutes": 5,
+          "name": "androidx.fragment",
+          "percent": 2.04,
+          "seconds": 22,
+          "text": "5 mins",
+          "total_seconds": 322.517722
+        },
+        {
+          "digital": "0:03:56",
+          "hours": 0,
+          "minutes": 3,
+          "name": "ru.ideer",
+          "percent": 1.5,
+          "seconds": 56,
+          "text": "3 mins",
+          "total_seconds": 236.542
+        },
+        {
+          "digital": "0:03:55",
+          "hours": 0,
+          "minutes": 3,
+          "name": "android.widget",
+          "percent": 1.49,
+          "seconds": 55,
+          "text": "3 mins",
+          "total_seconds": 235.455
+        },
+        {
+          "digital": "0:02:45",
+          "hours": 0,
+          "minutes": 2,
+          "name": "androidx.lifecycle",
+          "percent": 1.05,
+          "seconds": 45,
+          "text": "2 mins",
+          "total_seconds": 165.271722
+        },
+        {
+          "digital": "0:00:39",
+          "hours": 0,
+          "minutes": 0,
+          "name": "androidx.navigation",
+          "percent": 0.25,
+          "seconds": 39,
+          "text": "39 secs",
+          "total_seconds": 39.852
+        },
+        {
+          "digital": "0:00:35",
+          "hours": 0,
+          "minutes": 0,
+          "name": "androidx.appcompat",
+          "percent": 0.22,
+          "seconds": 35,
+          "text": "35 secs",
+          "total_seconds": 35.506
+        },
+        {
+          "digital": "0:00:21",
+          "hours": 0,
+          "minutes": 0,
+          "name": "android.net",
+          "percent": 0.14,
+          "seconds": 21,
+          "text": "21 secs",
+          "total_seconds": 21.936
+        },
+        {
+          "digital": "0:00:21",
+          "hours": 0,
+          "minutes": 0,
+          "name": "androidx.browser",
+          "percent": 0.14,
+          "seconds": 21,
+          "text": "21 secs",
+          "total_seconds": 21.936
+        },
+        {
+          "digital": "0:00:08",
+          "hours": 0,
+          "minutes": 0,
+          "name": "retrofit2.http",
+          "percent": 0.06,
+          "seconds": 8,
+          "text": "8 secs",
+          "total_seconds": 8.79
+        },
+        {
+          "digital": "0:00:04",
+          "hours": 0,
+          "minutes": 0,
+          "name": "androidx.recyclerview",
+          "percent": 0.03,
+          "seconds": 4,
+          "text": "4 secs",
+          "total_seconds": 4.346
+        },
+        {
+          "digital": "0:00:04",
+          "hours": 0,
+          "minutes": 0,
+          "name": "androidx.swiperefreshlayout",
+          "percent": 0.03,
+          "seconds": 4,
+          "text": "4 secs",
+          "total_seconds": 4.346
+        },
+        {
+          "digital": "0:00:04",
+          "hours": 0,
+          "minutes": 0,
+          "name": "jetbrains.annotations",
+          "percent": 0.03,
+          "seconds": 4,
+          "text": "4 secs",
+          "total_seconds": 4.346
+        },
+        {
+          "digital": "0:00:04",
+          "hours": 0,
+          "minutes": 0,
+          "name": "retrofit2.Call",
+          "percent": 0.03,
+          "seconds": 4,
+          "text": "4 secs",
+          "total_seconds": 4.346
+        }
+      ],
+      "editors": [
+        {
+          "digital": "2:35:48",
+          "hours": 2,
+          "minutes": 35,
+          "name": "IntelliJ",
+          "percent": 61.39,
+          "seconds": 48,
+          "text": "2 hrs 35 mins",
+          "total_seconds": 9348.172538
+        },
+        {
+          "digital": "1:07:20",
+          "hours": 1,
+          "minutes": 7,
+          "name": "Android Studio",
+          "percent": 26.53,
+          "seconds": 20,
+          "text": "1 hr 7 mins",
+          "total_seconds": 4040.703743
+        },
+        {
+          "digital": "0:30:39",
+          "hours": 0,
+          "minutes": 30,
+          "name": "Sketch",
+          "percent": 12.08,
+          "seconds": 39,
+          "text": "30 mins",
+          "total_seconds": 1839.252719
+        }
+      ],
+      "grand_total": {
+        "digital": "4:13",
+        "hours": 4,
+        "minutes": 13,
+        "text": "4 hrs 13 mins",
+        "total_seconds": 15228.129
+      },
+      "languages": [
+        {
+          "digital": "2:39:08",
+          "hours": 2,
+          "minutes": 39,
+          "name": "Java",
+          "percent": 62.7,
+          "seconds": 8,
+          "text": "2 hrs 39 mins",
+          "total_seconds": 9548.121538
+        },
+        {
+          "digital": "0:39:37",
+          "hours": 0,
+          "minutes": 39,
+          "name": "Kotlin",
+          "percent": 15.61,
+          "seconds": 37,
+          "text": "39 mins",
+          "total_seconds": 2377.659201
+        },
+        {
+          "digital": "0:30:39",
+          "hours": 0,
+          "minutes": 30,
+          "name": "Sketch Drawing",
+          "percent": 12.08,
+          "seconds": 39,
+          "text": "30 mins",
+          "total_seconds": 1839.252719
+        },
+        {
+          "digital": "0:24:23",
+          "hours": 0,
+          "minutes": 24,
+          "name": "XML",
+          "percent": 9.61,
+          "seconds": 23,
+          "text": "24 mins",
+          "total_seconds": 1463.095542
+        }
+      ],
+      "machines": [
+        {
+          "digital": "4:13:48",
+          "hours": 4,
+          "machine_name_id": "39b7a465-dc4e-4b53-8005-adb5567a8f97",
+          "minutes": 13,
+          "name": "MacBook-Air",
+          "percent": 100,
+          "seconds": 48,
+          "text": "4 hrs 13 mins",
+          "total_seconds": 15228.129
+        }
+      ],
+      "operating_systems": [
+        {
+          "digital": "4:13:48",
+          "hours": 4,
+          "minutes": 13,
+          "name": "Mac",
+          "percent": 100,
+          "seconds": 48,
+          "text": "4 hrs 13 mins",
+          "total_seconds": 15228.129
+        }
+      ],
+      "projects": [
+        {
+          "digital": "2:28:07",
+          "hours": 2,
+          "minutes": 28,
+          "name": "AlgoritmsPrincetonCoursera",
+          "percent": 58.36,
+          "seconds": 7,
+          "text": "2 hrs 28 mins",
+          "total_seconds": 8887.896538
+        },
+        {
+          "digital": "1:03:24",
+          "hours": 1,
+          "minutes": 3,
+          "name": "PocketWaka",
+          "percent": 24.98,
+          "seconds": 24,
+          "text": "1 hr 3 mins",
+          "total_seconds": 3804.161743
+        },
+        {
+          "digital": "0:30:39",
+          "hours": 0,
+          "minutes": 30,
+          "name": "Unknown Project",
+          "percent": 12.08,
+          "seconds": 39,
+          "text": "30 mins",
+          "total_seconds": 1839.252719
+        },
+        {
+          "digital": "0:07:40",
+          "hours": 0,
+          "minutes": 7,
+          "name": "Interview",
+          "percent": 3.02,
+          "seconds": 40,
+          "text": "7 mins",
+          "total_seconds": 460.276
+        },
+        {
+          "digital": "0:03:56",
+          "hours": 0,
+          "minutes": 3,
+          "name": "overhear_android",
+          "percent": 1.55,
+          "seconds": 56,
+          "text": "3 mins",
+          "total_seconds": 236.542
+        }
+      ],
+      "range": {
+        "date": "2019-09-30",
+        "end": "2019-09-30T20:59:59Z",
+        "start": "2019-09-29T21:00:00Z",
+        "text": "Today",
+        "timezone": "Europe/Moscow"
+      }
+    }
+  ],
+  "end": "2019-09-30T20:59:59Z",
+  "start": "2019-09-28T21:00:00Z"
+}

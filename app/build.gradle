@@ -69,16 +69,9 @@ android {
         release {
             java.srcDirs += [file("$buildDir/generated/source/kapt/release")]
         }
-        debug {
-            ext.enableCrashlytics = false
-            java.srcDirs += 'src/debug/kotlin'
-            java.srcDirs += debugKaptFiles
-        }
         mock {
             ext.enableCrashlytics = false
-            java.srcDirs += 'src/debug/kotlin'
             java.srcDirs += 'src/mock/kotlin'
-            java.srcDirs += debugKaptFiles
         }
         test {
             ext.enableCrashlytics = false

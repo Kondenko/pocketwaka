@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.kondenko.pocketwaka.utils.SimpleCallback
-import com.kondenko.pocketwaka.utils.delegates.diffUtil
+import com.kondenko.pocketwaka.utils.diffutil.SimpleCallback
+import com.kondenko.pocketwaka.utils.diffutil.diffUtil
 
-abstract class BaseAdapter<T, VH : BaseAdapter<T, VH>.BaseViewHolder>(protected val context: Context)
+abstract class BaseAdapter<T, VH : BaseAdapter<T, VH>.BaseViewHolder<T>>(protected val context: Context)
     : RecyclerView.Adapter<VH>() {
 
     open var items: List<T> by diffUtil(emptyList(), ::getDiffCallback)
@@ -24,8 +24,10 @@ abstract class BaseAdapter<T, VH : BaseAdapter<T, VH>.BaseViewHolder>(protected 
 
     protected fun inflate(layoutId: Int, parent: ViewGroup): View = LayoutInflater.from(context).inflate(layoutId, parent, false)
 
-    abstract inner class BaseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        abstract fun bind(item: T)
+    abstract inner class BaseViewHolder<in Item : T>(view: View) : RecyclerView.ViewHolder(view) {
+
+        abstract fun bind(item: Item)
+
     }
 
 }

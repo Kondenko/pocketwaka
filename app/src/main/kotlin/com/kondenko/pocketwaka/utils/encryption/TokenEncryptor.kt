@@ -1,6 +1,6 @@
 package com.kondenko.pocketwaka.utils.encryption
 
-import com.kondenko.pocketwaka.data.auth.model.AccessToken
+import com.kondenko.pocketwaka.data.auth.model.server.AccessToken
 
 class TokenEncryptor(private val stringEncryptor: Encryptor<String>) : Encryptor<AccessToken> {
 
