@@ -9,6 +9,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import com.crashlytics.android.Crashlytics
+import com.kondenko.pocketwaka.BuildConfig
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
@@ -35,7 +36,10 @@ inline fun FragmentManager.transaction(crossinline action: androidx.fragment.app
  */
 fun Throwable.report(message: String? = null) {
     Timber.e(this, message ?: this.message)
-    Crashlytics.logException(this)
+    @Suppress("ConstantConditionIf")
+    if (!BuildConfig.DEBUG) {
+        Crashlytics.logException(this)
+    }
 }
 
 fun createPath(build: Path.() -> Unit): Path = Path().apply {

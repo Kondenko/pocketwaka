@@ -8,7 +8,6 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.LifecycleOwner
-import com.crashlytics.android.Crashlytics
 import com.jakewharton.rxbinding2.view.RxView
 import com.kondenko.pocketwaka.BuildConfig
 import com.kondenko.pocketwaka.Const
@@ -54,7 +53,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
             val clicksRequired = 3
             RxView.longClicks(buttonLogin)
                     .buffer(clicksRequired)
-                    .subscribe { Crashlytics.getInstance().crash() }
+                    .subscribe { throw RuntimeException("Test exception") }
                     .attachToLifecycle(this)
         }
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
