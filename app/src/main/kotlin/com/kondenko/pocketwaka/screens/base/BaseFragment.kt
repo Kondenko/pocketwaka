@@ -21,6 +21,7 @@ import com.kondenko.pocketwaka.utils.extensions.transaction
 abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> : Fragment() {
 
     protected open val stateFragment = StateFragment()
+    private val fragmentStateTag = "state"
 
     protected abstract val containerId: Int
 
@@ -34,8 +35,10 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        childFragmentManager.transaction {
-            add(containerId, stateFragment, null)
+        if (childFragmentManager.findFragmentByTag(fragmentStateTag) == null) {
+            childFragmentManager.transaction {
+                add(containerId, stateFragment, fragmentStateTag)
+            }
         }
     }
 
