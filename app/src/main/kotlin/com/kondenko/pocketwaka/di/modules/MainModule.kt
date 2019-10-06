@@ -27,7 +27,8 @@ val mainModule = module {
         ClearCache(
                 schedulers = get(),
                 tokenRepository = get(),
-                statsDao = get()
+                statsDao = get(),
+                summaryDao = get()
         )
     }
     single {
