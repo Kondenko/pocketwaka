@@ -21,12 +21,6 @@ fun Float.negateIfTrue(condition: Boolean) = if (condition) -this else this
 fun <T> T?.singleOrErrorIfNull(exception: Throwable = NullPointerException("Couldn't convert a null object to a Single")): Single<T> = this?.let { Single.just(it) }
         ?: Single.error(exception)
 
-inline fun SharedPreferences.edit(crossinline action: SharedPreferences.Editor.() -> Unit) {
-    val editor = edit()
-    editor.action()
-    editor.apply()
-}
-
 inline fun FragmentManager.transaction(crossinline action: androidx.fragment.app.FragmentTransaction.() -> androidx.fragment.app.FragmentTransaction) {
     this.beginTransaction().action().commit()
 }

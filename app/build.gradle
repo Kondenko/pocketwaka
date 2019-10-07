@@ -132,6 +132,7 @@ dependencies {
     implementation crashlyticsGoogle
     implementation lottie
     implementation room
+    implementation remoteConfig
 
     debugImplementation databaseBrowser
 

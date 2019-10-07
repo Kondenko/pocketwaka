@@ -18,6 +18,10 @@ abstract class BaseViewModel<T> : ViewModel() {
         _state.postValue(State.Failure.Unknown(exception = throwable, isFatal = true))
     }
 
+    protected fun setState(state: State<T>) {
+        _state.value = state
+    }
+
     override fun onCleared() {
         disposables.clear()
         super.onCleared()

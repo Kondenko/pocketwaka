@@ -42,6 +42,7 @@ ext {
             googleServices   : '4.3.2',
             fabric           : '1.31.1',
             crashlytics      : '2.10.1',
+            remoteConfig      : '19.0.2',
 
             androidxTest     : '1.2.0',
             junit            : '1.1.1',

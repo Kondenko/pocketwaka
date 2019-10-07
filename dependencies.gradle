@@ -67,6 +67,8 @@ ext {
 
     crashlyticsGoogle = "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
 
+    remoteConfig = "com.google.firebase:firebase-config-ktx:${versions.remoteConfig}"
+
     databaseBrowser = "com.amitshekhar.android:debug-db:${versions.databaseBrowser}"
 
     testingDependencies = [

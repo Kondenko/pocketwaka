@@ -10,23 +10,28 @@ import androidx.fragment.app.Fragment
 import com.kondenko.pocketwaka.BuildConfig
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.screens.login.LoginActivity
+import com.kondenko.pocketwaka.utils.BrowserWindow
+import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.createAdapter
 import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.startActivity
 import kotlinx.android.synthetic.main.fragment_menu.*
 import kotlinx.android.synthetic.main.item_menu_action.view.*
 import kotlinx.android.synthetic.main.item_menu_logo.view.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.core.parameter.parametersOf
 
 class FragmentMenu : Fragment() {
 
     private sealed class MenuUiModel {
-
         object Logo : MenuUiModel()
         data class Action(val iconRes: Int, val textRes: Int, val onClick: () -> Unit) : MenuUiModel()
     }
 
-    private val vm: MenuViewModel by viewModel()
+    private lateinit var vm: MenuViewModel
+
+    private val browserWindow: BrowserWindow by inject { parametersOf(context, viewLifecycleOwner) }
 
     private val menuItems = listOf(
             MenuUiModel.Logo,
@@ -37,7 +42,7 @@ class FragmentMenu : Fragment() {
                 Toast.makeText(context, "Feedback", Toast.LENGTH_SHORT).show()
             },
             MenuUiModel.Action(R.drawable.ic_menu_github, R.string.menu_action_open_github) {
-                Toast.makeText(context, "Github", Toast.LENGTH_SHORT).show()
+                vm.openGithub()
             },
             MenuUiModel.Action(R.drawable.ic_menu_logout, R.string.menu_action_logout) {
                 vm.logout()
@@ -50,8 +55,11 @@ class FragmentMenu : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        vm = getViewModel { parametersOf(viewLifecycleOwner) }
         vm.state.observe(this) {
+            WakaLog.d("New menu state: $it")
             when (it) {
+                is MenuState.OpenGithub -> browserWindow.openUrl(it.data!!.githubUrl)
                 is MenuState.LogOut -> logout()
             }
         }
@@ -66,6 +74,11 @@ class FragmentMenu : Fragment() {
                 setOnClickListener { item.onClick() }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        vm.onResume()
     }
 
     private fun logout() {
