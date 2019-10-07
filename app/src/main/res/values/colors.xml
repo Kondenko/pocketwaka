@@ -4,6 +4,7 @@
     <color name="color_primary_light">#F5F9FF</color>
     <color name="color_primary_dark">#28333c</color>
     <color name="color_accent">#2595ff</color>
+    <color name="color_ripple">#402595FF</color>
 
     <color name="color_app_bar_resting">@color/color_primary_light</color>
     <color name="color_app_bar_elevated">@android:color/white</color>

@@ -6,7 +6,7 @@
     android:paddingStart="@dimen/padding_menu_item"
     android:paddingEnd="@dimen/padding_menu_item"
     android:gravity="center_vertical"
-    android:background="?attr/selectableItemBackground"
+    android:background="@drawable/menu_item_background"
     >
 
     <ImageView
