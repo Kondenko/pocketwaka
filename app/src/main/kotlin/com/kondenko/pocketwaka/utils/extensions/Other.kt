@@ -100,3 +100,6 @@ fun LottieAnimationView.playAnimation(duration: Long, interpolator: Interpolator
         }
     }.start()
 }
+
+fun <T> SharedPreferences.getOrNull(key: String, getter: SharedPreferences.(String) -> T): T? =
+    if (!contains(key)) null else getter(key)

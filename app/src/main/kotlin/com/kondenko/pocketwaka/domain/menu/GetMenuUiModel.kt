@@ -8,22 +8,26 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.Singles
 
 class GetMenuUiModel(
-        schedulers: SchedulersContainer,
-        private val menuRepository: MenuRepository,
-        private val deviceInfoProvider: DeviceInfoProvider
+    schedulers: SchedulersContainer,
+    private val menuRepository: MenuRepository,
+    private val deviceInfoProvider: DeviceInfoProvider
 ) : UseCaseSingle<Nothing, MenuUiModel>(schedulers) {
 
     override fun build(params: Nothing?): Single<MenuUiModel> {
         val deviceInfo = deviceInfoProvider.getDeviceInfo()
         val emailText = getInitialEmailText(deviceInfo)
         val emailSubject = menuRepository.getSupportEmailSubject()
-        return Singles.zip(menuRepository.getGithubUrl(), menuRepository.getSupportEmail()) { github, email ->
-            MenuUiModel(
-                    githubUrl = github.item,
-                    supportEmail = email.item,
+        return menuRepository.run {
+            Singles.zip(getGithubUrl(), getSupportEmail(), getPositiveReviewThreshold())
+            { github, email, positiveReviewThreshold ->
+                MenuUiModel(
+                    githubUrl = github,
+                    supportEmail = email,
                     emailSubject = emailSubject,
-                    initialEmailText = emailText
-            )
+                    initialEmailText = emailText,
+                    positiveRatingThreshold = positiveReviewThreshold.toInt()
+                )
+            }
         }
     }
 

@@ -18,7 +18,7 @@
 
 
     <com.kondenko.pocketwaka.ui.AnimatedRatingBar
-        android:id="@+id/ratingBar"
+        android:id="@+id/ratingbar_rating_dialog"
         android:layout_marginTop="14dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -1,10 +1,11 @@
 package com.kondenko.pocketwaka.domain.menu
 
 data class MenuUiModel(
-        val githubUrl: String?,
-        val supportEmail: String?,
-        val emailSubject: String,
-        val initialEmailText: String
+    val githubUrl: String,
+    val supportEmail: String,
+    val emailSubject: String,
+    val initialEmailText: String,
+    val positiveRatingThreshold: Int
 )
 
 data class DeviceInfo(

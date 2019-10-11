@@ -15,11 +15,12 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
 
 class MenuViewModel(
-        private val lifecycleOwner: LifecycleOwner,
-        private val clearCache: ClearCache,
-        getMenuUiModel: GetMenuUiModel
+    private val lifecycleOwner: LifecycleOwner,
+    private val clearCache: ClearCache,
+    getMenuUiModel: GetMenuUiModel
 ) : BaseViewModel<MenuUiModel?>() {
 
+    private val rateAppClicks = PublishSubject.create<Unit>()
     private val sendFeedbackClicks = PublishSubject.create<Unit>()
     private val githubClicks = PublishSubject.create<Unit>()
 
@@ -35,16 +36,19 @@ class MenuViewModel(
         sendFeedbackClicks.waitForData("Error fetching feedback email") {
             setState(MenuState.SendFeedback(it))
         }
+        rateAppClicks.waitForData("Error setting up rating dialog") {
+            setState(MenuState.RateApp(it))
+        }
     }
 
     private fun Observable<Unit>.waitForData(errorMessage: String, onNext: (MenuUiModel) -> Unit) {
         Observables.zip(this, stateObservable) { _, state -> state }
-                .filter { it.data != null }
-                .subscribeBy(
-                        onNext = { onNext(it.data!!) },
-                        onError = { it.report(errorMessage) }
-                )
-                .attachToLifecycle(lifecycleOwner)
+            .filter { it.data != null }
+            .subscribeBy(
+                onNext = { onNext(it.data!!) },
+                onError = { it.report(errorMessage) }
+            )
+            .attachToLifecycle(lifecycleOwner)
     }
 
     fun onResume() {
@@ -53,6 +57,10 @@ class MenuViewModel(
                 setState(State.Success(it.data))
             }
         }
+    }
+
+    fun rateApp() {
+        rateAppClicks.onNext(Unit)
     }
 
     fun sendFeedback() {

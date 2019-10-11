@@ -8,3 +8,8 @@ fun FirebaseRemoteConfig.getStringMaybe(key: String): Maybe<String> = this[key].
     if (it != FirebaseRemoteConfig.DEFAULT_VALUE_FOR_STRING) Maybe.just(it)
     else Maybe.empty()
 }
+
+fun FirebaseRemoteConfig.getLongMaybe(key: String) = this[key].asLong().let {
+    if (it != FirebaseRemoteConfig.DEFAULT_VALUE_FOR_LONG) Maybe.just(it)
+    else Maybe.empty()
+}
