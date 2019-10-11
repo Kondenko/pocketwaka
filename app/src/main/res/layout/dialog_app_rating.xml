@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="136dp"
+    android:paddingTop="@dimen/padding_rating_dialog_top"
+    android:paddingBottom="@dimen/padding_rating_dialog_bottom"
+    android:gravity="center_horizontal"
+    >
+
+    <TextView
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_text_secondary"
+        android:text="@string/rating_dialog_title"/>
+
+
+    <com.kondenko.pocketwaka.ui.AnimatedRatingBar
+        android:id="@+id/ratingBar"
+        android:layout_marginTop="14dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:stars_number="5"
+        app:star_json="@raw/star"
+        app:star_padding="@dimen/padding_rating_dialog_star"
+        app:star_size="@dimen/size_rating_dialog_star"
+        app:tint="@color/color_accent"
+        app:anim_duration="150"
+        />
+
+</LinearLayout>

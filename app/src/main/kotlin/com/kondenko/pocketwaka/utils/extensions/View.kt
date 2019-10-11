@@ -59,6 +59,25 @@ fun View.setSize(width: Int? = null, height: Int? = null) = updateLayoutParams {
     height?.let { this.height = it }
 }
 
+fun View.setMargins(start: Int = marginStart, top: Int = marginTop, end: Int = marginEnd, bottom: Int = marginBottom) =
+    layoutParams?.run {
+        updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            this.setMargins(start, top, end, bottom)
+        }
+    }
+
+fun <T :ViewGroup.MarginLayoutParams> T.setMargins(
+    start: Int = marginStart,
+    top: Int = topMargin,
+    end: Int = marginEnd,
+    bottom: Int = bottomMargin
+) {
+    this.marginStart = start
+    this.topMargin = top
+    this.marginEnd = end
+    this.bottomMargin = bottom
+}
+
 /**
  * Make sure a [View] doesn't push [other] outside of the layout if it's too wide.
  */
@@ -73,10 +92,10 @@ infix fun View.limitWidthBy(other: View) = doOnPreDraw {
 }
 
 fun ViewGroup.getOtherViewsWidthSum(viewToExclude: View) =
-        children
-                .filter { it.id != viewToExclude.id }
-                .map { it.widthWithMargins }
-                .sum()
+    children
+        .filter { it.id != viewToExclude.id }
+        .map { it.widthWithMargins }
+        .sum()
 
 val View.widthWithMargins
     get() = width + max(marginLeft, marginStart) + max(marginRight, marginEnd)

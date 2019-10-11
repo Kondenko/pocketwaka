@@ -7,11 +7,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.kondenko.pocketwaka.BuildConfig
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.domain.menu.AppRatingBottomSheetDialog
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.login.LoginActivity
 import com.kondenko.pocketwaka.utils.BrowserWindow
@@ -81,7 +81,7 @@ class FragmentMenu : Fragment() {
     private fun getMenuItems(isFeedbackEnabled: Boolean, isGithubEnabled: Boolean = true) = listOfNotNull(
             MenuUiModel.Logo,
             MenuUiModel.Action(R.drawable.ic_menu_rate, R.string.menu_action_rate) {
-                Toast.makeText(context, "Rating", Toast.LENGTH_SHORT).show()
+                AppRatingBottomSheetDialog().show(childFragmentManager, null)
             },
             MenuUiModel.Action(R.drawable.ic_menu_feedback, R.string.menu_action_send_feedback, isFeedbackEnabled) {
                 vm.sendFeedback()

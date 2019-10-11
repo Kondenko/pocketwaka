@@ -3,10 +3,12 @@ package com.kondenko.pocketwaka.utils.extensions
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.TypedArray
 import android.os.Build
 import android.util.TypedValue
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import com.kondenko.pocketwaka.R
 import java.util.*
 
 inline fun <reified T : Activity> Context.startActivity() {
@@ -35,3 +37,12 @@ fun Context.adjustForDensity(value: Int?): Float? {
 }
 
 fun Context.getColorCompat(@ColorRes colorRes: Int) = ContextCompat.getColor(this, colorRes)
+
+fun <T> Context.getTypedValue(resId: Int, getFromArray: TypedArray.() -> T): T {
+    val array = obtainStyledAttributes(TypedValue().data, intArrayOf(resId))
+    val value = array.getFromArray()
+    array.recycle()
+    return value
+}
+
+fun Context.getAccentColor() = getTypedValue(R.attr.colorAccent) { getColor(0, 0) }

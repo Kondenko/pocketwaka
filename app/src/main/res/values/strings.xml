@@ -82,6 +82,7 @@
     <string name="menu_action_open_github">PocketWaka on GitHub</string>
     <string name="menu_action_logout">Log out</string>
     <string name="menu_support_email_subject">PocketWaka feedback</string>
+    <string name="rating_dialog_title">Rate PocketWaka</string>
 
     <!-- OTHER -->
 

@@ -1,13 +1,20 @@
 package com.kondenko.pocketwaka.utils.extensions
 
+import android.animation.ValueAnimator
 import android.content.SharedPreferences
 import android.graphics.Matrix
 import android.graphics.Path
+import android.view.animation.Interpolator
+import android.view.animation.LinearInterpolator
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
+import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieProperty
+import com.airbnb.lottie.model.KeyPath
+import com.airbnb.lottie.value.LottieValueCallback
 import com.crashlytics.android.Crashlytics
 import com.kondenko.pocketwaka.BuildConfig
 import io.reactivex.Single
@@ -19,7 +26,7 @@ fun notNull(vararg values: Any?): Boolean = values.all { it != null }
 fun Float.negateIfTrue(condition: Boolean) = if (condition) -this else this
 
 fun <T> T?.singleOrErrorIfNull(exception: Throwable = NullPointerException("Couldn't convert a null object to a Single")): Single<T> = this?.let { Single.just(it) }
-        ?: Single.error(exception)
+    ?: Single.error(exception)
 
 inline fun FragmentManager.transaction(crossinline action: androidx.fragment.app.FragmentTransaction.() -> androidx.fragment.app.FragmentTransaction) {
     this.beginTransaction().action().commit()
@@ -68,6 +75,28 @@ fun Disposable?.attachToLifecycle(lifecycle: LifecycleOwner) {
 }
 
 fun SharedPreferences.getStringOrThrow(key: String) =
-        getString(key, null) ?: throw NullPointerException("Preference with key $key not found")
+    getString(key, null) ?: throw NullPointerException("Preference with key $key not found")
 
 fun <T> T?.toListOrEmpty() = this?.let { listOf(it) } ?: emptyList()
+
+operator fun <T> List<T>.get(range: IntRange): List<T> {
+    assert(range.last < size) { "The last element of range should be less than then size of the list (${range.last} was larger than $size)" }
+    return range.map { index -> elementAt(index) }
+}
+
+fun LottieAnimationView.setFillTint(color: Int) =
+    addValueCallback(KeyPath("**"), LottieProperty.COLOR, LottieValueCallback(color))
+
+fun LottieAnimationView.setStrokeTint(color: Int) =
+    addValueCallback(KeyPath("**"), LottieProperty.STROKE_COLOR, LottieValueCallback(color))
+
+fun LottieAnimationView.playAnimation(duration: Long, interpolator: Interpolator = LinearInterpolator(), reverse: Boolean = false) {
+    val values = if (reverse) floatArrayOf(1f, 0f) else floatArrayOf(0f, 1f)
+    ValueAnimator.ofFloat(*values).apply {
+        setDuration(duration)
+        setInterpolator(interpolator)
+        addUpdateListener {
+            progress = animatedValue as Float
+        }
+    }.start()
+}

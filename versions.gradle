@@ -21,7 +21,7 @@ ext {
             rxJava           : '2.1.1',
             rxAndroid        : '2.0.1',
             rxKotlin         : '2.1.0',
-            rxBinding        : '2.2.0',
+            rxBinding        : '3.0.0',
             retrofit         : '2.6.2',
             gson             : '2.8.1',
             smartTabLayout   : '2.0.0',

@@ -8,7 +8,8 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.LifecycleOwner
-import com.jakewharton.rxbinding2.view.RxView
+import com.jakewharton.rxbinding3.view.clicks
+import com.jakewharton.rxbinding3.view.longClicks
 import com.kondenko.pocketwaka.BuildConfig
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
@@ -41,7 +42,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
                 getString(R.string.loginactivity_subtitle_error_action)
         )
         loadingButtonStateWrapper.setDefault()
-        RxView.clicks(buttonLogin)
+        buttonLogin.clicks()
                 .filter {
                     // setClickable(false) is reset to true after setting a click listener
                     buttonLogin.isClickable
@@ -51,7 +52,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
         @Suppress("ConstantConditionIf")
         if (BuildConfig.DEBUG) {
             val clicksRequired = 3
-            RxView.longClicks(buttonLogin)
+            buttonLogin.longClicks()
                     .buffer(clicksRequired)
                     .subscribe { throw RuntimeException("Test exception") }
                     .attachToLifecycle(this)
