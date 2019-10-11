@@ -1,7 +1,10 @@
 package com.kondenko.pocketwaka.utils.extensions
 
+import com.kondenko.pocketwaka.utils.types.KOptional
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
+import io.reactivex.Single
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.observers.TestObserver
 
@@ -48,3 +51,8 @@ fun <T> TestObserver<T>.assertInOrder(assertions: AssertInOrder<T>.() -> Unit) {
 }
 
 operator fun <T> Observable<T>.plus(observable: Observable<T>) = this.concatWith(observable)
+
+fun <T> Maybe<T>.toOptionalSingle(): Single<KOptional<T>> = this
+        .map { KOptional.of(it) }
+        .defaultIfEmpty(KOptional.empty())
+        .toSingle()

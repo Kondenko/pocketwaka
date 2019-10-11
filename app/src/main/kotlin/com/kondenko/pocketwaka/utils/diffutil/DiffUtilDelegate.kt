@@ -6,13 +6,13 @@ import kotlin.reflect.KProperty
 
 fun <T, VH : RecyclerView.ViewHolder, A : RecyclerView.Adapter<VH>> diffUtil(
         initialValue: List<T>,
-        callbackFactory: (List<T>, List<T>) -> DiffUtil.Callback = { old, new -> SimpleCallback(old, new) }
+        callbackFactory: DiffUtilCallback<T> = { old, new -> SimpleCallback(old, new) }
 ) = DiffUtilDelegate<T, VH, A>(initialValue, callbackFactory)
 
 class DiffUtilDelegate<T, VH : RecyclerView.ViewHolder, A : RecyclerView.Adapter<VH>>
 internal constructor(
         initialValue: List<T>,
-        private val callbackFactory: (List<T>, List<T>) -> DiffUtil.Callback
+        private val callbackFactory: DiffUtilCallback<T>
 ) {
 
     private var currentValue: List<T> = initialValue

@@ -8,7 +8,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val menuModule = module {
-    single { MenuRepository(get(), get()) }
-    single { GetMenuUiModel(get(), get()) }
+    single { MenuRepository(get(), get(), get()) }
+    single { GetMenuUiModel(get(), get(), get()) }
     viewModel { (lifecycleOwner: LifecycleOwner) -> MenuViewModel(lifecycleOwner, get(), get()) }
 }

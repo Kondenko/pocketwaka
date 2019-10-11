@@ -2,10 +2,9 @@ package com.kondenko.pocketwaka.utils.extensions
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.get
-import com.kondenko.pocketwaka.utils.exceptions.RemoteConfigException
-import io.reactivex.Single
+import io.reactivex.Maybe
 
-fun FirebaseRemoteConfig.getStringSingle(key: String) = this[key].asString().let {
-    if (it != FirebaseRemoteConfig.DEFAULT_VALUE_FOR_STRING) Single.just(it)
-    else Single.error(RemoteConfigException(key))
+fun FirebaseRemoteConfig.getStringMaybe(key: String): Maybe<String> = this[key].asString().let {
+    if (it != FirebaseRemoteConfig.DEFAULT_VALUE_FOR_STRING) Maybe.just(it)
+    else Maybe.empty()
 }

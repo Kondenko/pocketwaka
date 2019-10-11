@@ -14,8 +14,13 @@ import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
 
-class MenuViewModel(lifecycleOwner: LifecycleOwner, private val clearCache: ClearCache, getMenuUiModel: GetMenuUiModel) : BaseViewModel<MenuUiModel?>() {
+class MenuViewModel(
+        private val lifecycleOwner: LifecycleOwner,
+        private val clearCache: ClearCache,
+        getMenuUiModel: GetMenuUiModel
+) : BaseViewModel<MenuUiModel?>() {
 
+    private val sendFeedbackClicks = PublishSubject.create<Unit>()
     private val githubClicks = PublishSubject.create<Unit>()
 
     private val stateObservable = Observable.fromPublisher(_state.toPublisher(lifecycleOwner))
@@ -24,11 +29,20 @@ class MenuViewModel(lifecycleOwner: LifecycleOwner, private val clearCache: Clea
         getMenuUiModel(onSuccess = { model: MenuUiModel ->
             setState(State.Success(model))
         })
-        Observables.zip(githubClicks, stateObservable) { _, state -> state }
-                .filter { (it as? State.Success)?.data?.githubUrl != null }
+        githubClicks.waitForData("Error opening Github") {
+            setState(MenuState.OpenGithub(it))
+        }
+        sendFeedbackClicks.waitForData("Error fetching feedback email") {
+            setState(MenuState.SendFeedback(it))
+        }
+    }
+
+    private fun Observable<Unit>.waitForData(errorMessage: String, onNext: (MenuUiModel) -> Unit) {
+        Observables.zip(this, stateObservable) { _, state -> state }
+                .filter { it.data != null }
                 .subscribeBy(
-                        onNext = { setState(MenuState.OpenGithub(it.data)) },
-                        onError = { it.report("Error opening Github") }
+                        onNext = { onNext(it.data!!) },
+                        onError = { it.report(errorMessage) }
                 )
                 .attachToLifecycle(lifecycleOwner)
     }
@@ -39,6 +53,10 @@ class MenuViewModel(lifecycleOwner: LifecycleOwner, private val clearCache: Clea
                 setState(State.Success(it.data))
             }
         }
+    }
+
+    fun sendFeedback() {
+        sendFeedbackClicks.onNext(Unit)
     }
 
     fun openGithub() {

@@ -67,4 +67,5 @@
     <string name="menu_action_rate">Оценить PocketWaka</string>
     <string name="menu_action_send_feedback">Отправить отзыв</string>
     <string name="menu_version_template">Версия %s</string>
+    <string name="menu_support_email_subject">Отзыв о PocketWaka</string>
 </resources>
