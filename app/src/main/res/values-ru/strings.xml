@@ -47,8 +47,8 @@
     <string name="stats_error_unknown_range">Не удалось загрузить статистику за эот период</string>
     <string name="stats_error_unknown_range_no_network">Ошибка сети</string>
     <string name="main_bottomnav_menu">Меню</string>
-    <string name="main_bottomnav_today">Сегодня</string>
-    <string name="main_bottomnav_ranges">Периоды</string>
+    <string name="main_bottomnav_today">Обзор</string>
+    <string name="main_bottomnav_ranges">Статистика</string>
     <string name="commits_branch_name_unknown">Ветка без имени</string>
     <string name="summary_title_time_tracked">Время</string>
     <string name="summary_template_average_delta">%d%% %s среднего за месяц</string>

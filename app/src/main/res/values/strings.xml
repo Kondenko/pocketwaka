@@ -5,11 +5,11 @@
     <string name="screen_stats">Your stats</string>
 
     <string name="main_action_refresh">Refresh</string>
-    <string name="main_bottomnav_today">Today</string>
 
-    <string name="main_bottomnav_ranges">Ranges</string>
-
+    <string name="main_bottomnav_today">Summary</string>
+    <string name="main_bottomnav_ranges">Stats</string>
     <string name="main_bottomnav_menu">Menu</string>
+
     <string name="error_refreshing_token">Please log in again</string>
     <string name="error_state_title">We did our best\nbut couldn’t load your stats</string>
 
