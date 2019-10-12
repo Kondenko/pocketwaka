@@ -31,7 +31,7 @@
     <color name="color_status">#3335434F</color>
 
     <color name="color_growth">#49DE7A</color>
-    <color name="color_descent">#FF576C</color>
+    <color name="color_descent">#3F617E</color>
 
     <array name="chart_colors">
         <item>#FA5757</item>
