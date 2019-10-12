@@ -105,11 +105,9 @@ class FragmentMenu : Fragment() {
 
     private fun getMenuItems(isFeedbackEnabled: Boolean, isGithubEnabled: Boolean = true) = listOfNotNull(
         MenuUiModel.Logo,
-        // TODO Use play store icon
         MenuUiModel.Action(R.drawable.ic_menu_rate, R.string.menu_action_rate) {
             vm.rateApp()
         },
-        // TODO Use email icon
         MenuUiModel.Action(R.drawable.ic_menu_feedback, R.string.menu_action_send_feedback, isFeedbackEnabled) {
             vm.sendFeedback()
         },
