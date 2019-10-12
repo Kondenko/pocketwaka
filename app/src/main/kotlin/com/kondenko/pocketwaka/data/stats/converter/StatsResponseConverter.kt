@@ -62,9 +62,7 @@ class StatsResponseConverter(
 
     private fun List<StatsEntity>?.toDomainModel(statsType: StatsType): StatsUiModel.Stats? {
         val items = this?.filter { it.name != null }?.map { StatsItem(it.name!!, it.hours, it.minutes, it.percent) }
-        return items
-                ?.zip(colorProvider.provideColors(items)) { item, color -> item.copy(color = color) }
-                ?.let { StatsUiModel.Stats(getCardTitle(statsType), it) }
+        return colorProvider.provideColors(items)?.let { StatsUiModel.Stats(getCardTitle(statsType), it) }
     }
 
     private fun Stats.convertBestDay(dailyAverageSec: Int?): StatsUiModel.BestDay? = bestDay?.let { bestDay ->

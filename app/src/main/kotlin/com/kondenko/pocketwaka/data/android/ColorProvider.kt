@@ -13,22 +13,15 @@ class ColorProvider(val context: Context) {
 
     private val value = 1f
 
-    fun provideColors(items: List<StatsItem>): ArrayList<Int> {
-        val n = items.size
-        val predefinedColors = getPredefinedColors()
-        val colors = ArrayList<Int>(n)
-        items.forEachIndexed { i, item ->
-            val color: Int = if (i <= predefinedColors.size - 1) {
-                predefinedColors[i]
-            } else {
-                getRandomColor(item.name.hashCode().toLong())
-            }
-            colors.add(color)
+    fun provideColors(items: List<StatsItem>?): List<StatsItem>? {
+        if (items == null) return null
+        val predefinedColors = context.resources.getIntArray(R.array.chart_colors)
+        return items.mapIndexed { i, item ->
+            val color =
+                  predefinedColors.getOrNull(i) ?: getRandomColor(item.name.hashCode().toLong())
+            item.copy(color = color)
         }
-        return colors
     }
-
-    private fun getPredefinedColors(): IntArray = context.resources.getIntArray(R.array.chart_colors)
 
     private fun getRandomColor(seed: Long): Int = getColorByHue(Random(seed).nextInt(360).toFloat())
 
