@@ -9,15 +9,13 @@ import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.screens.daily.FragmentSummary
 import com.kondenko.pocketwaka.screens.login.LoginActivity
 import com.kondenko.pocketwaka.screens.menu.FragmentMenu
 import com.kondenko.pocketwaka.screens.ranges.FragmentRanges
 import com.kondenko.pocketwaka.utils.WakaLog
-import com.kondenko.pocketwaka.utils.extensions.report
-import com.kondenko.pocketwaka.utils.extensions.transaction
+import com.kondenko.pocketwaka.utils.extensions.*
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
@@ -46,9 +44,32 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        supportActionBar?.elevation = 0f
+        setSupportActionBar(toolbar_main)
         val visibility = window.decorView.systemUiVisibility or SYSTEM_UI_FLAG_LAYOUT_STABLE or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         window.decorView.systemUiVisibility = visibility
+        vm.states().observe(this) {
+            when (it) {
+                is MainState.ShowData -> showData()
+                is MainState.ShowLoginScreen -> showLoginScreen()
+                is MainState.LogOut -> logout()
+                is MainState.Error -> showError(it.cause)
+            }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_activity_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.action_refresh -> refreshEvents.onNext(Any())
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun showData() {
         main_bottom_navigation.setOnNavigationItemSelectedListener {
             refreshEventsDisposable?.dispose()
             when (it.itemId) {
@@ -59,26 +80,6 @@ class MainActivity : AppCompatActivity() {
             true
         }
         main_bottom_navigation.selectedItemId = R.id.bottomnav_item_today
-        vm.states().observe(this, Observer {
-            when (it) {
-                is MainState.ShowLoginScreen -> showLoginScreen()
-                is MainState.LogOut -> logout()
-                is MainState.Error -> showError(it.cause)
-            }
-        })
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_activity_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            R.id.action_logout -> vm.logout()
-            R.id.action_refresh -> refreshEvents.onNext(Any())
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun showLoginScreen() {
@@ -87,28 +88,31 @@ class MainActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun logout() {
+        finish()
+        startActivity<LoginActivity>()
+    }
+
     private fun showError(throwable: Throwable?) {
         throwable?.report()
         Toast.makeText(this, R.string.error_refreshing_token, Toast.LENGTH_LONG).show()
     }
 
-    private fun logout() {
-        finish()
-        startActivity(Intent(this, LoginActivity::class.java))
-    }
-
     private fun showSummaries() {
+        toolbar_main.visible()
         setFragment(fragmentSummary, tagDaily)
         refreshEventsDisposable = fragmentSummary.subscribeToRefreshEvents(refreshEvents)
     }
 
     private fun showRanges() {
+        toolbar_main.visible()
         setFragment(fragmentRanges, tagRanges)
         refreshEventsDisposable = fragmentRanges.subscribeToRefreshEvents(refreshEvents)
     }
 
     private fun showMenu() {
         setFragment(fragmentMenu, tagMenu)
+        toolbar_main.gone()
     }
 
     private fun setFragment(fragment: Fragment, tag: String) {

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetLeft="@dimen/padding_menu_item_background"
+    android:insetRight="@dimen/padding_menu_item_background"
+    >
+
+    <ripple android:color="@color/color_ripple">
+
+        <item android:id="@+id/mask">
+            <shape android:shape="rectangle">
+                <corners android:radius="90dp" />
+                <solid android:color="@color/color_primary_light" />
+            </shape>
+        </item>
+
+    </ripple>
+
+</inset>

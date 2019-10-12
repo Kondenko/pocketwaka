@@ -12,7 +12,7 @@ import com.kondenko.pocketwaka.screens.renderStatus
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.diffutil.SimpleCallback
-import com.kondenko.pocketwaka.utils.extensions.setInvisible
+import com.kondenko.pocketwaka.utils.extensions.invisible
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
 import kotlinx.android.synthetic.main.item_stats_best_day.view.*
 import kotlinx.android.synthetic.main.item_stats_entities_card.view.*
@@ -104,7 +104,7 @@ class StatsAdapter(
             imageview_bestday_illustration.isVisible = !showSkeleton
             val caption = context.getString(R.string.stats_caption_best_day, item.percentAboveAverage)
             if (item.percentAboveAverage > 0) textview_bestday_caption.text = caption
-            else if (!showSkeleton) textview_bestday_caption.setInvisible()
+            else if (!showSkeleton) textview_bestday_caption.invisible()
             super.bind(item)
         }
 

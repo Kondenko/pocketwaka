@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="112dp"
+    tools:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/padding_rating_dialog_top"
+    android:paddingBottom="@dimen/padding_rating_dialog_bottom"
+    >
+
+    <TextView
+        android:id="@+id/textview_rating_dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rating_dialog_title"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+        android:textColor="@color/color_text_secondary"
+        />
+
+    <com.kondenko.pocketwaka.ui.AnimatedRatingBar
+        android:id="@+id/ratingbar_rating_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/size_rating_dialog_star"
+        android:layout_marginTop="14dp"
+        app:anim_duration="150"
+        app:star_json="@raw/star"
+        app:star_padding="@dimen/padding_rating_dialog_star"
+        app:star_size="@dimen/size_rating_dialog_star"
+        app:stars_number="5"
+        app:tint="@color/color_accent"
+        tools:background="?colorAccent"
+        tools:layout_width="match_parent"
+        />
+
+    <TextView
+        android:id="@+id/textview_low_rating_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:lineSpacingExtra="8sp"
+        android:textColor="@color/color_text_primary"
+        android:text="@string/rating_dialog_low_rating_message"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_low_rating_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/color_accent"
+        android:layout_marginTop="18dp"
+        android:text="@string/rating_dialog_low_rating_action"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+</LinearLayout>

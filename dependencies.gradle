@@ -35,7 +35,7 @@ ext {
     rx = [
             "io.reactivex.rxjava2:rxkotlin:${versions.rxKotlin}",
             "io.reactivex.rxjava2:rxandroid:${versions.rxAndroid}",
-            "com.jakewharton.rxbinding2:rxbinding:${versions.rxBinding}"
+            "com.jakewharton.rxbinding3:rxbinding:${versions.rxBinding}"
     ]
 
     retrofit = [
@@ -66,6 +66,8 @@ ext {
     firebaseCore = "com.google.firebase:firebase-core:${versions.firebaseCore}"
 
     crashlyticsGoogle = "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
+
+    remoteConfig = "com.google.firebase:firebase-config-ktx:${versions.remoteConfig}"
 
     databaseBrowser = "com.amitshekhar.android:debug-db:${versions.databaseBrowser}"
 

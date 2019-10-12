@@ -40,15 +40,42 @@ fun <T> View.findViewsWithTag(id: Int, value: T? = null): List<View> {
     return childrenWithTag
 }
 
-fun View.setInvisible() {
+fun View.visible() {
+    visibility = View.VISIBLE
+}
+
+fun View.invisible() {
     visibility = View.INVISIBLE
+}
+
+fun View.gone() {
+    visibility = View.GONE
 }
 
 fun setViewsVisibility(visibility: Int, vararg views: View) = views.forEach { it.visibility = visibility }
 
-fun View.setSize(width: Int? = null, height: Int? = null) = updateLayoutParams {
-    width?.let { this.width = it }
-    height?.let { this.height = it }
+fun View.setSize(width: Int = this.width, height: Int = this.height) = updateLayoutParams {
+    this.width = width
+    this.height = height
+}
+
+fun View.setMargins(start: Int = marginStart, top: Int = marginTop, end: Int = marginEnd, bottom: Int = marginBottom) =
+    layoutParams?.run {
+        updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            this.setMargins(start, top, end, bottom)
+        }
+    }
+
+fun <T : ViewGroup.MarginLayoutParams> T.setMargins(
+    start: Int = marginStart,
+    top: Int = topMargin,
+    end: Int = marginEnd,
+    bottom: Int = bottomMargin
+) {
+    this.marginStart = start
+    this.topMargin = top
+    this.marginEnd = end
+    this.bottomMargin = bottom
 }
 
 /**
@@ -65,10 +92,10 @@ infix fun View.limitWidthBy(other: View) = doOnPreDraw {
 }
 
 fun ViewGroup.getOtherViewsWidthSum(viewToExclude: View) =
-        children
-                .filter { it.id != viewToExclude.id }
-                .map { it.widthWithMargins }
-                .sum()
+    children
+        .filter { it.id != viewToExclude.id }
+        .map { it.widthWithMargins }
+        .sum()
 
 val View.widthWithMargins
     get() = width + max(marginLeft, marginStart) + max(marginRight, marginEnd)
