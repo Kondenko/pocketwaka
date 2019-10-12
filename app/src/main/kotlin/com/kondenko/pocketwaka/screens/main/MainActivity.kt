@@ -10,10 +10,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.screens.daily.FragmentSummary
 import com.kondenko.pocketwaka.screens.login.LoginActivity
 import com.kondenko.pocketwaka.screens.menu.FragmentMenu
-import com.kondenko.pocketwaka.screens.ranges.FragmentRanges
+import com.kondenko.pocketwaka.screens.stats.FragmentStats
+import com.kondenko.pocketwaka.screens.summary.FragmentSummary
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.extensions.*
 import io.reactivex.disposables.Disposable
@@ -33,10 +33,10 @@ class MainActivity : AppCompatActivity() {
     private var refreshEventsDisposable: Disposable? = null
 
     private val fragmentSummary = FragmentSummary()
-    private val tagDaily = "day"
+    private val tagSummary = "summary"
 
-    private val fragmentRanges = FragmentRanges()
-    private val tagRanges = "ranges"
+    private val fragmentStats = FragmentStats()
+    private val tagStats = "stats"
 
     private val fragmentMenu = FragmentMenu()
     private val tagMenu = "menu"
@@ -73,13 +73,13 @@ class MainActivity : AppCompatActivity() {
         main_bottom_navigation.setOnNavigationItemSelectedListener {
             refreshEventsDisposable?.dispose()
             when (it.itemId) {
-                R.id.bottomnav_item_today -> showSummaries()
-                R.id.bottomnav_item_ranges -> showRanges()
+                R.id.bottomnav_item_summaries -> showSummaries()
+                R.id.bottomnav_item_stats -> showRanges()
                 R.id.bottomnav_item_menu -> showMenu()
             }
             true
         }
-        main_bottom_navigation.selectedItemId = R.id.bottomnav_item_today
+        main_bottom_navigation.selectedItemId = R.id.bottomnav_item_summaries
     }
 
     private fun showLoginScreen() {
@@ -100,14 +100,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun showSummaries() {
         toolbar_main.visible()
-        setFragment(fragmentSummary, tagDaily)
+        setFragment(fragmentSummary, tagSummary)
         refreshEventsDisposable = fragmentSummary.subscribeToRefreshEvents(refreshEvents)
     }
 
     private fun showRanges() {
         toolbar_main.visible()
-        setFragment(fragmentRanges, tagRanges)
-        refreshEventsDisposable = fragmentRanges.subscribeToRefreshEvents(refreshEvents)
+        setFragment(fragmentStats, tagStats)
+        refreshEventsDisposable = fragmentStats.subscribeToRefreshEvents(refreshEvents)
     }
 
     private fun showMenu() {

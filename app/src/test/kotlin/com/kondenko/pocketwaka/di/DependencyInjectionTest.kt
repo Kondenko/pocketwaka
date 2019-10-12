@@ -6,11 +6,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
-import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
-import com.kondenko.pocketwaka.screens.daily.SummaryAdapter
-import com.kondenko.pocketwaka.screens.ranges.RangesViewModel
-import com.kondenko.pocketwaka.screens.ranges.adapter.StatsAdapter
+import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
+import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
+import com.kondenko.pocketwaka.screens.stats.StatsViewModel
+import com.kondenko.pocketwaka.screens.stats.adapter.StatsAdapter
+import com.kondenko.pocketwaka.screens.summary.SummaryAdapter
 import com.kondenko.pocketwaka.ui.skeleton.RecyclerViewSkeleton
 import com.kondenko.pocketwaka.utils.BrowserWindow
 import com.nhaarman.mockito_kotlin.doReturn
@@ -52,7 +52,7 @@ class DependencyInjectionTest : KoinTest {
             create<RecyclerViewSkeleton<SummaryUiModel, SummaryAdapter>> {
                 parametersOf(mock<RecyclerView>(), context, emptyList<SummaryUiModel>())
             }
-            create<RangesViewModel> {
+            create<StatsViewModel> {
                 parametersOf("7_days")
             }
         }

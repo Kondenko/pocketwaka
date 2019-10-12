@@ -4,8 +4,8 @@ import androidx.room.TypeConverter
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory
-import com.kondenko.pocketwaka.domain.daily.model.ProjectModel
-import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
+import com.kondenko.pocketwaka.domain.summary.model.ProjectModel
+import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 
 object SummaryListConverter {
 

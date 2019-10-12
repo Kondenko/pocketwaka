@@ -4,16 +4,16 @@ import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.data.android.ColorProvider
 import com.kondenko.pocketwaka.data.persistence.AppDatabase
-import com.kondenko.pocketwaka.data.ranges.converter.RangeResponseConverter
-import com.kondenko.pocketwaka.data.ranges.repository.RangeStatsRepository
-import com.kondenko.pocketwaka.data.ranges.service.RangeStatsService
+import com.kondenko.pocketwaka.data.stats.converter.StatsResponseConverter
+import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
+import com.kondenko.pocketwaka.data.stats.service.RangeStatsService
 import com.kondenko.pocketwaka.di.qualifiers.Api
-import com.kondenko.pocketwaka.domain.ranges.model.StatsUiModel
-import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsForRanges
-import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsState
-import com.kondenko.pocketwaka.screens.ranges.FragmentStatsTab
-import com.kondenko.pocketwaka.screens.ranges.RangesViewModel
-import com.kondenko.pocketwaka.screens.ranges.adapter.StatsAdapter
+import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
+import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsForRange
+import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsState
+import com.kondenko.pocketwaka.screens.stats.FragmentStatsTab
+import com.kondenko.pocketwaka.screens.stats.StatsViewModel
+import com.kondenko.pocketwaka.screens.stats.adapter.StatsAdapter
 import com.kondenko.pocketwaka.ui.skeleton.RecyclerViewSkeleton
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.extensions.create
@@ -29,14 +29,14 @@ val rangeStatsModule = module {
     factory { get<Retrofit>(Api).create<RangeStatsService>() }
     factory { get<AppDatabase>().statsDao() }
     factory {
-        RangeStatsRepository(
+        StatsRepository(
                 service = get(),
                 dao = get()
         )
     }
     factory { ColorProvider(androidContext()) }
     factory {
-        RangeResponseConverter(
+        StatsResponseConverter(
                 context = androidContext(),
                 colorProvider = get(),
                 dateProvider = get(),
@@ -44,17 +44,17 @@ val rangeStatsModule = module {
         )
     }
     factory {
-        GetStatsForRanges(
+        GetStatsForRange(
                 schedulers = get(),
                 getTokenHeader = get(),
-                rangeStatsRepository = get(),
-                serverModelConverter = get<RangeResponseConverter>()
+                statsRepository = get(),
+                serverModelConverter = get<StatsResponseConverter>()
         )
     }
     factory {
         GetStatsState(
                 schedulers = get(),
-                getStatsForRanges = get<GetStatsForRanges>(),
+                getStatsForRange = get<GetStatsForRange>(),
                 connectivityStatusProvider = get()
         )
     }
@@ -69,7 +69,7 @@ val rangeStatsModule = module {
         }
     }
     viewModel { (range: String?) ->
-        RangesViewModel(
+        StatsViewModel(
                 range = range,
                 getStats = get<GetStatsState>(),
                 uiScheduler = get<SchedulersContainer>().uiScheduler

@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/bottomnav_item_today"
+        android:id="@+id/bottomnav_item_summaries"
         android:icon="@drawable/ic_bottomnav_today"
         android:title="@string/main_bottomnav_today" />
 
     <item
-        android:id="@+id/bottomnav_item_ranges"
+        android:id="@+id/bottomnav_item_stats"
         android:icon="@drawable/ic_bottomnav_ranges"
         android:title="@string/main_bottomnav_ranges" />
 

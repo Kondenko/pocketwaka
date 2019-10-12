@@ -5,8 +5,8 @@ import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
 import com.kondenko.pocketwaka.data.summary.model.server.SummaryData
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
-import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
-import com.kondenko.pocketwaka.domain.daily.usecase.GetAverage
+import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
+import com.kondenko.pocketwaka.domain.summary.usecase.GetAverage
 import io.reactivex.Maybe
 import kotlin.math.roundToInt
 

@@ -9,7 +9,7 @@ import com.kondenko.pocketwaka.data.common.model.database.StatsEntity
 import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
 import com.kondenko.pocketwaka.data.summary.model.server.SummaryData
 import com.kondenko.pocketwaka.domain.UseCaseObservable
-import com.kondenko.pocketwaka.domain.daily.model.*
+import com.kondenko.pocketwaka.domain.summary.model.*
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.extensions.concatMapEagerDelayError
 import com.kondenko.pocketwaka.utils.extensions.startWithIfNotEmpty

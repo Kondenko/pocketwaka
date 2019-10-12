@@ -11,14 +11,14 @@ import com.kondenko.pocketwaka.data.summary.service.SummaryService
 import com.kondenko.pocketwaka.di.qualifiers.Api
 import com.kondenko.pocketwaka.di.qualifiers.Worker
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
-import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
-import com.kondenko.pocketwaka.domain.daily.usecase.GetAverage
-import com.kondenko.pocketwaka.domain.daily.usecase.GetDefaultSummaryRange
-import com.kondenko.pocketwaka.domain.daily.usecase.GetSummary
-import com.kondenko.pocketwaka.domain.daily.usecase.GetSummaryState
-import com.kondenko.pocketwaka.screens.daily.FragmentSummary
-import com.kondenko.pocketwaka.screens.daily.SummaryAdapter
-import com.kondenko.pocketwaka.screens.daily.SummaryViewModel
+import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
+import com.kondenko.pocketwaka.domain.summary.usecase.GetAverage
+import com.kondenko.pocketwaka.domain.summary.usecase.GetDefaultSummaryRange
+import com.kondenko.pocketwaka.domain.summary.usecase.GetSummary
+import com.kondenko.pocketwaka.domain.summary.usecase.GetSummaryState
+import com.kondenko.pocketwaka.screens.summary.FragmentSummary
+import com.kondenko.pocketwaka.screens.summary.SummaryAdapter
+import com.kondenko.pocketwaka.screens.summary.SummaryViewModel
 import com.kondenko.pocketwaka.ui.skeleton.RecyclerViewSkeleton
 import com.kondenko.pocketwaka.utils.extensions.create
 import com.kondenko.pocketwaka.utils.spannable.TimeSpannableCreator
@@ -38,7 +38,7 @@ val summaryModule = module {
     single {
         GetAverage(
                 schedulersContainer = get(),
-                rangeStatsRepository = get(),
+                statsRepository = get(),
                 getTokenHeaderValue = get()
         )
     }

@@ -2,9 +2,9 @@ package com.kondenko.pocketwaka.di.modules
 
 import com.kondenko.pocketwaka.data.summary.service.MockSummaryService
 import com.kondenko.pocketwaka.data.summary.service.SummaryService
-import com.kondenko.pocketwaka.domain.daily.usecase.GetSummary
-import com.kondenko.pocketwaka.domain.daily.usecase.GetSummaryStateMock
-import com.kondenko.pocketwaka.screens.daily.SummaryViewModel
+import com.kondenko.pocketwaka.domain.summary.usecase.GetSummary
+import com.kondenko.pocketwaka.domain.summary.usecase.GetSummaryStateMock
+import com.kondenko.pocketwaka.screens.summary.SummaryViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module

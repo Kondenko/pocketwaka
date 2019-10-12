@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.domain.main
 
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
-import com.kondenko.pocketwaka.data.ranges.dao.StatsDao
+import com.kondenko.pocketwaka.data.stats.dao.StatsDao
 import com.kondenko.pocketwaka.data.summary.dao.SummaryDao
 import com.kondenko.pocketwaka.domain.UseCaseCompletable
 import com.kondenko.pocketwaka.utils.SchedulersContainer

@@ -5,7 +5,7 @@ import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
 import com.kondenko.pocketwaka.data.summary.model.server.Summary
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.data.summary.service.SummaryService
-import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
+import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.testutils.TestException
 import com.kondenko.pocketwaka.testutils.testSchedulers
 import com.kondenko.pocketwaka.utils.date.DateRange

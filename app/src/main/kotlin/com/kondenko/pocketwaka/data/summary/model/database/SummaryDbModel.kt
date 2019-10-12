@@ -3,7 +3,7 @@ package com.kondenko.pocketwaka.data.summary.model.database
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.kondenko.pocketwaka.data.CacheableModel
-import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
+import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 
 @Entity(tableName = "summary")
 data class SummaryDbModel(
