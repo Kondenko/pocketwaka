@@ -17,8 +17,11 @@ import com.kondenko.pocketwaka.ui.Scale
 import com.kondenko.pocketwaka.ui.scale
 import com.kondenko.pocketwaka.utils.extensions.dp
 import com.kondenko.pocketwaka.utils.extensions.setSize
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.dialog_app_rating.*
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 class AppRatingBottomSheetDialog : BottomSheetDialogFragment() {
@@ -29,7 +32,7 @@ class AppRatingBottomSheetDialog : BottomSheetDialogFragment() {
 
     private var isNegativeFeedbackStateShown = false
 
-    var expandAnimationStartDelay: Long = 300
+    var ratingReactionDelay: Long = 300
 
     var expandedHeightDp = 246
 
@@ -46,9 +49,11 @@ class AppRatingBottomSheetDialog : BottomSheetDialogFragment() {
         button_low_rating_action.clicks().subscribeWith(sendFeedbackClicks)
     }
 
-    fun ratingChanges() = ratingChanges
+    fun ratingChanges(): Observable<Int> =
+          ratingChanges.delay(ratingReactionDelay, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
 
-    fun sendFeedbackClicks() = sendFeedbackClicks
+    fun sendFeedbackClicks() =
+          sendFeedbackClicks
 
     fun showLowRatingState(show: Boolean) {
         if (isNegativeFeedbackStateShown && !show || !isNegativeFeedbackStateShown && show) {
@@ -59,7 +64,6 @@ class AppRatingBottomSheetDialog : BottomSheetDialogFragment() {
                 val initialRatingBarScale = 1f
                 val targetRatingBarScale = Scale.of(ratingBarScaleCollapsed)
                 ValueAnimator.ofFloat(0f, 1f).apply {
-                    startDelay = expandAnimationStartDelay
                     interpolator = DecelerateInterpolator()
                     duration = 300
                     addUpdateListener {
@@ -81,6 +85,6 @@ class AppRatingBottomSheetDialog : BottomSheetDialogFragment() {
     }
 
     private fun Float.fractionToValue(initialValue: Float, targetValue: Float) =
-        initialValue + (this * (targetValue - initialValue))
+          initialValue + (this * (targetValue - initialValue))
 
 }
