@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="main_action_logout">Выйти</string>
     <string name="main_action_refresh">Обновить</string>
     <string name="error_refreshing_token">Пожалуйста, войдите снова</string>
     <string name="error_state_title">Не получилось загрузить данные</string>
@@ -69,4 +68,6 @@
     <string name="menu_version_template">Версия %s</string>
     <string name="menu_support_email_subject">Отзыв о PocketWaka</string>
     <string name="rating_dialog_title">Оцените приложение</string>
+    <string name="rating_dialog_low_rating_message">Простите, если что-то не так 😿\nНапишите нам и мы исправим ошибки</string>
+    <string name="rating_dialog_low_rating_action">@string/menu_action_send_feedback</string>
 </resources>

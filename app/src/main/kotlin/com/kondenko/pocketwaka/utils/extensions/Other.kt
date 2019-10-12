@@ -7,10 +7,6 @@ import android.graphics.Path
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.model.KeyPath
@@ -18,7 +14,6 @@ import com.airbnb.lottie.value.LottieValueCallback
 import com.crashlytics.android.Crashlytics
 import com.kondenko.pocketwaka.BuildConfig
 import io.reactivex.Single
-import io.reactivex.disposables.Disposable
 import timber.log.Timber
 
 fun notNull(vararg values: Any?): Boolean = values.all { it != null }
@@ -65,22 +60,16 @@ operator fun <T> List<T>.times(times: Int): List<T> {
     return list
 }
 
-fun Disposable?.attachToLifecycle(lifecycle: LifecycleOwner) {
-    lifecycle.lifecycle.addObserver(object : LifecycleObserver {
-        @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-        fun onDestroy() {
-            this@attachToLifecycle?.dispose()
-        }
-    })
-}
-
 fun SharedPreferences.getStringOrThrow(key: String) =
     getString(key, null) ?: throw NullPointerException("Preference with key $key not found")
+
+fun <T> SharedPreferences.getOrNull(key: String, getter: SharedPreferences.(String) -> T): T? =
+    if (!contains(key)) null else getter(key)
 
 fun <T> T?.toListOrEmpty() = this?.let { listOf(it) } ?: emptyList()
 
 operator fun <T> List<T>.get(range: IntRange): List<T> {
-    assert(range.last < size) { "The last element of range should be less than then size of the list (${range.last} was larger than $size)" }
+    assert(range.last < size) { "The last element of range should be less than the size of the list (${range.last} was larger than $size)" }
     return range.map { index -> elementAt(index) }
 }
 
@@ -100,6 +89,3 @@ fun LottieAnimationView.playAnimation(duration: Long, interpolator: Interpolator
         }
     }.start()
 }
-
-fun <T> SharedPreferences.getOrNull(key: String, getter: SharedPreferences.(String) -> T): T? =
-    if (!contains(key)) null else getter(key)

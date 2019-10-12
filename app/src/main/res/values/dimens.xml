@@ -90,7 +90,7 @@
     <dimen name="height_rating_dialog_rating_bar">@dimen/size_rating_dialog_star</dimen>
     <dimen name="size_rating_dialog_star">40dp</dimen>
     <dimen name="padding_rating_dialog_star">6dp</dimen>
-    <dimen name="padding_rating_dialog_bottom">30dp</dimen>
+    <dimen name="padding_rating_dialog_bottom">8dp</dimen>
     <dimen name="padding_rating_dialog_top">24dp</dimen>
 
 </resources>

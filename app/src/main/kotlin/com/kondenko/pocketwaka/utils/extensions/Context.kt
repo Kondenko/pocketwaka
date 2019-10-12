@@ -27,6 +27,7 @@ fun Context.getCurrentLocale(): Locale = resources.configuration.run {
 /**
  * Update a view's dimension so it matches the device's density
  */
+@Deprecated(message = "Use Context.dp(number)")
 fun Context.adjustForDensity(value: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, resources.displayMetrics)
 
 /**
@@ -34,10 +35,8 @@ fun Context.adjustForDensity(value: Float) = TypedValue.applyDimension(TypedValu
  */
 fun Context.adjustForDensity(value: Int) = adjustForDensity(value.toFloat())
 
-fun Context.adjustForDensity(value: Int?): Float? {
-    if (value == null) return null
-    return adjustForDensity(value.toFloat())
-}
+fun Context.dp(number: Number): Float
+    = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, number.toFloat(), resources.displayMetrics)
 
 fun Context.getColorCompat(@ColorRes colorRes: Int) = ContextCompat.getColor(this, colorRes)
 

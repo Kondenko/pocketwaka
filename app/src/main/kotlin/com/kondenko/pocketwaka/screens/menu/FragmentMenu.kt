@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.kondenko.pocketwaka.BuildConfig
@@ -47,6 +46,8 @@ class FragmentMenu : Fragment() {
 
     private val browserWindow: BrowserWindow by inject { parametersOf(context, viewLifecycleOwner) }
 
+    private val ratingDialog = AppRatingBottomSheetDialog()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_menu, container, false)
     }
@@ -68,11 +69,20 @@ class FragmentMenu : Fragment() {
             }
         }
         recyclewview_menu.adapter = adapter
+        ratingDialog.ratingChanges()
+            .subscribe(vm::rate)
+            .attachToLifecycle(viewLifecycleOwner)
+        ratingDialog.sendFeedbackClicks()
+            .subscribe {
+                vm.sendFeedback()
+                ratingDialog.dismiss()
+            }
+            .attachToLifecycle(viewLifecycleOwner)
         vm.state.observe(this) {
             WakaLog.d("New menu state: $it")
             when (it) {
                 is MenuState.RateApp -> {
-                    rateApp(it.data.positiveRatingThreshold)
+                    rateApp()
                 }
                 is MenuState.SendFeedback -> it.data.run {
                     sendFeedback(supportEmail, emailSubject, initialEmailText)
@@ -82,6 +92,12 @@ class FragmentMenu : Fragment() {
                 }
                 is MenuState.LogOut -> {
                     logout()
+                }
+                is MenuState.OpenPlayStore -> {
+                    openPlayStore()
+                }
+                is MenuState.AskForFeedback -> {
+                    showFeedbackButton()
                 }
             }
         }
@@ -105,20 +121,20 @@ class FragmentMenu : Fragment() {
         }
     )
 
-    private fun rateApp(positiveRatingThreshold: Int) {
-        AppRatingBottomSheetDialog().also {
-            it.show(childFragmentManager, null)
-            it.ratingChanges().subscribe { rating ->
-                if (rating < positiveRatingThreshold) {
-                    Toast.makeText(context, "Rating too low", Toast.LENGTH_SHORT).show() // TODO Show a feedback form
-                } else {
-                    context?.openPlayStore { playStoreUrl ->
-                        // TODO Show a toast
-                        browserWindow.openUrl(playStoreUrl)
-                    }
-                }
-            }.attachToLifecycle(viewLifecycleOwner)
+    private fun rateApp() {
+        ratingDialog.showLowRatingState(false)
+        ratingDialog.show(childFragmentManager, null)
+    }
+
+    private fun openPlayStore() {
+        context?.openPlayStore { playStoreUrl ->
+            browserWindow.openUrl(playStoreUrl)
         }
+        ratingDialog.dismiss()
+    }
+
+    private fun showFeedbackButton() {
+        ratingDialog.showLowRatingState(true)
     }
 
     private fun sendFeedback(email: String, subject: String, initialText: String) = startActivity(

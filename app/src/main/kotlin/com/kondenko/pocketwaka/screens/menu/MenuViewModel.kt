@@ -59,6 +59,15 @@ class MenuViewModel(
         }
     }
 
+    fun rate(rating: Int) {
+        val positiveRatingThreshold = state.value?.data?.positiveRatingThreshold
+        if (positiveRatingThreshold != null && rating < positiveRatingThreshold) {
+            setState(MenuState.AskForFeedback(state.value?.data))
+        } else {
+            setState(MenuState.OpenPlayStore(state.value?.data))
+        }
+    }
+
     fun rateApp() {
         rateAppClicks.onNext(Unit)
     }

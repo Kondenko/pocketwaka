@@ -54,9 +54,9 @@ fun View.gone() {
 
 fun setViewsVisibility(visibility: Int, vararg views: View) = views.forEach { it.visibility = visibility }
 
-fun View.setSize(width: Int? = null, height: Int? = null) = updateLayoutParams {
-    width?.let { this.width = it }
-    height?.let { this.height = it }
+fun View.setSize(width: Int = this.width, height: Int = this.height) = updateLayoutParams {
+    this.width = width
+    this.height = height
 }
 
 fun View.setMargins(start: Int = marginStart, top: Int = marginTop, end: Int = marginEnd, bottom: Int = marginBottom) =
@@ -66,7 +66,7 @@ fun View.setMargins(start: Int = marginStart, top: Int = marginTop, end: Int = m
         }
     }
 
-fun <T :ViewGroup.MarginLayoutParams> T.setMargins(
+fun <T : ViewGroup.MarginLayoutParams> T.setMargins(
     start: Int = marginStart,
     top: Int = topMargin,
     end: Int = marginEnd,
