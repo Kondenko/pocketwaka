@@ -4,11 +4,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
+import com.kondenko.pocketwaka.screens.State
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
+import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.observers.TestObserver
+import java.util.concurrent.TimeUnit
 
 fun <T> Observable<T>.testWithLogging(): TestObserver<T> = this
         .doOnEach {
@@ -45,6 +48,9 @@ fun Disposable?.attachToLifecycle(lifecycle: LifecycleOwner) {
         }
     })
 }
+
+fun <T> Observable<State<T>>.debounceStateUpdates(timeout: Long = 50, scheduler: Scheduler): Observable<State<T>> =
+      compose { it.debounce(50, TimeUnit.MILLISECONDS, scheduler) }
 
 /* Assert in order */
 

@@ -23,6 +23,6 @@ class ClearCache(
     )
 
     override fun build(params: Nothing?) =
-            tokenRepository.deleteToken().mergeWith(clearCacheCompletables)
+               tokenRepository.deleteToken().mergeWith(clearCacheCompletables)
 
 }

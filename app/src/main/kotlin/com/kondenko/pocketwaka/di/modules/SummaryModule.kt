@@ -9,7 +9,7 @@ import com.kondenko.pocketwaka.data.summary.converters.TimeTrackedConverter
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.data.summary.service.SummaryService
 import com.kondenko.pocketwaka.di.qualifiers.Api
-import com.kondenko.pocketwaka.di.qualifiers.Worker
+import com.kondenko.pocketwaka.di.qualifiers.Scheduler
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.domain.summary.usecase.GetAverage
@@ -37,69 +37,75 @@ val summaryModule = module {
     }
     single {
         GetAverage(
-                schedulersContainer = get(),
-                statsRepository = get(),
-                getTokenHeaderValue = get()
+              schedulersContainer = get(),
+              statsRepository = get(),
+              getTokenHeaderValue = get()
         )
     }
     single {
         TimeTrackedConverter(
-                dateFormatter = get(),
-                getAverage = get()
+              dateFormatter = get(),
+              getAverage = get()
         )
     }
     single {
         SummaryResponseConverter()
     }
     single {
-        SummaryRepository(summaryService = get(), summaryDao = get(), workerScheduler = get(Worker), reduceModels = get<SummaryResponseConverter>())
+        SummaryRepository(
+              summaryService = get(),
+              summaryDao = get(),
+              workerScheduler = get(Scheduler.Worker),
+              reduceModels = get<SummaryResponseConverter>()
+        )
     }
     single {
         FetchProjects(
-                schedulersContainer = get(),
-                durationsRepository = get(),
-                commitsRepository = get(),
-                dateFormatter = get()
+              schedulersContainer = get(),
+              durationsRepository = get(),
+              commitsRepository = get(),
+              dateFormatter = get()
         )
     }
     single {
         GetSummary(
-                schedulers = get(),
-                summaryRepository = get<SummaryRepository>(),
-                getTokenHeader = get<GetTokenHeaderValue>(),
-                dateFormatter = get(),
-                summaryResponseConverter = get<SummaryResponseConverter>(),
-                timeTrackedConverter = get<TimeTrackedConverter>(),
-                fetchProjects = get<FetchProjects>()
+              schedulers = get(),
+              summaryRepository = get<SummaryRepository>(),
+              getTokenHeader = get<GetTokenHeaderValue>(),
+              dateFormatter = get(),
+              summaryResponseConverter = get<SummaryResponseConverter>(),
+              timeTrackedConverter = get<TimeTrackedConverter>(),
+              fetchProjects = get<FetchProjects>()
         )
     }
     single {
         GetDefaultSummaryRange(
-                dateProvider = get(),
-                schedulers = get()
+              dateProvider = get(),
+              schedulers = get()
         )
     }
     single {
         GetSummaryState(
-                schedulers = get(),
-                getSummary = get<GetSummary>(),
-                connectivityStatusProvider = get()
+              schedulers = get(),
+              getSummary = get<GetSummary>(),
+              connectivityStatusProvider = get()
         )
     }
     factory { (context: Context, showSkeleton: Boolean) -> SummaryAdapter(context, showSkeleton, get<TimeSpannableCreator>()) }
     scope(named<FragmentSummary>()) {
         scoped { (recyclerView: RecyclerView, context: Context, skeletonItems: List<SummaryUiModel>) ->
             RecyclerViewSkeleton(
-                    recyclerView = recyclerView,
-                    adapterCreator = { showSkeleton: Boolean -> get<SummaryAdapter> { parametersOf(context, showSkeleton) } },
-                    skeletonItems = skeletonItems
+                  recyclerView = recyclerView,
+                  adapterCreator = { showSkeleton: Boolean -> get<SummaryAdapter> { parametersOf(context, showSkeleton) } },
+                  skeletonItems = skeletonItems
             )
         }
     }
     viewModel {
         SummaryViewModel(
-                getDefaultSummaryRange = get(),
-                getSummaryState = get<GetSummaryState>()
+              uiScheduler = get(Scheduler.Ui),
+              getDefaultSummaryRange = get(),
+              getSummaryState = get<GetSummaryState>()
         )
     }
 }

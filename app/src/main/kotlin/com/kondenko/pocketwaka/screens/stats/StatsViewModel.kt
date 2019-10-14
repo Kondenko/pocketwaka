@@ -5,9 +5,9 @@ import com.kondenko.pocketwaka.domain.StatefulUseCase
 import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
 import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsForRange
 import com.kondenko.pocketwaka.screens.base.BaseViewModel
+import com.kondenko.pocketwaka.utils.extensions.debounceStateUpdates
 import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.plusAssign
-import java.util.concurrent.TimeUnit
 
 class StatsViewModel(
       private val range: String?,
@@ -22,7 +22,7 @@ class StatsViewModel(
     fun update() {
         disposables += getStats
                 .build(GetStatsForRange.Params(range, refreshRate = 3))
-                .debounce(50, TimeUnit.MILLISECONDS, uiScheduler)
+                .debounceStateUpdates(scheduler = uiScheduler)
                 .subscribe(::setState, this::handleError)
     }
 

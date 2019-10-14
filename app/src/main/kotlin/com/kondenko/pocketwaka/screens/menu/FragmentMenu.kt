@@ -34,10 +34,10 @@ class FragmentMenu : Fragment() {
         object Logo : MenuUiModel()
 
         data class Action(
-            val iconRes: Int,
-            val textRes: Int,
-            val isEnabled: Boolean = true,
-            val onClick: () -> Unit
+              val iconRes: Int,
+              val textRes: Int,
+              val isEnabled: Boolean = true,
+              val onClick: () -> Unit
         ) : MenuUiModel()
 
     }
@@ -56,7 +56,6 @@ class FragmentMenu : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         vm = getViewModel { parametersOf(viewLifecycleOwner) }
         val adapter = createAdapter<MenuUiModel>(view.context) {
-            // TODO Disable Github if a browser Activity is not found
             items { getMenuItems(getMailActivity() != null, true) }
             viewHolder<MenuUiModel.Logo>(R.layout.item_menu_logo) { _, _ ->
                 textview_menu_version.text = getString(R.string.menu_version_template, BuildConfig.VERSION_NAME)
@@ -70,14 +69,14 @@ class FragmentMenu : Fragment() {
         }
         recyclewview_menu.adapter = adapter
         ratingDialog.ratingChanges()
-            .subscribe(vm::rate)
-            .attachToLifecycle(viewLifecycleOwner)
+              .subscribe(vm::rate)
+              .attachToLifecycle(viewLifecycleOwner)
         ratingDialog.sendFeedbackClicks()
-            .subscribe {
-                vm.sendFeedback()
-                ratingDialog.dismiss()
-            }
-            .attachToLifecycle(viewLifecycleOwner)
+              .subscribe {
+                  vm.sendFeedback()
+                  ratingDialog.dismiss()
+              }
+              .attachToLifecycle(viewLifecycleOwner)
         vm.state().observe(this) {
             WakaLog.d("New menu state: $it")
             when (it) {
@@ -104,19 +103,19 @@ class FragmentMenu : Fragment() {
     }
 
     private fun getMenuItems(isFeedbackEnabled: Boolean, isGithubEnabled: Boolean = true) = listOfNotNull(
-        MenuUiModel.Logo,
-        MenuUiModel.Action(R.drawable.ic_menu_rate, R.string.menu_action_rate) {
-            vm.rateApp()
-        },
-        MenuUiModel.Action(R.drawable.ic_menu_feedback, R.string.menu_action_send_feedback, isFeedbackEnabled) {
-            vm.sendFeedback()
-        },
-        MenuUiModel.Action(R.drawable.ic_menu_github, R.string.menu_action_open_github, isGithubEnabled) {
-            vm.openGithub()
-        },
-        MenuUiModel.Action(R.drawable.ic_menu_logout, R.string.menu_action_logout) {
-            vm.logout()
-        }
+          MenuUiModel.Logo,
+          MenuUiModel.Action(R.drawable.ic_menu_rate, R.string.menu_action_rate) {
+              vm.rateApp()
+          },
+          MenuUiModel.Action(R.drawable.ic_menu_feedback, R.string.menu_action_send_feedback, isFeedbackEnabled) {
+              vm.sendFeedback()
+          },
+          MenuUiModel.Action(R.drawable.ic_menu_github, R.string.menu_action_open_github, isGithubEnabled) {
+              vm.openGithub()
+          },
+          MenuUiModel.Action(R.drawable.ic_menu_logout, R.string.menu_action_logout) {
+              vm.logout()
+          }
     )
 
     private fun rateApp() {
@@ -136,14 +135,14 @@ class FragmentMenu : Fragment() {
     }
 
     private fun sendFeedback(email: String, subject: String, initialText: String) = startActivity(
-        getMailIntent().apply {
-            val extras = bundleOf(
-                Intent.EXTRA_EMAIL to arrayOf(email),
-                Intent.EXTRA_SUBJECT to subject,
-                Intent.EXTRA_TEXT to initialText
-            )
-            putExtras(extras)
-        }
+          getMailIntent().apply {
+              val extras = bundleOf(
+                    Intent.EXTRA_EMAIL to arrayOf(email),
+                    Intent.EXTRA_SUBJECT to subject,
+                    Intent.EXTRA_TEXT to initialText
+              )
+              putExtras(extras)
+          }
     )
 
     override fun onResume() {

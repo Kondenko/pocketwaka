@@ -73,7 +73,7 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
 
     override fun onResume() {
         super.onResume()
-        vm.onResume()
+        vm.updateDataIfRepoHasBeenConnected()
     }
 
     override fun provideDataView(): View = recyclerview_summary

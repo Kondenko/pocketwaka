@@ -3,8 +3,7 @@ package com.kondenko.pocketwaka.di.modules
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.di.qualifiers.Api
 import com.kondenko.pocketwaka.di.qualifiers.Auth
-import com.kondenko.pocketwaka.di.qualifiers.Ui
-import com.kondenko.pocketwaka.di.qualifiers.Worker
+import com.kondenko.pocketwaka.di.qualifiers.Scheduler
 import com.kondenko.pocketwaka.utils.ResponseLogger
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,9 +17,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 val netModule = module {
-    factory(Worker) { Schedulers.io() }
-    factory(Ui) { AndroidSchedulers.mainThread() }
-    factory { SchedulersContainer(uiScheduler = get(Ui), workerScheduler = get(Worker)) }
+    factory(Scheduler.Worker) { Schedulers.io() }
+    factory(Scheduler.Ui) { AndroidSchedulers.mainThread() }
+    factory { SchedulersContainer(uiScheduler = get(Scheduler.Ui), workerScheduler = get(Scheduler.Worker)) }
     single { RxJava2CallAdapterFactory.create() }
     single { GsonConverterFactory.create() }
     single {
