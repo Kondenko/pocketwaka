@@ -104,20 +104,20 @@ class FetchProjects(
                     .groupBy { it.branch }
                     .map { (name, durations) -> name to durations.sumByDouble { it.duration } }
                     .filter { (branch, _) -> branch != null }
-                    .map { (branch: String, duration) ->
+                    .map { (branch: String?, duration) ->
                         val durationHumanReadable = dateFormatter.secondsToHumanReadableTime(
                                 duration.roundToLong(),
                                 DateFormatter.Format.Short
                         )
                         val commitsFromBranch = commits
-                                .filter { it.ref?.contains(branch) == true }
+                                .filter { it.ref?.contains(branch!!) == true }
                                 .map {
                                     Commit(it.message, dateFormatter.secondsToHumanReadableTime(
                                             it.totalSeconds.toLong(),
                                             DateFormatter.Format.Short
                                     ))
                                 }
-                        Branch(branch, durationHumanReadable, commitsFromBranch)
+                        Branch(branch!!, durationHumanReadable, commitsFromBranch)
                     }
 
     private fun CommitsServiceModel.isRepoConnected() = error == null || !error.contains(noRepoError, ignoreCase = true)

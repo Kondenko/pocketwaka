@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
+import com.kondenko.pocketwaka.utils.extensions.dp
 import com.kondenko.pocketwaka.utils.extensions.findViewsWithTag
 import com.kondenko.pocketwaka.utils.extensions.setSize
 import kotlin.math.roundToInt
@@ -136,7 +136,7 @@ class Skeleton(
             (getTag(tagId) as? String?)
                     ?.toIntOrNull()
                     ?.takeIf { it >= 0 }
-                    ?.let(context::adjustForDensity)
+                    ?.let(context::dp)
                     ?.roundToInt()
 
     private fun View.playPulseAnimation() {

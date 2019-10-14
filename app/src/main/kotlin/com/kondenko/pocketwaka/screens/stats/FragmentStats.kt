@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.kondenko.pocketwaka.Const
@@ -18,7 +19,6 @@ import com.kondenko.pocketwaka.screens.Refreshable
 import com.kondenko.pocketwaka.screens.stats.model.ScrollDirection
 import com.kondenko.pocketwaka.screens.stats.model.TabsElevationState
 import com.kondenko.pocketwaka.utils.extensions.getColorCompat
-import com.ogaclejapan.smarttablayout.utils.v4.Bundler
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
 import io.reactivex.Observable
@@ -37,8 +37,8 @@ class FragmentStats : Fragment(), Refreshable {
 
     private var refreshSubscription: Disposable? = null
 
-    private val keyTabsElevation = "tabsElevationState"
     private lateinit var tabsElevation: TabsElevationState
+    private val keyTabsElevation = "tabsElevationState"
 
     private lateinit var colorAnimator: ValueAnimator
 
@@ -113,7 +113,7 @@ class FragmentStats : Fragment(), Refreshable {
         refreshSubscription = fragment.subscribeToRefreshEvents(refreshEvents)
         scrollSubscription = fragment.scrollDirection()
                 .distinctUntilChanged()
-                .skip(1) // Skip the initial ScrollDirection.Up causing an unwanted animation
+                .skip(1) // Skip first emission (ScrollDirection.Up) causing an unwanted animation
                 .subscribeBy(
                         onNext = { scrollDirection ->
                             animateTabs(scrollDirection == ScrollDirection.Down)
@@ -149,8 +149,7 @@ class FragmentStats : Fragment(), Refreshable {
         return refreshSubscription
     }
 
-    private fun FragmentPagerItems.Creator.addFragment(@StringRes title: Int, range: String): FragmentPagerItems.Creator {
-        return this.add(title, FragmentStatsTab::class.java, Bundler().putString(FragmentStatsTab.ARG_RANGE, range).get())
-    }
+    private fun FragmentPagerItems.Creator.addFragment(@StringRes title: Int, range: String) =
+          add(title, FragmentStatsTab::class.java, bundleOf(FragmentStatsTab.range to range))
 
 }

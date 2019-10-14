@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.res.TypedArray
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.util.TypedValue
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
@@ -14,8 +15,10 @@ import com.kondenko.pocketwaka.R
 import java.util.*
 
 
-inline fun <reified T : Activity> Context.startActivity() {
-    startActivity(Intent(this, T::class.java))
+inline fun <reified T : Activity> Context.startActivity(extras: Bundle? = null) {
+    startActivity(Intent(this, T::class.java).apply {
+        extras?.let(::putExtras)
+    })
 }
 
 fun Context.getCurrentLocale(): Locale = resources.configuration.run {
@@ -23,17 +26,6 @@ fun Context.getCurrentLocale(): Locale = resources.configuration.run {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) locales[0]
     else locale
 }
-
-/**
- * Update a view's dimension so it matches the device's density
- */
-@Deprecated(message = "Use Context.dp(number)")
-fun Context.adjustForDensity(value: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, resources.displayMetrics)
-
-/**
- * Update a view's dimension so it matches the device's density
- */
-fun Context.adjustForDensity(value: Int) = adjustForDensity(value.toFloat())
 
 fun Context.dp(number: Number): Float
     = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, number.toFloat(), resources.displayMetrics)

@@ -3,6 +3,7 @@ package com.kondenko.pocketwaka.screens.base
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.CallSuper
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -33,6 +34,7 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
 
     protected abstract fun provideDataView(): View
 
+    @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (childFragmentManager.findFragmentByTag(fragmentStateTag) == null) {

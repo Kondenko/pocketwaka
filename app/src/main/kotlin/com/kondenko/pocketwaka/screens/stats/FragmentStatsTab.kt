@@ -32,12 +32,12 @@ import timber.log.Timber
 
 class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapter, State<List<StatsUiModel>>>(), Refreshable {
 
-    companion object {
-        const val ARG_RANGE = "range"
+    companion object Args {
+        const val range = "range"
     }
 
     private val vm: StatsViewModel by viewModel {
-        parametersOf(arguments?.getString(ARG_RANGE))
+        parametersOf(arguments?.getString(range))
     }
 
     override val containerId: Int = R.id.framelayout_stats_range_root
@@ -61,7 +61,7 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
      */
     private val minScrollOffset: Float by lazy {
         val value = 8f
-        context?.adjustForDensity(value) ?: value
+        context?.dp(value) ?: value
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -73,7 +73,7 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
         super.onViewCreated(view, savedInstanceState)
         setupUi(view.context)
         vm.state.observe(viewLifecycleOwner) {
-            Timber.d("New stats state: $it")
+            Timber.d("New stats state (${arguments?.getString(range)}): $it")
             it.render()
         }
     }
