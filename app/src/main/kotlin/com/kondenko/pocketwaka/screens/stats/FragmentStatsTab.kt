@@ -17,7 +17,7 @@ import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.base.BaseFragment
 import com.kondenko.pocketwaka.screens.stats.adapter.StatsAdapter
 import com.kondenko.pocketwaka.screens.stats.model.ScrollDirection
-import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
+import com.kondenko.pocketwaka.utils.extensions.dp
 import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.times
 import com.kondenko.pocketwaka.utils.extensions.toListOrEmpty
@@ -83,6 +83,7 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
     private fun setupUi(context: Context) {
         with(stats_range_recyclerview) {
             listSkeleton = currentScope.get { parametersOf(this@with, context, skeletonItems) }
+            adapter = listSkeleton.skeletonAdapter
             layoutManager = LinearLayoutManager(context)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
