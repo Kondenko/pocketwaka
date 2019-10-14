@@ -83,7 +83,7 @@
     <string name="menu_action_logout">Log out</string>
     <string name="menu_support_email_subject">PocketWaka feedback</string>
     <string name="rating_dialog_title">Rate PocketWaka</string>
-    <string name="rating_dialog_low_rating_message">Sorry if something is wrong 😿\nPlease, drop us a line so we can fix it ASAP</string>
+    <string name="rating_dialog_low_rating_message">We\'re sorry if something is wrong 😿\nPlease, drop us a line so we can fix it ASAP</string>
     <string name="rating_dialog_low_rating_action">@string/menu_action_send_feedback</string>
 
     <!-- OTHER -->
