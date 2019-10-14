@@ -13,11 +13,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import timber.log.Timber
 
 class BrowserWindow(private var context: Context? = null, lifecycleOwner: LifecycleOwner) : LifecycleObserver {
 
     private var connection: CustomTabsServiceConnection? = null
+
+    private var isCustomTabsServiceBound = false
 
     init {
         lifecycleOwner.lifecycle.addObserver(this)
@@ -37,8 +38,9 @@ class BrowserWindow(private var context: Context? = null, lifecycleOwner: Lifecy
             override fun onServiceDisconnected(name: ComponentName) {
             }
         }
-        getChromePackage()?.let { CustomTabsClient.bindCustomTabsService(context, it, connection) }
-                ?: openBrowserActivity(url)
+        getChromePackage()?.let {
+            isCustomTabsServiceBound = CustomTabsClient.bindCustomTabsService(context, it, connection)
+        } ?: openBrowserActivity(url)
     }
 
     private fun openBrowserActivity(url: String) {
@@ -63,8 +65,9 @@ class BrowserWindow(private var context: Context? = null, lifecycleOwner: Lifecy
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     private fun cleanup() {
-        Timber.d("Destroying BrowserWindow")
-        connection?.let { context?.unbindService(it) }
+        connection?.let {
+            if (isCustomTabsServiceBound) context?.unbindService(it)
+        }
         connection = null
         context = null
     }
