@@ -11,6 +11,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.kondenko.pocketwaka.BuildConfig
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.analytics.Screen
+import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.domain.menu.AppRatingBottomSheetDialog
 import com.kondenko.pocketwaka.screens.login.LoginActivity
 import com.kondenko.pocketwaka.utils.BrowserWindow
@@ -41,6 +43,8 @@ class FragmentMenu : Fragment() {
         ) : MenuUiModel()
 
     }
+
+    private val screenTracker: ScreenTracker by inject()
 
     private lateinit var vm: MenuViewModel
 
@@ -148,6 +152,7 @@ class FragmentMenu : Fragment() {
     override fun onResume() {
         super.onResume()
         vm.onResume()
+        screenTracker.log(activity, Screen.Menu)
     }
 
     private fun logout() {

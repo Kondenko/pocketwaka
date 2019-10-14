@@ -25,7 +25,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
-val rangeStatsModule = module {
+val statsModule = module {
     factory { get<Retrofit>(Api).create<RangeStatsService>() }
     factory { get<AppDatabase>().statsDao() }
     factory {

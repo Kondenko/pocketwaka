@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.analytics.Screen
+import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.domain.summary.model.ProjectModel
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.screens.Refreshable
@@ -25,6 +27,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, SummaryAdapter, SummaryState>(), Refreshable {
+
+    private val screenTracker: ScreenTracker by inject()
 
     private val vm: SummaryViewModel by viewModel()
 
@@ -74,6 +78,7 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
     override fun onResume() {
         super.onResume()
         vm.updateDataIfRepoHasBeenConnected()
+        screenTracker.log(activity, Screen.Summary)
     }
 
     override fun provideDataView(): View = recyclerview_summary

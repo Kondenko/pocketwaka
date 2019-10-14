@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.analytics.Screen
+import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.screens.Refreshable
 import com.kondenko.pocketwaka.screens.stats.model.ScrollDirection
 import com.kondenko.pocketwaka.screens.stats.model.TabsElevationState
@@ -26,10 +28,13 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_stats_container.*
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 
 class FragmentStats : Fragment(), Refreshable {
+
+    private val screenTracker: ScreenTracker by inject()
 
     private val refreshEvents = PublishSubject.create<Any>()
 
@@ -68,6 +73,11 @@ class FragmentStats : Fragment(), Refreshable {
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelable(keyTabsElevation, tabsElevation)
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        screenTracker.log(activity, Screen.Stats.TabContainer)
     }
 
     private fun setupViewPager() {
@@ -123,6 +133,7 @@ class FragmentStats : Fragment(), Refreshable {
 
     private fun onFragmentSelected(position: Int, fragment: FragmentStatsTab?) {
         if (fragment == null) return
+        screenTracker.log(activity, Screen.Stats.Tab(fragment.arguments?.getString(FragmentStatsTab.range)))
         restoreTabsElevation(position)
         refreshSubscription?.dispose()
         scrollSubscription?.dispose()

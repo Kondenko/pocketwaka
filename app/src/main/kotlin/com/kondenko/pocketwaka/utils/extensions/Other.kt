@@ -89,3 +89,5 @@ fun LottieAnimationView.playAnimation(duration: Long, interpolator: Interpolator
         }
     }.start()
 }
+
+inline fun <reified T : Any> T.className(): String = this::class.java.simpleName

@@ -13,6 +13,8 @@ import com.jakewharton.rxbinding3.view.longClicks
 import com.kondenko.pocketwaka.BuildConfig
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.analytics.Screen
+import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.data.auth.model.server.AccessToken
 import com.kondenko.pocketwaka.screens.main.MainActivity
 import com.kondenko.pocketwaka.ui.ButtonStateWrapper
@@ -26,6 +28,8 @@ import org.koin.core.parameter.parametersOf
 // TODO Migrate to ViewModel
 class LoginActivity : AppCompatActivity(), LoginView {
 
+    private val screenTracker: ScreenTracker by inject()
+
     private val presenter: LoginPresenter by inject()
 
     private val browserWindow: BrowserWindow by inject { parametersOf(this as Context, this as LifecycleOwner) }
@@ -37,25 +41,25 @@ class LoginActivity : AppCompatActivity(), LoginView {
         setContentView(R.layout.activity_login)
         loadingView.z = 100f
         loadingButtonStateWrapper = ButtonStateWrapper(
-                buttonLogin,
-                loadingView,
-                getString(R.string.loginactivity_subtitle_error_action)
+              buttonLogin,
+              loadingView,
+              getString(R.string.loginactivity_subtitle_error_action)
         )
         loadingButtonStateWrapper.setDefault()
         buttonLogin.clicks()
-                .filter {
-                    // setClickable(false) is reset to true after setting a click listener
-                    buttonLogin.isClickable
-                }
-                .subscribe { presenter.onLoginButtonClicked() }
-                .attachToLifecycle(this)
+              .filter {
+                  // setClickable(false) is reset to true after setting a click listener
+                  buttonLogin.isClickable
+              }
+              .subscribe { presenter.onLoginButtonClicked() }
+              .attachToLifecycle(this)
         @Suppress("ConstantConditionIf")
         if (BuildConfig.DEBUG) {
             val clicksRequired = 3
             buttonLogin.longClicks()
-                    .buffer(clicksRequired)
-                    .subscribe { throw RuntimeException("Test exception") }
-                    .attachToLifecycle(this)
+                  .buffer(clicksRequired)
+                  .subscribe { throw RuntimeException("Test exception") }
+                  .attachToLifecycle(this)
         }
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }
@@ -66,10 +70,14 @@ class LoginActivity : AppCompatActivity(), LoginView {
         if (uri != null && uri.toString().startsWith(Const.AUTH_REDIRECT_URI)) {
             val code = uri.getQueryParameter("code")
             if (code != null) {
+                screenTracker.log(this, Screen.Auth(isCompleted = true, isSuccessful = true))
                 presenter.getToken(code)
             } else uri.getQueryParameter("error")?.let {
+                screenTracker.log(this, Screen.Auth(isCompleted = true, isSuccessful = false))
                 showError(RuntimeException(it))
             }
+        } else {
+            screenTracker.log(this, Screen.Auth(isCompleted = false, isSuccessful = false))
         }
     }
 
