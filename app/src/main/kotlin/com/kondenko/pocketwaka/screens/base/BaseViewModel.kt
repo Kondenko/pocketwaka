@@ -10,16 +10,19 @@ abstract class BaseViewModel<T> : ViewModel() {
 
     protected var disposables = CompositeDisposable()
 
-    protected val _state = MutableLiveData<State<T>>()
+    protected val stateLiveData = MutableLiveData<State<T>>()
 
-    val state: LiveData<State<T>> = _state
+    protected val state: State<T>?
+        get() = stateLiveData.value
+
+    fun state(): LiveData<State<T>> = stateLiveData
 
     protected fun handleError(throwable: Throwable) {
-        _state.postValue(State.Failure.Unknown(exception = throwable, isFatal = true))
+        setState(State.Failure.Unknown(exception = throwable, isFatal = true))
     }
 
     protected fun setState(state: State<T>) {
-        _state.value = state
+        stateLiveData.postValue(state)
     }
 
     override fun onCleared() {

@@ -53,28 +53,39 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
         return inflater.inflate(R.layout.fragment_summary, container, false)
     }
 
-    override fun provideDataView(): View = recyclerview_summary
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupList(view)
-        vm.state.observe(viewLifecycleOwner) {
+        vm.state().observe(viewLifecycleOwner) {
             WakaLog.d("New summary state: $it")
             when (it) {
                 is SummaryState.EmptyRange -> {
                     showData(false)
                     stateFragment.setState(it)
                 }
+                is SummaryState.ConnectRepo -> {
+                    connectRepo(it.url)
+                }
                 else -> it.render()
             }
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        vm.onResume()
+    }
+
+    override fun provideDataView(): View = recyclerview_summary
+
     private fun setupList(view: View) {
         with(view.recyclerview_summary) {
             listSkeleton = currentScope.get { parametersOf(this, context, skeletonItems) }
             adapter = listSkeleton.actualAdapter.apply {
-                connectRepoClicks().subscribeBy(onNext = ::connectRepo, onError = WakaLog::w)
+                connectRepoClicks().subscribeBy(
+                      onNext = vm::connectRepoClicked,
+                      onError = WakaLog::w
+                )
             }
         }
     }

@@ -72,7 +72,7 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUi(view.context)
-        vm.state.observe(viewLifecycleOwner) {
+        vm.state().observe(viewLifecycleOwner) {
             Timber.d("New stats state (${arguments?.getString(range)}): $it")
             it.render()
         }

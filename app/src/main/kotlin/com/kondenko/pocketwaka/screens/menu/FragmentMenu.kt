@@ -78,7 +78,7 @@ class FragmentMenu : Fragment() {
                 ratingDialog.dismiss()
             }
             .attachToLifecycle(viewLifecycleOwner)
-        vm.state.observe(this) {
+        vm.state().observe(this) {
             WakaLog.d("New menu state: $it")
             when (it) {
                 is MenuState.RateApp -> {

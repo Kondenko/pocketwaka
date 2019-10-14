@@ -6,9 +6,7 @@ import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.domain.summary.usecase.GetDefaultSummaryRange
 import com.kondenko.pocketwaka.domain.summary.usecase.GetSummary
 import com.kondenko.pocketwaka.screens.base.BaseViewModel
-import com.kondenko.pocketwaka.utils.date.DateRange
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.toSingle
 
 class SummaryViewModel(
         private val getDefaultSummaryRange: GetDefaultSummaryRange,
@@ -23,11 +21,21 @@ class SummaryViewModel(
         getSummaryForRange() // For today
     }
 
-    fun getSummaryForRange(range: DateRange? = null) {
-        val rangeSource = range?.toSingle() ?: getDefaultSummaryRange()
+    fun getSummaryForRange() {
+        val rangeSource = getDefaultSummaryRange()
         disposables += rangeSource.flatMapObservable { range ->
             getSummaryState.build(GetSummary.Params(range, refreshRate = refreshRate, retryAttempts = retryAttempts))
-        }.subscribe(_state::postValue, this::handleError)
+        }.subscribe(::setState, this::handleError)
+    }
+
+    fun connectRepoClicked(url: String) {
+        setState(SummaryState.ConnectRepo(url, state?.data))
+    }
+
+    fun onResume() {
+        if (state is SummaryState.ConnectRepo) {
+            getSummaryForRange()
+        }
     }
 
 }

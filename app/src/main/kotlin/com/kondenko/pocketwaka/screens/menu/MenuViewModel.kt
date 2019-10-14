@@ -24,7 +24,7 @@ class MenuViewModel(
     private val sendFeedbackClicks = PublishSubject.create<Unit>()
     private val githubClicks = PublishSubject.create<Unit>()
 
-    private val stateObservable = Observable.fromPublisher(_state.toPublisher(lifecycleOwner))
+    private val stateObservable = Observable.fromPublisher(stateLiveData.toPublisher(lifecycleOwner))
 
     init {
         getMenuUiModel(onSuccess = { model: MenuUiModel ->
@@ -52,7 +52,7 @@ class MenuViewModel(
     }
 
     fun onResume() {
-        _state.value.let {
+        state.let {
             if (it is MenuState.OpenGithub) {
                 setState(State.Success(it.data))
             }
@@ -60,11 +60,11 @@ class MenuViewModel(
     }
 
     fun rate(rating: Int) {
-        val positiveRatingThreshold = state.value?.data?.positiveRatingThreshold
+        val positiveRatingThreshold = state?.data?.positiveRatingThreshold
         if (positiveRatingThreshold != null && rating < positiveRatingThreshold) {
-            setState(MenuState.AskForFeedback(state.value?.data))
+            setState(MenuState.AskForFeedback(state?.data))
         } else {
-            setState(MenuState.OpenPlayStore(state.value?.data))
+            setState(MenuState.OpenPlayStore(state?.data))
         }
     }
 

@@ -23,7 +23,7 @@ class StatsViewModel(
         disposables += getStats
                 .build(GetStatsForRange.Params(range, refreshRate = 3))
                 .debounce(50, TimeUnit.MILLISECONDS, uiScheduler)
-                .subscribe(_state::postValue, this::handleError)
+                .subscribe(::setState, this::handleError)
     }
 
 }
