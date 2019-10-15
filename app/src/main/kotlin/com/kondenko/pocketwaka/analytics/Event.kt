@@ -1,7 +1,6 @@
 package com.kondenko.pocketwaka.analytics
 
-import android.os.Bundle
-import com.kondenko.pocketwaka.utils.extensions.toBundle
+import androidx.core.os.bundleOf
 
 sealed class Event {
 
@@ -12,14 +11,10 @@ sealed class Event {
         object Canceled : Login()
     }
 
+    object ManualUpdate : Event()
+
     sealed class Summary : Event() {
-
-        object ManualUpdate : Summary()
-
-        data class RepoConnected(val completed: Boolean) : Summary(), HasBundle {
-            override fun getBundle(): Bundle = toBundle()
-        }
-
+        object ConnectRepoClicks : Summary()
     }
 
     sealed class Menu : Event() {
@@ -27,11 +22,16 @@ sealed class Event {
         object RatingButtonClicked : Menu()
 
         data class RatingGiven(val rating: Int) : Menu(), HasBundle {
-            override fun getBundle(): Bundle = toBundle()
+            override fun getBundle() = bundleOf(
+                  ::rating.name to rating
+            )
+
         }
 
         data class FeedbackButtonClicked(val isFromRating: Boolean) : Menu(), HasBundle {
-            override fun getBundle(): Bundle = toBundle()
+            override fun getBundle() = bundleOf(
+                  ::isFromRating.name to isFromRating
+            )
         }
 
         object GithubClicked : Menu()
@@ -40,17 +40,20 @@ sealed class Event {
 
     }
 
-    sealed class EmptyState(open val screen: Screen) : Event() {
+    sealed class EmptyState(open val screen: com.kondenko.pocketwaka.analytics.Screen) : Event() {
 
-        data class Account(override val screen: Screen) : EmptyState(screen), HasBundle {
-            override fun getBundle(): Bundle = toBundle()
+        data class Account(override val screen: com.kondenko.pocketwaka.analytics.Screen) : EmptyState(screen), HasBundle {
+            override fun getBundle() = bundleOf(
+                  ::screen.name to screen.toString()
+            )
         }
 
-        data class Screen(override val screen: Screen) : EmptyState(screen), HasBundle {
-            override fun getBundle(): Bundle = toBundle()
+        data class Screen(override val screen: com.kondenko.pocketwaka.analytics.Screen) : EmptyState(screen), HasBundle {
+            override fun getBundle() = bundleOf(
+                  ::screen.name to screen.toString()
+            )
         }
 
     }
 
 }
-

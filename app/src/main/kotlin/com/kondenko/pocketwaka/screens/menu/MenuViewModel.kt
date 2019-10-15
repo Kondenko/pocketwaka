@@ -1,7 +1,6 @@
 package com.kondenko.pocketwaka.screens.menu
 
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.toPublisher
 import com.kondenko.pocketwaka.domain.main.ClearCache
 import com.kondenko.pocketwaka.domain.menu.GetMenuUiModel
 import com.kondenko.pocketwaka.domain.menu.MenuUiModel
@@ -9,6 +8,7 @@ import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.base.BaseViewModel
 import com.kondenko.pocketwaka.utils.extensions.attachToLifecycle
 import com.kondenko.pocketwaka.utils.extensions.report
+import com.kondenko.pocketwaka.utils.extensions.toObservable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.subscribeBy
@@ -24,7 +24,7 @@ class MenuViewModel(
     private val sendFeedbackClicks = PublishSubject.create<Unit>()
     private val githubClicks = PublishSubject.create<Unit>()
 
-    private val stateObservable = Observable.fromPublisher(stateLiveData.toPublisher(lifecycleOwner))
+    private val stateObservable = stateLiveData.toObservable(lifecycleOwner)
 
     init {
         getMenuUiModel(onSuccess = { model: MenuUiModel ->

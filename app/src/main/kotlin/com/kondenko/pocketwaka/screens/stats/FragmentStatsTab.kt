@@ -32,11 +32,13 @@ import timber.log.Timber
 class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapter, State<List<StatsUiModel>>>(), Refreshable {
 
     companion object Args {
-        const val range = "range"
+        const val argRange = "range"
     }
 
+    val range: String? by lazy { arguments?.getString(argRange) }
+
     private val vm: StatsViewModel by viewModel {
-        parametersOf(arguments?.getString(range))
+        parametersOf(range)
     }
 
     override val containerId: Int = R.id.framelayout_stats_range_root
@@ -72,7 +74,7 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
         super.onViewCreated(view, savedInstanceState)
         setupUi(view.context)
         vm.state().observe(viewLifecycleOwner) {
-            Timber.d("New stats state (${arguments?.getString(range)}): $it")
+            Timber.d("New stats state (${range}): $it")
             it.render()
         }
     }

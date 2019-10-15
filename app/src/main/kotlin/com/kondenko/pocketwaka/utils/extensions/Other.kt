@@ -6,7 +6,6 @@ import android.graphics.Matrix
 import android.graphics.Path
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
-import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieProperty
@@ -96,8 +95,3 @@ inline fun <reified T : Any> T.className(includeSuperclass: Boolean = false, sep
     val superclassName = this::class.java.superclass?.simpleName
     return if (!includeSuperclass || superclassName == null) className else "$superclassName$separator$className"
 }
-
-fun Any.toBundle() = this::class.java.fields
-      .map { it.name to it?.get(this) }
-      .toTypedArray()
-      .let { bundleOf(*it) }

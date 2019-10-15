@@ -12,7 +12,12 @@ class EventTracker(val analytics: FirebaseAnalytics) {
         val tag = event
               .className(includeSuperclass = true)
               .replace("[^A-Za-z0-9_]", "") // Only leave allowed symbols
-        val bundle = (event as? HasBundle)?.getBundle()
+        val bundle = try {
+            (event as? HasBundle)?.getBundle()
+        } catch (e: IllegalArgumentException) {
+            WakaLog.w("Couldn't create a bundle for $event")
+            null
+        }
         WakaLog.d("Reporting event $tag, bundle = $bundle")
         analytics.logEvent(tag, bundle)
     }
