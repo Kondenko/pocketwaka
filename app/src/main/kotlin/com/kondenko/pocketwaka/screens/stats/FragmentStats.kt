@@ -85,6 +85,11 @@ class FragmentStats : Fragment(), Refreshable {
                     else Timber.e("$selectedFragment at position $position is null")
                 }
             })
+            setOnTabClickListener {
+                if (stats_viewpager_content.currentItem == it) {
+                    (pagerAdapter.getPage(it) as? FragmentStatsTab)?.scrollToTop()
+                }
+            }
         }
     }
 

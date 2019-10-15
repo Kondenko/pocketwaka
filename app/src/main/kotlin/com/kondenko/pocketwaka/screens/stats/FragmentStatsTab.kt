@@ -24,7 +24,7 @@ import com.kondenko.pocketwaka.utils.extensions.toListOrEmpty
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
-import kotlinx.android.synthetic.main.fragment_stats_range.*
+import kotlinx.android.synthetic.main.fragment_stats.*
 import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -66,7 +66,7 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.fragment_stats_range, container, false)
+        return inflater.inflate(R.layout.fragment_stats, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,10 +78,10 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
         }
     }
 
-    override fun provideDataView(): View = stats_range_recyclerview
+    override fun provideDataView(): View = recyclerview_stats
 
     private fun setupUi(context: Context) {
-        with(stats_range_recyclerview) {
+        with(recyclerview_stats) {
             listSkeleton = currentScope.get { parametersOf(this@with, context, skeletonItems) }
             adapter = listSkeleton.skeletonAdapter
             layoutManager = LinearLayoutManager(context)
@@ -96,14 +96,14 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
     }
 
     override fun updateData(data: List<StatsUiModel>?, status: ScreenStatus?) {
-        stats_range_recyclerview.apply {
+        recyclerview_stats.apply {
             val statusModel = status?.let(StatsUiModel::Status).toListOrEmpty()
             data?.let { listSkeleton.actualAdapter.items = statusModel + it }
         }
     }
 
     private fun updateAppBarElevation() {
-        shadowAnimationNeeded = if (stats_range_recyclerview.computeVerticalScrollOffset() >= minScrollOffset) {
+        shadowAnimationNeeded = if (recyclerview_stats.computeVerticalScrollOffset() >= minScrollOffset) {
             if (shadowAnimationNeeded) scrollDirection.onNext(ScrollDirection.Down)
             false
         } else {
@@ -113,6 +113,8 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
     }
 
     override fun reloadScreen() = vm.update()
+
+    fun scrollToTop() = recyclerview_stats.smoothScrollToPosition(0)
 
     fun scrollDirection(): Observable<ScrollDirection> = scrollDirection
 

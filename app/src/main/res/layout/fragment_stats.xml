@@ -6,7 +6,7 @@
     >
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/stats_range_recyclerview"
+        android:id="@+id/recyclerview_stats"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:descendantFocusability="blocksDescendants" />
