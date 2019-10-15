@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.data.summary.converters
+package com.kondenko.pocketwaka.domain.summary.usecase
 
 import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.branches.DurationsRepository

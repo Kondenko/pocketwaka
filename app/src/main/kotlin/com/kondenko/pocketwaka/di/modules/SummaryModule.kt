@@ -3,7 +3,6 @@ package com.kondenko.pocketwaka.di.modules
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.data.persistence.AppDatabase
-import com.kondenko.pocketwaka.data.summary.converters.FetchProjects
 import com.kondenko.pocketwaka.data.summary.converters.SummaryResponseConverter
 import com.kondenko.pocketwaka.data.summary.converters.TimeTrackedConverter
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
@@ -12,10 +11,7 @@ import com.kondenko.pocketwaka.di.qualifiers.Api
 import com.kondenko.pocketwaka.di.qualifiers.Scheduler
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
-import com.kondenko.pocketwaka.domain.summary.usecase.GetAverage
-import com.kondenko.pocketwaka.domain.summary.usecase.GetDefaultSummaryRange
-import com.kondenko.pocketwaka.domain.summary.usecase.GetSummary
-import com.kondenko.pocketwaka.domain.summary.usecase.GetSummaryState
+import com.kondenko.pocketwaka.domain.summary.usecase.*
 import com.kondenko.pocketwaka.screens.summary.FragmentSummary
 import com.kondenko.pocketwaka.screens.summary.SummaryAdapter
 import com.kondenko.pocketwaka.screens.summary.SummaryViewModel

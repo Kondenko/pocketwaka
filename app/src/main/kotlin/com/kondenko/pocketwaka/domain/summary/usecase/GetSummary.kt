@@ -2,7 +2,6 @@ package com.kondenko.pocketwaka.domain.summary.usecase
 
 import com.kondenko.pocketwaka.data.ContinuousCacheBackedRepository
 import com.kondenko.pocketwaka.data.android.DateFormatter
-import com.kondenko.pocketwaka.data.summary.converters.FetchProjects
 import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
 import com.kondenko.pocketwaka.data.summary.model.server.Summary
 import com.kondenko.pocketwaka.data.summary.model.server.SummaryData

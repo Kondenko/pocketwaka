@@ -1,20 +1,13 @@
-package com.kondenko.pocketwaka.domain.daily.usecase
+package com.kondenko.pocketwaka.domain.summary.usecase
 
-import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
-import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
-import com.kondenko.pocketwaka.domain.StatefulUseCase
-import com.kondenko.pocketwaka.domain.UseCaseObservable
-import com.kondenko.pocketwaka.domain.daily.model.ProjectModel
-import com.kondenko.pocketwaka.domain.daily.model.SummaryUiModel
+import com.kondenko.pocketwaka.domain.UseCase
+import com.kondenko.pocketwaka.domain.summary.model.ProjectModel
+import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.screens.State
-import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.Observable
 
-class GetSummaryStateMock(
-        schedulers: SchedulersContainer,
-        useCase: UseCaseObservable<GetSummary.Params, SummaryDbModel>,
-        connectivityStatusProvider: ConnectivityStatusProvider
-) : StatefulUseCase<GetSummary.Params, List<SummaryUiModel>, SummaryDbModel>(schedulers, useCase, connectivityStatusProvider) {
+class GetSummaryStateMock(private val getSummaryState: GetSummaryState) :
+      UseCase<GetSummary.Params, State<List<SummaryUiModel>>, Observable<State<List<SummaryUiModel>>>> by getSummaryState {
 
     private val mockModels = listOf(
             SummaryUiModel.TimeTracked("11 hrs 55 mins", -71),
@@ -44,8 +37,5 @@ class GetSummaryStateMock(
                     )
             )
     )
-
-    override fun build(params: GetSummary.Params?): Observable<State<List<SummaryUiModel>>> =
-            Observable.just<State<List<SummaryUiModel>>>(State.Loading(isInterrupting = true))
 
 }

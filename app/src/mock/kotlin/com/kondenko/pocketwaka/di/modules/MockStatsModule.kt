@@ -1,10 +1,10 @@
 package com.kondenko.pocketwaka.di.modules
 
-import com.kondenko.pocketwaka.data.ranges.service.RangeStatsService
 import com.kondenko.pocketwaka.data.stats.service.MockStatsService
-import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsForRanges
-import com.kondenko.pocketwaka.domain.ranges.usecase.GetStatsStateMock
-import com.kondenko.pocketwaka.screens.ranges.RangesViewModel
+import com.kondenko.pocketwaka.data.stats.service.RangeStatsService
+import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsForRange
+import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsStateMock
+import com.kondenko.pocketwaka.screens.stats.StatsViewModel
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -15,12 +15,12 @@ val mockStatsModule = module(override = true) {
     single {
         GetStatsStateMock(
                 schedulers = get(),
-                useCase = get<GetStatsForRanges>(),
+                useCase = get<GetStatsForRange>(),
                 connectivityStatusProvider = get()
         )
     }
     viewModel { (range: String?) ->
-        RangesViewModel(
+        StatsViewModel(
                 range = range,
                 getStats = get<GetStatsStateMock>(),
                 uiScheduler = get<SchedulersContainer>().uiScheduler

@@ -1,19 +1,20 @@
 package com.kondenko.pocketwaka.screens.summary
 
-import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
-import com.kondenko.pocketwaka.domain.StatefulUseCase
+import com.kondenko.pocketwaka.domain.UseCase
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.domain.summary.usecase.GetDefaultSummaryRange
 import com.kondenko.pocketwaka.domain.summary.usecase.GetSummary
+import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.base.BaseViewModel
 import com.kondenko.pocketwaka.utils.extensions.debounceStateUpdates
+import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.plusAssign
 
 class SummaryViewModel(
       private val uiScheduler: Scheduler,
       private val getDefaultSummaryRange: GetDefaultSummaryRange,
-      private val getSummaryState: StatefulUseCase<GetSummary.Params, List<SummaryUiModel>, SummaryDbModel>
+      private val getSummaryState: UseCase<GetSummary.Params, State<List<SummaryUiModel>>, Observable<State<List<SummaryUiModel>>>>
 ) : BaseViewModel<List<SummaryUiModel>>() {
 
     private val refreshRate = 1

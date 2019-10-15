@@ -2,8 +2,7 @@ package com.kondenko.pocketwaka.data.stats.service
 
 import android.content.Context
 import com.google.gson.Gson
-import com.kondenko.pocketwaka.data.ranges.model.server.StatsServerModel
-import com.kondenko.pocketwaka.data.ranges.service.RangeStatsService
+import com.kondenko.pocketwaka.data.stats.model.server.StatsServerModel
 import com.kondenko.pocketwaka.jsonToServiceModel
 import io.reactivex.Single
 

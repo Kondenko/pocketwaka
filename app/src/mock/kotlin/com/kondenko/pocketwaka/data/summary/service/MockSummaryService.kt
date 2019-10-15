@@ -9,6 +9,6 @@ import io.reactivex.Single
 class MockSummaryService(val context: Context, val gson: Gson) : SummaryService {
 
     override fun getSummaries(tokenHeaderValue: String, start: String, end: String, project: String?, branches: String?): Single<Summary> =
-            gson.jsonToServiceModel(context, "summary")
+            gson.jsonToServiceModel(context, "summary-only-seconds")
 
 }

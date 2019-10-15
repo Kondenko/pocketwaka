@@ -24,7 +24,7 @@ class TimeTrackedConverter(
         return convertTimeTracked(model).flatMap { uiModel ->
             val date: Long? = dateFormatter.parseDateParameter(model.range.date)
             val isAccountEmpty = uiModel.run { time.isEmpty() && percentDelta == null }
-            val isTodayEmpty = model.grandTotal.totalSeconds == 0f && !isAccountEmpty
+            val isTodayEmpty = model.grandTotal.run { hours + minutes == 0 } && !isAccountEmpty
             date?.let {
                 Maybe.just(SummaryDbModel(
                         date = it,
@@ -47,8 +47,7 @@ class TimeTrackedConverter(
         }
     }
 
-    private fun getAverageDelta(totalSeconds: Int, averageSec: Int): Int? {
-        return if (averageSec != 0) totalSeconds * 100 / averageSec - 100 else null
-    }
+    private fun getAverageDelta(totalSeconds: Int, averageSec: Int) =
+          if (averageSec != 0) totalSeconds * 100 / averageSec - 100 else null
 
 }
