@@ -14,7 +14,6 @@ import com.kondenko.pocketwaka.screens.login.LoginActivity
 import com.kondenko.pocketwaka.screens.menu.FragmentMenu
 import com.kondenko.pocketwaka.screens.stats.FragmentStats
 import com.kondenko.pocketwaka.screens.summary.FragmentSummary
-import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.extensions.*
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
@@ -26,9 +25,7 @@ class MainActivity : AppCompatActivity() {
 
     private val vm: MainViewModel by viewModel()
 
-    private val refreshEvents = PublishSubject.create<Any>().apply {
-        doOnDispose { WakaLog.d("Disposing of refresh events") }
-    }
+    private val refreshEvents = PublishSubject.create<Any>()
 
     private var refreshEventsDisposable: Disposable? = null
 
@@ -99,20 +96,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showSummaries() {
-        toolbar_main.visible()
+        appbar_main.visible()
         setFragment(fragmentSummary, tagSummary)
         refreshEventsDisposable = fragmentSummary.subscribeToRefreshEvents(refreshEvents)
     }
 
     private fun showRanges() {
-        toolbar_main.visible()
+        appbar_main.visible()
         setFragment(fragmentStats, tagStats)
         refreshEventsDisposable = fragmentStats.subscribeToRefreshEvents(refreshEvents)
     }
 
     private fun showMenu() {
         setFragment(fragmentMenu, tagMenu)
-        toolbar_main.gone()
+        appbar_main.gone()
     }
 
     private fun setFragment(fragment: Fragment, tag: String) {
