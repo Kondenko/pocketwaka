@@ -42,16 +42,27 @@ class FragmentStats : Fragment(), Refreshable {
 
     private lateinit var colorAnimator: ValueAnimator
 
+    private var surfaceColorResting: Int? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_stats_container, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         tabsElevation = savedInstanceState?.getParcelable(keyTabsElevation) ?: TabsElevationState()
-        val toolbarColorResting = view.context.getColorCompat(R.color.color_app_bar_resting)
-        val toolbarColorElevated = view.context.getColorCompat(R.color.color_app_bar_elevated)
-        colorAnimator = createColorAnimator(activity as? AppCompatActivity, toolbarColorResting, toolbarColorElevated)
+        val surfaceColorResting = view.context.getColorCompat(R.color.color_app_bar_resting)
+        val surfaceColorElevated = view.context.getColorCompat(R.color.color_app_bar_elevated)
+        this.surfaceColorResting = surfaceColorResting
+        this.colorAnimator = createColorAnimator(activity as? AppCompatActivity, surfaceColorResting, surfaceColorElevated)
         setupViewPager()
         restoreTabsElevation(stats_viewpager_content.currentItem)
+    }
+
+    override fun onDestroyView() {
+        surfaceColorResting?.let {
+            activity?.window?.statusBarColor = it
+            (activity as? AppCompatActivity)?.supportActionBar?.setBackgroundDrawable(ColorDrawable(it))
+        }
+        super.onDestroyView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -61,13 +72,13 @@ class FragmentStats : Fragment(), Refreshable {
 
     private fun setupViewPager() {
         val pagerAdapter = FragmentPagerItemAdapter(
-                childFragmentManager,
-                FragmentPagerItems.with(activity)
-                        .addFragment(R.string.stats_tab_7_days, Const.STATS_RANGE_7_DAYS)
-                        .addFragment(R.string.stats_tab_30_days, Const.STATS_RANGE_30_DAYS)
-                        .addFragment(R.string.stats_tab_6_months, Const.STATS_RANGE_6_MONTHS)
-                        .addFragment(R.string.stats_tab_1_year, Const.STATS_RANGE_1_YEAR)
-                        .create()
+              childFragmentManager,
+              FragmentPagerItems.with(activity)
+                    .addFragment(R.string.stats_tab_7_days, Const.STATS_RANGE_7_DAYS)
+                    .addFragment(R.string.stats_tab_30_days, Const.STATS_RANGE_30_DAYS)
+                    .addFragment(R.string.stats_tab_6_months, Const.STATS_RANGE_6_MONTHS)
+                    .addFragment(R.string.stats_tab_1_year, Const.STATS_RANGE_1_YEAR)
+                    .create()
         )
         with(stats_viewpager_content) {
             offscreenPageLimit = 2
@@ -117,14 +128,14 @@ class FragmentStats : Fragment(), Refreshable {
         scrollSubscription?.dispose()
         refreshSubscription = fragment.subscribeToRefreshEvents(refreshEvents)
         scrollSubscription = fragment.scrollDirection()
-                .distinctUntilChanged()
-                .skip(1) // Skip first emission (ScrollDirection.Up) causing an unwanted animation
-                .subscribeBy(
-                        onNext = { scrollDirection ->
-                            animateTabs(scrollDirection == ScrollDirection.Down)
-                        },
-                        onError = Timber::e
-                )
+              .distinctUntilChanged()
+              .skip(1) // Skip first emission (ScrollDirection.Up) causing an unwanted animation
+              .subscribeBy(
+                    onNext = { scrollDirection ->
+                        animateTabs(scrollDirection == ScrollDirection.Down)
+                    },
+                    onError = Timber::e
+              )
     }
 
     private fun restoreTabsElevation(currentTabIndex: Int) {
@@ -145,8 +156,8 @@ class FragmentStats : Fragment(), Refreshable {
         }
         // Custom tabs elevation
         stats_view_shadow.animate()
-                .alpha(if (elevate) Const.MAX_SHADOW_OPACITY else 0f)
-                .start()
+              .alpha(if (elevate) Const.MAX_SHADOW_OPACITY else 0f)
+              .start()
     }
 
     override fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Disposable? {

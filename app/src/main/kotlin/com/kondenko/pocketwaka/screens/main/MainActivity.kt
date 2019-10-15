@@ -97,6 +97,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showSummaries() {
         appbar_main.visible()
+        appbar_main.setExpanded(true)
         setFragment(fragmentSummary, tagSummary)
         refreshEventsDisposable = fragmentSummary.subscribeToRefreshEvents(refreshEvents)
     }
