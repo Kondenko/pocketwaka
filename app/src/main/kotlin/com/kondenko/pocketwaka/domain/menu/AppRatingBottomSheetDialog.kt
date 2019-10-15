@@ -55,7 +55,12 @@ class AppRatingBottomSheetDialog : BottomSheetDialogFragment() {
     fun sendFeedbackClicks() =
           sendFeedbackClicks
 
-    fun showLowRatingState(show: Boolean) {
+    fun showLowRatingState(show: Boolean, isMailAvailable: Boolean, supportEmail: String?) {
+        if (!isMailAvailable && supportEmail != null) {
+            textview_low_rating_message.text = getString(R.string.rating_dialog_low_rating_message_no_email_app, supportEmail)
+        } else if (!isMailAvailable && supportEmail == null) {
+            textview_low_rating_message.text = getString(R.string.rating_dialog_low_rating_message_no_email_address)
+        }
         if (isNegativeFeedbackStateShown && !show || !isNegativeFeedbackStateShown && show) {
             isNegativeFeedbackStateShown = show
             (view as? ViewGroup)?.let { v ->
@@ -75,7 +80,7 @@ class AppRatingBottomSheetDialog : BottomSheetDialogFragment() {
                     }
                     doOnStart {
                         textview_low_rating_message?.isGone = !show
-                        button_low_rating_action?.isGone = !show
+                        button_low_rating_action?.isGone = !show || !isMailAvailable && supportEmail == null
                         TransitionManager.beginDelayedTransition(v)
                     }
                     start()

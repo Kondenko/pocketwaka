@@ -21,6 +21,8 @@ sealed class Event {
 
         object RatingButtonClicked : Menu()
 
+        object PlayStoreOpened : Menu()
+
         data class RatingGiven(val rating: Int) : Menu(), HasBundle {
             override fun getBundle() = bundleOf(
                   ::rating.name to rating
