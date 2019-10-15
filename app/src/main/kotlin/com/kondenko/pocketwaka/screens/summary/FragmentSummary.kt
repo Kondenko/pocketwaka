@@ -13,6 +13,7 @@ import com.kondenko.pocketwaka.domain.summary.model.ProjectModel
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.screens.Refreshable
 import com.kondenko.pocketwaka.screens.ScreenStatus
+import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.base.BaseFragment
 import com.kondenko.pocketwaka.utils.BrowserWindow
 import com.kondenko.pocketwaka.utils.WakaLog
@@ -66,8 +67,12 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
         setupList(view)
         vm.state().observe(viewLifecycleOwner) {
             WakaLog.d("New summary state: $it")
+            if (it is State.Empty) {
+                eventTracker.log(Event.EmptyState.Account(Screen.Summary))
+            }
             when (it) {
                 is SummaryState.EmptyRange -> {
+                    eventTracker.log(Event.EmptyState.Screen(Screen.Summary))
                     showData(false)
                     stateFragment.setState(it)
                 }
