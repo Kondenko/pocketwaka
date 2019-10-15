@@ -4,7 +4,7 @@ import com.kondenko.pocketwaka.utils.extensions.className
 
 sealed class Screen {
 
-    data class Auth(val isCompleted: Boolean, val isSuccessful: Boolean) : Screen()
+    object Auth : Screen()
 
     object Summary : Screen() {
         override fun toString() = className()

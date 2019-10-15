@@ -13,6 +13,8 @@ import com.jakewharton.rxbinding3.view.longClicks
 import com.kondenko.pocketwaka.BuildConfig
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.analytics.Event
+import com.kondenko.pocketwaka.analytics.EventTracker
 import com.kondenko.pocketwaka.analytics.Screen
 import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.data.auth.model.server.AccessToken
@@ -29,6 +31,8 @@ import org.koin.core.parameter.parametersOf
 class LoginActivity : AppCompatActivity(), LoginView {
 
     private val screenTracker: ScreenTracker by inject()
+
+    private val eventTracker: EventTracker by inject()
 
     private val presenter: LoginPresenter by inject()
 
@@ -51,6 +55,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
                   // setClickable(false) is reset to true after setting a click listener
                   buttonLogin.isClickable
               }
+              .doOnEach { eventTracker.log(Event.Login.ButtonClicked) }
               .subscribe { presenter.onLoginButtonClicked() }
               .attachToLifecycle(this)
         @Suppress("ConstantConditionIf")
@@ -66,18 +71,17 @@ class LoginActivity : AppCompatActivity(), LoginView {
 
     override fun onResume() {
         super.onResume()
+        screenTracker.log(this, Screen.Auth)
         val uri = intent.data
         if (uri != null && uri.toString().startsWith(Const.AUTH_REDIRECT_URI)) {
             val code = uri.getQueryParameter("code")
             if (code != null) {
-                screenTracker.log(this, Screen.Auth(isCompleted = true, isSuccessful = true))
                 presenter.getToken(code)
             } else uri.getQueryParameter("error")?.let {
-                screenTracker.log(this, Screen.Auth(isCompleted = true, isSuccessful = false))
                 showError(RuntimeException(it))
             }
         } else {
-            screenTracker.log(this, Screen.Auth(isCompleted = false, isSuccessful = false))
+            eventTracker.log(Event.Login.Canceled)
         }
     }
 
@@ -96,6 +100,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
     }
 
     override fun onGetTokenSuccess(token: AccessToken) {
+        eventTracker.log(Event.Login.Successful)
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finishAffinity()
@@ -110,6 +115,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
     }
 
     override fun showError(throwable: Throwable?, @StringRes messageStringRes: Int?) {
+        eventTracker.log(Event.Login.Unsuccessful)
         throwable?.report()
         loadingButtonStateWrapper.setError()
         textViewSubhead.apply {

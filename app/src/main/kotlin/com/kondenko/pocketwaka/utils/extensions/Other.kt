@@ -6,6 +6,7 @@ import android.graphics.Matrix
 import android.graphics.Path
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
+import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieProperty
@@ -21,7 +22,7 @@ fun notNull(vararg values: Any?): Boolean = values.all { it != null }
 fun Float.negateIfTrue(condition: Boolean) = if (condition) -this else this
 
 fun <T> T?.singleOrErrorIfNull(exception: Throwable = NullPointerException("Couldn't convert a null object to a Single")): Single<T> = this?.let { Single.just(it) }
-    ?: Single.error(exception)
+      ?: Single.error(exception)
 
 inline fun FragmentManager.transaction(crossinline action: androidx.fragment.app.FragmentTransaction.() -> androidx.fragment.app.FragmentTransaction) {
     this.beginTransaction().action().commit()
@@ -61,10 +62,10 @@ operator fun <T> List<T>.times(times: Int): List<T> {
 }
 
 fun SharedPreferences.getStringOrThrow(key: String) =
-    getString(key, null) ?: throw NullPointerException("Preference with key $key not found")
+      getString(key, null) ?: throw NullPointerException("Preference with key $key not found")
 
 fun <T> SharedPreferences.getOrNull(key: String, getter: SharedPreferences.(String) -> T): T? =
-    if (!contains(key)) null else getter(key)
+      if (!contains(key)) null else getter(key)
 
 fun <T> T?.toListOrEmpty() = this?.let { listOf(it) } ?: emptyList()
 
@@ -74,10 +75,10 @@ operator fun <T> List<T>.get(range: IntRange): List<T> {
 }
 
 fun LottieAnimationView.setFillTint(color: Int) =
-    addValueCallback(KeyPath("**"), LottieProperty.COLOR, LottieValueCallback(color))
+      addValueCallback(KeyPath("**"), LottieProperty.COLOR, LottieValueCallback(color))
 
 fun LottieAnimationView.setStrokeTint(color: Int) =
-    addValueCallback(KeyPath("**"), LottieProperty.STROKE_COLOR, LottieValueCallback(color))
+      addValueCallback(KeyPath("**"), LottieProperty.STROKE_COLOR, LottieValueCallback(color))
 
 fun LottieAnimationView.playAnimation(duration: Long, interpolator: Interpolator = LinearInterpolator(), reverse: Boolean = false) {
     val values = if (reverse) floatArrayOf(1f, 0f) else floatArrayOf(0f, 1f)
@@ -90,4 +91,13 @@ fun LottieAnimationView.playAnimation(duration: Long, interpolator: Interpolator
     }.start()
 }
 
-inline fun <reified T : Any> T.className(): String = this::class.java.simpleName
+inline fun <reified T : Any> T.className(includeSuperclass: Boolean = false, separator: String = "_"): String {
+    val className = this::class.java.simpleName
+    val superclassName = this::class.java.superclass?.simpleName
+    return if (!includeSuperclass || superclassName == null) className else "$superclassName$separator$className"
+}
+
+fun Any.toBundle() = this::class.java.fields
+      .map { it.name to it?.get(this) }
+      .toTypedArray()
+      .let { bundleOf(*it) }
