@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.kondenko.pocketwaka">
+    package="com.kondenko.pocketwaka"
+    >
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -11,20 +12,28 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/all_app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        >
 
         <meta-data
             android:name="google_analytics_adid_collection_enabled"
-            android:value="false" />
+            android:value="false"
+            />
 
-        <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="${enableCrashReporting}" />
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="${enableCrashReporting}"
+            />
 
-        <uses-library android:name="android.test.runner"
-            android:required="false" />
+        <uses-library
+            android:name="android.test.runner"
+            android:required="false"
+            />
 
         <activity
             android:name=".screens.login.LoginActivity"
-            android:theme="@style/LoginActivityTheme">
+            android:theme="@style/LoginActivityTheme"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -33,13 +42,16 @@
 
                 <data
                     android:host="oauth2"
-                    android:scheme="pocketwaka" />
+                    android:scheme="pocketwaka"
+                    />
             </intent-filter>
         </activity>
 
         <activity
             android:name=".screens.main.MainActivity"
-            android:label="@string/all_app_name">
+            android:hardwareAccelerated="true"
+            android:label="@string/all_app_name"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,7 +59,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".PlaygroundActivity" android:exported="true"/>
+        <activity
+            android:name=".PlaygroundActivity"
+            android:exported="true"
+            />
 
     </application>
 

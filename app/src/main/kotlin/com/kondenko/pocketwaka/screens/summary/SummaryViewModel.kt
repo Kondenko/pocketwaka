@@ -31,7 +31,7 @@ class SummaryViewModel(
               .flatMapObservable { range ->
                   getSummaryState.build(GetSummary.Params(range, refreshRate = refreshRate, retryAttempts = retryAttempts))
               }
-              .debounceStateUpdates(timeout = 75, scheduler = uiScheduler)
+              .debounceStateUpdates(timeout = 100, scheduler = uiScheduler)
               .subscribe(::setState, this::handleError)
     }
 
