@@ -35,7 +35,7 @@ val summaryModule = module {
         GetAverage(
               schedulersContainer = get(),
               statsRepository = get(),
-              getTokenHeaderValue = get()
+              getTokenHeaderValue = get<GetTokenHeaderValue>()
         )
     }
     single {

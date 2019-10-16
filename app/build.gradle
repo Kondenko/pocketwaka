@@ -51,7 +51,8 @@ android {
             manifestPlaceholders = [enableCrashReporting: "false"]
         }
         mock {
-            initWith debug
+            initWith release
+            buildConfigField "String", "ACCESS_TOKEN", ACCESS_TOKEN
         }
     }
 

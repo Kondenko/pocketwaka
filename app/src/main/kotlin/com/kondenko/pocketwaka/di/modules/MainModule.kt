@@ -44,7 +44,7 @@ val mainModule = module {
     }
     viewModel {
         MainViewModel(
-              checkIfUserIsLoggedIn = get(),
+              checkIfUserIsLoggedIn = get<CheckIfUserIsLoggedIn>(),
               clearCache = get(),
               refreshAccessToken = get(),
               fetchRemoteConfigValues = get()

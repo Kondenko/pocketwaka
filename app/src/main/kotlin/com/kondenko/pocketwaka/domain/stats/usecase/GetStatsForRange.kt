@@ -5,7 +5,7 @@ import com.kondenko.pocketwaka.data.stats.model.server.StatsServerModel
 import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
 import com.kondenko.pocketwaka.domain.StatefulUseCase
 import com.kondenko.pocketwaka.domain.UseCaseObservable
-import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
+import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -13,7 +13,7 @@ import io.reactivex.Observable
 
 class GetStatsForRange(
       schedulers: SchedulersContainer,
-      private val getTokenHeader: GetTokenHeaderValue,
+      private val getTokenHeader: UseCaseSingle<Nothing, String>,
       private val statsRepository: StatsRepository,
       private val serverModelConverter: (StatsRepository.Params, StatsServerModel) -> Maybe<StatsDbModel>
 ) : UseCaseObservable<GetStatsForRange.Params, StatsDbModel>(schedulers) {

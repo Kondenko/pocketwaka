@@ -3,7 +3,7 @@ package com.kondenko.pocketwaka.screens.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.kondenko.pocketwaka.domain.main.CheckIfUserIsLoggedIn
+import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.domain.main.ClearCache
 import com.kondenko.pocketwaka.domain.main.FetchRemoteConfigValues
 import com.kondenko.pocketwaka.domain.main.RefreshAccessToken
@@ -12,10 +12,10 @@ import com.kondenko.pocketwaka.utils.WakaLog
 
 
 class MainViewModel(
-        private val checkIfUserIsLoggedIn: CheckIfUserIsLoggedIn,
-        private val clearCache: ClearCache,
-        private val refreshAccessToken: RefreshAccessToken,
-        fetchRemoteConfigValues: FetchRemoteConfigValues
+      private val checkIfUserIsLoggedIn: UseCaseSingle<Nothing, Boolean>,
+      private val clearCache: ClearCache,
+      private val refreshAccessToken: RefreshAccessToken,
+      fetchRemoteConfigValues: FetchRemoteConfigValues
 ) : ViewModel() {
 
     private val state = MutableLiveData<MainState>()

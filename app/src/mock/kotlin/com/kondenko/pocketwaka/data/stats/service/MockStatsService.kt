@@ -9,6 +9,6 @@ import io.reactivex.Single
 class MockStatsService(val context: Context, val gson: Gson) : RangeStatsService {
 
     override fun getCurrentUserStats(tokenHeaderValue: String, range: String): Single<StatsServerModel> =
-            gson.jsonToServiceModel(context, "stats-empty")
+            gson.jsonToServiceModel(context, "stats-full")
 
 }

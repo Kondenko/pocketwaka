@@ -8,6 +8,7 @@ import com.kondenko.pocketwaka.data.stats.converter.StatsResponseConverter
 import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
 import com.kondenko.pocketwaka.data.stats.service.RangeStatsService
 import com.kondenko.pocketwaka.di.qualifiers.Api
+import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
 import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsForRange
 import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsState
@@ -46,7 +47,7 @@ val statsModule = module {
     factory {
         GetStatsForRange(
                 schedulers = get(),
-                getTokenHeader = get(),
+                getTokenHeader = get<GetTokenHeaderValue>(),
                 statsRepository = get(),
                 serverModelConverter = get<StatsResponseConverter>()
         )
