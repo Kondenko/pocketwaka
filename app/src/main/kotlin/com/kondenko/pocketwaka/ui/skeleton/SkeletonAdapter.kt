@@ -2,7 +2,7 @@ package com.kondenko.pocketwaka.ui.skeleton
 
 import android.content.Context
 import android.view.View
-import androidx.core.view.doOnPreDraw
+import androidx.core.view.doOnLayout
 import com.kondenko.pocketwaka.screens.base.BaseAdapter
 import com.kondenko.pocketwaka.utils.extensions.dp
 import com.kondenko.pocketwaka.utils.extensions.negateIfTrue
@@ -17,7 +17,7 @@ abstract class SkeletonAdapter<T, VH : SkeletonAdapter<T, VH>.SkeletonViewHolder
     abstract inner class SkeletonViewHolder<in Item : T>(view: View, private val skeleton: Skeleton?) : BaseViewHolder<Item>(view) {
 
         override fun bind(item: Item) {
-            itemView.doOnPreDraw {
+            itemView.doOnLayout {
                 if (showSkeleton) skeleton?.show()
             }
         }
