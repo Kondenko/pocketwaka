@@ -133,7 +133,7 @@ class FragmentStats : Fragment(), Refreshable {
                 val color = valueAnimator.animatedValue as Int
                 window.statusBarColor = color
                 toolbarBackgroundDrawable.color = color
-                stats_smarttablayout_ranges?.setBackgroundColor(color)
+                framelayout_stats_tab_container?.setBackgroundColor(color)
             }
         }
     }
