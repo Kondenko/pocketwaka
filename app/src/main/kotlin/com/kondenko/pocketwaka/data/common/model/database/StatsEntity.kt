@@ -14,6 +14,7 @@ import com.google.gson.annotations.SerializedName
  * @see com.kondenko.pocketwaka.ui.CardStatsListAdapter
  */
 // TODO Replace vars with vals
+// TODO Use this class directly instead of its subclasses
 open class StatsEntity {
     open var digital: String? = null
     open var hours: Int? = null

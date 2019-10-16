@@ -8,6 +8,8 @@ import org.koin.dsl.module
 
 val persistenceModule = module {
     single {
-        Room.databaseBuilder(androidContext(), AppDatabase::class.java, databaseName).build()
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, databaseName)
+              .fallbackToDestructiveMigration()
+              .build()
     }
 }
