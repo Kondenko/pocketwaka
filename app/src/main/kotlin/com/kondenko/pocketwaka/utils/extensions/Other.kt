@@ -95,3 +95,5 @@ inline fun <reified T : Any> T.className(includeSuperclass: Boolean = false, sep
     val superclassName = this::class.java.superclass?.simpleName
     return if (!includeSuperclass || superclassName == null) className else "$superclassName$separator$className"
 }
+
+fun <T> forEach(vararg items: T, action: (T) -> Unit) = items.forEach(action)

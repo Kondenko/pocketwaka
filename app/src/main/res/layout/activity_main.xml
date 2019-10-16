@@ -6,13 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context="com.kondenko.pocketwaka.screens.main.MainActivity"
     >
 
     <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar_main"
+        android:id="@+id/appbar_main"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         app:elevation="0dp"
@@ -44,8 +43,8 @@
         android:elevation="2dp"
         app:itemIconTint="@color/color_state_bottomnav_item"
         app:itemTextColor="@color/color_state_bottomnav_item"
-        app:menu="@menu/main_bottomnav_menu"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+        app:menu="@menu/main_bottomnav_menu"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
