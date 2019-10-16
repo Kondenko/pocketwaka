@@ -41,6 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
         android:lineSpacingExtra="8sp"
+        android:autoLink="email"
         android:textColor="@color/color_text_primary"
         android:text="@string/rating_dialog_low_rating_message"
         android:textAlignment="center"

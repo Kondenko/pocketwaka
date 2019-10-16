@@ -3,6 +3,7 @@ package com.kondenko.pocketwaka.screens.stats
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,6 +16,10 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.analytics.Event
+import com.kondenko.pocketwaka.analytics.EventTracker
+import com.kondenko.pocketwaka.analytics.Screen
+import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.screens.Refreshable
 import com.kondenko.pocketwaka.screens.stats.model.ScrollDirection
 import com.kondenko.pocketwaka.screens.stats.model.TabsElevationState
@@ -26,10 +31,17 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_stats_container.*
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 
 class FragmentStats : Fragment(), Refreshable {
+
+    private val screenTracker: ScreenTracker by inject()
+
+    private val eventTracker: EventTracker by inject()
+
+    private lateinit var pagerAdapter: FragmentPagerItemAdapter
 
     private val refreshEvents = PublishSubject.create<Any>()
 
@@ -70,8 +82,13 @@ class FragmentStats : Fragment(), Refreshable {
         super.onSaveInstanceState(outState)
     }
 
+    override fun onResume() {
+        super.onResume()
+        screenTracker.log(activity, Screen.Stats.TabContainer)
+    }
+
     private fun setupViewPager() {
-        val pagerAdapter = FragmentPagerItemAdapter(
+        pagerAdapter = FragmentPagerItemAdapter(
               childFragmentManager,
               FragmentPagerItems.with(activity)
                     .addFragment(R.string.stats_tab_7_days, Const.STATS_RANGE_7_DAYS)
@@ -123,6 +140,7 @@ class FragmentStats : Fragment(), Refreshable {
 
     private fun onFragmentSelected(position: Int, fragment: FragmentStatsTab?) {
         if (fragment == null) return
+        screenTracker.log(activity, Screen.Stats.Tab(fragment.arguments?.getString(FragmentStatsTab.argRange)))
         restoreTabsElevation(position)
         refreshSubscription?.dispose()
         scrollSubscription?.dispose()
@@ -160,12 +178,15 @@ class FragmentStats : Fragment(), Refreshable {
               .start()
     }
 
+    @SuppressLint("CheckResult")
     override fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Disposable? {
-        refreshEvents.subscribeWith(this.refreshEvents)
+        refreshEvents
+              .doOnNext { eventTracker.log(Event.ManualUpdate) }
+              .subscribeWith(this.refreshEvents)
         return refreshSubscription
     }
 
     private fun FragmentPagerItems.Creator.addFragment(@StringRes title: Int, range: String) =
-          add(title, FragmentStatsTab::class.java, bundleOf(FragmentStatsTab.range to range))
+          add(title, FragmentStatsTab::class.java, bundleOf(FragmentStatsTab.argRange to range))
 
 }

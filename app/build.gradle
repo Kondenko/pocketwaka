@@ -171,7 +171,10 @@ dependencies {
     // firebaseCore
     implementation "com.google.firebase:firebase-core:${versions.firebaseCore}"
 
-    // crashlyticsGoogle
+    // Analytics
+    implementation "com.google.firebase:firebase-analytics:${versions.analytics}"
+
+    // Crashlytics
     implementation "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
 
     // remoteConfig

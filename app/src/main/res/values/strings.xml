@@ -84,6 +84,8 @@
     <string name="menu_support_email_subject">PocketWaka feedback</string>
     <string name="rating_dialog_title">Rate PocketWaka</string>
     <string name="rating_dialog_low_rating_message">We\'re sorry if something is wrong 😿\nPlease, drop us a line so we can fix it ASAP</string>
+    <string name="rating_dialog_low_rating_message_no_email_app">We\'re sorry if something is wrong 😿\nPlease, email us at %s\nso we can fix it ASAP</string>
+    <string name="rating_dialog_low_rating_message_no_email_address">Thanks! Your feedback makes PocketWaka better.</string>
     <string name="rating_dialog_low_rating_action">@string/menu_action_send_feedback</string>
 
     <!-- OTHER -->

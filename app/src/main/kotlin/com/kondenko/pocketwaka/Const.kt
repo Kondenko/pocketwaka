@@ -4,6 +4,8 @@ const val databaseName = "pocketwaka-database"
 
 const val databaseVersion = 2
 
+const val alphaDisabledView: Float = 0.5f
+
 // TODO Remove top Const object
 object Const {
 

@@ -8,6 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.analytics.Event
+import com.kondenko.pocketwaka.analytics.EventTracker
+import com.kondenko.pocketwaka.analytics.Screen
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
 import com.kondenko.pocketwaka.screens.Refreshable
@@ -24,6 +27,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_stats.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -32,22 +36,26 @@ import timber.log.Timber
 class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapter, State<List<StatsUiModel>>>(), Refreshable {
 
     companion object Args {
-        const val range = "range"
+        const val argRange = "range"
     }
 
+    private val range: String? by lazy { arguments?.getString(argRange) }
+
     private val vm: StatsViewModel by viewModel {
-        parametersOf(arguments?.getString(range))
+        parametersOf(range)
     }
+
+    private val eventTracker: EventTracker by inject()
 
     override val containerId: Int = R.id.framelayout_stats_range_root
 
     private val skeletonStatsCard = mutableListOf(StatsItem("", null, null, null)) * 3
 
     private val skeletonItems = listOf(
-            StatsUiModel.Info(null, null),
-            StatsUiModel.BestDay("", "", 0),
-            StatsUiModel.Stats("", skeletonStatsCard),
-            StatsUiModel.Stats("", skeletonStatsCard)
+          StatsUiModel.Info(null, null),
+          StatsUiModel.BestDay("", "", 0),
+          StatsUiModel.Stats("", skeletonStatsCard),
+          StatsUiModel.Stats("", skeletonStatsCard)
     )
 
     private val scrollDirection = BehaviorSubject.create<ScrollDirection>()
@@ -72,7 +80,10 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
         super.onViewCreated(view, savedInstanceState)
         setupUi(view.context)
         vm.state().observe(viewLifecycleOwner) {
-            Timber.d("New stats state (${arguments?.getString(range)}): $it")
+            Timber.d("New stats state (${range}): $it")
+            if (it is State.Empty) {
+                eventTracker.log(Event.EmptyState.Account(Screen.Stats.Tab(range)))
+            }
             it.render()
         }
     }

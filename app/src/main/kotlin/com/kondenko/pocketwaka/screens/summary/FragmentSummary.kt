@@ -5,10 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.analytics.Event
+import com.kondenko.pocketwaka.analytics.EventTracker
+import com.kondenko.pocketwaka.analytics.Screen
+import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.domain.summary.model.ProjectModel
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.screens.Refreshable
 import com.kondenko.pocketwaka.screens.ScreenStatus
+import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.base.BaseFragment
 import com.kondenko.pocketwaka.utils.BrowserWindow
 import com.kondenko.pocketwaka.utils.WakaLog
@@ -26,6 +31,10 @@ import org.koin.core.parameter.parametersOf
 
 class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, SummaryAdapter, SummaryState>(), Refreshable {
 
+    private val screenTracker: ScreenTracker by inject()
+
+    private val eventTracker: EventTracker by inject()
+
     private val vm: SummaryViewModel by viewModel()
 
     private val browserWindow: BrowserWindow by inject { parametersOf(context, viewLifecycleOwner) }
@@ -35,17 +44,17 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
     override val stateFragment = SummaryStateFragment()
 
     private val projectSkeleton = listOf(
-            ProjectModel.ProjectName("", null),
-            ProjectModel.Commit("", null),
-            ProjectModel.Commit("", null),
-            ProjectModel.Commit("", null)
+          ProjectModel.ProjectName("", null),
+          ProjectModel.Commit("", null),
+          ProjectModel.Commit("", null),
+          ProjectModel.Commit("", null)
     ).let(SummaryUiModel::Project)
 
     private val skeletonItems = listOf(
-            SummaryUiModel.TimeTracked("", 1),
-            SummaryUiModel.ProjectsTitle,
-            projectSkeleton,
-            projectSkeleton
+          SummaryUiModel.TimeTracked("", 1),
+          SummaryUiModel.ProjectsTitle,
+          projectSkeleton,
+          projectSkeleton
     )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -58,8 +67,12 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
         setupList(view)
         vm.state().observe(viewLifecycleOwner) {
             WakaLog.d("New summary state: $it")
+            if (it is State.Empty) {
+                eventTracker.log(Event.EmptyState.Account(Screen.Summary))
+            }
             when (it) {
                 is SummaryState.EmptyRange -> {
+                    eventTracker.log(Event.EmptyState.Screen(Screen.Summary))
                     showData(false)
                     stateFragment.setState(it)
                 }
@@ -74,6 +87,7 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
     override fun onResume() {
         super.onResume()
         vm.updateDataIfRepoHasBeenConnected()
+        screenTracker.log(activity, Screen.Summary)
     }
 
     override fun provideDataView(): View = recyclerview_summary
@@ -82,10 +96,12 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
         with(view.recyclerview_summary) {
             listSkeleton = currentScope.get { parametersOf(this, context, skeletonItems) }
             adapter = listSkeleton.actualAdapter.apply {
-                connectRepoClicks().subscribeBy(
-                      onNext = vm::connectRepoClicked,
-                      onError = WakaLog::w
-                )
+                connectRepoClicks()
+                      .doOnNext { eventTracker.log(Event.Summary.ConnectRepoClicks) }
+                      .subscribeBy(
+                            onNext = vm::connectRepoClicked,
+                            onError = WakaLog::w
+                      )
             }
         }
     }
@@ -103,6 +119,7 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
 
     override fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Disposable {
         return refreshEvents.subscribe {
+            eventTracker.log(Event.ManualUpdate)
             reloadScreen()
         }
     }
