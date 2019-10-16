@@ -29,7 +29,7 @@
             app:stl_indicatorColor="@color/color_accent"
             app:stl_indicatorCornerRadius="90dp"
             app:stl_indicatorGravity="bottom"
-            app:stl_indicatorInterpolation="smart"
+            app:stl_indicatorInterpolation="linear"
             app:stl_indicatorThickness="@dimen/height_stats_tab_indicator"
             app:stl_underlineThickness="0dp"
             />
