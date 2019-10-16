@@ -16,23 +16,19 @@ import com.kondenko.pocketwaka.utils.extensions.setSize
 import kotlin.math.roundToInt
 
 class Skeleton(
-        private val context: Context,
-        private val root: View? = null,
-        private val skeletonBackground: Drawable = context.getDrawable(R.drawable.all_skeleton)
-                ?: ColorDrawable(Color.TRANSPARENT)
+      private val context: Context,
+      private val root: View? = null,
+      private val skeletonBackground: Drawable = context.getDrawable(R.drawable.all_skeleton)
+            ?: ColorDrawable(Color.TRANSPARENT)
 ) {
 
     private data class InitialState(
-            val width: Int,
-            val height: Int,
-            val backgroundDrawable: Drawable?,
-            val text: CharSequence?,
-            val imageSource: Drawable?
+          val width: Int,
+          val height: Int,
+          val backgroundDrawable: Drawable?,
+          val text: CharSequence?,
+          val imageSource: Drawable?
     )
-
-    var animDuration: Long = 300
-
-    var animateChanges: Boolean = false
 
     private val pulseAnimations: MutableSet<ValueAnimator> = mutableSetOf()
 
@@ -45,25 +41,6 @@ class Skeleton(
 
     fun onSkeletonShown(callback: ((Boolean) -> Unit)) {
         onSkeletonShown = callback
-    }
-
-    fun cleanup() {
-        onSkeletonShown = null
-        initialStates.clear()
-    }
-
-    fun addViews(root: ViewGroup) {
-        findViews(root).forEach { (view, state) ->
-            if (!initialStates.containsKey(view)) {
-                initialStates[view] = state
-            }
-        }
-    }
-
-    fun addView(view: View) {
-        if (view.getTag(R.id.tag_skeleton_width_key) != null) {
-            initialStates[view] = view.getInitialState()
-        }
     }
 
     fun show() {
@@ -82,62 +59,64 @@ class Skeleton(
         isShown = false
     }
 
+    fun addViews(root: ViewGroup) {
+        findViews(root).forEach { (view, state) ->
+            if (!initialStates.containsKey(view)) {
+                initialStates[view] = state
+            }
+        }
+    }
+
+    fun addView(view: View) {
+        if (view.getTag(R.id.tag_skeleton_width_key) != null) {
+            initialStates[view] = view.getInitialState()
+        }
+    }
+
+    fun cleanup() {
+        onSkeletonShown = null
+        initialStates.clear()
+    }
+
     private fun findViews(root: View?) =
-            root?.findViewsWithTag(R.id.tag_skeleton_width_key, null)
-                    ?.associateWith { it.getInitialState() }
-                    ?.toMutableMap()
-                    ?: mutableMapOf()
+          root?.findViewsWithTag(R.id.tag_skeleton_width_key, null)
+                ?.associateWith { it.getInitialState() }
+                ?.toMutableMap()
+                ?: mutableMapOf()
 
     private fun View.getInitialState() =
-            InitialState(
-                    width,
-                    height,
-                    backgroundDrawable = this.background,
-                    text = (this as? TextView)?.text,
-                    imageSource = (this as? ImageView)?.drawable
-            )
+          InitialState(
+                width,
+                height,
+                backgroundDrawable = this.background,
+                text = (this as? TextView)?.text,
+                imageSource = (this as? ImageView)?.drawable
+          )
 
     private fun View.showSkeleton() {
         val fallbackWidth = width
         val skeletonWidth = getDimenFromTag(R.id.tag_skeleton_width_key) ?: fallbackWidth
         val fallbackHeight = resources.getDimension(R.dimen.height_all_skeleton_text).roundToInt()
         val skeletonHeight = getDimenFromTag(R.id.tag_skeleton_height_key) ?: fallbackHeight
-        animateIn {
-            setSize(skeletonWidth, skeletonHeight)
-            background = skeletonBackground
-            (this as? TextView)?.text = null
-            (this as? ImageView)?.setImageBitmap(null)
-        }
+        setSize(skeletonWidth, skeletonHeight)
+        background = skeletonBackground
+        (this as? TextView)?.text = null
+        (this as? ImageView)?.setImageBitmap(null)
     }
 
     private fun View.hideSkeleton() = initialStates[this]?.let {
-        animateIn {
-            setSize(it.width, it.height)
-            background = it.backgroundDrawable
-            (this as? TextView)?.text = it.text
-            (this as? ImageView)?.setImageDrawable(it.imageSource)
-        }
-    }
-
-    private fun View.animateIn(updateView: () -> Unit) {
-        if (animateChanges) {
-            alpha = 0f
-            animate()
-                    .withStartAction(updateView)
-                    .alpha(1f)
-                    .setDuration(if (!isShown) animDuration / 2 else animDuration)
-                    .start()
-        } else {
-            updateView()
-        }
+        setSize(it.width, it.height)
+        background = it.backgroundDrawable
+        (this as? TextView)?.text = it.text
+        (this as? ImageView)?.setImageDrawable(it.imageSource)
     }
 
     private fun View.getDimenFromTag(tagId: Int): Int? =
-            (getTag(tagId) as? String?)
-                    ?.toIntOrNull()
-                    ?.takeIf { it >= 0 }
-                    ?.let(context::dp)
-                    ?.roundToInt()
+          (getTag(tagId) as? String?)
+                ?.toIntOrNull()
+                ?.takeIf { it >= 0 }
+                ?.let(context::dp)
+                ?.roundToInt()
 
     private fun View.playPulseAnimation() {
         val alphaDimmed = 0.59f
