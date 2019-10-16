@@ -23,6 +23,17 @@ object WakaLog {
         }
     }
 
+    inline fun e(message: String, throwable: Throwable? = null) {
+        Timber.e(throwable, message)
+        ifNoTimber {
+            println(message)
+            throwable?.let {
+                println("Exception:")
+                it.printStackTrace()
+            }
+        }
+    }
+
     inline fun w(throwable: Throwable? = null) {
         Timber.w(throwable)
         ifNoTimber {

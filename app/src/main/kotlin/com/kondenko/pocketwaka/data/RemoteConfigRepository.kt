@@ -3,6 +3,7 @@ package com.kondenko.pocketwaka.data
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.kondenko.pocketwaka.utils.exceptions.RemoteConfigValueNotFoundException
 import com.kondenko.pocketwaka.utils.extensions.getLongMaybe
 import com.kondenko.pocketwaka.utils.extensions.getOrNull
 import com.kondenko.pocketwaka.utils.extensions.getStringMaybe
@@ -18,7 +19,7 @@ abstract class RemoteConfigRepository(private val remoteConfig: FirebaseRemoteCo
             .switchIfEmpty(getStringFromPrefs(key))
             .defaultIfEmpty(remoteConfigDefaults[key] as String)
             .onErrorReturn {
-                it.report("Error fetching a String from RemoteConfig")
+                RemoteConfigValueNotFoundException(key, it).report()
                 remoteConfigDefaults[key] as String
             }
 
@@ -27,7 +28,7 @@ abstract class RemoteConfigRepository(private val remoteConfig: FirebaseRemoteCo
             .switchIfEmpty(getLongFromPrefs(key))
             .defaultIfEmpty(remoteConfigDefaults[key] as Long)
             .onErrorReturn {
-                it.report("Error fetching a Long from RemoteConfig")
+                RemoteConfigValueNotFoundException(key, it).report()
                 remoteConfigDefaults[key] as Long
             }
 
