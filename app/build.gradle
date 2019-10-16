@@ -37,13 +37,13 @@ android {
 
     buildTypes {
         release {
-            signingConfig signingConfigs.config
-            shrinkResources true
-            minifyEnabled true
             def configFiles = fileTree(dir: "./proguard", include: ["*.pro"]).asList()
             configFiles.add(getDefaultProguardFile('proguard-android.txt'))
             proguardFiles configFiles.toArray()
             manifestPlaceholders = [enableCrashReporting: "true"]
+            shrinkResources true
+            minifyEnabled true
+            signingConfig signingConfigs.config
         }
         debug {
             shrinkResources false
