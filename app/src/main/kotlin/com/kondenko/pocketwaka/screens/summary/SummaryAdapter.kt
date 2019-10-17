@@ -14,8 +14,9 @@ import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.createAdapter
 import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
+import com.kondenko.pocketwaka.utils.extensions.gone
 import com.kondenko.pocketwaka.utils.extensions.limitWidthBy
-import com.kondenko.pocketwaka.utils.extensions.setViewsVisibility
+import com.kondenko.pocketwaka.utils.extensions.visible
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
@@ -88,11 +89,12 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
         override fun bind(item: SummaryUiModel.TimeTracked) {
             with(itemView) {
                 val isBelowAverage = (item.percentDelta ?: 0) < 0
-                if (item.percentDelta != 0) {
+                if (item.percentDelta != 0 || showSkeleton) {
                     setupIcon(isBelowAverage)
                     setupText(isBelowAverage, item.percentDelta)
+                    linearlayout_delta_container.visible()
                 } else {
-                    setViewsVisibility(View.GONE, textview_summary_average_delta, imageview_summary_delta_icon)
+                    linearlayout_delta_container.gone()
                 }
                 textview_summary_time.text = timeSpannableCreator.create(item.time, R.dimen.textsize_summary_number, R.dimen.textsize_summary_text)
                 super.bind(item)
