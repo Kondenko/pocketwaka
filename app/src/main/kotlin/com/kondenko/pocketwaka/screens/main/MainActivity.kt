@@ -7,7 +7,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.isVisible
+import androidx.core.view.isInvisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
@@ -50,9 +50,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar_main)
         supportFragmentManager.transaction {
-            forEach(fragmentSummary, fragmentStats, fragmentMenu) {
-                add(R.id.main_container, it)
-                hide(it)
+            forEach(fragmentSummary to tagSummary, fragmentStats to tagStats, fragmentMenu to tagMenu) { (fragment, tag) ->
+                add(R.id.main_container, fragment, tag)
+                hide(fragment)
             }
         }
         vm.tabSelections().observe(this) { selectedTab ->
@@ -103,41 +103,50 @@ class MainActivity : AppCompatActivity() {
         startActivity<LoginActivity>()
     }
 
-    private fun showError(throwable: Throwable?) {
-        throwable?.report()
-        Toast.makeText(this, R.string.error_refreshing_token, Toast.LENGTH_LONG).show()
-    }
-
     private fun showSummaries() {
-        showAppBar(true)
-        setFragment(fragmentSummary)
-        refreshEventsDisposable = fragmentSummary.subscribeToRefreshEvents(refreshEvents)
+        setFragment(fragmentSummary) {
+            showAppBar(true)
+            refreshEventsDisposable = fragmentSummary.subscribeToRefreshEvents(refreshEvents)
+        }
     }
 
     private fun showRanges() {
-        showAppBar(true)
-        setFragment(fragmentStats)
-        refreshEventsDisposable = fragmentStats.subscribeToRefreshEvents(refreshEvents)
+        setFragment(fragmentStats) {
+            showAppBar(true)
+            refreshEventsDisposable = fragmentStats.subscribeToRefreshEvents(refreshEvents)
+        }
     }
 
     private fun showMenu() {
-        setFragment(fragmentMenu)
-        showAppBar(false)
+        setFragment(fragmentMenu) {
+            showAppBar(false)
+        }
     }
 
     private fun showAppBar(show: Boolean) {
-        appbar_main.isVisible = show
+        appbar_main.isInvisible = !show
         main_container.updateLayoutParams<CoordinatorLayout.LayoutParams> {
             behavior = if (show) scrollingViewBehaviour else null
         }
         main_container.requestLayout()
     }
 
-    private fun setFragment(fragment: Fragment) {
-        supportFragmentManager.transaction {
-            activeFragment?.let { hide(it) }
-            show(fragment)
-            activeFragment = fragment
+    private fun showError(throwable: Throwable?) {
+        throwable?.report()
+        Toast.makeText(this, R.string.error_refreshing_token, Toast.LENGTH_LONG).show()
+    }
+
+    private fun setFragment(fragment: Fragment, onCompleted: (() -> Unit)? = null) {
+        if (activeFragment == null || activeFragment?.tag != fragment.tag) {
+            supportFragmentManager.transaction {
+                activeFragment?.let { hide(it) }
+                setCustomAnimations(R.anim.bottom_nav_in, R.anim.bottom_nav_out)
+                show(fragment)
+                activeFragment = fragment
+                onCompleted?.let {
+                    runOnCommit { it() }
+                }
+            }
         }
     }
 
