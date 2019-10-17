@@ -75,6 +75,7 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
         vm = getViewModel {
             parametersOf(range)
         }
+        listSkeleton = currentScope.get { parametersOf(context, skeletonItems) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -96,11 +97,10 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
         }
     }
 
-    override fun provideDataView(): View = recyclerview_stats
+    override fun getDataView() = recyclerview_stats
 
     private fun setupUi(context: Context) {
         with(recyclerview_stats) {
-            listSkeleton = currentScope.get { parametersOf(this@with, context, skeletonItems) }
             adapter = listSkeleton.skeletonAdapter
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

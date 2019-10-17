@@ -1,7 +1,6 @@
 package com.kondenko.pocketwaka.di.modules
 
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.data.android.ColorProvider
 import com.kondenko.pocketwaka.data.persistence.AppDatabase
 import com.kondenko.pocketwaka.data.stats.converter.StatsResponseConverter
@@ -61,9 +60,8 @@ val statsModule = module {
     }
     factory { (context: Context, showSkeleton: Boolean) -> StatsAdapter(context, showSkeleton, get<TimeSpannableCreator>()) }
     scope(named<FragmentStatsTab>()) {
-        scoped { (recyclerView: RecyclerView, context: Context, skeletonItems: List<StatsUiModel>) ->
+        scoped { (context: Context, skeletonItems: List<StatsUiModel>) ->
             RecyclerViewSkeleton<StatsUiModel, StatsAdapter>(
-                    recyclerView = recyclerView,
                     adapterCreator = { showSkeleton: Boolean -> get { parametersOf(context, showSkeleton) } },
                     skeletonItems = skeletonItems
             )

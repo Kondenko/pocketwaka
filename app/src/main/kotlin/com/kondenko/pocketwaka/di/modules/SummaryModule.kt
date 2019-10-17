@@ -1,7 +1,6 @@
 package com.kondenko.pocketwaka.di.modules
 
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.data.persistence.AppDatabase
 import com.kondenko.pocketwaka.data.summary.converters.SummaryResponseConverter
 import com.kondenko.pocketwaka.data.summary.converters.TimeTrackedConverter
@@ -89,9 +88,8 @@ val summaryModule = module {
     }
     factory { (context: Context, showSkeleton: Boolean) -> SummaryAdapter(context, showSkeleton, get<TimeSpannableCreator>()) }
     scope(named<FragmentSummary>()) {
-        scoped { (recyclerView: RecyclerView, context: Context, skeletonItems: List<SummaryUiModel>) ->
+        scoped { (context: Context, skeletonItems: List<SummaryUiModel>) ->
             RecyclerViewSkeleton(
-                  recyclerView = recyclerView,
                   adapterCreator = { showSkeleton: Boolean -> get<SummaryAdapter> { parametersOf(context, showSkeleton) } },
                   skeletonItems = skeletonItems
             )

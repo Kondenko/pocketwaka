@@ -7,7 +7,6 @@ import android.view.animation.DecelerateInterpolator
 import androidx.recyclerview.widget.RecyclerView
 
 class RecyclerViewSkeleton<T, ADAPTER : SkeletonAdapter<T, *>>(
-      private val recyclerView: RecyclerView,
       adapterCreator: (Boolean) -> ADAPTER,
       skeletonItems: List<T>,
       private val crossfadeAnimDuration: Int = 100
@@ -23,27 +22,33 @@ class RecyclerViewSkeleton<T, ADAPTER : SkeletonAdapter<T, *>>(
         skeletonAdapter.items = skeletonItems
     }
 
-    fun show(show: Boolean) = if (show) show() else hide()
+    fun show(recyclerView: RecyclerView, show: Boolean) =
+          if (show) {
+              show(recyclerView)
+          } else {
+              hide(recyclerView)
+          }
 
-    fun show() {
+    fun show(recyclerView: RecyclerView) {
         recyclerView.adapter.let {
             if (it == null || (it as? SkeletonAdapter<*, *>)?.showSkeleton == false) {
-                setAdapter(skeletonAdapter, it != null)
+                setAdapter(recyclerView, skeletonAdapter, it != null)
             }
         }
     }
 
-    fun hide() {
+    fun hide(recyclerView: RecyclerView) {
         recyclerView.adapter.let {
             if (it == null || (it as? SkeletonAdapter<*, *>)?.showSkeleton == true) {
-                setAdapter(actualAdapter, it != null)
+                setAdapter(recyclerView, actualAdapter, it != null)
             }
         }
     }
 
-    private fun setAdapter(adapter: ADAPTER, animate: Boolean) {
+    private fun setAdapter(recyclerView: RecyclerView, adapter: ADAPTER, animate: Boolean) {
         val setAdapter = { recyclerView.adapter = adapter }
-        if (animate) recyclerView.crossfade(setAdapter) else setAdapter()
+        if (animate) recyclerView.crossfade(setAdapter)
+        else setAdapter()
     }
 
     private inline fun View.crossfade(crossinline doWhenInvisible: () -> Unit) {

@@ -2,12 +2,12 @@ package com.kondenko.pocketwaka.screens.base
 
 import android.content.Context
 import android.net.Uri
-import android.view.View
 import androidx.annotation.CallSuper
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
@@ -32,7 +32,7 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
 
     protected abstract fun reloadScreen()
 
-    protected abstract fun provideDataView(): View
+    protected abstract fun getDataView(): RecyclerView
 
     @CallSuper
     override fun onAttach(context: Context) {
@@ -45,7 +45,7 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
     }
 
     protected fun State<ST>.render() {
-        listSkeleton.show((this as? State.Loading<*>)?.isInterrupting == true)
+        listSkeleton.show(getDataView(), (this as? State.Loading<*>)?.isInterrupting == true)
         when (this) {
             is State.Success -> render()
             is State.Loading -> render()
@@ -100,7 +100,7 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
     }
 
     protected fun showData(show: Boolean) {
-        provideDataView().isVisible = show
+        getDataView().isVisible = show
         stateFragment.let {
             childFragmentManager.transaction {
                 if (show) hide(it)

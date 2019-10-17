@@ -1,5 +1,6 @@
 package com.kondenko.pocketwaka.screens.summary
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -57,6 +58,11 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
           projectSkeleton
     )
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        listSkeleton = currentScope.get { parametersOf(context, skeletonItems) }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_summary, container, false)
@@ -90,11 +96,10 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
         screenTracker.log(activity, Screen.Summary)
     }
 
-    override fun provideDataView(): View = recyclerview_summary
+    override fun getDataView() = recyclerview_summary
 
     private fun setupList(view: View) {
         with(view.recyclerview_summary) {
-            listSkeleton = currentScope.get { parametersOf(this, context, skeletonItems) }
             adapter = listSkeleton.actualAdapter.apply {
                 connectRepoClicks()
                       .doOnNext { eventTracker.log(Event.Summary.ConnectRepoClicks) }
