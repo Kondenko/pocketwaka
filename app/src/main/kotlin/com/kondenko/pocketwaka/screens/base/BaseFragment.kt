@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.screens.base
 
+import android.content.Context
 import android.net.Uri
-import android.os.Bundle
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.browser.customtabs.CustomTabsIntent
@@ -35,8 +35,8 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
     protected abstract fun provideDataView(): View
 
     @CallSuper
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         if (childFragmentManager.findFragmentByTag(fragmentStateTag) == null) {
             childFragmentManager.transaction {
                 add(containerId, stateFragment, fragmentStateTag)

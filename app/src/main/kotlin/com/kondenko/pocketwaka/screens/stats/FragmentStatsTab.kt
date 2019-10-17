@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.postDelayed
 import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.analytics.Event
@@ -29,7 +30,7 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_stats.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.scope.currentScope
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
@@ -41,9 +42,7 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
 
     private val range: String? by lazy { arguments?.getString(argRange) }
 
-    private val vm: StatsViewModel by viewModel {
-        parametersOf(range)
-    }
+    private lateinit var vm: StatsViewModel
 
     private val eventTracker: EventTracker by inject()
 
@@ -71,6 +70,13 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
         context?.dp(value) ?: value
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        vm = getViewModel {
+            parametersOf(range)
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_stats, container, false)
@@ -78,13 +84,15 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupUi(view.context)
-        vm.state().observe(viewLifecycleOwner) {
-            Timber.d("New stats state (${range}): $it")
-            if (it is State.Empty) {
-                eventTracker.log(Event.EmptyState.Account(Screen.Stats.Tab(range)))
+        view.postDelayed(50) {
+            setupUi(view.context)
+            vm.state().observe(viewLifecycleOwner) {
+                Timber.d("New stats state (${range}): $it")
+                if (it is State.Empty) {
+                    eventTracker.log(Event.EmptyState.Account(Screen.Stats.Tab(range)))
+                }
+                it.render()
             }
-            it.render()
         }
     }
 

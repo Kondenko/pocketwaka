@@ -98,7 +98,7 @@ class FragmentStats : Fragment(), Refreshable {
                     .create()
         )
         with(stats_viewpager_content) {
-            offscreenPageLimit = 2
+            offscreenPageLimit = 1
             this.adapter = pagerAdapter
             post {
                 onFragmentSelected(currentItem, pagerAdapter.getPage(currentItem) as? FragmentStatsTab)

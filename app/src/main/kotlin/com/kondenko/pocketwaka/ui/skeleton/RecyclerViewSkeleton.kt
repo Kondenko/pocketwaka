@@ -28,9 +28,7 @@ class RecyclerViewSkeleton<T, ADAPTER : SkeletonAdapter<T, *>>(
     fun show() {
         recyclerView.adapter.let {
             if (it == null || (it as? SkeletonAdapter<*, *>)?.showSkeleton == false) {
-                recyclerView.crossfade {
-                    recyclerView.adapter = skeletonAdapter
-                }
+                setAdapter(skeletonAdapter, it != null)
             }
         }
     }
@@ -38,11 +36,14 @@ class RecyclerViewSkeleton<T, ADAPTER : SkeletonAdapter<T, *>>(
     fun hide() {
         recyclerView.adapter.let {
             if (it == null || (it as? SkeletonAdapter<*, *>)?.showSkeleton == true) {
-                recyclerView.crossfade {
-                    recyclerView.adapter = actualAdapter
-                }
+                setAdapter(actualAdapter, it != null)
             }
         }
+    }
+
+    private fun setAdapter(adapter: ADAPTER, animate: Boolean) {
+        val setAdapter = { recyclerView.adapter = adapter }
+        if (animate) recyclerView.crossfade(setAdapter) else setAdapter()
     }
 
     private inline fun View.crossfade(crossinline doWhenInvisible: () -> Unit) {
