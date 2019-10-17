@@ -15,6 +15,8 @@ import com.crashlytics.android.Crashlytics
 import com.kondenko.pocketwaka.BuildConfig
 import io.reactivex.Single
 import timber.log.Timber
+import java.util.*
+import java.util.Calendar.*
 
 fun notNull(vararg values: Any?): Boolean = values.all { it != null }
 
@@ -97,3 +99,10 @@ inline fun <reified T : Any> T.className(includeSuperclass: Boolean = false, sep
 }
 
 fun <T> forEach(vararg items: T, action: (T) -> Unit) = items.forEach(action)
+
+fun date(day: Int, month: Int, year: Int): Long = Calendar.getInstance().run {
+    set(DAY_OF_MONTH, day)
+    set(MONTH, month)
+    set(YEAR, year)
+    time.time
+}

@@ -4,6 +4,7 @@ import com.kondenko.pocketwaka.domain.UseCase
 import com.kondenko.pocketwaka.domain.summary.model.ProjectModel
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.screens.State
+import com.kondenko.pocketwaka.utils.date.DateRange
 import io.reactivex.Observable
 
 class GetSummaryStateMock(private val getSummaryState: GetSummaryState) :
@@ -38,4 +39,8 @@ class GetSummaryStateMock(private val getSummaryState: GetSummaryState) :
             )
     )
 
+    override fun build(params: GetSummary.Params?): Observable<State<List<SummaryUiModel>>> {
+        val date = 1571214678862
+        return getSummaryState.build(params?.copy(dateRange = DateRange(date, date)))
+    }
 }
