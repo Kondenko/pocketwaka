@@ -12,6 +12,7 @@ import com.kondenko.pocketwaka.utils.WakaLog
 
 
 class MainViewModel(
+      defaultTabId: Int,
       private val checkIfUserIsLoggedIn: UseCaseSingle<Nothing, Boolean>,
       private val clearCache: ClearCache,
       private val refreshAccessToken: RefreshAccessToken,
@@ -20,7 +21,12 @@ class MainViewModel(
 
     private val state = MutableLiveData<MainState>()
 
+    private val selectedTab = MutableLiveData<Int>().apply {
+        value = defaultTabId
+    }
+
     init {
+        tabChanged(defaultTabId)
         checkIfLoggedIn()
         fetchRemoteConfigValues(
               onSuccess = { WakaLog.d("Remote config values updated") },
@@ -28,24 +34,30 @@ class MainViewModel(
         )
     }
 
-    fun states(): LiveData<MainState> = state
+    fun state(): LiveData<MainState> = state
+
+    fun tabSelections(): LiveData<Int> = selectedTab
 
     private fun checkIfLoggedIn() {
         checkIfUserIsLoggedIn(
                 onSuccess = { isLoggedIn ->
                     if (isLoggedIn) {
                         refreshAccessToken.invoke()
-                        state.value = ShowData
+                        state.postValue(ShowData)
                     } else {
-                        state.value = ShowLoginScreen
+                        state.postValue(ShowLoginScreen)
                     }
                 },
                 onError = { error ->
                     clearCache(onFinish = {
-                        state.value = LogOut
+                        state.postValue(LogOut)
                     })
                 }
         )
+    }
+
+    fun tabChanged(tab: Int) {
+        selectedTab.value = tab
     }
 
     override fun onCleared() {

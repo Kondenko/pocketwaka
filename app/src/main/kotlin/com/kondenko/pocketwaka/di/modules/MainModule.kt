@@ -42,8 +42,9 @@ val mainModule = module {
               getAppSecret = get()
         )
     }
-    viewModel {
+    viewModel { (defaultTabId: Int) ->
         MainViewModel(
+              defaultTabId,
               checkIfUserIsLoggedIn = get<CheckIfUserIsLoggedIn>(),
               clearCache = get(),
               refreshAccessToken = get(),

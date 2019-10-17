@@ -24,11 +24,12 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 
 class MainActivity : AppCompatActivity() {
 
-    private val vm: MainViewModel by viewModel()
+    private val vm: MainViewModel by viewModel { parametersOf(R.id.bottomnav_item_summaries) }
 
     private val refreshEvents = PublishSubject.create<Any>()
 
@@ -49,7 +50,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar_main)
-        vm.states().observe(this) {
+        vm.tabSelections().observe(this) { selectedTab ->
+            when (selectedTab) {
+                R.id.bottomnav_item_summaries -> showSummaries()
+                R.id.bottomnav_item_stats -> showRanges()
+                R.id.bottomnav_item_menu -> showMenu()
+            }
+        }
+        vm.state().observe(this) {
             when (it) {
                 is MainState.ShowData -> showData()
                 is MainState.ShowLoginScreen -> showLoginScreen()
@@ -74,14 +82,9 @@ class MainActivity : AppCompatActivity() {
     private fun showData() {
         main_bottom_navigation.setOnNavigationItemSelectedListener {
             refreshEventsDisposable?.dispose()
-            when (it.itemId) {
-                R.id.bottomnav_item_summaries -> showSummaries()
-                R.id.bottomnav_item_stats -> showRanges()
-                R.id.bottomnav_item_menu -> showMenu()
-            }
+            vm.tabChanged(it.itemId)
             true
         }
-        main_bottom_navigation.selectedItemId = R.id.bottomnav_item_summaries
     }
 
     private fun showLoginScreen() {

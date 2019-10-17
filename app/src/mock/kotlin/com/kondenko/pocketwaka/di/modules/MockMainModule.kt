@@ -9,8 +9,9 @@ val mockMainModule = module(override = true) {
     factory {
         MockCheckIfUserIsLoggedIn(schedulers = get())
     }
-    viewModel {
+    viewModel { (defaultTabId: Int) ->
         MainViewModel(
+              defaultTabId,
               checkIfUserIsLoggedIn = get<MockCheckIfUserIsLoggedIn>(),
               clearCache = get(),
               refreshAccessToken = get(),
