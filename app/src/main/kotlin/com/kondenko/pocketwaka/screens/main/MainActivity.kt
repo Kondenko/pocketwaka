@@ -16,10 +16,7 @@ import com.kondenko.pocketwaka.screens.login.LoginActivity
 import com.kondenko.pocketwaka.screens.menu.FragmentMenu
 import com.kondenko.pocketwaka.screens.stats.FragmentStats
 import com.kondenko.pocketwaka.screens.summary.FragmentSummary
-import com.kondenko.pocketwaka.utils.extensions.observe
-import com.kondenko.pocketwaka.utils.extensions.report
-import com.kondenko.pocketwaka.utils.extensions.startActivity
-import com.kondenko.pocketwaka.utils.extensions.transaction
+import com.kondenko.pocketwaka.utils.extensions.*
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
@@ -44,12 +41,20 @@ class MainActivity : AppCompatActivity() {
     private val fragmentMenu = FragmentMenu()
     private val tagMenu = "menu"
 
+    private var activeFragment: Fragment? = null
+
     private val scrollingViewBehaviour = AppBarLayout.ScrollingViewBehavior()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar_main)
+        supportFragmentManager.transaction {
+            forEach(fragmentSummary, fragmentStats, fragmentMenu) {
+                add(R.id.main_container, it)
+                hide(it)
+            }
+        }
         vm.tabSelections().observe(this) { selectedTab ->
             when (selectedTab) {
                 R.id.bottomnav_item_summaries -> showSummaries()
@@ -105,18 +110,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun showSummaries() {
         showAppBar(true)
-        setFragment(fragmentSummary, tagSummary)
+        setFragment(fragmentSummary)
         refreshEventsDisposable = fragmentSummary.subscribeToRefreshEvents(refreshEvents)
     }
 
     private fun showRanges() {
         showAppBar(true)
-        setFragment(fragmentStats, tagStats)
+        setFragment(fragmentStats)
         refreshEventsDisposable = fragmentStats.subscribeToRefreshEvents(refreshEvents)
     }
 
     private fun showMenu() {
-        setFragment(fragmentMenu, tagMenu)
+        setFragment(fragmentMenu)
         showAppBar(false)
     }
 
@@ -128,11 +133,11 @@ class MainActivity : AppCompatActivity() {
         main_container.requestLayout()
     }
 
-    private fun setFragment(fragment: Fragment, tag: String) {
-        if (supportFragmentManager.findFragmentByTag(tag) == null) {
-            supportFragmentManager.transaction {
-                replace(R.id.main_container, fragment, tag)
-            }
+    private fun setFragment(fragment: Fragment) {
+        supportFragmentManager.transaction {
+            activeFragment?.let { hide(it) }
+            show(fragment)
+            activeFragment = fragment
         }
     }
 

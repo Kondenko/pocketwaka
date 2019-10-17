@@ -25,8 +25,8 @@ fun Float.negateIfTrue(condition: Boolean) = if (condition) -this else this
 fun <T> T?.singleOrErrorIfNull(exception: Throwable = NullPointerException("Couldn't convert a null object to a Single")): Single<T> = this?.let { Single.just(it) }
       ?: Single.error(exception)
 
-inline fun FragmentManager.transaction(crossinline action: androidx.fragment.app.FragmentTransaction.() -> androidx.fragment.app.FragmentTransaction) {
-    this.beginTransaction().action().commit()
+inline fun FragmentManager.transaction(crossinline action: androidx.fragment.app.FragmentTransaction.() -> Unit) {
+    this.beginTransaction().apply(action).commit()
 }
 
 /**
