@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.kondenko.pocketwaka.Const
@@ -33,7 +34,6 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_stats_container.*
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 
 class FragmentStats : Fragment(), Refreshable {
@@ -44,7 +44,7 @@ class FragmentStats : Fragment(), Refreshable {
 
     private lateinit var pagerAdapter: FragmentPagerItemAdapter
 
-    private val refreshEvents = PublishSubject.create<Any>()
+    private val refreshEvents = PublishSubject.create<Unit>()
 
     private var scrollSubscription: Disposable? = null
 
@@ -103,60 +103,60 @@ class FragmentStats : Fragment(), Refreshable {
         )
         with(stats_viewpager_content) {
             offscreenPageLimit = 1
-            this.adapter = pagerAdapter
-            post {
-                onFragmentSelected(currentItem, pagerAdapter.getPage(currentItem) as? FragmentStatsTab)
-            }
+            adapter = pagerAdapter
         }
         with(stats_smarttablayout_ranges) {
             setViewPager(stats_viewpager_content)
-            setOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
-                override fun onPageSelected(position: Int) {
-                    val selectedFragment = pagerAdapter.getPage(position) as FragmentStatsTab?
-                    if (selectedFragment != null) onFragmentSelected(position, selectedFragment)
-                    else Timber.e("$selectedFragment at position $position is null")
-                }
-            })
             setOnTabClickListener {
                 if (stats_viewpager_content.currentItem == it) {
                     (pagerAdapter.getPage(it) as? FragmentStatsTab)?.scrollToTop()
                 }
             }
+            setOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+                override fun onPageSelected(position: Int) {
+                    onFragmentSelected(position)
+                }
+            })
+        }
+        stats_viewpager_content.doOnLayout {
+            onFragmentSelected(0)
         }
     }
 
     @Suppress("UsePropertyAccessSyntax")
-    private fun createColorAnimator(activity: AppCompatActivity?, initialColor: Int, finalColor: Int) = ValueAnimator().apply {
-        activity?.apply {
-            setDuration(Const.DEFAULT_ANIM_DURATION)
-            setIntValues(initialColor, finalColor)
-            setEvaluator(ArgbEvaluator())
-            addUpdateListener {
-                val color = animatedValue as Int
-                window.statusBarColor = color
-                appbar_main?.setBackgroundColor(color)
-                framelayout_stats_tab_container?.setBackgroundColor(color)
-            }
-        }
-    }
+    private fun createColorAnimator(activity: AppCompatActivity?, initialColor: Int, finalColor: Int) =
+          ValueAnimator.ofInt(initialColor, finalColor).apply {
+              activity?.apply {
+                  setDuration(Const.DEFAULT_ANIM_DURATION)
+                  setEvaluator(ArgbEvaluator())
+                  addUpdateListener {
+                      val color = animatedValue as Int
+                      window.statusBarColor = color
+                      appbar_main?.setBackgroundColor(color)
+                      framelayout_stats_tab_container?.setBackgroundColor(color)
+                  }
+              }
+          }
 
-    private fun onFragmentSelected(position: Int, fragment: FragmentStatsTab?) {
-        if (fragment == null) return
-        screenTracker.log(activity, Screen.Stats.Tab(fragment.arguments?.getString(FragmentStatsTab.argRange)))
-        restoreTabsElevation(position)
-        refreshSubscription?.dispose()
-        scrollSubscription?.dispose()
-        refreshSubscription = fragment.subscribeToRefreshEvents(refreshEvents)
-        scrollSubscription = fragment.scrollDirection()
-              .distinctUntilChanged()
-              .skip(1) // Skip first emission (ScrollDirection.Up) causing an unwanted animation
-              .subscribeBy(
-                    onNext = { scrollDirection ->
-                        animateTabs(scrollDirection == ScrollDirection.Down)
-                    },
-                    onError = WakaLog::e
-              )
-    }
+    private fun onFragmentSelected(position: Int) =
+          (pagerAdapter.getPage(position) as? FragmentStatsTab?)?.let { fragment ->
+              screenTracker.log(activity, Screen.Stats.Tab(fragment.arguments?.getString(FragmentStatsTab.argRange)))
+              restoreTabsElevation(position)
+              refreshSubscription?.dispose()
+              scrollSubscription?.dispose()
+              refreshSubscription = fragment.subscribeToRefreshEvents(refreshEvents)
+              scrollSubscription = fragment.scrollDirection()
+                    .distinctUntilChanged()
+                    .skip(1) // Skip first emission (ScrollDirection.Up) causing an unwanted animation
+                    .subscribeBy(
+                          onNext = { scrollDirection ->
+                              animateTabs(scrollDirection == ScrollDirection.Down)
+                          },
+                          onError = {
+                              WakaLog.e(it)
+                          }
+                    )
+          } ?: WakaLog.w("Fragment at position $position is null")
 
     private fun restoreTabsElevation(currentTabIndex: Int) {
         val wasPreviousTabElevated = tabsElevation.run { isElevated && this.currentTabIndex != currentTabIndex }
@@ -181,8 +181,9 @@ class FragmentStats : Fragment(), Refreshable {
     }
 
     @SuppressLint("CheckResult")
-    override fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Disposable? {
+    override fun subscribeToRefreshEvents(refreshEvents: Observable<Unit>): Disposable? {
         refreshEvents
+              .doOnDispose { refreshSubscription?.dispose() }
               .doOnNext { eventTracker.log(Event.ManualUpdate) }
               .subscribeWith(this.refreshEvents)
         return refreshSubscription

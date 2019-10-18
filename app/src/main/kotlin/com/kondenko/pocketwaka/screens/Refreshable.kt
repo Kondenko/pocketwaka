@@ -4,5 +4,5 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 
 interface Refreshable {
-    fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Disposable?
+    fun subscribeToRefreshEvents(refreshEvents: Observable<Unit>): Disposable?
 }

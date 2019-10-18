@@ -122,7 +122,7 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
         }
     }
 
-    override fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Disposable {
+    override fun subscribeToRefreshEvents(refreshEvents: Observable<Unit>): Disposable {
         return refreshEvents.subscribe {
             eventTracker.log(Event.ManualUpdate)
             reloadScreen()

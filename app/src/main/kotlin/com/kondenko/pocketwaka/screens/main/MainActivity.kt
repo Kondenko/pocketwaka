@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private val vm: MainViewModel by viewModel { parametersOf(R.id.bottomnav_item_summaries) }
 
-    private val refreshEvents = PublishSubject.create<Any>()
+    private val refreshEvents = PublishSubject.create<Unit>()
 
     private var refreshEventsDisposable: Disposable? = null
 
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         vm.tabSelections().observe(this) { selectedTab ->
             when (selectedTab) {
                 R.id.bottomnav_item_summaries -> showSummaries()
-                R.id.bottomnav_item_stats -> showRanges()
+                R.id.bottomnav_item_stats -> showStats()
                 R.id.bottomnav_item_menu -> showMenu()
             }
         }
@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.action_refresh -> refreshEvents.onNext(Any())
+            R.id.action_refresh -> refreshEvents.onNext(Unit)
         }
         return super.onOptionsItemSelected(item)
     }
@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showRanges() {
+    private fun showStats() {
         setFragment(fragmentStats) {
             showAppBar(true)
             refreshEventsDisposable = fragmentStats.subscribeToRefreshEvents(refreshEvents)

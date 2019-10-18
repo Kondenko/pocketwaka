@@ -20,12 +20,14 @@ import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.base.BaseFragment
 import com.kondenko.pocketwaka.screens.stats.adapter.StatsAdapter
 import com.kondenko.pocketwaka.screens.stats.model.ScrollDirection
+import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.extensions.dp
 import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.times
 import com.kondenko.pocketwaka.utils.extensions.toListOrEmpty
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_stats.*
 import org.koin.android.ext.android.inject
@@ -48,6 +50,10 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
 
     override val containerId: Int = R.id.framelayout_stats_range_root
 
+    private val scrollDirection = BehaviorSubject.create<ScrollDirection>()
+
+    private var shadowAnimationNeeded = true
+
     private val skeletonStatsCard = mutableListOf(StatsItem("", null, null, null)) * 3
 
     private val skeletonItems = listOf(
@@ -56,10 +62,6 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
           StatsUiModel.Stats("", skeletonStatsCard),
           StatsUiModel.Stats("", skeletonStatsCard)
     )
-
-    private val scrollDirection = BehaviorSubject.create<ScrollDirection>()
-
-    private var shadowAnimationNeeded = true
 
     /**
      * The minimum value the RecyclerView has to be scrolled for
@@ -72,9 +74,7 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        vm = getViewModel {
-            parametersOf(range)
-        }
+        vm = getViewModel { parametersOf(range) }
         listSkeleton = currentScope.get { parametersOf(context, skeletonItems) }
     }
 
@@ -86,7 +86,7 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.postDelayed(50) {
-            setupUi(view.context)
+            setupUi()
             vm.state().observe(viewLifecycleOwner) {
                 Timber.d("New stats state (${range}): $it")
                 if (it is State.Empty) {
@@ -99,7 +99,7 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
 
     override fun getDataView() = recyclerview_stats
 
-    private fun setupUi(context: Context) {
+    private fun setupUi() {
         with(recyclerview_stats) {
             adapter = listSkeleton.skeletonAdapter
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -135,10 +135,11 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
 
     fun scrollDirection(): Observable<ScrollDirection> = scrollDirection
 
-    override fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Disposable {
-        return refreshEvents.subscribe {
-            vm.update()
-        }
+    override fun subscribeToRefreshEvents(refreshEvents: Observable<Unit>): Disposable {
+        return refreshEvents.subscribeBy(
+              onNext = { reloadScreen() },
+              onError = WakaLog::e
+        )
     }
 
 }
