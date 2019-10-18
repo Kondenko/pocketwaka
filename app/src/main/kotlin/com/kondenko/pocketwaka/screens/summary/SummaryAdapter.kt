@@ -14,9 +14,7 @@ import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.createAdapter
 import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
-import com.kondenko.pocketwaka.utils.extensions.gone
 import com.kondenko.pocketwaka.utils.extensions.limitWidthBy
-import com.kondenko.pocketwaka.utils.extensions.visible
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
@@ -86,19 +84,14 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
 
     inner class TimeTrackedViewHolder(view: View, skeleton: Skeleton) : ViewHolder<SummaryUiModel.TimeTracked>(view, skeleton) {
 
-        override fun bind(item: SummaryUiModel.TimeTracked) {
-            with(itemView) {
-                val isBelowAverage = (item.percentDelta ?: 0) < 0
-                if (item.percentDelta != 0 || showSkeleton) {
-                    setupIcon(isBelowAverage)
-                    setupText(isBelowAverage, item.percentDelta)
-                    linearlayout_delta_container.visible()
-                } else {
-                    linearlayout_delta_container.gone()
-                }
+        override fun bind(item: SummaryUiModel.TimeTracked) = with(itemView) {
+            val isBelowAverage = (item.percentDelta ?: 0) < 0
+            setupIcon(isBelowAverage)
+            setupText(isBelowAverage, item.percentDelta)
+            if (!showSkeleton) {
                 textview_summary_time.text = timeSpannableCreator.create(item.time, R.dimen.textsize_summary_number, R.dimen.textsize_summary_text)
-                super.bind(item)
             }
+            super.bind(item)
         }
 
         private fun View.setupIcon(isBelowAverage: Boolean) = with(imageview_summary_delta_icon) {
@@ -126,10 +119,10 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
         }
 
         private fun getDeltaIcon(isBelowAverage: Boolean): Drawable? =
-                context.getDrawable(R.drawable.ic_arrow_down)?.apply {
-                    val color = if (isBelowAverage) R.color.color_descent else R.color.color_growth
-                    setTint(ContextCompat.getColor(context, color))
-                }
+              context.getDrawable(R.drawable.ic_arrow_down)?.apply {
+                  val color = if (isBelowAverage) R.color.color_descent else R.color.color_growth
+                  setTint(ContextCompat.getColor(context, color))
+              }
 
     }
 
