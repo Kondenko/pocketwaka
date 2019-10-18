@@ -11,4 +11,5 @@ interface LoginView : BaseView {
 
     fun showLoading()
 
+    fun onLoginCancelled()
 }

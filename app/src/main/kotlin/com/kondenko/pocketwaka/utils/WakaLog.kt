@@ -1,5 +1,6 @@
 package com.kondenko.pocketwaka.utils
 
+import com.kondenko.pocketwaka.BuildConfig
 import timber.log.Timber
 
 @Suppress("NOTHING_TO_INLINE") // inlining is required to allow Timber to use class names as tags
@@ -45,7 +46,7 @@ object WakaLog {
     }
 
     inline fun ifNoTimber(action: () -> Unit) {
-        if (Timber.treeCount() == 0) action()
+        if (Timber.treeCount() == 0 && BuildConfig.DEBUG) action()
     }
 
 }

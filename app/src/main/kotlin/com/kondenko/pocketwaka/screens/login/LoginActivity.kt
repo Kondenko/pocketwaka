@@ -11,7 +11,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.view.longClicks
 import com.kondenko.pocketwaka.BuildConfig
-import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.analytics.Event
 import com.kondenko.pocketwaka.analytics.EventTracker
@@ -30,11 +29,11 @@ import org.koin.core.parameter.parametersOf
 // TODO Migrate to ViewModel
 class LoginActivity : AppCompatActivity(), LoginView {
 
+    private val presenter: LoginPresenter by inject()
+
     private val screenTracker: ScreenTracker by inject()
 
     private val eventTracker: EventTracker by inject()
-
-    private val presenter: LoginPresenter by inject()
 
     private val browserWindow: BrowserWindow by inject { parametersOf(this as Context, this as LifecycleOwner) }
 
@@ -72,17 +71,11 @@ class LoginActivity : AppCompatActivity(), LoginView {
     override fun onResume() {
         super.onResume()
         screenTracker.log(this, Screen.Auth)
-        val uri = intent.data
-        if (uri != null && uri.toString().startsWith(Const.AUTH_REDIRECT_URI)) {
-            val code = uri.getQueryParameter("code")
-            if (code != null) {
-                presenter.getToken(code)
-            } else uri.getQueryParameter("error")?.let {
-                showError(RuntimeException(it))
-            }
-        } else {
-            eventTracker.log(Event.Login.Canceled)
-        }
+        presenter.checkIfAuthIsSuccessful(intent.data)
+    }
+
+    override fun onLoginCancelled() {
+        eventTracker.log(Event.Login.Canceled)
     }
 
     override fun onStart() {
