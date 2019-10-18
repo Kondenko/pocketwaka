@@ -32,8 +32,10 @@ inline fun FragmentManager.transaction(crossinline action: androidx.fragment.app
 /**
  * Prints log output and sends a report to crashlyics about the given exception
  */
-fun Throwable.report(message: String? = null) {
-    Timber.e(this, message ?: this.message)
+fun Throwable.report(message: String? = null, printLog: Boolean = true) {
+    if (printLog) {
+        Timber.e(this, message ?: this.message)
+    }
     @Suppress("ConstantConditionIf")
     if (!BuildConfig.DEBUG) {
         Crashlytics.logException(this)

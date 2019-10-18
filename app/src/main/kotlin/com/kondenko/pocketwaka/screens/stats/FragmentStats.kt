@@ -154,7 +154,7 @@ class FragmentStats : Fragment(), Refreshable {
                     onNext = { scrollDirection ->
                         animateTabs(scrollDirection == ScrollDirection.Down)
                     },
-                    onError = Timber::e
+                    onError = WakaLog::e
               )
     }
 
