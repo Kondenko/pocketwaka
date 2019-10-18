@@ -4,7 +4,6 @@ package com.kondenko.pocketwaka.screens.stats
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +22,7 @@ import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.screens.Refreshable
 import com.kondenko.pocketwaka.screens.stats.model.ScrollDirection
 import com.kondenko.pocketwaka.screens.stats.model.TabsElevationState
+import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.extensions.getColorCompat
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
@@ -30,6 +30,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_stats_container.*
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -66,25 +67,28 @@ class FragmentStats : Fragment(), Refreshable {
         this.surfaceColorResting = surfaceColorResting
         this.colorAnimator = createColorAnimator(activity as? AppCompatActivity, surfaceColorResting, surfaceColorElevated)
         setupViewPager()
-        restoreTabsElevation(stats_viewpager_content.currentItem)
     }
 
-    override fun onDestroyView() {
-        surfaceColorResting?.let {
-            activity?.window?.statusBarColor = it
-            (activity as? AppCompatActivity)?.supportActionBar?.setBackgroundDrawable(ColorDrawable(it))
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (hidden) {
+            surfaceColorResting?.let {
+                activity?.window?.statusBarColor = it
+                (activity as? AppCompatActivity)?.appbar_main?.setBackgroundColor(it)
+            }
+        } else {
+            restoreTabsElevation(stats_viewpager_content.currentItem)
         }
-        super.onDestroyView()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable(keyTabsElevation, tabsElevation)
-        super.onSaveInstanceState(outState)
     }
 
     override fun onResume() {
         super.onResume()
         screenTracker.log(activity, Screen.Stats.TabContainer)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable(keyTabsElevation, tabsElevation)
+        super.onSaveInstanceState(outState)
     }
 
     private fun setupViewPager() {
@@ -121,18 +125,16 @@ class FragmentStats : Fragment(), Refreshable {
         }
     }
 
+    @Suppress("UsePropertyAccessSyntax")
     private fun createColorAnimator(activity: AppCompatActivity?, initialColor: Int, finalColor: Int) = ValueAnimator().apply {
-        @Suppress("UsePropertyAccessSyntax")
-        setDuration(Const.DEFAULT_ANIM_DURATION)
-        setIntValues(initialColor, finalColor)
-        setEvaluator(ArgbEvaluator())
-        val toolbarBackgroundDrawable = ColorDrawable()
-        activity?.supportActionBar?.setBackgroundDrawable(toolbarBackgroundDrawable)
-        addUpdateListener { valueAnimator ->
-            activity?.apply {
-                val color = valueAnimator.animatedValue as Int
+        activity?.apply {
+            setDuration(Const.DEFAULT_ANIM_DURATION)
+            setIntValues(initialColor, finalColor)
+            setEvaluator(ArgbEvaluator())
+            addUpdateListener {
+                val color = animatedValue as Int
                 window.statusBarColor = color
-                toolbarBackgroundDrawable.color = color
+                appbar_main?.setBackgroundColor(color)
                 framelayout_stats_tab_container?.setBackgroundColor(color)
             }
         }
