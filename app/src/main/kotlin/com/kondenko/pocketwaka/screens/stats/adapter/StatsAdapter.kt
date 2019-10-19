@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.android.DateFormatter
@@ -12,7 +11,6 @@ import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
 import com.kondenko.pocketwaka.screens.renderStatus
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
-import com.kondenko.pocketwaka.utils.diffutil.SimpleCallback
 import com.kondenko.pocketwaka.utils.extensions.invisible
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
 import kotlinx.android.synthetic.main.item_stats_best_day.view.*
@@ -54,21 +52,6 @@ class StatsAdapter(
     }
 
     override fun getItemId(position: Int): Long = items[position].hashCode().toLong()
-
-    override fun getDiffCallback(oldList: List<StatsUiModel>, newList: List<StatsUiModel>): DiffUtil.Callback {
-        return SimpleCallback(
-                oldList,
-                newList,
-                areItemsTheSame = { a, b ->
-                    when (a) {
-                        is StatsUiModel.Status -> b is StatsUiModel.Status
-                        is StatsUiModel.Info -> b is StatsUiModel.Info
-                        is StatsUiModel.BestDay -> b is StatsUiModel.BestDay
-                        else -> false
-                    }
-                }
-        )
-    }
 
     override fun createSkeleton(view: View) = Skeleton(context, view).apply {
         onSkeletonShown { isSkeleton: Boolean ->

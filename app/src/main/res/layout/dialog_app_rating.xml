@@ -25,6 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/size_rating_dialog_star"
         android:layout_marginTop="14dp"
+        android:layout_marginBottom="@dimen/margin_rating_dialog_rating_bar_bottom"
         app:anim_duration="150"
         app:star_json="@raw/star"
         app:star_padding="@dimen/padding_rating_dialog_star"

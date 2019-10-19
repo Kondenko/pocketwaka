@@ -16,11 +16,13 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.ui.Scale
 import com.kondenko.pocketwaka.ui.scale
 import com.kondenko.pocketwaka.utils.extensions.dp
+import com.kondenko.pocketwaka.utils.extensions.setMargins
 import com.kondenko.pocketwaka.utils.extensions.setSize
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.dialog_app_rating.*
+import kotlinx.android.synthetic.main.dialog_app_rating.view.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
@@ -64,28 +66,41 @@ class AppRatingBottomSheetDialog : BottomSheetDialogFragment() {
         if (isNegativeFeedbackStateShown && !show || !isNegativeFeedbackStateShown && show) {
             isNegativeFeedbackStateShown = show
             (view as? ViewGroup)?.let { v ->
-                val initialDialogHeight = v.height.toFloat()
-                val targetDialogHeight = requireContext().dp(expandedHeightDp)
-                val initialRatingBarScale = 1f
-                val targetRatingBarScale = Scale.of(ratingBarScaleCollapsed)
-                ValueAnimator.ofFloat(0f, 1f).apply {
-                    interpolator = DecelerateInterpolator()
-                    duration = 300
-                    addUpdateListener {
-                        val fraction = animatedValue as Float
-                        val sheetHeight = fraction.fractionToValue(initialDialogHeight, targetDialogHeight)
-                        val ratingBarScale = fraction.fractionToValue(initialRatingBarScale, targetRatingBarScale.value!!)
-                        v.setSize(height = sheetHeight.roundToInt())
-                        ratingbar_rating_dialog.scale = Scale.of(ratingBarScale)
-                    }
-                    doOnStart {
-                        textview_low_rating_message?.isGone = !show
-                        button_low_rating_action?.isGone = !show || !isMailAvailable && supportEmail == null
-                        TransitionManager.beginDelayedTransition(v)
-                    }
-                    start()
-                }
+                v.updateTitleMargin(show)
+                v.animateLayout(!show, !show || !isMailAvailable && supportEmail == null)
             }
+        }
+    }
+
+    private fun ViewGroup.updateTitleMargin(showLowRatingState: Boolean) {
+        val ratingBarMarginBottom = context
+              .resources
+              .getDimension(R.dimen.margin_rating_dialog_rating_bar_bottom)
+              .roundToInt()
+        ratingbar_rating_dialog.setMargins(bottom = if (showLowRatingState) 0 else ratingBarMarginBottom)
+    }
+
+    private fun ViewGroup.animateLayout(showLowRatingMesssage: Boolean, showLowRatingAction: Boolean) {
+        val initialDialogHeight = height.toFloat()
+        val targetDialogHeight = requireContext().dp(expandedHeightDp)
+        val initialRatingBarScale = 1f
+        val targetRatingBarScale = Scale.of(ratingBarScaleCollapsed)
+        ValueAnimator.ofFloat(0f, 1f).apply {
+            interpolator = DecelerateInterpolator()
+            duration = 300
+            addUpdateListener {
+                val fraction = animatedValue as Float
+                val sheetHeight = fraction.fractionToValue(initialDialogHeight, targetDialogHeight)
+                val ratingBarScale = fraction.fractionToValue(initialRatingBarScale, targetRatingBarScale.value!!)
+                setSize(height = sheetHeight.roundToInt())
+                ratingbar_rating_dialog.scale = Scale.of(ratingBarScale)
+            }
+            doOnStart {
+                textview_low_rating_message?.isGone = showLowRatingMesssage
+                button_low_rating_action?.isGone = showLowRatingAction
+                TransitionManager.beginDelayedTransition(this@animateLayout)
+            }
+            start()
         }
     }
 
