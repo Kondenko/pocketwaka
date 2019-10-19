@@ -12,7 +12,7 @@ abstract class SkeletonAdapter<T, VH : SkeletonAdapter<T, VH>.SkeletonViewHolder
 
     protected abstract fun createSkeleton(view: View): Skeleton?
 
-    protected fun Float.adjustValue(isSkeleton: Boolean) = (context.dp(this)).negateIfTrue(!isSkeleton)
+    protected fun Number.adjustValue(isSkeleton: Boolean) = (context.dp(this)).negateIfTrue(!isSkeleton)
 
     abstract inner class SkeletonViewHolder<in Item : T>(view: View, private val skeleton: Skeleton?) : BaseViewHolder<Item>(view) {
 

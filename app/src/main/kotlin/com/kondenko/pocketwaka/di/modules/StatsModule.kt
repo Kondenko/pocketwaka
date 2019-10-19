@@ -30,48 +30,55 @@ val statsModule = module {
     factory { get<AppDatabase>().statsDao() }
     factory {
         StatsRepository(
-                service = get(),
-                dao = get()
+              service = get(),
+              dao = get()
         )
     }
     factory { ColorProvider(androidContext()) }
     factory {
         StatsResponseConverter(
-                context = androidContext(),
-                colorProvider = get(),
-                dateProvider = get(),
-                dateFormatter = get()
+              context = androidContext(),
+              colorProvider = get(),
+              dateProvider = get(),
+              dateFormatter = get()
         )
     }
     factory {
         GetStatsForRange(
-                schedulers = get(),
-                getTokenHeader = get<GetTokenHeaderValue>(),
-                statsRepository = get(),
-                serverModelConverter = get<StatsResponseConverter>()
+              schedulers = get(),
+              getTokenHeader = get<GetTokenHeaderValue>(),
+              statsRepository = get(),
+              serverModelConverter = get<StatsResponseConverter>()
         )
     }
     factory {
         GetStatsState(
-                schedulers = get(),
-                getStatsForRange = get<GetStatsForRange>(),
-                connectivityStatusProvider = get()
+              schedulers = get(),
+              getStatsForRange = get<GetStatsForRange>(),
+              connectivityStatusProvider = get()
         )
     }
-    factory { (context: Context, showSkeleton: Boolean) -> StatsAdapter(context, showSkeleton, get<TimeSpannableCreator>()) }
+    factory { (context: Context, showSkeleton: Boolean) ->
+        StatsAdapter(
+              context,
+              showSkeleton,
+              get<TimeSpannableCreator>(),
+              get()
+        )
+    }
     scope(named<FragmentStatsTab>()) {
         scoped { (context: Context, skeletonItems: List<StatsUiModel>) ->
             RecyclerViewSkeleton<StatsUiModel, StatsAdapter>(
-                    adapterCreator = { showSkeleton: Boolean -> get { parametersOf(context, showSkeleton) } },
-                    skeletonItems = skeletonItems
+                  adapterCreator = { showSkeleton: Boolean -> get { parametersOf(context, showSkeleton) } },
+                  skeletonItems = skeletonItems
             )
         }
     }
     viewModel { (range: String?) ->
         StatsViewModel(
-                range = range,
-                getStats = get<GetStatsState>(),
-                uiScheduler = get<SchedulersContainer>().uiScheduler
+              range = range,
+              getStats = get<GetStatsState>(),
+              uiScheduler = get<SchedulersContainer>().uiScheduler
         )
     }
 

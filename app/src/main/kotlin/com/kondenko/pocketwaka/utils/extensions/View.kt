@@ -81,9 +81,9 @@ fun <T : ViewGroup.MarginLayoutParams> T.setMargins(
 /**
  * Make sure a [View] doesn't push [other] outside of the layout if it's too wide.
  */
-infix fun View.limitWidthBy(other: View) = doOnPreDraw {
+fun View.limitWidthBy(other: View, vararg viewsToExclude: Int) = doOnPreDraw {
     val parentWidth = (it.parent as View).run { width - max(paddingLeft, paddingStart) - max(paddingRight, paddingEnd) }
-    val otherViewsWidth = (it.parent as ViewGroup).getOtherViewsWidthSum(it)
+    val otherViewsWidth = (it.parent as ViewGroup).getOtherViewsWidthSum(*viewsToExclude, it.id)
     if (other.right >= parentWidth) {
         it.updateLayoutParams {
             width = parentWidth - otherViewsWidth - it.run { max(marginRight, marginEnd) + max(marginStart, marginLeft) }
@@ -91,9 +91,9 @@ infix fun View.limitWidthBy(other: View) = doOnPreDraw {
     }
 }
 
-fun ViewGroup.getOtherViewsWidthSum(viewToExclude: View) =
+fun ViewGroup.getOtherViewsWidthSum(vararg viewsToExclude: Int) =
     children
-        .filter { it.id != viewToExclude.id }
+        .filter { it.id !in viewsToExclude }
         .map { it.widthWithMargins }
         .sum()
 

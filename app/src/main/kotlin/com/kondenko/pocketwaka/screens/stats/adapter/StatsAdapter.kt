@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
 import com.kondenko.pocketwaka.screens.renderStatus
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
@@ -21,7 +22,8 @@ import kotlinx.android.synthetic.main.item_stats_info.view.*
 class StatsAdapter(
         context: Context,
         showSkeleton: Boolean,
-        private val timeSpannableCreator: SpannableCreator
+        private val timeSpannableCreator: SpannableCreator,
+        private val dateFormatter: DateFormatter
 ) : SkeletonAdapter<StatsUiModel, StatsAdapter.ViewHolder>(context, showSkeleton) {
 
     private enum class ViewType(val type: Int) {
@@ -70,8 +72,15 @@ class StatsAdapter(
 
     override fun createSkeleton(view: View) = Skeleton(context, view).apply {
         onSkeletonShown { isSkeleton: Boolean ->
-            view.textview_bestday_time?.run { translationY += 3f.adjustValue(isSkeleton) }
-            view.textview_all_entities_card_title?.run { translationY += 8f.adjustValue(isSkeleton) }
+            with(view) {
+                textview_bestday_time?.run { translationY += 3f.adjustValue(isSkeleton) }
+                textview_all_entities_card_title?.run {
+                    translationY += 4f.adjustValue(isSkeleton)
+                }
+                recyclerview_all_entities?.run {
+                    translationY += 8f.adjustValue(isSkeleton)
+                }
+            }
         }
     }
 
@@ -110,11 +119,11 @@ class StatsAdapter(
 
         private fun View.render(item: StatsUiModel.Stats) {
             textview_all_entities_card_title.text = item.cardTitle
-            with(view.recyclerview_all_entitites) {
+            with(view.recyclerview_all_entities) {
                 layoutManager = object : LinearLayoutManager(context) {
                     override fun canScrollVertically() = false
                 }
-                adapter = CardStatsListAdapter(context, showSkeleton).apply {
+                adapter = CardStatsListAdapter(context, showSkeleton, dateFormatter).apply {
                     items = item.items
                 }
             }

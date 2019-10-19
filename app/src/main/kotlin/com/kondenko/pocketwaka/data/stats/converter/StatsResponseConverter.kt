@@ -18,10 +18,10 @@ import io.reactivex.rxkotlin.toMaybe
 import kotlin.math.roundToLong
 
 class StatsResponseConverter(
-        private val context: Context,
-        private val colorProvider: ColorProvider,
-        private val dateProvider: DateProvider,
-        private val dateFormatter: DateFormatter
+      private val context: Context,
+      private val colorProvider: ColorProvider,
+      private val dateProvider: DateProvider,
+      private val dateFormatter: DateFormatter
 ) : (StatsRepository.Params, StatsServerModel) -> Maybe<StatsDbModel> {
 
     private enum class StatsType {
@@ -29,7 +29,7 @@ class StatsResponseConverter(
     }
 
     override fun invoke(params: StatsRepository.Params, response: StatsServerModel): Maybe<StatsDbModel> =
-            toDomainModel(params.range, response.stats).toMaybe()
+          toDomainModel(params.range, response.stats).toMaybe()
 
     private fun toDomainModel(range: String, stats: Stats?): StatsDbModel? {
         if (stats == null) return null
@@ -39,10 +39,10 @@ class StatsResponseConverter(
         }
 
         val list = arrayListOf<StatsUiModel>(
-                StatsUiModel.Info(
-                        stats.dailyAverage?.toLong()?.let(dateFormatter::secondsToHumanReadableTime),
-                        stats.totalSeconds?.roundToLong()?.let(dateFormatter::secondsToHumanReadableTime)
-                )
+              StatsUiModel.Info(
+                    stats.dailyAverage?.toLong()?.let(dateFormatter::secondsToHumanReadableTime),
+                    stats.totalSeconds?.roundToLong()?.let(dateFormatter::secondsToHumanReadableTime)
+              )
         )
 
         list += stats.convertBestDay(stats.dailyAverage)
@@ -52,11 +52,11 @@ class StatsResponseConverter(
         list += stats.operatingSystems?.toDomainModel(StatsType.OperatingSystems)
 
         return StatsDbModel(
-                range = range,
-                dateUpdated = dateProvider.getCurrentTimeMillis(),
-                isFromCache = false,
-                isEmpty = stats.totalSeconds == 0.0,
-                data = list
+              range = range,
+              dateUpdated = dateProvider.getCurrentTimeMillis(),
+              isFromCache = false,
+              isEmpty = stats.totalSeconds == 0.0,
+              data = list
         )
     }
 

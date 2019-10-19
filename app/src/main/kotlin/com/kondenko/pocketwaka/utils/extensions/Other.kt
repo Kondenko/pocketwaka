@@ -100,7 +100,9 @@ inline fun <reified T : Any> T.className(includeSuperclass: Boolean = false, sep
     return if (!includeSuperclass || superclassName == null) className else "$superclassName$separator$className"
 }
 
-fun <T> forEach(vararg items: T, action: (T) -> Unit) = items.forEach(action)
+fun <T> forEachNonNull(vararg items: T, action: (T) -> Unit) = items.forEach(action)
+
+fun <T> forEach(vararg items: T?, action: (T?) -> Unit) = items.forEach(action)
 
 fun date(day: Int, month: Int, year: Int): Long = Calendar.getInstance().run {
     set(DAY_OF_MONTH, day)

@@ -65,6 +65,10 @@ class DateFormatter(private val context: Context, private val stringProvider: St
     fun secondsToHumanReadableTime(seconds: Long, format: Format = Format.Long): String {
         val hours = TimeUnit.SECONDS.toHours(seconds)
         val minutes = TimeUnit.SECONDS.toMinutes(seconds) - TimeUnit.HOURS.toMinutes(hours)
+        return toHumanReadableTime(hours.toInt(), minutes.toInt(), format)
+    }
+
+    fun toHumanReadableTime(hours: Int, minutes: Int, format: Format = Format.Long): String {
         val templateHours = when (format) {
             Format.Long -> stringProvider.getHoursTemplate(hours.toInt())
             Format.Short -> stringProvider.getHoursTemplateShort(hours.toInt())
