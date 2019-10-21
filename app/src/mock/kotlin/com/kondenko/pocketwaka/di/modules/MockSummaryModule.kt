@@ -33,7 +33,7 @@ val mockSummaryModule = module(override = true) {
         )
     }
     single {
-        GetSummaryStateMock(get())
+        GetSummaryStateMock(get(), get())
     }
     viewModel {
         SummaryViewModel(
