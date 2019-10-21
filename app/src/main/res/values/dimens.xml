@@ -81,6 +81,7 @@
 
     <dimen name="size_summary_icon_connect_repo">32dp</dimen>
     <dimen name="margin_summary_icon_connect_repo_horizontal">16dp</dimen>
+    <dimen name="textsize_summary_label_connect_repo">13sp</dimen>
 
     <!-- MENU -->
     <dimen name="size_menu_icon_app">84dp</dimen>

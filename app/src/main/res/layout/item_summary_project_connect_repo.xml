@@ -16,7 +16,7 @@
         android:paddingEnd="@dimen/padding_summary_project_no_repo_message"
         android:text="@string/summary_projects_label_no_repo"
         android:textColor="@color/color_text_secondary"
-        android:textSize="14sp"
+        android:textSize="13sp"
         android:layout_alignParentStart="true"
         android:layout_alignTop="@id/divider"
         android:layout_toStartOf="@id/button_summary_project_connect_repo"
