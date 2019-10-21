@@ -1,13 +1,15 @@
 package com.kondenko.pocketwaka.ui
 
 import android.content.Context
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.Interpolator
-import android.widget.LinearLayout
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.children
+import androidx.customview.view.AbsSavedState
 import com.airbnb.lottie.LottieAnimationView
 import com.jakewharton.rxbinding3.view.clicks
 import com.kondenko.pocketwaka.R
@@ -18,11 +20,12 @@ import io.reactivex.subjects.PublishSubject
 import kotlin.math.roundToInt
 
 class AnimatedRatingBar @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0,
-    defStyleRes: Int = 0
-) : LinearLayout(context, attrs, defStyleAttr, defStyleRes) {
+      context: Context,
+      attrs: AttributeSet? = null,
+      defStyleAttr: Int = 0
+) : LinearLayoutCompat(context, attrs, defStyleAttr) {
+
+    private class SavedState(val currentRating: Int, superState: Parcelable) : AbsSavedState(superState)
 
     private val ratingChanges = PublishSubject.create<Int>()
 
@@ -30,9 +33,18 @@ class AnimatedRatingBar @JvmOverloads constructor(
 
     private var animationDuration: Int = 150
 
+    var starsNumber: Int = 5
+
+    var rating = 0
+        set(value) {
+            require(value in 1..starsNumber)
+            field = value
+            updateChildrenState(value - 1)
+        }
+
     init {
-        useAttributes(attrs, R.styleable.AnimatedRatingBar, defStyleAttr, defStyleRes) {
-            val starsNumber = getInteger(R.styleable.AnimatedRatingBar_stars_number, 5)
+        useAttributes(attrs, R.styleable.AnimatedRatingBar, defStyleAttr) {
+            starsNumber = getInteger(R.styleable.AnimatedRatingBar_stars_number, 5)
             val starSize = getDimension(R.styleable.AnimatedRatingBar_star_size, 44f).roundToInt()
             val starPadding = getDimension(R.styleable.AnimatedRatingBar_star_padding, 4f).roundToInt()
             val tint = getColor(R.styleable.AnimatedRatingBar_tint, context.getAccentColor())
@@ -52,9 +64,10 @@ class AnimatedRatingBar @JvmOverloads constructor(
                     setFillTint(tint)
                     setStrokeTint(tint)
                     clicks()
-                        .doOnNext { updateChildrenState(index) }
-                        .map { index + 1 }
-                        .subscribeWith(ratingChanges)
+                          .doOnNext { updateChildrenState(index) }
+                          .map { index + 1 }
+                          .doOnNext { rating = it }
+                          .subscribeWith(ratingChanges)
                 }
                 indices[animationView.id] = index
                 addView(animationView, index)
@@ -65,9 +78,9 @@ class AnimatedRatingBar @JvmOverloads constructor(
     fun ratingChanges(): Observable<Int> = ratingChanges
 
     private fun updateChildrenState(index: Int) =
-        children.forEachIndexed { i, view ->
-            (view as? LottieAnimationView)?.isStarred = i <= index
-        }
+          children.forEachIndexed { i, view ->
+              (view as? LottieAnimationView)?.isStarred = i <= index
+          }
 
     private var LottieAnimationView.isStarred: Boolean
         get() = isSelected
@@ -80,4 +93,16 @@ class AnimatedRatingBar @JvmOverloads constructor(
             isSelected = value
         }
 
+    override fun onSaveInstanceState(): Parcelable? {
+        return super.onSaveInstanceState()?.let { SavedState(rating, it) }
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        if (state !is SavedState) {
+            super.onRestoreInstanceState(state)
+        } else {
+            super.onRestoreInstanceState(state.superState)
+            rating = state.currentRating
+        }
+    }
 }
