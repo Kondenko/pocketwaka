@@ -161,6 +161,9 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
                     textview_summary_project_commit_message.limitWidthBy(textview_summary_project_commit_time)
                 }
                 viewHolder<ProjectModel.ConnectRepoAction>(R.layout.item_summary_project_connect_repo) { item, _ ->
+                    setOnClickListener {
+                        button_summary_project_connect_repo.performClick()
+                    }
                     button_summary_project_connect_repo.setOnClickListener {
                         connectRepoClicks.onNext(item.url)
                     }
