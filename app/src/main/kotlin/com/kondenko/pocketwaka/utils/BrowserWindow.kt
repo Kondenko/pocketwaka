@@ -28,7 +28,7 @@ class BrowserWindow(private var context: Context? = null, lifecycleOwner: Lifecy
     }
 
     fun openUrl(url: String) {
-        if (!url.trim().isValidUrl()) {
+        if (url.trim().isValidUrl()) {
             connection = object : CustomTabsServiceConnection() {
                 override fun onCustomTabsServiceConnected(componentName: ComponentName, client: CustomTabsClient) {
                     client.warmup(0L) // This prevents backgrounding after redirection
