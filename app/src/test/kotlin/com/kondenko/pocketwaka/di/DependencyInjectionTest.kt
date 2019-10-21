@@ -3,11 +3,13 @@ package com.kondenko.pocketwaka.di
 import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
+import com.kondenko.pocketwaka.screens.main.MainViewModel
+import com.kondenko.pocketwaka.screens.menu.MenuViewModel
 import com.kondenko.pocketwaka.screens.stats.StatsViewModel
 import com.kondenko.pocketwaka.screens.stats.adapter.StatsAdapter
 import com.kondenko.pocketwaka.screens.summary.SummaryAdapter
@@ -33,6 +35,7 @@ class DependencyInjectionTest : KoinTest {
         val lifecycleOwner: LifecycleOwner = mock()
         val lifecycle: Lifecycle = mock()
         whenever(lifecycleOwner.lifecycle) doReturn lifecycle
+        FirebaseApp.initializeApp(context)
         koinApplication {
             androidContext(context)
             modules(koinModules)
@@ -47,13 +50,19 @@ class DependencyInjectionTest : KoinTest {
                 parametersOf(context, false)
             }
             create<RecyclerViewSkeleton<StatsUiModel, StatsAdapter>> {
-                parametersOf(mock<RecyclerView>(), context, emptyList<StatsUiModel>())
+                parametersOf(context, emptyList<StatsUiModel>())
             }
             create<RecyclerViewSkeleton<SummaryUiModel, SummaryAdapter>> {
-                parametersOf(mock<RecyclerView>(), context, emptyList<SummaryUiModel>())
+                parametersOf(context, emptyList<SummaryUiModel>())
             }
             create<StatsViewModel> {
                 parametersOf("7_days")
+            }
+            create<MainViewModel> {
+                parametersOf(0)
+            }
+            create<MenuViewModel> {
+                parametersOf(lifecycleOwner)
             }
         }
     }

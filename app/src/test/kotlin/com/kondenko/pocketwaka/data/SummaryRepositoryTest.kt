@@ -39,7 +39,7 @@ class SummaryRepositoryTest {
 
     private val dbModel = SummaryDbModel(0, false, false, false, uiModels)
 
-    private val dataFromServer = Summary("", "", emptyList(), emptyList(), emptyList())
+    private val dataFromServer = Summary(emptyList())
 
     private val dataFromCache = listOf(dbModel.copy(isEmpty = true, isFromCache = true), dbModel.copy(isFromCache = true))
 
