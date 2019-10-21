@@ -32,13 +32,13 @@ class MainActivity : AppCompatActivity() {
 
     private var refreshEventsDisposable: Disposable? = null
 
-    private val fragmentSummary = FragmentSummary()
+    private lateinit var fragmentSummary: FragmentSummary
     private val tagSummary = "summary"
 
-    private val fragmentStats = FragmentStats()
+    private lateinit var fragmentStats: FragmentStats
     private val tagStats = "stats"
 
-    private val fragmentMenu = FragmentMenu()
+    private lateinit var fragmentMenu: FragmentMenu
     private val tagMenu = "menu"
 
     private var activeFragment: Fragment? = null
@@ -49,9 +49,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar_main)
+        fragmentSummary = supportFragmentManager.findFragmentByTag(tagSummary) as? FragmentSummary ?: FragmentSummary()
+        fragmentStats = supportFragmentManager.findFragmentByTag(tagStats) as? FragmentStats ?: FragmentStats()
+        fragmentMenu = supportFragmentManager.findFragmentByTag(tagMenu) as? FragmentMenu ?: FragmentMenu()
         supportFragmentManager.transaction {
             forEachNonNull(fragmentSummary to tagSummary, fragmentStats to tagStats, fragmentMenu to tagMenu) { (fragment, tag) ->
-                add(R.id.main_container, fragment, tag)
+                if (supportFragmentManager.findFragmentByTag(tag) == null) {
+                    add(R.id.main_container, fragment, tag)
+                }
                 hide(fragment)
             }
         }
@@ -137,14 +142,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setFragment(fragment: Fragment, onCompleted: (() -> Unit)? = null) {
-        if (activeFragment == null || activeFragment?.tag != fragment.tag) {
+         if (activeFragment == null || activeFragment?.tag != fragment.tag) {
             supportFragmentManager.transaction {
                 activeFragment?.let { hide(it) }
                 setCustomAnimations(R.anim.bottom_nav_in, R.anim.bottom_nav_out)
                 show(fragment)
-                activeFragment = fragment
-                onCompleted?.let {
-                    runOnCommit { it() }
+                runOnCommit {
+                    activeFragment = fragment
+                    onCompleted?.invoke()
                 }
             }
         }
