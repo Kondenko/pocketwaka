@@ -72,4 +72,5 @@
     <string name="rating_dialog_low_rating_message_no_email_app">Простите, если что-то не так 😿\nНапишите нам на %s\nи мы исправим ошибки</string>
     <string name="rating_dialog_low_rating_message_no_email_address">Спасибо! Ваша оценка поможет приложению стать лучше.</string>
     <string name="rating_dialog_low_rating_action">@string/menu_action_send_feedback</string>
+    <string name="all_error_invalid_url">Не можем открыть этот URL</string>
 </resources>

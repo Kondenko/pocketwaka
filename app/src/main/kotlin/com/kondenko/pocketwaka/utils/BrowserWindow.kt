@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.net.Uri
+import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsServiceConnection
@@ -13,6 +14,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
+import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.utils.extensions.isValidUrl
 
 class BrowserWindow(private var context: Context? = null, lifecycleOwner: LifecycleOwner) : LifecycleObserver {
 
@@ -25,22 +28,26 @@ class BrowserWindow(private var context: Context? = null, lifecycleOwner: Lifecy
     }
 
     fun openUrl(url: String) {
-        connection = object : CustomTabsServiceConnection() {
-            override fun onCustomTabsServiceConnected(componentName: ComponentName, client: CustomTabsClient) {
-                client.warmup(0L) // This prevents backgrounding after redirection
-                val customTabsIntent = with(CustomTabsIntent.Builder()) {
-                    context?.let { setToolbarColor(ContextCompat.getColor(it, android.R.color.white)) }
-                    build()
+        if (!url.trim().isValidUrl()) {
+            connection = object : CustomTabsServiceConnection() {
+                override fun onCustomTabsServiceConnected(componentName: ComponentName, client: CustomTabsClient) {
+                    client.warmup(0L) // This prevents backgrounding after redirection
+                    val customTabsIntent = with(CustomTabsIntent.Builder()) {
+                        context?.let { setToolbarColor(ContextCompat.getColor(it, android.R.color.white)) }
+                        build()
+                    }
+                    customTabsIntent.launchUrl(context, Uri.parse(url))
                 }
-                customTabsIntent.launchUrl(context, Uri.parse(url))
-            }
 
-            override fun onServiceDisconnected(name: ComponentName) {
+                override fun onServiceDisconnected(name: ComponentName) {
+                }
             }
+            getChromePackage()?.let {
+                isCustomTabsServiceBound = CustomTabsClient.bindCustomTabsService(context, it, connection)
+            } ?: openBrowserActivity(url)
+        } else {
+            Toast.makeText(context, R.string.all_error_invalid_url, Toast.LENGTH_LONG).show()
         }
-        getChromePackage()?.let {
-            isCustomTabsServiceBound = CustomTabsClient.bindCustomTabsService(context, it, connection)
-        } ?: openBrowserActivity(url)
     }
 
     private fun openBrowserActivity(url: String) {

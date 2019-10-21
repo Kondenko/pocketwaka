@@ -2,13 +2,17 @@
 
     <string name="all_app_name" translatable="false">PocketWaka</string>
 
-    <string name="screen_stats">Your stats</string>
+    <string name="all_error_invalid_url">Can\'t open this url</string>
+
+    <!-- Main activity -->
 
     <string name="main_action_refresh">Refresh</string>
 
     <string name="main_bottomnav_today">Summary</string>
     <string name="main_bottomnav_ranges">Stats</string>
     <string name="main_bottomnav_menu">Menu</string>
+
+    <!-- States -->
 
     <string name="error_refreshing_token">Please log in again</string>
     <string name="error_state_title">We did our best\nbut couldn’t load your stats</string>
@@ -25,21 +29,26 @@
 
     <string name="status_offline">Offline</string>
     <string name="status_updating">Updating</string>
-    <string name="loginactivity_sign_in">Log in</string>
 
+    <!-- Login -->
+
+    <string name="loginactivity_sign_in">Log in</string>
     <string name="loginactivity_subtitle_default">Get insights on your\ncoding productivity</string>
     <string name="loginactivity_subtitle_loading">Logging in</string>
 
     <string name="loginactivity_error_generic">Failed to log in</string>
 
-
     <string name="loginactivity_error_no_browser">Google Chrome needs to be installed \nto log in</string>
     <string name="loginactivity_subtitle_error_action">Try again</string>
+
+
+    <!-- Stats -->
+
     <string name="stats_tab_7_days">Week</string>
     <string name="stats_tab_30_days">Month</string>
-
     <string name="stats_tab_6_months">6 months</string>
     <string name="stats_tab_1_year">1 year</string>
+
     <string name="stats_error_unknown">Couldn\'t update stats</string>
 
     <string name="stats_error_unknown_range">Couldn\'t get stats for this period</string>

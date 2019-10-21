@@ -110,3 +110,5 @@ fun date(day: Int, month: Int, year: Int): Long = Calendar.getInstance().run {
     set(YEAR, year)
     time.time
 }
+
+fun String.isValidUrl() = this.matches(Regex("^(https?|ftp)://[^\\s/$.?#].[^\\s]*$"))
