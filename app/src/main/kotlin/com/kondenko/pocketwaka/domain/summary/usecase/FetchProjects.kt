@@ -3,7 +3,9 @@ package com.kondenko.pocketwaka.domain.summary.usecase
 import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.branches.DurationsRepository
 import com.kondenko.pocketwaka.data.branches.model.Duration
+import com.kondenko.pocketwaka.data.branches.model.DurationsServerModel
 import com.kondenko.pocketwaka.data.commits.CommitsRepository
+import com.kondenko.pocketwaka.data.commits.model.CommitServerModel
 import com.kondenko.pocketwaka.data.common.model.database.StatsEntity
 import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
 import com.kondenko.pocketwaka.data.summary.model.server.SummaryData
@@ -45,39 +47,53 @@ class FetchProjects(
           summaryData.projects
                 .toObservable()
                 .filter { it.name != null }
-                .concatMapEagerDelayError { project: StatsEntity ->
-                    val date = summaryData.range.date
-                    val projectName = project.name
-                          ?: throw NullPointerException("A project with a null name wasn't filtered out: $project")
-                    val branchesSingle =
-                          durationsRepository.getData(DurationsRepository.Params(token, date, projectName))
-                                .subscribeOn(schedulersContainer.workerScheduler)
-                                .map { KOptional.of(it) }
-                                .onErrorReturnItem(KOptional.empty())
-                    val commitsSingle =
-                          commitsRepository.getData(CommitsRepository.Params(token, projectName))
-                                .subscribeOn(schedulersContainer.workerScheduler)
-                                .map { true to it }
-                                .onErrorReturn {
-                                    val isRepoConnected = (it as? WakatimeException)?.message?.contains(noRepoError, true) == false
-                                    isRepoConnected to emptyList()
-                                }
-                    Singles.zip(branchesSingle, commitsSingle) { branchesServerModel, (isRepoConnected, commits) ->
-                        val timeTracked = project.totalSeconds
-                              ?.roundToLong()
-                              ?.let { seconds -> dateFormatter.secondsToHumanReadableTime(seconds, DateFormatter.Format.Short) }
-                        val commitsForDate = commits.filter { it.authorDate.contains(date) }
-                        val branchesData = branchesServerModel?.item?.branchesData
-                              ?: emptyList()
-                        val branches = groupByBranches(
-                              branchesData,
-                              commitsForDate
-                        )
-                        Project(projectName, timeTracked, isRepoConnected, branches)
-                    }.toObservable()
-                }
+                .concatMapEagerDelayError { project: StatsEntity -> getBranchesAndCommits(summaryData.range.date, token, project) }
                 .map { it.toUiModel() }
                 .startWithIfNotEmpty(SummaryUiModel.ProjectsTitle)
+
+    private fun getBranchesAndCommits(date: String, token: String, project: StatsEntity): Observable<Project> {
+        val projectName = project.name
+              ?: throw NullPointerException("A project with a null name wasn't filtered out: $project")
+        val branchesSingle =
+              durationsRepository.getData(DurationsRepository.Params(token, date, projectName))
+                    .subscribeOn(schedulersContainer.workerScheduler)
+                    .map { KOptional.of(it) }
+                    .onErrorReturnItem(KOptional.empty())
+        val commitsSingle =
+              commitsRepository.getData(CommitsRepository.Params(token, projectName))
+                    .subscribeOn(schedulersContainer.workerScheduler)
+                    .map { true to it }
+                    .onErrorReturn {
+                        val isRepoConnected = (it as? WakatimeException)?.message?.contains(noRepoError, true) == false
+                        isRepoConnected to emptyList()
+                    }
+        return Singles.zip(branchesSingle, commitsSingle) { branchesServerModel: KOptional<DurationsServerModel>, (isRepoConnected, commits): Pair<Boolean, List<CommitServerModel>> ->
+            zipBranchesAndCommits(project, date, branchesServerModel, isRepoConnected, commits)
+        }.toObservable()
+    }
+
+    private fun zipBranchesAndCommits(
+          project: StatsEntity,
+          date: String,
+          branchesServerModel: KOptional<DurationsServerModel>,
+          isRepoConnected: Boolean,
+          commits: List<CommitServerModel>
+    ): Project {
+        val timeTracked = project.totalSeconds
+              ?.roundToLong()
+              ?.let { seconds -> dateFormatter.secondsToHumanReadableTime(seconds, DateFormatter.Format.Short) }
+        val commitsForDate =
+              commits
+                    .filter { it.authorDate.contains(date) }
+                    .filter { it.totalSeconds > 0 }
+        val branchesData = branchesServerModel?.item?.branchesData
+              ?: emptyList()
+        val branches = groupByBranches(
+              branchesData,
+              commitsForDate
+        )
+        return Project(project.name!!, timeTracked, isRepoConnected, branches)
+    }
 
     private fun Project.toUiModel(): SummaryUiModel {
         var projectModel = listOf(ProjectModel.ProjectName(name, timeTracked)) +
@@ -97,7 +113,7 @@ class FetchProjects(
         return SummaryUiModel.Project(projectModel)
     }
 
-    private fun groupByBranches(branches: Iterable<Duration>, commits: Iterable<com.kondenko.pocketwaka.data.commits.model.Commit>): List<Branch> =
+    private fun groupByBranches(branches: Iterable<Duration>, commits: Iterable<CommitServerModel>): List<Branch> =
           branches
                 .groupBy { it.branch }
                 .map { (name, durations) -> name to durations.sumByDouble { it.duration } }

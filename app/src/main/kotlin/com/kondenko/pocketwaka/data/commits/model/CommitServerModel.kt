@@ -2,7 +2,7 @@ package com.kondenko.pocketwaka.data.commits.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Commit(
+data class CommitServerModel(
       val id: String,
       val hash: String,
       @SerializedName("truncated_hash")

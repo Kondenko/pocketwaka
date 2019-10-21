@@ -4,11 +4,10 @@ import com.kondenko.pocketwaka.data.commits.CommitsRepository
 import com.kondenko.pocketwaka.data.commits.service.CommitsService
 import com.kondenko.pocketwaka.di.qualifiers.Api
 import com.kondenko.pocketwaka.utils.extensions.create
-import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
 val commitsModule = module {
     factory { get<Retrofit>(Api).create<CommitsService>() }
-    factory { CommitsRepository(androidContext(), get()) }
+    factory { CommitsRepository(get()) }
 }
