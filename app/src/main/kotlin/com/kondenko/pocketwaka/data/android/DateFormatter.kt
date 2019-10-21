@@ -70,12 +70,12 @@ class DateFormatter(private val context: Context, private val stringProvider: St
 
     fun toHumanReadableTime(hours: Int, minutes: Int, format: Format = Format.Long): String {
         val templateHours = when (format) {
-            Format.Long -> stringProvider.getHoursTemplate(hours.toInt())
-            Format.Short -> stringProvider.getHoursTemplateShort(hours.toInt())
+            Format.Long -> stringProvider.getHoursTemplate(hours)
+            Format.Short -> stringProvider.getHoursTemplateShort(hours)
         }
         val templateMinutes = when (format) {
-            Format.Long -> stringProvider.getMinutesTemplate(minutes.toInt())
-            Format.Short -> stringProvider.getMinutesTemplateShort(minutes.toInt())
+            Format.Long -> stringProvider.getMinutesTemplate(minutes)
+            Format.Short -> stringProvider.getMinutesTemplateShort(minutes)
         }
         val timeBuilder = StringBuilder()
         if (hours > 0) timeBuilder.append(templateHours.format(hours)).append(' ')

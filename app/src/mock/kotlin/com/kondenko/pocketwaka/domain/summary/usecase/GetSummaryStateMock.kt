@@ -38,6 +38,6 @@ class GetSummaryStateMock(private val getSummaryState: GetSummaryState) :
     )
 
     override fun build(params: GetSummary.Params?): Observable<State<List<SummaryUiModel>>> {
-        return Observable.just(State.Success(mockModels))
+        return getSummaryState.build(params)
     }
 }
