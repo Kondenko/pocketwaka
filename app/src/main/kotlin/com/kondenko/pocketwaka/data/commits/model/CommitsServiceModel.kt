@@ -11,7 +11,7 @@ data class CommitsServiceModel(
         val nextPage: Int,
         @SerializedName("next_page_url")
         val nextPageUrl: String,
-        val page: Int,
+        val page: Int?,
         @SerializedName("prev_page")
         val prevPage: Any?,
         @SerializedName("prev_page_url")
