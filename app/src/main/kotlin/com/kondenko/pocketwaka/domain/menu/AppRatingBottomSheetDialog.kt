@@ -2,12 +2,13 @@ package com.kondenko.pocketwaka.domain.menu
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
-import androidx.core.animation.doOnStart
+import androidx.core.view.doOnLayout
 import androidx.core.view.isGone
 import androidx.transition.TransitionManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -15,6 +16,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.ui.Scale
 import com.kondenko.pocketwaka.ui.scale
+import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.extensions.dp
 import com.kondenko.pocketwaka.utils.extensions.setMargins
 import com.kondenko.pocketwaka.utils.extensions.setSize
@@ -40,6 +42,16 @@ class AppRatingBottomSheetDialog : BottomSheetDialogFragment() {
 
     var ratingBarScaleCollapsed = 0.7f
 
+    var rating: Int?
+        get() = ratingbar_rating_dialog?.rating
+        set(value) {
+            value?.let {
+                ratingbar_rating_dialog?.rating = value
+            }
+        }
+
+    var onDismiss: (() -> Unit)? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_app_rating, container, false)
     }
@@ -51,6 +63,17 @@ class AppRatingBottomSheetDialog : BottomSheetDialogFragment() {
         button_low_rating_action.clicks().subscribeWith(sendFeedbackClicks)
     }
 
+    override fun onDestroyView() {
+        onDismiss = null
+        super.onDestroyView()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        WakaLog.d("onDismiss = $onDismiss")
+        onDismiss?.invoke()
+    }
+
     fun ratingChanges(): Observable<Int> =
           ratingChanges.delay(ratingReactionDelay, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
 
@@ -58,25 +81,25 @@ class AppRatingBottomSheetDialog : BottomSheetDialogFragment() {
           sendFeedbackClicks
 
     fun showLowRatingState(show: Boolean, isMailAvailable: Boolean, supportEmail: String?) {
-        if (!isMailAvailable && supportEmail != null) {
-            textview_low_rating_message.text = getString(R.string.rating_dialog_low_rating_message_no_email_app, supportEmail)
-        } else if (!isMailAvailable && supportEmail == null) {
-            textview_low_rating_message.text = getString(R.string.rating_dialog_low_rating_message_no_email_address)
-        }
         if (isNegativeFeedbackStateShown && !show || !isNegativeFeedbackStateShown && show) {
             isNegativeFeedbackStateShown = show
-            (view as? ViewGroup)?.let { v ->
-                v.updateTitleMargin(show)
-                v.animateLayout(!show, !show || !isMailAvailable && supportEmail == null)
+            if (!isMailAvailable && supportEmail != null) {
+                textview_low_rating_message.text = getString(R.string.rating_dialog_low_rating_message_no_email_app, supportEmail)
+            } else if (!isMailAvailable && supportEmail == null) {
+                textview_low_rating_message.text = getString(R.string.rating_dialog_low_rating_message_no_email_address)
+            }
+            val parent = view as? ViewGroup
+            parent?.doOnLayout {
+                parent.updateTitleMargin(show)
+                parent.animateLayout(!show, !show || !isMailAvailable && supportEmail == null)
             }
         }
     }
 
-    private fun ViewGroup.updateTitleMargin(showLowRatingState: Boolean) {
+    private fun View.updateTitleMargin(showLowRatingState: Boolean) {
         val ratingBarMarginBottom = context
               .resources
-              .getDimension(R.dimen.margin_rating_dialog_rating_bar_bottom)
-              .roundToInt()
+              .getDimension(R.dimen.margin_rating_dialog_rating_bar_bottom).roundToInt()
         ratingbar_rating_dialog.setMargins(bottom = if (showLowRatingState) 0 else ratingBarMarginBottom)
     }
 
@@ -95,11 +118,9 @@ class AppRatingBottomSheetDialog : BottomSheetDialogFragment() {
                 setSize(height = sheetHeight.roundToInt())
                 ratingbar_rating_dialog.scale = Scale.of(ratingBarScale)
             }
-            doOnStart {
-                textview_low_rating_message?.isGone = showLowRatingMesssage
-                button_low_rating_action?.isGone = showLowRatingAction
-                TransitionManager.beginDelayedTransition(this@animateLayout)
-            }
+            textview_low_rating_message?.isGone = showLowRatingMesssage
+            button_low_rating_action?.isGone = showLowRatingAction
+            TransitionManager.beginDelayedTransition(this@animateLayout)
             start()
         }
     }

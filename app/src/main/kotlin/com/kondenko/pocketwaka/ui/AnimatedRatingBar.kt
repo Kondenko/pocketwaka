@@ -16,6 +16,7 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.extensions.*
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
 import kotlin.math.roundToInt
 
@@ -37,9 +38,10 @@ class AnimatedRatingBar @JvmOverloads constructor(
 
     var rating = 0
         set(value) {
-            require(value in 1..starsNumber)
+            require(value in 0..starsNumber)
             field = value
             updateChildrenState(value - 1)
+            ratingChanges.onNext(value)
         }
 
     init {
@@ -64,10 +66,11 @@ class AnimatedRatingBar @JvmOverloads constructor(
                     setFillTint(tint)
                     setStrokeTint(tint)
                     clicks()
-                          .doOnNext { updateChildrenState(index) }
                           .map { index + 1 }
-                          .doOnNext { rating = it }
-                          .subscribeWith(ratingChanges)
+                          .subscribeBy(
+                                onNext = { rating = it },
+                                onError = WakaLog::e
+                          )
                 }
                 indices[animationView.id] = index
                 addView(animationView, index)
@@ -103,6 +106,7 @@ class AnimatedRatingBar @JvmOverloads constructor(
         } else {
             super.onRestoreInstanceState(state.superState)
             rating = state.currentRating
+            WakaLog.d("Rating restored: $rating")
         }
     }
 }

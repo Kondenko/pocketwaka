@@ -9,7 +9,6 @@ import com.google.firebase.FirebaseApp
 import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.screens.main.MainViewModel
-import com.kondenko.pocketwaka.screens.menu.MenuViewModel
 import com.kondenko.pocketwaka.screens.stats.StatsViewModel
 import com.kondenko.pocketwaka.screens.stats.adapter.StatsAdapter
 import com.kondenko.pocketwaka.screens.summary.SummaryAdapter
@@ -60,9 +59,6 @@ class DependencyInjectionTest : KoinTest {
             }
             create<MainViewModel> {
                 parametersOf(0)
-            }
-            create<MenuViewModel> {
-                parametersOf(lifecycleOwner)
             }
         }
     }

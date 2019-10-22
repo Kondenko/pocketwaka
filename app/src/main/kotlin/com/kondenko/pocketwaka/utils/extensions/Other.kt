@@ -6,6 +6,7 @@ import android.graphics.Matrix
 import android.graphics.Path
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieProperty
@@ -112,3 +113,10 @@ fun date(day: Int, month: Int, year: Int): Long = Calendar.getInstance().run {
 }
 
 fun String.isValidUrl() = this.matches(Regex("^(https?|ftp)://[^\\s/$.?#].[^\\s]*$"))
+
+val DialogFragment.isShown
+    get() = dialog?.isShowing == true && !isRemoving
+
+fun DialogFragment.safeDismiss() {
+    if (isShown) dismiss()
+}

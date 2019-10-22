@@ -1,12 +1,10 @@
 package com.kondenko.pocketwaka.screens.menu
 
-import androidx.lifecycle.LifecycleOwner
 import com.kondenko.pocketwaka.domain.main.ClearCache
 import com.kondenko.pocketwaka.domain.menu.GetMenuUiModel
 import com.kondenko.pocketwaka.domain.menu.MenuUiModel
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.base.BaseViewModel
-import com.kondenko.pocketwaka.utils.extensions.attachToLifecycle
 import com.kondenko.pocketwaka.utils.extensions.report
 import com.kondenko.pocketwaka.utils.extensions.toObservable
 import io.reactivex.Observable
@@ -15,46 +13,46 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
 
 class MenuViewModel(
-    private val lifecycleOwner: LifecycleOwner,
-    private val clearCache: ClearCache,
-    getMenuUiModel: GetMenuUiModel
+      private val clearCache: ClearCache,
+      getMenuUiModel: GetMenuUiModel
 ) : BaseViewModel<MenuUiModel?>() {
 
     private val rateAppClicks = PublishSubject.create<Unit>()
     private val sendFeedbackClicks = PublishSubject.create<Unit>()
     private val githubClicks = PublishSubject.create<Unit>()
 
-    private val stateObservable = stateLiveData.toObservable(lifecycleOwner)
+    private val stateObservable = stateLiveData.toObservable()
 
     init {
         getMenuUiModel(onSuccess = { model: MenuUiModel ->
-            setState(State.Success(model))
+            stateLiveData.value = (State.Success(model))
         })
         githubClicks.waitForData("Error opening Github") {
-            setState(MenuState.OpenGithub(it))
+            stateLiveData.value = (MenuState.OpenGithub(it))
+            stateLiveData.value = (State.Success(state?.data ?: it))
         }
         sendFeedbackClicks.waitForData("Error fetching feedback email") {
-            setState(MenuState.SendFeedback(it))
+            stateLiveData.value = (MenuState.SendFeedback(it))
+            stateLiveData.value = (State.Success(state?.data ?: it))
         }
         rateAppClicks.waitForData("Error setting up rating dialog") {
-            setState(MenuState.RateApp(it))
+            stateLiveData.value = (MenuState.ShowRatingDialog(it, askForFeedback = false, openPlayStore = false))
         }
     }
 
     private fun Observable<Unit>.waitForData(errorMessage: String, onNext: (MenuUiModel) -> Unit) {
         Observables.zip(this, stateObservable) { _, state -> state }
-            .filter { it.data != null }
-            .subscribeBy(
-                onNext = { onNext(it.data!!) },
-                onError = { it.report(errorMessage) }
-            )
-            .attachToLifecycle(lifecycleOwner)
+              .filter { it.data != null }
+              .subscribeBy(
+                    onNext = { onNext(it.data!!) },
+                    onError = { it.report(errorMessage) }
+              )
     }
 
     fun onResume() {
         state.let {
-            if (it is MenuState.OpenGithub) {
-                setState(State.Success(it.data))
+            if (!(it is State.Success || it is MenuState.ShowRatingDialog)) {
+                setState(State.Success(it?.data))
             }
         }
     }
@@ -62,9 +60,9 @@ class MenuViewModel(
     fun rate(rating: Int) {
         val positiveRatingThreshold = state?.data?.positiveRatingThreshold
         if (positiveRatingThreshold != null && rating < positiveRatingThreshold) {
-            setState(MenuState.AskForFeedback(state?.data))
+            setState(MenuState.ShowRatingDialog(state?.data, askForFeedback = true, openPlayStore = false))
         } else {
-            setState(MenuState.OpenPlayStore(state?.data))
+            setState(MenuState.ShowRatingDialog(state?.data, askForFeedback = false, openPlayStore = true))
         }
     }
 
@@ -82,6 +80,12 @@ class MenuViewModel(
 
     fun logout() {
         clearCache(onFinish = { setState(MenuState.LogOut) })
+    }
+
+    fun onDialogDismissed() {
+        if (state is MenuState.ShowRatingDialog) {
+            setState(State.Success(state?.data))
+        }
     }
 
 }

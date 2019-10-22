@@ -21,15 +21,12 @@ import com.kondenko.pocketwaka.screens.login.LoginActivity
 import com.kondenko.pocketwaka.utils.BrowserWindow
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.createAdapter
-import com.kondenko.pocketwaka.utils.extensions.attachToLifecycle
-import com.kondenko.pocketwaka.utils.extensions.observe
-import com.kondenko.pocketwaka.utils.extensions.openPlayStore
-import com.kondenko.pocketwaka.utils.extensions.startActivity
+import com.kondenko.pocketwaka.utils.extensions.*
 import kotlinx.android.synthetic.main.fragment_menu.*
 import kotlinx.android.synthetic.main.item_menu_action.view.*
 import kotlinx.android.synthetic.main.item_menu_logo.view.*
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class FragmentMenu : Fragment() {
@@ -47,15 +44,16 @@ class FragmentMenu : Fragment() {
 
     }
 
+    private val vm: MenuViewModel by viewModel()
+
     private val screenTracker: ScreenTracker by inject()
 
     private val eventTracker: EventTracker by inject()
 
-    private lateinit var vm: MenuViewModel
-
     private val browserWindow: BrowserWindow by inject { parametersOf(context, viewLifecycleOwner) }
 
-    private val ratingDialog = AppRatingBottomSheetDialog()
+    private lateinit var ratingDialog: AppRatingBottomSheetDialog
+    private val tagRatingDialog = "ratingDialog"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_menu, container, false)
@@ -63,7 +61,8 @@ class FragmentMenu : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm = getViewModel { parametersOf(viewLifecycleOwner) }
+        ratingDialog =
+              childFragmentManager.findFragmentByTag(tagRatingDialog) as AppRatingBottomSheetDialog? ?: AppRatingBottomSheetDialog()
         val adapter = createAdapter<MenuUiModel>(view.context) {
             items { getMenuItems(getMailActivity() != null, true) }
             viewHolder<MenuUiModel.Logo>(R.layout.item_menu_logo) { _, _ ->
@@ -78,22 +77,34 @@ class FragmentMenu : Fragment() {
             }
         }
         recyclewview_menu.adapter = adapter
-        ratingDialog.ratingChanges()
-              .doOnNext { eventTracker.log(Event.Menu.RatingGiven(it)) }
-              .subscribe(vm::rate)
-              .attachToLifecycle(viewLifecycleOwner)
-        ratingDialog.sendFeedbackClicks()
-              .subscribe {
-                  eventTracker.log(Event.Menu.FeedbackButtonClicked(isFromRating = true))
-                  vm.sendFeedback()
-                  ratingDialog.dismiss()
-              }
-              .attachToLifecycle(viewLifecycleOwner)
+        with(ratingDialog) {
+            ratingChanges()
+                  .doOnNext { eventTracker.log(Event.Menu.RatingGiven(it)) }
+                  .subscribe(vm::rate)
+                  .attachToLifecycle(this@FragmentMenu.viewLifecycleOwner)
+            sendFeedbackClicks()
+                  .subscribe {
+                      eventTracker.log(Event.Menu.FeedbackButtonClicked(isFromRating = true))
+                      vm.sendFeedback()
+                      dismiss()
+                  }
+                  .attachToLifecycle(this@FragmentMenu.viewLifecycleOwner)
+            onDismiss = {
+                vm.onDialogDismissed()
+            }
+        }
         vm.state().observe(this) {
             WakaLog.d("New menu state: $it")
+            if (it !is MenuState.ShowRatingDialog) {
+                ratingDialog.rating = 0
+                showFeedbackButton(false, null)
+                ratingDialog.safeDismiss()
+            }
             when (it) {
-                is MenuState.RateApp -> {
+                is MenuState.ShowRatingDialog -> {
                     rateApp()
+                    showFeedbackButton(it.askForFeedback, it.data?.supportEmail)
+                    if (it.openPlayStore) openPlayStore()
                 }
                 is MenuState.SendFeedback -> it.data.run {
                     sendFeedback(supportEmail, emailSubject, initialEmailText)
@@ -104,12 +115,6 @@ class FragmentMenu : Fragment() {
                 }
                 is MenuState.LogOut -> {
                     logout()
-                }
-                is MenuState.OpenPlayStore -> {
-                    openPlayStore()
-                }
-                is MenuState.AskForFeedback -> {
-                    showFeedbackButton(it.data?.supportEmail)
                 }
             }
         }
@@ -134,12 +139,11 @@ class FragmentMenu : Fragment() {
     )
 
     private fun rateApp() {
-        ratingDialog.showLowRatingState(show = false, isMailAvailable = true, supportEmail = null)
-        ratingDialog.show(childFragmentManager, null)
+        if (!ratingDialog.isShown) ratingDialog.show(childFragmentManager, tagRatingDialog)
     }
 
-    private fun showFeedbackButton(supportEmail: String?) {
-        ratingDialog.showLowRatingState(show = true, isMailAvailable = getMailActivity() != null, supportEmail = supportEmail)
+    private fun showFeedbackButton(show: Boolean, supportEmail: String?) {
+        ratingDialog.showLowRatingState(show = show, isMailAvailable = getMailActivity() != null, supportEmail = supportEmail)
     }
 
     private fun openPlayStore() {
@@ -163,8 +167,8 @@ class FragmentMenu : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        vm.onResume()
         screenTracker.log(activity, Screen.Menu)
+        vm.onResume()
     }
 
     private fun logout() {
