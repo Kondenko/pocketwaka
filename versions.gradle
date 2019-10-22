@@ -1,9 +1,9 @@
 ext {
 
     versions = [
-            code             : 7,
+            code             : 8,
             appMajor         : 2,
-            appMinor         : 0,
+            appMinor         : 1,
             appPatch         : 0,
 
             // Android
