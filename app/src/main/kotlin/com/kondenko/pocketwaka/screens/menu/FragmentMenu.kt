@@ -22,6 +22,7 @@ import com.kondenko.pocketwaka.utils.BrowserWindow
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.createAdapter
 import com.kondenko.pocketwaka.utils.extensions.*
+import kotlinx.android.synthetic.main.dialog_app_rating.*
 import kotlinx.android.synthetic.main.fragment_menu.*
 import kotlinx.android.synthetic.main.item_menu_action.view.*
 import kotlinx.android.synthetic.main.item_menu_logo.view.*
@@ -62,7 +63,8 @@ class FragmentMenu : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ratingDialog =
-              childFragmentManager.findFragmentByTag(tagRatingDialog) as AppRatingBottomSheetDialog? ?: AppRatingBottomSheetDialog()
+              childFragmentManager.findFragmentByTag(tagRatingDialog) as AppRatingBottomSheetDialog?
+                    ?: AppRatingBottomSheetDialog()
         val adapter = createAdapter<MenuUiModel>(view.context) {
             items { getMenuItems(getMailActivity() != null, true) }
             viewHolder<MenuUiModel.Logo>(R.layout.item_menu_logo) { _, _ ->
@@ -89,15 +91,10 @@ class FragmentMenu : Fragment() {
                       dismiss()
                   }
                   .attachToLifecycle(this@FragmentMenu.viewLifecycleOwner)
-            onDismiss = {
-                vm.onDialogDismissed()
-            }
         }
         vm.state().observe(this) {
             WakaLog.d("New menu state: $it")
             if (it !is MenuState.ShowRatingDialog) {
-                ratingDialog.rating = 0
-                showFeedbackButton(false, null)
                 ratingDialog.safeDismiss()
             }
             when (it) {
@@ -105,6 +102,11 @@ class FragmentMenu : Fragment() {
                     rateApp()
                     showFeedbackButton(it.askForFeedback, it.data?.supportEmail)
                     if (it.openPlayStore) openPlayStore()
+                    ratingDialog.onDismiss = {
+                        ratingDialog.ratingbar_rating_dialog?.rating = 0
+                        showFeedbackButton(false, null)
+                        vm.onDialogDismissed()
+                    }
                 }
                 is MenuState.SendFeedback -> it.data.run {
                     sendFeedback(supportEmail, emailSubject, initialEmailText)

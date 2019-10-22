@@ -18,7 +18,6 @@ class EventTracker(val analytics: FirebaseAnalytics) {
             WakaLog.w("Couldn't create a bundle for $event")
             null
         }
-        WakaLog.d("Reporting event $tag, bundle = $bundle")
         analytics.logEvent(tag, bundle)
     }
 

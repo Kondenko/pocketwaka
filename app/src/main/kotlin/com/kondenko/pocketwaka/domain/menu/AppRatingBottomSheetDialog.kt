@@ -42,13 +42,7 @@ class AppRatingBottomSheetDialog : BottomSheetDialogFragment() {
 
     var ratingBarScaleCollapsed = 0.7f
 
-    var rating: Int?
-        get() = ratingbar_rating_dialog?.rating
-        set(value) {
-            value?.let {
-                ratingbar_rating_dialog?.rating = value
-            }
-        }
+    var rating: Int = 0
 
     var onDismiss: (() -> Unit)? = null
 
@@ -61,6 +55,7 @@ class AppRatingBottomSheetDialog : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         ratingbar_rating_dialog.ratingChanges().subscribeWith(ratingChanges)
         button_low_rating_action.clicks().subscribeWith(sendFeedbackClicks)
+        ratingbar_rating_dialog.rating = rating
     }
 
     override fun onDestroyView() {

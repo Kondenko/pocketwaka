@@ -58,6 +58,7 @@ class MenuViewModel(
     }
 
     fun rate(rating: Int) {
+        if (rating == 0) return
         val positiveRatingThreshold = state?.data?.positiveRatingThreshold
         if (positiveRatingThreshold != null && rating < positiveRatingThreshold) {
             setState(MenuState.ShowRatingDialog(state?.data, askForFeedback = true, openPlayStore = false))
