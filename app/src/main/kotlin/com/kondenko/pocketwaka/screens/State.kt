@@ -2,7 +2,7 @@ package com.kondenko.pocketwaka.screens
 
 import android.accounts.NetworkErrorException
 
-sealed class State<out T>(open val data: T?) {
+open class State<out T>(open val data: T?) {
 
     data class Success<T>(override val data: T) : State<T>(data)
 
@@ -27,7 +27,7 @@ sealed class State<out T>(open val data: T?) {
                 override val isFatal: Boolean = false
         ) : Failure<T>(data, exception, isFatal)
 
-        data class UnknownRange<T>(
+        data class InvalidParams<T>(
                 override val data: T? = null,
                 override val isFatal: Boolean = false
         ) : Failure<T>(data, IllegalArgumentException("Unknown range"), isFatal)

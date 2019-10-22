@@ -1,11 +1,11 @@
 package com.kondenko.pocketwaka.domain.auth
 
 import com.kondenko.pocketwaka.Const
-import com.kondenko.pocketwaka.data.auth.model.AccessToken
+import com.kondenko.pocketwaka.data.auth.model.server.AccessToken
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.utils.SchedulersContainer
-import com.kondenko.pocketwaka.utils.TimeProvider
+import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.encryption.Encryptor
 import io.reactivex.rxkotlin.Singles
 
@@ -14,7 +14,7 @@ import io.reactivex.rxkotlin.Singles
  */
 class GetAccessToken(
         schedulers: SchedulersContainer,
-        private val timeProvider: TimeProvider,
+        private val dateProvider: DateProvider,
         private val tokenEncryptor: Encryptor<AccessToken>,
         private val accessTokenRepository: AccessTokenRepository,
         private val getAppId: GetAppId,
@@ -29,6 +29,6 @@ class GetAccessToken(
             }
                     .flatMap { it }
                     .map { tokenEncryptor.encrypt(it) }
-                    .doOnSuccess { accessTokenRepository.saveToken(it, timeProvider.getCurrentTimeSec()) }
+                    .doOnSuccess { accessTokenRepository.saveToken(it, dateProvider.getCurrentTimeSec()) }
 
 }

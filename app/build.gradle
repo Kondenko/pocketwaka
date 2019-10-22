@@ -37,19 +37,22 @@ android {
 
     buildTypes {
         release {
-            signingConfig signingConfigs.config
-            shrinkResources true
-            minifyEnabled true
             def configFiles = fileTree(dir: "./proguard", include: ["*.pro"]).asList()
             configFiles.add(getDefaultProguardFile('proguard-android.txt'))
             proguardFiles configFiles.toArray()
+            manifestPlaceholders = [enableCrashReporting: "true"]
+            shrinkResources true
+            minifyEnabled true
+            signingConfig signingConfigs.config
         }
         debug {
             shrinkResources false
             minifyEnabled false
+            manifestPlaceholders = [enableCrashReporting: "false"]
         }
         mock {
-            initWith debug
+            initWith release
+            buildConfigField "String", "ACCESS_TOKEN", ACCESS_TOKEN
         }
     }
 
@@ -69,16 +72,9 @@ android {
         release {
             java.srcDirs += [file("$buildDir/generated/source/kapt/release")]
         }
-        debug {
-            ext.enableCrashlytics = false
-            java.srcDirs += 'src/debug/kotlin'
-            java.srcDirs += debugKaptFiles
-        }
         mock {
             ext.enableCrashlytics = false
-            java.srcDirs += 'src/debug/kotlin'
             java.srcDirs += 'src/mock/kotlin'
-            java.srcDirs += debugKaptFiles
         }
         test {
             ext.enableCrashlytics = false
@@ -104,7 +100,9 @@ android {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
-
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 afterEvaluate {
@@ -121,30 +119,89 @@ kapt {
 
 dependencies {
 
-    implementation kotlinLib
-    implementation androidKtx
-    implementation archComponents
-    implementation support
-    implementation constraintLayout
-    implementation rx
-    implementation retrofit
-    implementation koin
-    implementation smartTabLayout
-    implementation timber
-    implementation firebaseCore
-    implementation crashlyticsGoogle
-    implementation lottie
-    implementation room
+    // kotlinLib
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
 
-    debugImplementation databaseBrowser
+    // androidKtx
+    implementation "androidx.core:core-ktx:${versions.ktx}"
 
-    kapt roomCompiler
+    // support
+    implementation "androidx.appcompat:appcompat:${versions.appcompat}"
+    implementation "com.google.android.material:material:${versions.androidx}"
+    implementation "androidx.cardview:cardview:${versions.cardview}"
+    implementation "androidx.browser:browser:${versions.browser}"
 
-    testImplementation testingDependencies
+    // archComponents
+    implementation "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:${versions.lifecycle}"
+
+    // room
+    implementation "androidx.room:room-runtime:${versions.room}"
+    implementation "androidx.room:room-rxjava2:${versions.room}"
+
+    // rx
+    implementation "io.reactivex.rxjava2:rxjava:${versions.rxJava}"
+    implementation "io.reactivex.rxjava2:rxkotlin:${versions.rxKotlin}"
+    implementation "io.reactivex.rxjava2:rxandroid:${versions.rxAndroid}"
+    implementation "com.jakewharton.rxbinding3:rxbinding:${versions.rxBinding}"
+
+    // retrofit
+    implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
+    implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:${versions.retrofit}"
+
+    // smartTabLayout
+    implementation "com.ogaclejapan.smarttablayout:library:${versions.smartTabLayout}@aar"
+    implementation "com.ogaclejapan.smarttablayout:utils-v4:${versions.smartTabLayout}@aar"
+
+    // koin
+    implementation "org.koin:koin-core:${versions.koin}"
+    implementation "org.koin:koin-android:${versions.koin}"
+    implementation "org.koin:koin-androidx-scope:$versions.koin"
+    implementation "org.koin:koin-androidx-viewmodel:${versions.koin}"
+
+    // constraintLayout
+    implementation "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
+
+    // timber
+    implementation "com.jakewharton.timber:timber:${versions.timber}"
+
+    // lottie
+    implementation "com.airbnb.android:lottie:${versions.lottie}"
+
+    // firebaseCore
+    implementation "com.google.firebase:firebase-core:${versions.firebaseCore}"
+
+    // Analytics
+    implementation "com.google.firebase:firebase-analytics:${versions.analytics}"
+
+    // Crashlytics
+    implementation "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
+
+    // remoteConfig
+    implementation "com.google.firebase:firebase-config-ktx:${versions.remoteConfig}"
+
+    debugImplementation "com.amitshekhar.android:debug-db:${versions.databaseBrowser}"
+
+    kapt "androidx.room:room-compiler:${versions.room}"
+
+    testImplementation "androidx.test:core:${versions.androidxTest}"
+    testImplementation "androidx.test.ext:junit:${versions.junit}"
+    testImplementation "androidx.test:runner:${versions.testRunner}"
+    testImplementation "androidx.test:rules:${versions.testRunner}"
+    testImplementation "org.mockito:mockito-core:${versions.mockito}"
+    testImplementation "com.nhaarman:mockito-kotlin:${versions.mockitoKotlin}"
+    testImplementation "org.robolectric:robolectric:${versions.robolectric}"
+    testImplementation "org.koin:koin-test:${versions.koin}"
+
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: versions.mockito
 
-    androidTestImplementation androidTestingDependencies
-    androidTestImplementation(androidTestingSupportDependencies, {
+    androidTestImplementation "androidx.annotation:annotation:${versions.annotation}"
+    androidTestImplementation "androidx.test:runner:${versions.testRunner}"
+    androidTestImplementation "androidx.test:rules:${versions.testRunner}"
+
+    androidTestImplementation("androidx.test.espresso:espresso-core:${versions.espresso}", {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 

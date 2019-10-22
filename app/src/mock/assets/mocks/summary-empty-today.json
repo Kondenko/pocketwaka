@@ -1,0 +1,29 @@
+{
+  "data": [
+    {
+      "categories": [],
+      "dependencies": [],
+      "editors": [],
+      "grand_total": {
+        "digital": "0:00",
+        "hours": 0,
+        "minutes": 0,
+        "text": "0 secs",
+        "total_seconds": 0
+      },
+      "languages": [],
+      "machines": [],
+      "operating_systems": [],
+      "projects": [],
+      "range": {
+        "date": "2019-09-23",
+        "end": "2019-09-23T20:59:59Z",
+        "start": "2019-09-22T21:00:00Z",
+        "text": "Tomorrow",
+        "timezone": "Europe/Moscow"
+      }
+    }
+  ],
+  "end": "2019-09-23T20:59:59Z",
+  "start": "2019-09-22T21:00:00Z"
+}

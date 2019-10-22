@@ -3,13 +3,18 @@ package com.kondenko.pocketwaka.data.persistence
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.kondenko.pocketwaka.data.stats.converter.StatsListConverter
 import com.kondenko.pocketwaka.data.stats.dao.StatsDao
-import com.kondenko.pocketwaka.data.stats.dto.StatsDto
+import com.kondenko.pocketwaka.data.stats.model.database.StatsDbModel
+import com.kondenko.pocketwaka.data.summary.converters.SummaryListConverter
+import com.kondenko.pocketwaka.data.summary.dao.SummaryDao
+import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
 import com.kondenko.pocketwaka.databaseVersion
 
 
-@Database(entities = [StatsDto::class], version = databaseVersion)
-@TypeConverters(StatsListConverter::class)
+@Database(entities = [StatsDbModel::class, SummaryDbModel::class], version = databaseVersion)
+@TypeConverters(StatsListConverter::class, SummaryListConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun statsDao(): StatsDao
+    abstract fun summaryDao(): SummaryDao
 }

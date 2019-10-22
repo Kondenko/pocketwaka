@@ -1,11 +1,13 @@
 package com.kondenko.pocketwaka
 
-import com.kondenko.pocketwaka.di.mockModulesList
-import org.koin.standalone.StandAloneContext
+import com.kondenko.pocketwaka.di.mockModules
+import org.koin.core.context.loadKoinModules
 
-class MockApp : DebugApp() {
+class MockApp : App() {
+
     override fun onCreate() {
         super.onCreate()
-        StandAloneContext.loadKoinModules(mockModulesList(this))
+        loadKoinModules(mockModules)
     }
+
 }

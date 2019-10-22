@@ -3,26 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <ImageView
         android:id="@+id/imageview_state_illustration"
         android:layout_width="0dp"
-        android:layout_height="@dimen/size_state_screen_image"
-        android:layout_marginTop="40dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:adjustViewBounds="true"
+        android:cropToPadding="true"
+        android:maxHeight="360dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/textview_state_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintVertical_chainStyle="packed"
-        app:srcCompat="@drawable/img_offline" />
+        />
 
     <TextView
         android:id="@+id/textview_state_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
         android:paddingStart="@dimen/padding_state_screen_horizontal"
         android:paddingEnd="@dimen/padding_state_screen_horizontal"
@@ -31,15 +36,17 @@
         app:layout_constraintBottom_toTopOf="@id/textview_state_subtitle"
         app:layout_constraintEnd_toEndOf="@+id/imageview_state_illustration"
         app:layout_constraintStart_toStartOf="@+id/imageview_state_illustration"
-        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/imageview_state_illustration"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:text="No coding activity" />
+        tools:text="No coding activity"
+        />
 
     <TextView
         android:id="@+id/textview_state_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:paddingStart="@dimen/padding_state_screen_horizontal"
         android:paddingEnd="@dimen/padding_state_screen_horizontal"
         android:textAlignment="center"
@@ -48,7 +55,28 @@
         app:layout_constraintEnd_toEndOf="@+id/textview_state_title"
         app:layout_constraintStart_toStartOf="@+id/textview_state_title"
         app:layout_constraintTop_toBottomOf="@+id/textview_state_title"
-        tools:text="Get plugins for your favorite editors and write some code" />
+        tools:text="Get plugins for your favorite editors and write some code"
+        tools:visibility="visible"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_state_action_open_plugins"
+        style="@style/App.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_state_screen_button"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="@dimen/margin_state_screen_button_bottom"
+        android:text="@string/empty_state_action"
+        android:visibility="gone"
+        app:icon="@drawable/state_empty_ic_open_plugins_white_24dp"
+        app:iconPadding="12dp"
+        app:iconSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textview_state_subtitle"
+        app:layout_constraintStart_toStartOf="@+id/textview_state_subtitle"
+        app:layout_constraintTop_toBottomOf="@+id/textview_state_subtitle"
+        tools:visibility="visible"
+        />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_state_action_retry"
@@ -58,34 +86,12 @@
         android:layout_marginTop="32dp"
         android:layout_marginBottom="32dp"
         android:text="@string/error_state_action"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textview_state_subtitle"
         app:layout_constraintStart_toStartOf="@+id/textview_state_subtitle"
         app:layout_constraintTop_toBottomOf="@+id/textview_state_subtitle"
-        tools:visibility="gone" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_state_action_open_plugins"
-        style="@style/App.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/height_state_screen_button"
-        android:layout_marginTop="@dimen/margin_state_screen_button_top"
-        android:layout_marginBottom="@dimen/margin_state_screen_button_bottom"
-        android:text="@string/empty_state_action"
-        app:icon="@drawable/state_empty_ic_open_plugins_white_24dp"
-        app:iconPadding="12dp"
-        app:iconSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textview_state_subtitle"
-        app:layout_constraintStart_toStartOf="@+id/textview_state_subtitle"
-        app:layout_constraintTop_toBottomOf="@+id/textview_state_subtitle"
-        tools:visibility="visible" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        tools:visibility="gone"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

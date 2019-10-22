@@ -1,11 +1,11 @@
 package com.kondenko.pocketwaka.domain.main
 
-import com.kondenko.pocketwaka.data.auth.model.AccessToken
+import com.kondenko.pocketwaka.data.auth.model.server.AccessToken
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.domain.auth.GetAppId
 import com.kondenko.pocketwaka.domain.auth.GetAppSecret
 import com.kondenko.pocketwaka.testutils.testSchedulers
-import com.kondenko.pocketwaka.utils.TimeProvider
+import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.encryption.TokenEncryptor
 import com.nhaarman.mockito_kotlin.*
 import io.reactivex.rxkotlin.toSingle
@@ -21,7 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class RefreshAccessTokenTest {
 
-    private val timeProvider: TimeProvider = mock()
+    private val dateProvider: DateProvider = mock()
 
     private val tokenEncryptor: TokenEncryptor = mock()
 
@@ -33,7 +33,7 @@ class RefreshAccessTokenTest {
 
     private val getAppSecret: GetAppSecret = mock()
 
-    private val useCase = RefreshAccessToken(testSchedulers, timeProvider, tokenEncryptor, accessTokenRepository, getStoredAccessToken, getAppId, getAppSecret)
+    private val useCase = RefreshAccessToken(testSchedulers, dateProvider, tokenEncryptor, accessTokenRepository, getStoredAccessToken, getAppId, getAppSecret)
 
     lateinit var token: AccessToken
 
@@ -62,7 +62,7 @@ class RefreshAccessTokenTest {
         val currentTime = 500f
 
         whenever(getStoredAccessToken.build()).doReturn(token.toSingle())
-        whenever(timeProvider.getCurrentTimeSec()).doReturn(currentTime)
+        whenever(dateProvider.getCurrentTimeSec()).doReturn(currentTime)
         whenever(token.isValid(currentTime)).doReturn(true)
 
         val single = useCase.invoke()
@@ -89,7 +89,7 @@ class RefreshAccessTokenTest {
         val refreshToken = "baz"
 
         whenever(getStoredAccessToken.build()).doReturn(invalidToken.toSingle())
-        whenever(timeProvider.getCurrentTimeSec()).doReturn(currentTime)
+        whenever(dateProvider.getCurrentTimeSec()).doReturn(currentTime)
         whenever(invalidToken.isValid(anyFloat())).doReturn(false)
         whenever(getAppId.build()).doReturn(appId.toSingle())
         whenever(getAppSecret.build()).doReturn(appSecret.toSingle())

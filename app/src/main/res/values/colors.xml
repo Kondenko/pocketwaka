@@ -4,15 +4,19 @@
     <color name="color_primary_light">#F5F9FF</color>
     <color name="color_primary_dark">#28333c</color>
     <color name="color_accent">#2595ff</color>
+    <color name="color_ripple">#402595FF</color>
+
+    <color name="color_statusbar_legacy">#D0D6DC</color>
 
     <color name="color_app_bar_resting">@color/color_primary_light</color>
     <color name="color_app_bar_elevated">@android:color/white</color>
 
     <color name="color_tab_text_default">@color/color_primary</color>
 
-    <color name="color_skeleton_text">#1435434F</color>
+    <color name="color_skeleton">#1435434F</color>
 
     <color name="color_all_divider">#1F000000</color>
+    <color name="color_summary_project_divider">#DE000000</color>
 
     <color name="color_text_primary">#DE35434F</color>
     <color name="color_text_secondary">#8A35434F</color>
@@ -21,10 +25,15 @@
     <color name="color_text_white_primary">#FFFFFF</color>
     <color name="color_text_error">#FF001F</color>
 
+    <color name="color_text_menu_header">#99000000</color>
+
     <color name="color_stats_item_light">#E6FFFFFF</color>
     <color name="color_stats_item_dark">#BF35434F</color>
 
     <color name="color_status">#3335434F</color>
+
+    <color name="color_growth">#49DE7A</color>
+    <color name="color_descent">#8A3F617E</color>
 
     <array name="chart_colors">
         <item>#FA5757</item>

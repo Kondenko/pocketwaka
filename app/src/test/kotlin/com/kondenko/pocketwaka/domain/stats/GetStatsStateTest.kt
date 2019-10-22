@@ -1,8 +1,10 @@
 package com.kondenko.pocketwaka.domain.stats
 
 import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
-import com.kondenko.pocketwaka.data.stats.dto.StatsDto
-import com.kondenko.pocketwaka.domain.stats.model.StatsModel
+import com.kondenko.pocketwaka.data.stats.model.database.StatsDbModel
+import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
+import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsForRange
+import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsState
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.testutils.RxRule
 import com.kondenko.pocketwaka.testutils.TestException
@@ -27,13 +29,13 @@ class GetStatsStateTest {
 
     private val testScheduler = TestScheduler()
 
-    private val fetchStats: FetchStats = mock()
+    private val getStatsForRange: GetStatsForRange = mock()
 
     private val connectivityStatusProvider: ConnectivityStatusProvider = mock()
 
     private val getState = GetStatsState(
             SchedulersContainer(testScheduler, testScheduler),
-            fetchStats,
+            getStatsForRange,
             connectivityStatusProvider
     )
 
@@ -43,19 +45,19 @@ class GetStatsStateTest {
 
     private val range = "foo"
 
-    private val params = GetStatsState.Params(range, refreshInterval, retryAttempts)
+    private val params = GetStatsForRange.Params(range, refreshInterval, retryAttempts)
 
-    private val cachedModel: List<StatsModel> = listOf(
-            StatsModel.Info("1h", "1h")
+    private val cachedModel: List<StatsUiModel> = listOf(
+            StatsUiModel.Info("1h", "1h")
     )
 
-    private val actualModel: List<StatsModel> = listOf(
-            StatsModel.Info("1h", "1h")
+    private val actualModel: List<StatsUiModel> = listOf(
+            StatsUiModel.Info("1h", "1h")
     )
 
-    private val cacheDto = StatsDto(range, 0, true, false, cachedModel)
+    private val cacheDto = StatsDbModel(range, 0, true, false, cachedModel)
 
-    private val serverDto = StatsDto(range, 0, false, false, actualModel)
+    private val serverDto = StatsDbModel(range, 0, false, false, actualModel)
 
     @After
     fun validate() {
@@ -64,9 +66,9 @@ class GetStatsStateTest {
 
     @Test
     fun `should show an empty state`() {
-        val emptyDto = StatsDto(range, 0, false, true, actualModel)
+        val emptyDto = StatsDbModel(range, 0, false, true, actualModel)
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
-        whenever(fetchStats.build(params.range)).doReturn(Observable.just(emptyDto))
+        whenever(getStatsForRange.build(params)).doReturn(Observable.just(emptyDto))
         with(getState.invoke(params).testWithLogging()) {
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading && it.isInterrupting }
@@ -79,11 +81,11 @@ class GetStatsStateTest {
     @Test
     fun `should show loading first and then update stats`() {
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
-        whenever(fetchStats.build(params.range)).doReturn(Observable.just(serverDto))
+        whenever(getStatsForRange.build(params)).doReturn(Observable.just(serverDto))
         with(getState.invoke(params).testWithLogging()) {
             testScheduler.triggerActions()
             verify(connectivityStatusProvider).isNetworkAvailable()
-            verify(fetchStats, atLeastOnce()).build(params.range)
+            verify(getStatsForRange, atLeastOnce()).build(params)
             assertValueAt(0) { it is State.Loading && it.isInterrupting }
             assertValueAt(1) { it is State.Success && it.data == actualModel }
             assertValueCount(2)
@@ -96,7 +98,7 @@ class GetStatsStateTest {
     fun `should update stats every minute`() {
         val testStatsSubject = BehaviorSubject.createDefault(serverDto)
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
-        whenever(fetchStats.build(params.range)).doReturn(testStatsSubject)
+        whenever(getStatsForRange.build(params)).doReturn(testStatsSubject)
         with(getState.invoke(params).testWithLogging()) {
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading && it.isInterrupting }
@@ -117,7 +119,7 @@ class GetStatsStateTest {
     @Test
     fun `should show an error state if no data and offline`() {
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(false))
-        whenever(fetchStats.build(params.range)).doReturn(Observable.error(TestException("No network")))
+        whenever(getStatsForRange.build(params)).doReturn(Observable.error(TestException("No network")))
         with(getState.invoke(params).testWithLogging()) {
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading }
@@ -132,7 +134,7 @@ class GetStatsStateTest {
     @Test
     fun `should show an offline state with data`() {
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(false))
-        whenever(fetchStats.build(params.range)).doReturn(Observable.just(cacheDto))
+        whenever(getStatsForRange.build(params)).doReturn(Observable.just(cacheDto))
         with(getState.invoke(params).testWithLogging()) {
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading }
@@ -149,12 +151,12 @@ class GetStatsStateTest {
         val testConnectivitySubject = BehaviorSubject.createDefault(true)
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(testConnectivitySubject)
         with(getState.invoke(params).testWithLogging()) {
-            whenever(fetchStats.build(params.range)).doReturn(Observable.just(serverDto))
+            whenever(getStatsForRange.build(params)).doReturn(Observable.just(serverDto))
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading }
             assertValueAt(1) { it is State.Success && it.data == actualModel }
             testConnectivitySubject.onNext(false)
-            whenever(fetchStats.build(params.range)).doReturn(Observable.just(cacheDto))
+            whenever(getStatsForRange.build(params)).doReturn(Observable.just(cacheDto))
             testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
             assertValueAt(2) { it is State.Loading && !it.isInterrupting }
             assertValueAt(3) { it is State.Offline && it.data == actualModel }
@@ -169,18 +171,18 @@ class GetStatsStateTest {
     fun `should show an offline state and then update with new data`() {
         val testConnectivitySubject = BehaviorSubject.createDefault(true)
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(testConnectivitySubject)
-        whenever(fetchStats.build(params.range)).doReturn(Observable.just(serverDto))
+        whenever(getStatsForRange.build(params)).doReturn(Observable.just(serverDto))
         with(getState.invoke(params).testWithLogging()) {
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading }
             assertValueAt(1) { it is State.Success && it.data == actualModel }
             testConnectivitySubject.onNext(false)
-            whenever(fetchStats.build(params.range)).doReturn(Observable.just(cacheDto))
+            whenever(getStatsForRange.build(params)).doReturn(Observable.just(cacheDto))
             testScheduler.triggerActions()
             assertValueAt(2) { it is State.Loading && !it.isInterrupting }
             assertValueAt(3) { it is State.Offline && it.data == actualModel }
             testConnectivitySubject.onNext(true)
-            whenever(fetchStats.build(params.range)).doReturn(Observable.just(serverDto))
+            whenever(getStatsForRange.build(params)).doReturn(Observable.just(serverDto))
             testScheduler.triggerActions()
             assertValueAt(4) { it is State.Loading && !it.isInterrupting }
             assertValueAt(5) { it is State.Success }
@@ -194,31 +196,31 @@ class GetStatsStateTest {
     @Test
     fun `should accept all errors while maintaining current state`() {
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(Observable.just(true))
-        whenever(fetchStats.build(params.range)).doReturn(Observable.just(serverDto))
+        whenever(getStatsForRange.build(params)).doReturn(Observable.just(serverDto))
         with(getState.invoke(params).testWithLogging()) {
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading }
             assertValueAt(1) { it is State.Success }
             TestException().let { exception ->
-                whenever(fetchStats.build(params.range)).doReturn(Observable.error(exception))
+                whenever(getStatsForRange.build(params)).doReturn(Observable.error(exception))
                 testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
                 assertValueAt(2) { it is State.Loading && !it.isInterrupting }
                 assertValueAt(3) { it is State.Failure.Unknown<*> && it.data == actualModel && it.exception == exception }
             }
             TimeoutException().let { exception ->
-                whenever(fetchStats.build(params.range)).doReturn(Observable.error(exception))
+                whenever(getStatsForRange.build(params)).doReturn(Observable.error(exception))
                 testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
                 assertValueAt(4) { it is State.Loading && !it.isInterrupting }
                 assertValueAt(5) { it is State.Failure.Unknown<*> && it.data == actualModel && it.exception == exception }
             }
             RuntimeException().let { exception ->
-                whenever(fetchStats.build(params.range)).doReturn(Observable.error(exception))
+                whenever(getStatsForRange.build(params)).doReturn(Observable.error(exception))
                 testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
                 assertValueAt(6) { it is State.Loading && !it.isInterrupting }
                 assertValueAt(7) { it is State.Failure.Unknown<*> && it.data == actualModel && it.exception == exception }
             }
             TestException().let { exception ->
-                whenever(fetchStats.build(params.range)).doReturn(Observable.error(exception))
+                whenever(getStatsForRange.build(params)).doReturn(Observable.error(exception))
                 testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
                 assertValueAt(8) { it is State.Loading && !it.isInterrupting }
                 assertValueAt(9) { it is State.Failure.Unknown<*> && it.data == actualModel && it.exception == exception }

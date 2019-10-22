@@ -15,7 +15,7 @@ import androidx.annotation.IntRange
 import androidx.core.animation.doOnEnd
 import androidx.core.view.children
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.utils.IllegalViewUsageException
+import com.kondenko.pocketwaka.utils.exceptions.IllegalViewUsageException
 import com.kondenko.pocketwaka.utils.extensions.useAttributes
 import kotlin.math.roundToInt
 

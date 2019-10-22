@@ -2,45 +2,65 @@ package com.kondenko.pocketwaka.screens.stats
 
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.view.postDelayed
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
-import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.analytics.Event
+import com.kondenko.pocketwaka.analytics.EventTracker
+import com.kondenko.pocketwaka.analytics.Screen
 import com.kondenko.pocketwaka.domain.stats.model.StatsItem
-import com.kondenko.pocketwaka.domain.stats.model.StatsModel
+import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
+import com.kondenko.pocketwaka.screens.Refreshable
+import com.kondenko.pocketwaka.screens.ScreenStatus
 import com.kondenko.pocketwaka.screens.State
-import com.kondenko.pocketwaka.screens.StateFragment
+import com.kondenko.pocketwaka.screens.base.BaseFragment
 import com.kondenko.pocketwaka.screens.stats.adapter.StatsAdapter
 import com.kondenko.pocketwaka.screens.stats.model.ScrollDirection
-import com.kondenko.pocketwaka.utils.extensions.adjustForDensity
-import com.kondenko.pocketwaka.utils.extensions.report
+import com.kondenko.pocketwaka.utils.WakaLog
+import com.kondenko.pocketwaka.utils.extensions.dp
+import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.times
-import com.kondenko.pocketwaka.utils.extensions.transaction
+import com.kondenko.pocketwaka.utils.extensions.toListOrEmpty
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_stats.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.android.ext.android.inject
+import org.koin.androidx.scope.currentScope
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
+import timber.log.Timber
 
-class FragmentStatsTab : Fragment() {
+class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapter, State<List<StatsUiModel>>>(), Refreshable {
 
-    companion object {
-        const val ARG_RANGE = "range"
+    companion object Args {
+        const val argRange = "range"
     }
 
-    private val vm: StatsViewModel by viewModel { parametersOf(arguments?.getString(ARG_RANGE)) }
+    private val range: String? by lazy { arguments?.getString(argRange) }
+
+    private lateinit var vm: StatsViewModel
+
+    private val eventTracker: EventTracker by inject()
+
+    override val containerId: Int = R.id.framelayout_stats_range_root
+
+    private val scrollDirection = BehaviorSubject.create<ScrollDirection>()
+
+    private var shadowAnimationNeeded = true
+
+    private val skeletonStatsCard = mutableListOf(StatsItem("", null, null, null)) * 3
+
+    private val skeletonItems = listOf(
+          StatsUiModel.Info(null, null),
+          StatsUiModel.BestDay("", "", 0),
+          StatsUiModel.Stats("", skeletonStatsCard)
+    )
 
     /**
      * The minimum value the RecyclerView has to be scrolled for
@@ -48,136 +68,54 @@ class FragmentStatsTab : Fragment() {
      */
     private val minScrollOffset: Float by lazy {
         val value = 8f
-        context?.adjustForDensity(value) ?: value
+        context?.dp(value) ?: value
     }
 
-    private var shadowAnimationNeeded = true
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        vm = getViewModel { parametersOf(range) }
+        listSkeleton = currentScope.get { parametersOf(context, skeletonItems) }
+    }
 
-    private val scrollDirection = BehaviorSubject.create<ScrollDirection>()
-
-    private lateinit var skeletonAdapter: StatsAdapter
-
-    private lateinit var statsAdapter: StatsAdapter
-
-    private var fragmentState: StateFragment? = null
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_stats, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupUi()
-        vm.state().observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is State.Success -> it.render()
-                is State.Loading -> it.render()
-                is State.Offline -> it.render()
-                is State.Empty -> it.render()
-                is State.Failure -> it.render()
+        view.postDelayed(50) {
+            setupUi()
+            vm.state().observe(viewLifecycleOwner) {
+                Timber.d("New stats state (${range}): $it")
+                if (it is State.Empty) {
+                    eventTracker.log(Event.EmptyState.Account(Screen.Stats.Tab(range)))
+                }
+                it.render()
             }
-        })
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        statsAdapter = StatsAdapter(context)
-        skeletonAdapter = StatsAdapter(context, true).apply {
-            val skeletonStatsCard = mutableListOf(StatsItem("", null, null, null)) * 3
-            items = listOf(
-                    StatsModel.Info(null, null),
-                    StatsModel.BestDay("", "", 0),
-                    StatsModel.Stats("", skeletonStatsCard),
-                    StatsModel.Stats("", skeletonStatsCard)
-            )
         }
     }
 
+    override fun getDataView() = recyclerview_stats
+
     private fun setupUi() {
-        fragmentState = childFragmentManager.findFragmentById(R.id.fragment_state) as StateFragment
         with(recyclerview_stats) {
-            layoutManager = LinearLayoutManager(context)
-            adapter = skeletonAdapter
+            adapter = listSkeleton.skeletonAdapter
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     updateAppBarElevation()
                 }
             })
-        }
-        showData(true)
-    }
-
-    private fun State.Loading<List<StatsModel>>.render() {
-        showData(true)
-        if (isInterrupting) {
-            recyclerview_stats.apply {
-                if (adapter != skeletonAdapter) adapter = skeletonAdapter
-            }
-        } else {
-            updateStats(listOf(StatsModel.Status.Loading()) + (data ?: emptyList()))
+            showData(true)
         }
     }
 
-    private fun State.Success<List<StatsModel>>.render() {
-        showData(true)
-        updateStats(data)
-    }
-
-    private fun State.Failure<List<StatsModel>>.render() {
-        exception?.report()
-        showData(!isFatal)
-        if (isFatal) {
-            fragmentState?.setState(this, onActionClick = vm::update)
-        } else {
-            updateStats(data)
-            view?.let {
-                val errorRes = when (this) {
-                    is State.Failure.Unknown -> R.string.stats_error_unknown
-                    is State.Failure.UnknownRange -> R.string.stats_error_unknown_range
-                    is State.Failure.NoNetwork -> R.string.stats_error_unknown_range_no_network
-                }
-                Snackbar.make(it, errorRes, Snackbar.LENGTH_SHORT).show()
-            }
+    override fun updateData(data: List<StatsUiModel>?, status: ScreenStatus?) {
+        recyclerview_stats.apply {
+            val statusModel = status?.let(StatsUiModel::Status).toListOrEmpty()
+            data?.let { listSkeleton.actualAdapter.items = statusModel + it }
         }
-    }
-
-    private fun State.Offline<List<StatsModel>>.render() {
-        showData(data != null)
-        if (data == null) {
-            fragmentState?.setState(this)
-        } else {
-            updateStats(listOf(StatsModel.Status.Offline()) + data)
-        }
-    }
-
-    private fun State.Empty.render() {
-        showData(false)
-        fragmentState?.setState(this, ::openPlugins)
-    }
-
-    private fun updateStats(data: List<StatsModel>?) = recyclerview_stats.apply {
-        if (adapter != statsAdapter) adapter = statsAdapter
-        data?.let { statsAdapter.items = it }
-    }
-
-    private fun showData(show: Boolean) {
-        recyclerview_stats.isVisible = show
-        fragmentState?.let {
-            childFragmentManager.transaction {
-                if (show) hide(it)
-                else show(it)
-            }
-        }
-    }
-
-    private fun openPlugins() {
-        val uri = Const.URL_PLUGINS
-        val builder = CustomTabsIntent.Builder()
-        builder.setToolbarColor(ContextCompat.getColor(context!!, R.color.color_primary_light))
-        val customTabsIntent = builder.build()
-        customTabsIntent.launchUrl(context, Uri.parse(uri))
     }
 
     private fun updateAppBarElevation() {
@@ -190,12 +128,17 @@ class FragmentStatsTab : Fragment() {
         }
     }
 
+    override fun reloadScreen() = vm.update()
+
+    fun scrollToTop() = recyclerview_stats.smoothScrollToPosition(0)
+
     fun scrollDirection(): Observable<ScrollDirection> = scrollDirection
 
-    fun subscribeToRefreshEvents(refreshEvents: Observable<Any>): Disposable {
-        return refreshEvents.subscribe {
-            vm.update()
-        }
+    override fun subscribeToRefreshEvents(refreshEvents: Observable<Unit>): Disposable {
+        return refreshEvents.subscribeBy(
+              onNext = { reloadScreen() },
+              onError = WakaLog::e
+        )
     }
 
 }

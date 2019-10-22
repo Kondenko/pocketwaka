@@ -2,36 +2,47 @@
 
     <string name="all_app_name" translatable="false">PocketWaka</string>
 
-    <string name="screen_stats">Your stats</string>
+    <string name="all_error_invalid_url">Can\'t open this url</string>
 
-    <string name="main_action_logout">Log out</string>
+    <!-- Main activity -->
+
     <string name="main_action_refresh">Refresh</string>
 
-    <string name="error_refreshing_token">Please log in again</string>
+    <string name="main_bottomnav_today">Summary</string>
+    <string name="main_bottomnav_ranges">Stats</string>
+    <string name="main_bottomnav_menu">Menu</string>
 
+    <!-- States -->
+
+    <string name="error_refreshing_token">Please log in again</string>
     <string name="error_state_title">We did our best\nbut couldn’t load your stats</string>
+
     <string name="error_state_subtitle">Please try again later</string>
     <string name="error_state_action">Retry</string>
 
     <string name="offline_state_title">Check your connection</string>
     <string name="offline_state_subtitle">We’ll retry as soon as you\'re online</string>
+    <string name="empty_state_title">No coding activity</string>
 
-    <string name="empty_state_title">No activity</string>
-    <string name="empty_state_subtitle">Install plugins for you favorite editors\nand write some code!</string>
+    <string name="empty_state_subtitle">Get plugins for you favorite editors\nand write some code!</string>
     <string name="empty_state_action">Browse plugins</string>
 
     <string name="status_offline">Offline</string>
     <string name="status_updating">Updating</string>
+
+    <!-- Login -->
 
     <string name="loginactivity_sign_in">Log in</string>
     <string name="loginactivity_subtitle_default">Get insights on your\ncoding productivity</string>
     <string name="loginactivity_subtitle_loading">Logging in</string>
 
     <string name="loginactivity_error_generic">Failed to log in</string>
-    <string name="loginactivity_error_no_browser">Google Chrome needs to be installed \nto log in</string>
 
+    <string name="loginactivity_error_no_browser">Google Chrome needs to be installed \nto log in</string>
     <string name="loginactivity_subtitle_error_action">Try again</string>
 
+
+    <!-- Stats -->
 
     <string name="stats_tab_7_days">Week</string>
     <string name="stats_tab_30_days">Month</string>
@@ -39,18 +50,54 @@
     <string name="stats_tab_1_year">1 year</string>
 
     <string name="stats_error_unknown">Couldn\'t update stats</string>
+
     <string name="stats_error_unknown_range">Couldn\'t get stats for this period</string>
     <string name="stats_error_unknown_range_no_network">Network error</string>
-
     <string name="stats_header_total">Total</string>
     <string name="stats_header_daily_average">Daily average</string>
+
     <string name="stats_header_best_day">Best day</string>
     <string name="stats_caption_best_day">%d%% greater than your average</string>
-
     <string name="stats_card_header_projects">Projects</string>
     <string name="stats_card_header_editors">Editors</string>
+
     <string name="stats_card_header_languages">Languages</string>
+
     <string name="stats_card_header_operating_systems">Operating systems</string>
+
+    <string name="stats_card_less_than_1_percent" formatted="false" translatable="false">&lt; 1%</string>
+    <string name="stats_card_percent_format_int" formatted="false" translatable="false">%.0f%%</string>
+
+    <!-- SUMMARIES -->
+
+    <string name="summary_title_time_tracked">Time tracked</string>
+    <string name="summary_title_projects">Projects</string>
+
+    <string name="summary_projects_state_empty_today_title">No activity today</string>
+
+    <string name="summary_projects_label_no_commits">No commits pushed this day</string>
+    <string name="summary_projects_label_no_repo">Connect repository to see commits</string>
+    <string name="summary_projects_template_more_commits">Show %d more commites</string>
+
+    <string name="commits_branch_name_unknown">Unknown</string>
+    <string name="summary_template_average_delta_above" formatted="false">above</string>
+    <string name="summary_template_average_delta_below" formatted="false">below</string>
+    <string name="summary_template_average_delta" formatted="false">%d%% %s monthly average</string>
+
+    <!-- MENU -->
+    <string name="menu_version_template">Version %s</string>
+    <string name="menu_action_rate">Rate PocketWaka</string>
+    <string name="menu_action_send_feedback">Send feedback</string>
+    <string name="menu_action_open_github">PocketWaka on GitHub</string>
+    <string name="menu_action_logout">Log out</string>
+    <string name="menu_support_email_subject">PocketWaka feedback</string>
+    <string name="rating_dialog_title">Rate PocketWaka</string>
+    <string name="rating_dialog_low_rating_message">We\'re sorry if something is wrong 😿\nPlease, drop us a line so we can fix it ASAP</string>
+    <string name="rating_dialog_low_rating_message_no_email_app">We\'re sorry if something is wrong 😿\nPlease, email us at %s\nso we can fix it ASAP</string>
+    <string name="rating_dialog_low_rating_message_no_email_address">Thanks! Your feedback makes PocketWaka better.</string>
+    <string name="rating_dialog_low_rating_action">@string/menu_action_send_feedback</string>
+
+    <!-- OTHER -->
 
     <plurals name="stats_time_format_hours" formatted="false">
         <item quantity="one">%d hr</item>
@@ -62,7 +109,7 @@
         <item quantity="other">%d mins</item>
     </plurals>
 
-    <string name="stats_card_less_than_1_percent" formatted="false" translatable="false">&lt; 1%</string>
-    <string name="stats_card_percent_format_int" formatted="false" translatable="false">%.0f%%</string>
+    <string name="stats_time_format_hours_short">%dh</string>
+    <string name="stats_time_format_minutes_short">%dm</string>
 
 </resources>

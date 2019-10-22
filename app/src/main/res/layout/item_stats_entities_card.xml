@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/App.CardView.Light"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/margin_stats_card_horizontal"
+    android:layout_marginTop="@dimen/margin_stats_card_vertical"
+    android:layout_marginEnd="@dimen/margin_stats_card_horizontal"
+    android:layout_marginBottom="@dimen/margin_stats_card_vertical"
+    app:contentPadding="@dimen/padding_all_card_inner"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textview_all_entities_card_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.App.Text.Title">
+
+            <tag
+                android:id="@id/tag_skeleton_width_key"
+                android:value="@integer/width_stats_skeleton_text_card_title" />
+
+        </TextView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_all_entities"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

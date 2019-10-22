@@ -1,37 +1,41 @@
 package com.kondenko.pocketwaka.screens.login
 
-import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageInfo
-import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.browser.customtabs.CustomTabsClient
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.browser.customtabs.CustomTabsServiceConnection
-import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
-import com.crashlytics.android.Crashlytics
-import com.jakewharton.rxbinding2.view.RxView
+import androidx.lifecycle.LifecycleOwner
+import com.jakewharton.rxbinding3.view.clicks
+import com.jakewharton.rxbinding3.view.longClicks
 import com.kondenko.pocketwaka.BuildConfig
-import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.data.auth.model.AccessToken
+import com.kondenko.pocketwaka.analytics.Event
+import com.kondenko.pocketwaka.analytics.EventTracker
+import com.kondenko.pocketwaka.analytics.Screen
+import com.kondenko.pocketwaka.analytics.ScreenTracker
+import com.kondenko.pocketwaka.data.auth.model.server.AccessToken
 import com.kondenko.pocketwaka.screens.main.MainActivity
 import com.kondenko.pocketwaka.ui.ButtonStateWrapper
+import com.kondenko.pocketwaka.utils.BrowserWindow
 import com.kondenko.pocketwaka.utils.extensions.attachToLifecycle
 import com.kondenko.pocketwaka.utils.extensions.report
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 // TODO Migrate to ViewModel
 class LoginActivity : AppCompatActivity(), LoginView {
 
     private val presenter: LoginPresenter by inject()
 
-    private var connection: CustomTabsServiceConnection? = null
+    private val screenTracker: ScreenTracker by inject()
+
+    private val eventTracker: EventTracker by inject()
+
+    private val browserWindow: BrowserWindow by inject { parametersOf(this as Context, this as LifecycleOwner) }
 
     private lateinit var loadingButtonStateWrapper: ButtonStateWrapper
 
@@ -40,40 +44,38 @@ class LoginActivity : AppCompatActivity(), LoginView {
         setContentView(R.layout.activity_login)
         loadingView.z = 100f
         loadingButtonStateWrapper = ButtonStateWrapper(
-                buttonLogin,
-                loadingView,
-                getString(R.string.loginactivity_subtitle_error_action)
+              buttonLogin,
+              loadingView,
+              getString(R.string.loginactivity_subtitle_error_action)
         )
         loadingButtonStateWrapper.setDefault()
-        RxView.clicks(buttonLogin)
-                .filter {
-                    // setClickable(false) is reset to true after setting a click listener
-                    buttonLogin.isClickable
-                }
-                .subscribe { presenter.onLoginButtonClicked() }
-                .attachToLifecycle(this)
+        buttonLogin.clicks()
+              .filter {
+                  // setClickable(false) is reset to true after setting a click listener
+                  buttonLogin.isClickable
+              }
+              .doOnEach { eventTracker.log(Event.Login.ButtonClicked) }
+              .subscribe { presenter.onLoginButtonClicked() }
+              .attachToLifecycle(this)
         @Suppress("ConstantConditionIf")
         if (BuildConfig.DEBUG) {
             val clicksRequired = 3
-            RxView.longClicks(buttonLogin)
-                    .buffer(clicksRequired)
-                    .subscribe { Crashlytics.getInstance().crash() }
-                    .attachToLifecycle(this)
+            buttonLogin.longClicks()
+                  .buffer(clicksRequired)
+                  .subscribe { throw RuntimeException("Test exception") }
+                  .attachToLifecycle(this)
         }
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }
 
     override fun onResume() {
         super.onResume()
-        val uri = intent.data
-        if (uri != null && uri.toString().startsWith(Const.AUTH_REDIRECT_URI)) {
-            val code = uri.getQueryParameter("code")
-            if (code != null) {
-                presenter.getToken(code)
-            } else uri.getQueryParameter("error")?.let {
-                showError(RuntimeException(it))
-            }
-        }
+        screenTracker.log(this, Screen.Auth)
+        presenter.checkIfAuthIsSuccessful(intent.data)
+    }
+
+    override fun onLoginCancelled() {
+        eventTracker.log(Event.Login.Canceled)
     }
 
     override fun onStart() {
@@ -87,25 +89,11 @@ class LoginActivity : AppCompatActivity(), LoginView {
     }
 
     override fun openAuthUrl(url: String) {
-        connection = object : CustomTabsServiceConnection() {
-            override fun onCustomTabsServiceConnected(componentName: ComponentName, client: CustomTabsClient) {
-                client.warmup(0L) // This prevents backgrounding after redirection
-                val customTabsIntent = with(CustomTabsIntent.Builder()) {
-                    setToolbarColor(ContextCompat.getColor(this@LoginActivity, android.R.color.white))
-                    build()
-                }
-                customTabsIntent.launchUrl(this@LoginActivity, Uri.parse(url))
-            }
-
-            override fun onServiceDisconnected(name: ComponentName) {
-            }
-        }
-        getChromePackage()?.let {
-            CustomTabsClient.bindCustomTabsService(this, getChromePackage(), connection)
-        } ?: showError(null, R.string.loginactivity_error_no_browser)
+        browserWindow.openUrl(url)
     }
 
     override fun onGetTokenSuccess(token: AccessToken) {
+        eventTracker.log(Event.Login.Successful)
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finishAffinity()
@@ -120,36 +108,13 @@ class LoginActivity : AppCompatActivity(), LoginView {
     }
 
     override fun showError(throwable: Throwable?, @StringRes messageStringRes: Int?) {
+        eventTracker.log(Event.Login.Unsuccessful)
         throwable?.report()
         loadingButtonStateWrapper.setError()
         textViewSubhead.apply {
             setText(messageStringRes ?: R.string.loginactivity_error_generic)
             TextViewCompat.setTextAppearance(this, R.style.TextAppearance_App_Login_Subhead_Error)
         }
-    }
-
-    private fun getChromePackage(): String? {
-        fun Iterable<PackageInfo>.find(packageName: String): String? {
-            return find { it.packageName == packageName }?.packageName
-        }
-
-        val chrome = "com.chrome"
-        val stable = "com.android.chrome"
-        val beta = "$chrome.beta"
-        val dev = "$chrome.dev"
-        val canary = "$chrome.canary"
-        val apps = packageManager.getInstalledPackages(0)
-        return apps.run {
-            find(stable) ?: find(beta) ?: find(dev) ?: find(canary)
-        }
-    }
-
-    override fun onDestroy() {
-        connection?.let {
-            this.unbindService(it)
-            connection = null
-        }
-        super.onDestroy()
     }
 
 }

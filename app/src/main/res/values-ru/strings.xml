@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="main_action_logout">Выйти</string>
     <string name="main_action_refresh">Обновить</string>
     <string name="error_refreshing_token">Пожалуйста, войдите снова</string>
     <string name="error_state_title">Не получилось загрузить данные</string>
-    <string name="error_state_subtitle">Пожвлуйста, попробуйте позже</string>
+    <string name="error_state_subtitle">Пожалуйста, попробуйте позже</string>
     <string name="error_state_action">Попробовать снова</string>
     <string name="empty_state_title">Кажется, у вас нет статистики</string>
     <string name="empty_state_subtitle">Установите плагин для вашего редактора кода и она появится</string>
@@ -38,7 +37,6 @@
     <string name="loginactivity_error_generic">Не удалось войти</string>
     <string name="loginactivity_subtitle_loading">Входим в приложение</string>
     <string name="loginactivity_subtitle_error_action">Войти</string>
-    <string name="screen_stats">Статистика</string>
     <string name="offline_state_title">Нет интернета</string>
     <string name="offline_state_subtitle">Обновим данные, когда он появится</string>
     <string name="status_offline">Оффлайн</string>
@@ -47,4 +45,31 @@
     <string name="stats_error_unknown">Не удалось обновить</string>
     <string name="stats_error_unknown_range">Не удалось загрузить статистику за эот период</string>
     <string name="stats_error_unknown_range_no_network">Ошибка сети</string>
+    <string name="main_bottomnav_menu">Меню</string>
+    <string name="main_bottomnav_today">Отчёт</string>
+    <string name="main_bottomnav_ranges">Статистика</string>
+    <string name="commits_branch_name_unknown">Ветка без имени</string>
+    <string name="summary_title_time_tracked">Время</string>
+    <string name="summary_template_average_delta">На %d%% %s среднего за месяц</string>
+    <string name="summary_template_average_delta_above">выше</string>
+    <string name="summary_template_average_delta_below">ниже</string>
+    <string name="summary_title_projects">Проекты</string>
+    <string name="summary_projects_label_no_repo">Добавьте репозиторий, чтобы увидеть коммиты</string>
+    <string name="summary_projects_template_more_commits">Ещё %d коммитов</string>
+    <string name="stats_time_format_hours_short">%dч</string>
+    <string name="stats_time_format_minutes_short">%dм</string>
+    <string name="summary_projects_label_no_commits">Нет коммитов на сервере</string>
+    <string name="summary_projects_state_empty_today_title">Нет активности за сегодня</string>
+    <string name="menu_action_logout">Выйти</string>
+    <string name="menu_action_open_github">PocketWaka на Github</string>
+    <string name="menu_action_rate">Оценить PocketWaka</string>
+    <string name="menu_action_send_feedback">Отправить отзыв</string>
+    <string name="menu_version_template">Версия %s</string>
+    <string name="menu_support_email_subject">Отзыв о PocketWaka</string>
+    <string name="rating_dialog_title">Оцените приложение</string>
+    <string name="rating_dialog_low_rating_message">Простите, если что-то не так 😿\nНапишите нам и мы исправим ошибки</string>
+    <string name="rating_dialog_low_rating_message_no_email_app">Простите, если что-то не так 😿\nНапишите нам на %s\nи мы исправим ошибки</string>
+    <string name="rating_dialog_low_rating_message_no_email_address">Спасибо! Ваша оценка поможет приложению стать лучше.</string>
+    <string name="rating_dialog_low_rating_action">@string/menu_action_send_feedback</string>
+    <string name="all_error_invalid_url">Не можем открыть этот URL</string>
 </resources>

@@ -1,0 +1,148 @@
+{
+  "data": [
+    {
+      "categories": [
+        {
+          "digital": "0:00:21",
+          "hours": 0,
+          "minutes": 0,
+          "name": "Coding",
+          "percent": 100,
+          "seconds": 21,
+          "text": "21 secs",
+          "total_seconds": 21.844
+        }
+      ],
+      "dependencies": [
+        {
+          "digital": "0:00:17",
+          "hours": 0,
+          "minutes": 0,
+          "name": "androidx.annotation",
+          "percent": 25,
+          "seconds": 17,
+          "text": "17 secs",
+          "total_seconds": 17.13
+        },
+        {
+          "digital": "0:00:17",
+          "hours": 0,
+          "minutes": 0,
+          "name": "android.app",
+          "percent": 25,
+          "seconds": 17,
+          "text": "17 secs",
+          "total_seconds": 17.13
+        },
+        {
+          "digital": "0:00:17",
+          "hours": 0,
+          "minutes": 0,
+          "name": "com.kondenko",
+          "percent": 25,
+          "seconds": 17,
+          "text": "17 secs",
+          "total_seconds": 17.13
+        },
+        {
+          "digital": "0:00:17",
+          "hours": 0,
+          "minutes": 0,
+          "name": "com.google",
+          "percent": 25,
+          "seconds": 17,
+          "text": "17 secs",
+          "total_seconds": 17.13
+        }
+      ],
+      "editors": [
+        {
+          "digital": "0:00:21",
+          "hours": 0,
+          "minutes": 0,
+          "name": "Android Studio",
+          "percent": 100,
+          "seconds": 21,
+          "text": "21 secs",
+          "total_seconds": 21.844
+        }
+      ],
+      "grand_total": {
+        "digital": "0:00",
+        "hours": 0,
+        "minutes": 0,
+        "text": "0 secs",
+        "total_seconds": 21.844
+      },
+      "languages": [
+        {
+          "digital": "0:00:21",
+          "hours": 0,
+          "minutes": 0,
+          "name": "Kotlin",
+          "percent": 100,
+          "seconds": 21,
+          "text": "21 secs",
+          "total_seconds": 21.844
+        }
+      ],
+      "machines": [
+        {
+          "digital": "0:00:21",
+          "hours": 0,
+          "machine_name_id": "80958790-b6f8-49fe-839c-4b3781a8b22c",
+          "minutes": 0,
+          "name": "MacBook-Air",
+          "percent": 100,
+          "seconds": 21,
+          "text": "21 secs",
+          "total_seconds": 21.844
+        },
+        {
+          "digital": "0:00:00",
+          "hours": 0,
+          "machine_name_id": "d73646a3-8104-4a22-9a1a-f4bf946de168",
+          "minutes": 0,
+          "name": "MacBook-Air.local",
+          "percent": 0,
+          "seconds": 0,
+          "text": "0 secs",
+          "total_seconds": 0
+        }
+      ],
+      "operating_systems": [
+        {
+          "digital": "0:00:21",
+          "hours": 0,
+          "minutes": 0,
+          "name": "Mac",
+          "percent": 100,
+          "seconds": 21,
+          "text": "21 secs",
+          "total_seconds": 21.844
+        }
+      ],
+      "projects": [
+        {
+          "digital": "0:00:21",
+          "hours": 0,
+          "minutes": 0,
+          "name": "PocketWaka",
+          "percent": 100,
+          "seconds": 21,
+          "text": "21 secs",
+          "total_seconds": 21.844
+        }
+      ],
+      "range": {
+        "date": "2019-10-15",
+        "end": "2019-10-15T20:59:59Z",
+        "start": "2019-10-14T21:00:00Z",
+        "text": "Today",
+        "timezone": "Europe/Moscow"
+      }
+    }
+  ],
+  "end": "2019-10-15T20:59:59Z",
+  "start": "2019-10-14T21:00:00Z"
+}

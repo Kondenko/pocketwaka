@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <declare-styleable name="LoadingView">
         <attr name="dots_number" format="integer|dimension" />
         <attr name="dot_drawable" format="reference" />
         <attr name="dot_margin" format="integer|dimension|float" />
     </declare-styleable>
+
+    <declare-styleable name="AnimatedRatingBar">
+        <attr name="stars_number" format="integer|dimension" />
+        <attr name="star_json" format="reference" />
+        <attr name="star_padding" format="integer|dimension|float" />
+        <attr name="star_size" format="integer|dimension|float" />
+        <attr name="tint" format="color" />
+        <attr name="anim_duration" format="integer" />
+    </declare-styleable>
+
 </resources>

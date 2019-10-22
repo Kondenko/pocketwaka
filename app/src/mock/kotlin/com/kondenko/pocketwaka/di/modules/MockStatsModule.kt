@@ -1,12 +1,17 @@
 package com.kondenko.pocketwaka.di.modules
 
-import android.content.Context
-import com.kondenko.pocketwaka.data.stats.service.MockStatsService
-import com.kondenko.pocketwaka.data.stats.service.StatsService
-import org.koin.dsl.module.applicationContext
+import com.kondenko.pocketwaka.data.stats.converter.StatsResponseConverter
+import com.kondenko.pocketwaka.domain.auth.MockGetTokenHeaderValue
+import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsForRange
+import org.koin.dsl.module
 
-object MockStatsModule {
-    fun create(context: Context) = module {
-        single { MockStatsService(context, get()) as StatsService }
+val mockStatsModule = module(override = true) {
+    factory {
+        GetStatsForRange(
+              schedulers = get(),
+              getTokenHeader = get<MockGetTokenHeaderValue>(),
+              statsRepository = get(),
+              serverModelConverter = get<StatsResponseConverter>()
+        )
     }
 }

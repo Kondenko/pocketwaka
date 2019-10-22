@@ -15,11 +15,11 @@ abstract class UseCaseCompletable<PARAMS>(private val schedulers: SchedulersCont
 
     override fun invoke(params: PARAMS?, onSuccess: (Nothing) -> Unit, onError: (Throwable) -> Unit, onFinish: () -> Unit): Completable {
         return build(params)
-                .subscribeOn(schedulers.workerScheduler)
-                .observeOn(schedulers.uiScheduler)
-                .also {
-                    disposable = it.subscribe(onFinish, onError)
-                }
+              .subscribeOn(schedulers.workerScheduler)
+              .observeOn(schedulers.uiScheduler)
+              .also {
+                  disposable = it.subscribe(onFinish, onError)
+              }
     }
 
     override fun dispose() {
