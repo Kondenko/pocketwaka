@@ -15,5 +15,6 @@ href='https://play.google.com/store/apps/details?id=com.kondenko.pocketwaka&utm_
 - RxJava / RxBinding
 - <a href="https://insert-koin.io/">Koin</a>
 - Lottie
-
+#
 <a href='https://www.browserstack.com'><img height="32" width="-1" src='https://i.ibb.co/k9wHd9K/Browserstack-logo-2x.png'/></a>
+<br>BrowserStack helps me to test PocketWaka on a wide range of Android devices.
