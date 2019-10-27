@@ -9,8 +9,7 @@ import io.reactivex.Single
  * Checks whether user should log in to use the app.
  */
 
-class CheckIfUserIsLoggedIn
-(schedulers: SchedulersContainer, private val repository: AccessTokenRepository) : UseCaseSingle<Nothing, Boolean>(schedulers) {
+class CheckIfUserIsLoggedIn(schedulers: SchedulersContainer, private val repository: AccessTokenRepository) : UseCaseSingle<Nothing, Boolean>(schedulers) {
 
     override fun build(params: Nothing?): Single<Boolean> = repository.isTokenSaved()
 

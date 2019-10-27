@@ -74,18 +74,15 @@ open class StateFragment : Fragment() {
                 Timber.w("This state is not supported: $state")
             }
         }
-        setContent(drawableRes, titleRes?.right(), subtitleRes?.right())
+        setContent(drawableRes, titleRes, subtitleRes)
     }
 
-    protected fun setContent(drawable: Either<Drawable, Int>? = null, title: Either<String, Int>? = null, subtitle: Either<String, Int>? = null) {
+    protected fun setContent(drawable: Either<Drawable, Int>? = null, title: Int? = null, subtitle: Int? = null) {
 
-        fun TextView.setText(options: Either<String, Int>?) =
-                options?.left?.let(::setText) ?: options?.right?.let(::setText)
+        fun TextView.setText(stringRes: Int?) = stringRes?.let(::setText) ?: setText(null)
 
         textview_state_title?.setText(title)
-
         textview_state_subtitle?.setText(subtitle)
-
         imageview_state_illustration?.apply {
             drawable?.left?.let(::setImageDrawable) ?: drawable?.right?.let(::setImageResource)
         }
