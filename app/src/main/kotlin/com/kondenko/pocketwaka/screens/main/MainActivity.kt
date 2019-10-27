@@ -1,6 +1,5 @@
 package com.kondenko.pocketwaka.screens.main
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -70,8 +69,7 @@ class MainActivity : AppCompatActivity() {
         vm.state().observe(this) {
             when (it) {
                 is MainState.ShowData -> showData()
-                is MainState.ShowLoginScreen -> showLoginScreen()
-                is MainState.LogOut -> logout()
+                is MainState.GoToLogin -> goToLogin()
                 is MainState.Error -> showError(it.cause)
             }
         }
@@ -97,13 +95,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showLoginScreen() {
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun logout() {
+    private fun goToLogin() {
         finish()
         startActivity<LoginActivity>()
     }
