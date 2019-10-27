@@ -39,7 +39,6 @@ abstract class ContinuousCacheBackedRepository<Params, ServerModel, DbModel>(
                 .onErrorResumeNext(Observable.empty())
         val server = getDataFromServer(params)
                 .map(params)
-                .doOnNext { WakaLog.d("Mapped a server model: $it") }
                 .doOnComplete { dto: List<DbModel> ->
                     dto.reduce { a, b -> reduceModels(params, a, b) }.let {
                         cacheData(it)
@@ -51,13 +50,11 @@ abstract class ContinuousCacheBackedRepository<Params, ServerModel, DbModel>(
                     }
                 }
                 .onErrorResumeNext { error: Throwable ->
-                    WakaLog.w("Error retrieving data from server")
                     // Pass the network error down the stream if cache is empty
                     cache.switchIfEmpty(Observable.error(error))
                 }
         return server
                 .distinctUntilChanged()
-                .doOnComplete { WakaLog.d("Repo observable completed") }
     }
 
     /**
@@ -70,8 +67,6 @@ abstract class ContinuousCacheBackedRepository<Params, ServerModel, DbModel>(
             continuousCachedDataProvider.invoke(params)
                     .map { setIsFromCache(it, true) }
                     .timeout(cacheRetrievalTimeoutMs, TimeUnit.MILLISECONDS)
-                    .doOnNext { WakaLog.d("Retrieved a model from cache: $it") }
-                    .doOnError { WakaLog.d("Error retrieving a model from cache: $it") }
 
     /**
      * Put [data] into cache

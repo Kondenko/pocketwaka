@@ -61,20 +61,20 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_state_action_open_plugins"
-        style="@style/App.Button"
+        style="@style/App.Button.Icon"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/height_state_screen_button"
-        android:layout_marginTop="24dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:layout_marginBottom="@dimen/margin_state_screen_button_bottom"
         android:text="@string/empty_state_action"
         android:visibility="gone"
         app:icon="@drawable/state_empty_ic_open_plugins_white_24dp"
-        app:iconPadding="12dp"
         app:iconSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textview_state_subtitle"
         app:layout_constraintStart_toStartOf="@+id/textview_state_subtitle"
         app:layout_constraintTop_toBottomOf="@+id/textview_state_subtitle"
+        app:layout_constraintVertical_bias="0.0"
         tools:visibility="visible"
         />
 

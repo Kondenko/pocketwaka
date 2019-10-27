@@ -7,7 +7,8 @@ import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.domain.main.ClearCache
 import com.kondenko.pocketwaka.domain.main.FetchRemoteConfigValues
 import com.kondenko.pocketwaka.domain.main.RefreshAccessToken
-import com.kondenko.pocketwaka.screens.main.MainState.*
+import com.kondenko.pocketwaka.screens.main.MainState.GoToLogin
+import com.kondenko.pocketwaka.screens.main.MainState.ShowData
 import com.kondenko.pocketwaka.utils.WakaLog
 
 
@@ -40,19 +41,17 @@ class MainViewModel(
 
     private fun checkIfLoggedIn() {
         checkIfUserIsLoggedIn(
-                onSuccess = { isLoggedIn ->
-                    if (isLoggedIn) {
-                        refreshAccessToken.invoke()
-                        state.postValue(ShowData)
-                    } else {
-                        state.postValue(ShowLoginScreen)
-                    }
-                },
-                onError = { error ->
-                    clearCache(onFinish = {
-                        state.postValue(LogOut)
-                    })
-                }
+              onSuccess = { isLoggedIn ->
+                  if (isLoggedIn) {
+                      refreshAccessToken.invoke()
+                      state.postValue(ShowData)
+                  } else {
+                      state.postValue(GoToLogin)
+                  }
+              },
+              onError = { error ->
+                  clearCache(onFinish = { state.postValue(GoToLogin) })
+              }
         )
     }
 
