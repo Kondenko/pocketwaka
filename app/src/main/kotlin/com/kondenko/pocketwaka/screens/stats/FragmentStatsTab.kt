@@ -42,7 +42,7 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
         const val argRange = "range"
     }
 
-    private val range: String? by lazy { arguments?.getString(argRange) }
+    val range: String? by lazy { arguments?.getString(argRange) }
 
     private lateinit var vm: StatsViewModel
 
@@ -89,7 +89,7 @@ class FragmentStatsTab : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAda
             vm.state().observe(viewLifecycleOwner) {
                 Timber.d("New stats state (${range}): $it")
                 if (it is State.Empty) {
-                    eventTracker.log(Event.EmptyState.Account(Screen.Stats.Tab(range)))
+                    eventTracker.log(Event.EmptyState.Account(Screen.Stats(range)))
                 }
                 it.render()
             }

@@ -6,6 +6,7 @@ import com.kondenko.pocketwaka.di.qualifiers.Auth
 import com.kondenko.pocketwaka.di.qualifiers.Scheduler
 import com.kondenko.pocketwaka.utils.ResponseLogger
 import com.kondenko.pocketwaka.utils.SchedulersContainer
+import com.kondenko.pocketwaka.utils.UnauthorizedAccessInterceptor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
@@ -24,16 +25,17 @@ val netModule = module {
     single { GsonConverterFactory.create() }
     single {
         OkHttpClient.Builder()
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .addNetworkInterceptor(ResponseLogger())
-                .build()
+              .connectTimeout(15, TimeUnit.SECONDS)
+              .readTimeout(30, TimeUnit.SECONDS)
+              .addNetworkInterceptor(ResponseLogger())
+              .addNetworkInterceptor(UnauthorizedAccessInterceptor())
+              .build()
     }
     single {
         Retrofit.Builder()
-                .client(get())
-                .addCallAdapterFactory(get() as RxJava2CallAdapterFactory)
-                .addConverterFactory(get() as GsonConverterFactory)
+              .client(get())
+              .addCallAdapterFactory(get() as RxJava2CallAdapterFactory)
+              .addConverterFactory(get() as GsonConverterFactory)
     }
     single(Auth) { get<Retrofit.Builder>().baseUrl(Const.BASE_URL).build() }
     single(Api) { get<Retrofit.Builder>().baseUrl(Const.URL_API).build() }

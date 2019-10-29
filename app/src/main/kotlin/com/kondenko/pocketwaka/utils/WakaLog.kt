@@ -26,8 +26,7 @@ object WakaLog {
         }
     }
 
-    inline fun e(message: String, throwable: Throwable? = null) {
-        throwable?.report(message, printLog = false)
+    inline fun e(message: String?, throwable: Throwable? = null) {
         Timber.e(throwable, message)
         ifNoTimber {
             println(message)

@@ -21,6 +21,8 @@ open class State<out T>(open val data: T?) {
             open val isFatal: Boolean = false
     ) : State<T>(data) {
 
+        class Unauthorized(exception: Throwable?) : Failure<Nothing>(null, exception, true)
+
         data class NoNetwork<T>(
                 override val data: T? = null,
                 override val exception: Throwable? = NetworkErrorException("Device is offline"),

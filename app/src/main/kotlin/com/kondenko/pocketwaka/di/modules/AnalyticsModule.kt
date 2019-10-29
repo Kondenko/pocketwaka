@@ -8,7 +8,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val analyticsModule = module {
-    single<FirebaseAnalytics> {
+    single {
         FirebaseAnalytics.getInstance(androidContext()).apply {
             setAnalyticsCollectionEnabled(!BuildConfig.DEBUG)
         }

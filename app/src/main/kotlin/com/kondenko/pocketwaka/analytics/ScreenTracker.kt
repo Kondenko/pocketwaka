@@ -10,7 +10,7 @@ class ScreenTracker(val analytics: FirebaseAnalytics) {
     @MainThread
     fun log(activity: Activity?, screen: Screen) {
         activity?.let {
-            analytics.setCurrentScreen(activity, screen.toString(), screen::class.java.toString())
+            analytics.setCurrentScreen(activity, screen.name, screen::class.java.toString())
         } ?: WakaLog.w("$screen wasn't logged because its Activity is null")
     }
 
