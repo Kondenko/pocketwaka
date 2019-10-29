@@ -81,11 +81,6 @@ class FragmentStats : Fragment(), Refreshable {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        screenTracker.log(activity, Screen.Stats.TabContainer)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelable(keyTabsElevation, tabsElevation)
         super.onSaveInstanceState(outState)
@@ -140,7 +135,7 @@ class FragmentStats : Fragment(), Refreshable {
 
     private fun onFragmentSelected(position: Int) =
           (pagerAdapter.getPage(position) as? FragmentStatsTab?)?.let { fragment ->
-              screenTracker.log(activity, Screen.Stats.Tab(fragment.arguments?.getString(FragmentStatsTab.argRange)))
+              screenTracker.log(activity, Screen.Stats(fragment.arguments?.getString(FragmentStatsTab.argRange)))
               restoreTabsElevation(position)
               refreshSubscription?.dispose()
               scrollSubscription?.dispose()
@@ -179,6 +174,9 @@ class FragmentStats : Fragment(), Refreshable {
               .alpha(if (elevate) Const.MAX_SHADOW_OPACITY else 0f)
               .start()
     }
+
+    fun getSelectedTab() =
+          (pagerAdapter.getPage(stats_viewpager_content.currentItem) as? FragmentStatsTab?)?.range
 
     @SuppressLint("CheckResult")
     override fun subscribeToRefreshEvents(refreshEvents: Observable<Unit>): Disposable? {

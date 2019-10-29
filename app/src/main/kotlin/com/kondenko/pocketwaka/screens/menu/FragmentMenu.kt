@@ -47,8 +47,6 @@ class FragmentMenu : Fragment() {
 
     private val vm: MenuViewModel by viewModel()
 
-    private val screenTracker: ScreenTracker by inject()
-
     private val eventTracker: EventTracker by inject()
 
     private val browserWindow: BrowserWindow by inject { parametersOf(context, viewLifecycleOwner) }
@@ -140,6 +138,11 @@ class FragmentMenu : Fragment() {
           }
     )
 
+    override fun onResume() {
+        super.onResume()
+        vm.onResume()
+    }
+
     private fun rateApp() {
         if (!ratingDialog.isShown) ratingDialog.show(childFragmentManager, tagRatingDialog)
     }
@@ -166,12 +169,6 @@ class FragmentMenu : Fragment() {
               putExtras(extras)
           }
     )
-
-    override fun onResume() {
-        super.onResume()
-        screenTracker.log(activity, Screen.Menu)
-        vm.onResume()
-    }
 
     private fun logout() {
         requireActivity().apply {

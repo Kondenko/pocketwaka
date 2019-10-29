@@ -52,6 +52,7 @@ android {
         }
         mock {
             initWith release
+            manifestPlaceholders = [enableCrashReporting: "false"]
             buildConfigField "String", "ACCESS_TOKEN", ACCESS_TOKEN
         }
     }
