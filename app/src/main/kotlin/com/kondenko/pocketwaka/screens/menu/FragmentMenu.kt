@@ -79,7 +79,7 @@ class FragmentMenu : Fragment() {
         recyclewview_menu.adapter = adapter
         with(ratingDialog) {
             ratingChanges()
-                  .doOnNext { eventTracker.log(Event.Menu.RatingGiven(it)) }
+                  .doOnNext { rating -> if (rating > 0) eventTracker.log(Event.Menu.RatingGiven(rating)) }
                   .subscribe(vm::rate)
                   .attachToLifecycle(this@FragmentMenu.viewLifecycleOwner)
             sendFeedbackClicks()

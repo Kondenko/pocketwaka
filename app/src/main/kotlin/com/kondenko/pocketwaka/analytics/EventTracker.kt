@@ -18,7 +18,6 @@ class EventTracker(val analytics: FirebaseAnalytics) {
                   .className(includeSuperclass = event::class.java.superclass != Event::class.java)
                   .replace("[^A-Za-z0-9_]", "") // Only leave allowed symbols
                   .toSnakeCase()
-                  .also { WakaLog.d("Putting $event into the map: $it") }
         }
         val bundle = try {
             (event as? HasBundle)?.getBundle()
