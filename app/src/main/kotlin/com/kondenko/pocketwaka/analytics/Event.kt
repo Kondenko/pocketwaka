@@ -14,6 +14,8 @@ sealed class Event {
 
     object ManualUpdate : Event()
 
+    object ForcedLogout : Event()
+
     sealed class Summary : Event() {
         object ConnectRepoClicks : Summary()
     }

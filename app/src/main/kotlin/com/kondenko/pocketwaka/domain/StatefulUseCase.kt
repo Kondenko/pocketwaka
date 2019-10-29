@@ -62,9 +62,17 @@ abstract class StatefulUseCase<
                 .map { databaseModelToState(it, isConnected) }
                 .onErrorResumeNext { t: Throwable ->
                     when {
-                        t is UnauthorizedException -> clearCache.build().andThen(Observable.just(Failure.Unauthorized(t)))
-                        isConnected -> Observable.just(Failure.Unknown(exception = t))
-                        else -> Observable.just(Failure.NoNetwork(exception = t))
+                        t is UnauthorizedException -> {
+                            clearCache.build()
+                                  .onErrorComplete()
+                                  .andThen(Observable.just(Failure.Unauthorized(t)))
+                        }
+                        isConnected -> {
+                            Observable.just(Failure.Unknown(exception = t))
+                        }
+                        else -> {
+                            Observable.just(Failure.NoNetwork(exception = t))
+                        }
                     }
                 }
                 .subscribeOn(schedulers.workerScheduler)

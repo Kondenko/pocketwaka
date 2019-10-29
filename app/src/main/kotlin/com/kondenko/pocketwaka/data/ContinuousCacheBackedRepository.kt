@@ -35,9 +35,9 @@ abstract class ContinuousCacheBackedRepository<Params, ServerModel, DbModel>(
      * @param convert a function to convert [ServerModel] to [DbModel]
      */
     fun getData(params: Params, convert: Single<ServerModel>.(Params) -> Observable<DbModel>): Observable<DbModel> {
-        val cache = getDataFromCache(params)
+        val cache: Observable<DbModel> = getDataFromCache(params)
               .onErrorResumeNext(Observable.empty())
-        val server = getDataFromServer(params)
+        val server: Observable<DbModel> = getDataFromServer(params)
               .convert(params)
               .doOnComplete { dto: List<DbModel> ->
                   dto.takeIf { it.isNotEmpty() }

@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.analytics.Event
+import com.kondenko.pocketwaka.analytics.EventTracker
 import com.kondenko.pocketwaka.screens.ScreenStatus
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.StateFragment
@@ -21,11 +23,14 @@ import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.extensions.report
 import com.kondenko.pocketwaka.utils.extensions.startActivity
 import com.kondenko.pocketwaka.utils.extensions.transaction
+import org.koin.android.ext.android.inject
 
 abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> : Fragment() {
 
     protected open val stateFragment = StateFragment()
     private val fragmentStateTag = "state"
+
+    private val eventTracker: EventTracker by inject()
 
     protected abstract val containerId: Int
 
@@ -71,8 +76,8 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
     }
 
     private fun State.Failure<ST>.render() {
-        exception?.report()
         if (this !is State.Failure.Unauthorized) {
+            exception?.report()
             showData(!isFatal)
             if (isFatal) {
                 stateFragment.setState(this, this@BaseFragment::reloadScreen)
@@ -127,6 +132,7 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
 
     private fun forceLogOut() {
         activity?.apply {
+            eventTracker.log(Event.ForcedLogout)
             Toast.makeText(this, R.string.all_error_invalid_access, Toast.LENGTH_LONG).show()
             finish()
             startActivity<LoginActivity>()
