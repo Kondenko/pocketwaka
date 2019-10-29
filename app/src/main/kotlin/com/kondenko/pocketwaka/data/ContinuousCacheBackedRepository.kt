@@ -22,51 +22,54 @@ import java.util.concurrent.TimeUnit
  *
  */
 abstract class ContinuousCacheBackedRepository<Params, ServerModel, DbModel>(
-        private val workerScheduler: Scheduler,
-        private val serverDataProvider: (Params) -> Single<ServerModel>,
-        private val continuousCachedDataProvider: (Params) -> Observable<DbModel>,
-        private val reduceModels: (Params, DbModel, DbModel) -> DbModel,
-        private val cacheRetrievalTimeoutMs: Long = 3000
+      private val workerScheduler: Scheduler,
+      private val serverDataProvider: (Params) -> Single<ServerModel>,
+      private val continuousCachedDataProvider: (Params) -> Observable<DbModel>,
+      private val reduceModels: (Params, DbModel, DbModel) -> DbModel,
+      private val cacheRetrievalTimeoutMs: Long = 3000
 ) {
     /**
      * First returns data from cache if it's available. Then returns data from server and caches it.
      *
      * @param params parameters to fetch data with
-     * @param converter a function to convert [ServerModel] to [DbModel]
+     * @param convert a function to convert [ServerModel] to [DbModel]
      */
-    fun getData(params: Params, map: Single<ServerModel>.(Params) -> Observable<DbModel>): Observable<DbModel> {
-        val cache = getDataFromCache(params)
-                .onErrorResumeNext(Observable.empty())
-        val server = getDataFromServer(params)
-                .map(params)
-                .doOnComplete { dto: List<DbModel> ->
-                    dto.reduce { a, b -> reduceModels(params, a, b) }.let {
-                        cacheData(it)
-                                .subscribeOn(workerScheduler)
-                                .subscribeBy(
+    fun getData(params: Params, convert: Single<ServerModel>.(Params) -> Observable<DbModel>): Observable<DbModel> {
+        val cache: Observable<DbModel> = getDataFromCache(params)
+              .onErrorResumeNext(Observable.empty())
+        val server: Observable<DbModel> = getDataFromServer(params)
+              .convert(params)
+              .doOnComplete { dto: List<DbModel> ->
+                  dto.takeIf { it.isNotEmpty() }
+                        ?.also { WakaLog.d("Reducing a non-empty collection") }
+                        ?.reduce { a, b -> reduceModels(params, a, b) }
+                        ?.let {
+                            cacheData(it)
+                                  .subscribeOn(workerScheduler)
+                                  .subscribeBy(
                                         onComplete = { WakaLog.d("Data cached: $dto") },
                                         onError = { WakaLog.w("Failed to cache data") }
-                                )
-                    }
-                }
-                .onErrorResumeNext { error: Throwable ->
-                    // Pass the network error down the stream if cache is empty
-                    cache.switchIfEmpty(Observable.error(error))
-                }
-        return server
-                .distinctUntilChanged()
+                                  )
+                        }
+                        ?: WakaLog.d("An empty collection won't be reduced")
+              }
+              .onErrorResumeNext { error: Throwable ->
+                  // Pass the network error down the stream if cache is empty
+                  cache.switchIfEmpty(Observable.error(error))
+              }
+        return server.distinctUntilChanged()
     }
 
     /**
      * Fetches data from server without caching.
      */
     private fun getDataFromServer(params: Params): Single<ServerModel> =
-            serverDataProvider.invoke(params)
+          serverDataProvider.invoke(params)
 
     private fun getDataFromCache(params: Params): Observable<DbModel> =
-            continuousCachedDataProvider.invoke(params)
-                    .map { setIsFromCache(it, true) }
-                    .timeout(cacheRetrievalTimeoutMs, TimeUnit.MILLISECONDS)
+          continuousCachedDataProvider.invoke(params)
+                .map { setIsFromCache(it, true) }
+                .timeout(cacheRetrievalTimeoutMs, TimeUnit.MILLISECONDS)
 
     /**
      * Put [data] into cache

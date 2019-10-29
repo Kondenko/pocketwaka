@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.kondenko.pocketwaka.data.auth.model.server.AccessToken
 import com.kondenko.pocketwaka.data.auth.service.AccessTokenService
+import com.kondenko.pocketwaka.utils.exceptions.UnauthorizedException
 import com.kondenko.pocketwaka.utils.extensions.getStringOrThrow
 import com.kondenko.pocketwaka.utils.extensions.singleOrErrorIfNull
 import io.reactivex.Completable
@@ -27,7 +28,7 @@ class AccessTokenRepository(private val service: AccessTokenService, private val
 
     fun getEncryptedToken(): Single<AccessToken> {
         return isTokenSaved().flatMap { isSaved ->
-            if (!isSaved) Single.error(NullPointerException("Access Token is not acquired yet"))
+            if (!isSaved) Single.error(UnauthorizedException("Couldn't obtain an AccessToken object from preferences"))
             else Single.just(
                     AccessToken(
                             accessToken = prefs.getStringOrThrow(KEY_ACCESS_TOKEN),
@@ -43,10 +44,10 @@ class AccessTokenRepository(private val service: AccessTokenService, private val
     }
 
     fun getRefreshToken() = prefs.getString(KEY_REFRESH_TOKEN, null)
-            .singleOrErrorIfNull(IllegalStateException("No refresh token available"))
+            .singleOrErrorIfNull(UnauthorizedException("No refresh token found in preferences"))
 
     fun getEncryptedTokenValue() = prefs.getString(KEY_ACCESS_TOKEN, null)
-            .singleOrErrorIfNull(IllegalStateException("Access Token is not acquired yet"))
+            .singleOrErrorIfNull(UnauthorizedException("Couldn't obtain an access token string from preferences"))
 
     fun saveToken(token: AccessToken, createdAt: Float) {
         prefs.edit {

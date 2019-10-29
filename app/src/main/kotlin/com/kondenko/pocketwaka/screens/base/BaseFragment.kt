@@ -2,27 +2,36 @@ package com.kondenko.pocketwaka.screens.base
 
 import android.content.Context
 import android.net.Uri
+import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.analytics.Event
+import com.kondenko.pocketwaka.analytics.EventTracker
 import com.kondenko.pocketwaka.screens.ScreenStatus
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.StateFragment
+import com.kondenko.pocketwaka.screens.login.LoginActivity
 import com.kondenko.pocketwaka.ui.skeleton.RecyclerViewSkeleton
 import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.extensions.report
+import com.kondenko.pocketwaka.utils.extensions.startActivity
 import com.kondenko.pocketwaka.utils.extensions.transaction
+import org.koin.android.ext.android.inject
 
 abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> : Fragment() {
 
     protected open val stateFragment = StateFragment()
     private val fragmentStateTag = "state"
+
+    private val eventTracker: EventTracker by inject()
 
     protected abstract val containerId: Int
 
@@ -68,20 +77,25 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
     }
 
     private fun State.Failure<ST>.render() {
-        exception?.report()
-        showData(!isFatal)
-        if (isFatal) {
-            stateFragment.setState(this, this@BaseFragment::reloadScreen)
-        } else {
-            updateData(data)
-            view?.let {
-                val errorRes = when (this) {
-                    is State.Failure.Unknown -> R.string.stats_error_unknown
-                    is State.Failure.InvalidParams -> R.string.stats_error_unknown_range
-                    is State.Failure.NoNetwork -> R.string.stats_error_unknown_range_no_network
+        if (this !is State.Failure.Unauthorized) {
+            exception?.report()
+            showData(!isFatal)
+            if (isFatal) {
+                stateFragment.setState(this, this@BaseFragment::reloadScreen)
+            } else {
+                updateData(data)
+                view?.let {
+                    val errorRes = when (this) {
+                        is State.Failure.Unknown -> R.string.stats_error_unknown
+                        is State.Failure.InvalidParams -> R.string.stats_error_unknown_range
+                        is State.Failure.NoNetwork -> R.string.stats_error_unknown_range_no_network
+                        is State.Failure.Unauthorized -> R.string.all_error_invalid_access
+                    }
+                    Snackbar.make(it, errorRes, Snackbar.LENGTH_SHORT).show()
                 }
-                Snackbar.make(it, errorRes, Snackbar.LENGTH_SHORT).show()
             }
+        } else {
+            forceLogOut()
         }
     }
 
@@ -115,6 +129,14 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
         builder.setToolbarColor(ContextCompat.getColor(context!!, R.color.color_primary_light))
         val customTabsIntent = builder.build()
         customTabsIntent.launchUrl(context, Uri.parse(uri))
+    }
+
+    private fun forceLogOut() {
+        activity?.apply {
+            eventTracker.log(Event.ForcedLogout)
+            finish()
+            startActivity<LoginActivity>(bundleOf(LoginActivity.wasAccessLost to true))
+        }
     }
 
 }

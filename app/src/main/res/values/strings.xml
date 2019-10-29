@@ -4,6 +4,8 @@
 
     <string name="all_error_invalid_url">Can\'t open this url</string>
 
+    <string name="all_error_invalid_access">Connection to Wakatime is lost.\nPlease, log in again.</string>
+
     <!-- Main activity -->
 
     <string name="main_action_refresh">Refresh</string>
@@ -33,14 +35,12 @@
     <!-- Login -->
 
     <string name="loginactivity_sign_in">Log in</string>
-    <string name="loginactivity_subtitle_default">Get insights on your\ncoding productivity</string>
+    <string name="loginactivity_subtitle_default">Focus on your code,\nnot on tracking time</string>
     <string name="loginactivity_subtitle_loading">Logging in</string>
 
     <string name="loginactivity_error_generic">Failed to log in</string>
 
-    <string name="loginactivity_error_no_browser">Google Chrome needs to be installed \nto log in</string>
     <string name="loginactivity_subtitle_error_action">Try again</string>
-
 
     <!-- Stats -->
 

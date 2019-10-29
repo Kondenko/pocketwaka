@@ -1,27 +1,15 @@
 package com.kondenko.pocketwaka.analytics
 
-import com.kondenko.pocketwaka.utils.extensions.className
+import androidx.annotation.Size
 
-sealed class Screen {
+sealed class Screen(@Size(min = 1L, max = 36L) val name: String) {
 
-    object Auth : Screen()
+    object Auth : Screen("Auth")
 
-    object Summary : Screen() {
-        override fun toString() = className()
-    }
+    object Summary : Screen("Summary")
 
-    sealed class Stats : Screen() {
+    data class Stats(val range: String?) : Screen("Stats($range)")
 
-        object TabContainer : Stats() {
-            override fun toString() = className()
-        }
-
-        data class Tab(val range: String?) : Stats()
-
-    }
-
-    object Menu : Screen() {
-        override fun toString() = className()
-    }
+    object Menu : Screen("Menu")
 
 }

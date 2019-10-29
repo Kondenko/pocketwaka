@@ -9,6 +9,7 @@ import com.kondenko.pocketwaka.data.summary.service.SummaryService
 import com.kondenko.pocketwaka.di.qualifiers.Api
 import com.kondenko.pocketwaka.di.qualifiers.Scheduler
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
+import com.kondenko.pocketwaka.domain.main.ClearCache
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.domain.summary.usecase.*
 import com.kondenko.pocketwaka.screens.summary.FragmentSummary
@@ -83,6 +84,7 @@ val summaryModule = module {
         GetSummaryState(
               schedulers = get(),
               getSummary = get<GetSummary>(),
+              clearCache = get<ClearCache>(),
               connectivityStatusProvider = get()
         )
     }

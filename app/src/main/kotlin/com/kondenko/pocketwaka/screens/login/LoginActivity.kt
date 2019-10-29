@@ -4,10 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.LifecycleOwner
+import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.view.longClicks
 import com.kondenko.pocketwaka.BuildConfig
@@ -28,6 +30,10 @@ import org.koin.core.parameter.parametersOf
 
 // TODO Migrate to ViewModel
 class LoginActivity : AppCompatActivity(), LoginView {
+
+    companion object {
+        const val wasAccessLost = "logoutForced"
+    }
 
     private val presenter: LoginPresenter by inject()
 
@@ -66,6 +72,10 @@ class LoginActivity : AppCompatActivity(), LoginView {
                   .attachToLifecycle(this)
         }
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        if (intent?.getBooleanExtra(wasAccessLost, false) == true) {
+            textViewSubhead.setText(R.string.all_error_invalid_access)
+            TextViewCompat.setTextAppearance(textViewSubhead, R.style.TextAppearance_App_Login_Subhead_Error)
+        }
     }
 
     override fun onResume() {

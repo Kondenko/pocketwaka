@@ -46,7 +46,7 @@ val mainModule = module {
         MainViewModel(
               defaultTabId,
               checkIfUserIsLoggedIn = get<CheckIfUserIsLoggedIn>(),
-              clearCache = get(),
+              clearCache = get<ClearCache>(),
               refreshAccessToken = get(),
               fetchRemoteConfigValues = get()
         )

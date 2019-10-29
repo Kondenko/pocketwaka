@@ -5,6 +5,7 @@ import com.kondenko.pocketwaka.domain.UseCase
 import com.kondenko.pocketwaka.domain.summary.model.ProjectModel
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.screens.State
+import com.kondenko.pocketwaka.screens.summary.SummaryState
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
@@ -61,7 +62,7 @@ class GetSummaryStateMock(private val getSummaryState: GetSummaryState, private 
 
     override fun build(params: GetSummary.Params?): Observable<State<List<SummaryUiModel>>> {
         return concatWithDelay(
-              (State.Empty)
+              (SummaryState.EmptyRange)
         )
     }
 
