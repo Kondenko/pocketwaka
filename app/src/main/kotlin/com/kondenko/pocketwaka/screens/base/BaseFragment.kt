@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -133,9 +134,8 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
     private fun forceLogOut() {
         activity?.apply {
             eventTracker.log(Event.ForcedLogout)
-            Toast.makeText(this, R.string.all_error_invalid_access, Toast.LENGTH_LONG).show()
             finish()
-            startActivity<LoginActivity>()
+            startActivity<LoginActivity>(bundleOf(LoginActivity.wasAccessLost to true))
         }
     }
 

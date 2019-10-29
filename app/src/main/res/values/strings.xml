@@ -4,7 +4,7 @@
 
     <string name="all_error_invalid_url">Can\'t open this url</string>
 
-    <string name="all_error_invalid_access">Please, log in again</string>
+    <string name="all_error_invalid_access">Connection to Wakatime is lost.\nPlease, log in again.</string>
 
     <!-- Main activity -->
 
@@ -42,7 +42,6 @@
 
     <string name="loginactivity_error_no_browser">Google Chrome needs to be installed \nto log in</string>
     <string name="loginactivity_subtitle_error_action">Try again</string>
-
 
     <!-- Stats -->
 
