@@ -1,6 +1,7 @@
 package com.kondenko.pocketwaka.analytics
 
 import androidx.core.os.bundleOf
+import com.kondenko.pocketwaka.utils.extensions.toSnakeCase
 
 sealed class Event {
 
@@ -32,7 +33,7 @@ sealed class Event {
 
         data class FeedbackButtonClicked(val isFromRating: Boolean) : Menu(), HasBundle {
             override fun getBundle() = bundleOf(
-                  ::isFromRating.name to isFromRating
+                  ::isFromRating.name.toSnakeCase() to isFromRating
             )
         }
 
@@ -46,13 +47,13 @@ sealed class Event {
 
         data class Account(override val screen: com.kondenko.pocketwaka.analytics.Screen) : EmptyState(screen), HasBundle {
             override fun getBundle() = bundleOf(
-                  ::screen.name to screen.toString()
+                  ::screen.name to screen.name
             )
         }
 
         data class Screen(override val screen: com.kondenko.pocketwaka.analytics.Screen) : EmptyState(screen), HasBundle {
             override fun getBundle() = bundleOf(
-                  ::screen.name to screen.toString()
+                  ::screen.name to screen.name
             )
         }
 

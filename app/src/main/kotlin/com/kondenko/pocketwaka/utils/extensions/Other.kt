@@ -112,8 +112,6 @@ fun date(day: Int, month: Int, year: Int): Long = Calendar.getInstance().run {
     time.time
 }
 
-fun String.isValidUrl() = this.matches(Regex("^(https?|ftp)://[^\\s/$.?#].[^\\s]*$"))
-
 val DialogFragment.isShown
     get() = dialog?.isShowing == true && !isRemoving
 
