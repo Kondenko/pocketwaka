@@ -31,7 +31,7 @@ inline fun FragmentManager.transaction(crossinline action: androidx.fragment.app
 }
 
 /**
- * Prints log output and sends a report to crashlyics about the given exception
+ * Prints log output and sends a report to Crashlytics about the given exception
  */
 fun Throwable.report(message: String? = null, printLog: Boolean = true) {
     if (printLog) {

@@ -8,6 +8,7 @@ import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
 import com.kondenko.pocketwaka.data.stats.service.RangeStatsService
 import com.kondenko.pocketwaka.di.qualifiers.Api
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
+import com.kondenko.pocketwaka.domain.main.ClearCache
 import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
 import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsForRange
 import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsState
@@ -55,6 +56,7 @@ val statsModule = module {
         GetStatsState(
               schedulers = get(),
               getStatsForRange = get<GetStatsForRange>(),
+              clearCache = get<ClearCache>(),
               connectivityStatusProvider = get()
         )
     }

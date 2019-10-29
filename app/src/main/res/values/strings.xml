@@ -4,6 +4,8 @@
 
     <string name="all_error_invalid_url">Can\'t open this url</string>
 
+    <string name="all_error_invalid_access">Please, log in again</string>
+
     <!-- Main activity -->
 
     <string name="main_action_refresh">Refresh</string>

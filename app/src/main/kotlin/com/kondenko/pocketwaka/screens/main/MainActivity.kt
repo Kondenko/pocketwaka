@@ -53,27 +53,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar_main)
-        fragmentSummary = supportFragmentManager.findFragmentByTag(tagSummary) as? FragmentSummary
-              ?: FragmentSummary()
-        fragmentStats = supportFragmentManager.findFragmentByTag(tagStats) as? FragmentStats
-              ?: FragmentStats()
-        fragmentMenu = supportFragmentManager.findFragmentByTag(tagMenu) as? FragmentMenu
-              ?: FragmentMenu()
-        supportFragmentManager.transaction {
-            forEachNonNull(fragmentSummary to tagSummary, fragmentStats to tagStats, fragmentMenu to tagMenu) { (fragment, tag) ->
-                if (supportFragmentManager.findFragmentByTag(tag) == null) {
-                    add(R.id.main_container, fragment, tag)
-                }
-                hide(fragment)
-            }
-        }
-        vm.tabSelections().observe(this) { selectedTab ->
-            when (selectedTab) {
-                R.id.bottomnav_item_summaries -> showSummaries()
-                R.id.bottomnav_item_stats -> showStats()
-                R.id.bottomnav_item_menu -> showMenu()
-            }
-        }
         vm.state().observe(this) {
             when (it) {
                 is MainState.ShowData -> showData()
@@ -96,6 +75,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showData() {
+        fragmentSummary = supportFragmentManager.findFragmentByTag(tagSummary) as? FragmentSummary
+              ?: FragmentSummary()
+        fragmentStats = supportFragmentManager.findFragmentByTag(tagStats) as? FragmentStats
+              ?: FragmentStats()
+        fragmentMenu = supportFragmentManager.findFragmentByTag(tagMenu) as? FragmentMenu
+              ?: FragmentMenu()
+        supportFragmentManager.transaction {
+            forEachNonNull(fragmentSummary to tagSummary, fragmentStats to tagStats, fragmentMenu to tagMenu) { (fragment, tag) ->
+                if (supportFragmentManager.findFragmentByTag(tag) == null) {
+                    add(R.id.main_container, fragment, tag)
+                }
+                hide(fragment)
+            }
+        }
+        vm.tabSelections().observe(this) { selectedTab ->
+            when (selectedTab) {
+                R.id.bottomnav_item_summaries -> showSummaries()
+                R.id.bottomnav_item_stats -> showStats()
+                R.id.bottomnav_item_menu -> showMenu()
+            }
+        }
         main_bottom_navigation.setOnNavigationItemSelectedListener {
             refreshEventsDisposable?.dispose()
             vm.tabChanged(it.itemId)
