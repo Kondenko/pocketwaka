@@ -9,7 +9,6 @@
     <string name="empty_state_subtitle">Установите плагин для вашего редактора кода и она появится</string>
     <string name="empty_state_action">Найти плагины</string>
     <string name="loginactivity_sign_in">Войти</string>
-    <string name="loginactivity_subtitle_default">Визуализируем ваше рабочее время</string>
     <string name="stats_tab_7_days">Неделя</string>
     <string name="stats_tab_30_days">Месяц</string>
     <string name="stats_tab_6_months">Полгода</string>
@@ -72,4 +71,5 @@
     <string name="rating_dialog_low_rating_action">@string/menu_action_send_feedback</string>
     <string name="all_error_invalid_url">Не можем открыть этот URL</string>
     <string name="all_error_invalid_access">Не можем соединиться с Wakatime.\nПожалуйста, войдите снова.</string>
+    <string name="loginactivity_subtitle_default">"Думайте о коде,\nа не о тайм-трекинге "</string>
 </resources>
