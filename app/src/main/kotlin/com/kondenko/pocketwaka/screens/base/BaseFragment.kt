@@ -110,7 +110,7 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
 
     private fun State.Empty.render() {
         showData(false)
-        stateFragment.setState(this, ::openPlugins)
+        stateFragment.setState(this) { openPlugins() }
     }
 
     protected fun showData(show: Boolean) {
@@ -123,12 +123,12 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
         }
     }
 
-    private fun openPlugins() {
+    private fun openPlugins() = context?.let {
         val uri = Const.URL_PLUGINS
         val builder = CustomTabsIntent.Builder()
-        builder.setToolbarColor(ContextCompat.getColor(context!!, R.color.color_primary_light))
+        builder.setToolbarColor(ContextCompat.getColor(it, R.color.color_primary_light))
         val customTabsIntent = builder.build()
-        customTabsIntent.launchUrl(context, Uri.parse(uri))
+        customTabsIntent.launchUrl(it, Uri.parse(uri))
     }
 
     private fun forceLogOut() {
