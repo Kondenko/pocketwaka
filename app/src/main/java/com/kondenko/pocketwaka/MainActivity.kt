@@ -63,10 +63,6 @@ class MainActivity : AppCompatActivity() {
         addToBackStack(webViewBackStack)
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-    }
-
     private fun closeWebView() =
           supportFragmentManager.apply {
               popBackStackImmediate(webViewBackStack, FragmentManager.POP_BACK_STACK_INCLUSIVE)

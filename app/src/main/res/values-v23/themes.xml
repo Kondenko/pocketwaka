@@ -5,8 +5,8 @@
         <item name="colorPrimary">@android:color/transparent</item>
         <item name="colorPrimaryDark">@android:color/transparent</item>
         <item name="colorAccent">@color/color_accent</item>
-        <item name="android:statusBarColor">@color/color_primary_light</item>
-        <item name="android:windowBackground">@color/color_primary_light</item>
+        <item name="android:statusBarColor">@color/color_window_background</item>
+        <item name="android:windowBackground">@color/color_window_background</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
@@ -15,8 +15,8 @@
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
         <item name="colorControlNormal">?colorAccent</item>
-        <item name="android:windowBackground">@color/color_primary_light</item>
-        <item name="android:statusBarColor">@color/color_primary_light</item>
+        <item name="android:windowBackground">@color/color_login_background</item>
+        <item name="android:statusBarColor">@color/color_login_background</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
     </style>

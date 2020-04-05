@@ -1,7 +1,11 @@
 package com.kondenko.pocketwaka.screens.login
 
+import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.ContextThemeWrapper
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
@@ -19,14 +23,14 @@ import com.kondenko.pocketwaka.screens.main.MainViewModel
 import com.kondenko.pocketwaka.screens.main.OnLogIn
 import com.kondenko.pocketwaka.ui.ButtonStateWrapper
 import com.kondenko.pocketwaka.utils.BrowserWindow
+import com.kondenko.pocketwaka.utils.extensions.apiAtLeast
 import com.kondenko.pocketwaka.utils.extensions.attachToLifecycle
+import com.kondenko.pocketwaka.utils.extensions.getColorCompat
 import com.kondenko.pocketwaka.utils.extensions.report
-import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.parameter.parametersOf
-import java.util.concurrent.TimeUnit
 
 // TODO Migrate to ViewModel
 class FragmentLogin : Fragment(), LoginView {
@@ -54,6 +58,10 @@ class FragmentLogin : Fragment(), LoginView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        apiAtLeast(Build.VERSION_CODES.M) {
+            activity?.window?.statusBarColor =
+                  view.context.getColorCompat(R.color.color_login_background)
+        }
         loadingView.z = 100f
         loadingButtonStateWrapper = ButtonStateWrapper(
               buttonLogin,
@@ -66,8 +74,10 @@ class FragmentLogin : Fragment(), LoginView {
                   // setClickable(false) is reset to true after setting a click listener
                   buttonLogin.isClickable
               }
-              .doOnEach { eventTracker.log(Event.Login.ButtonClicked) }
-              .subscribe { presenter.onLoginButtonClicked() }
+              .subscribe {
+                  presenter.onLoginButtonClicked()
+                  eventTracker.log(Event.Login.ButtonClicked)
+              }
               .attachToLifecycle(this)
         @Suppress("ConstantConditionIf")
         if (BuildConfig.DEBUG) {
