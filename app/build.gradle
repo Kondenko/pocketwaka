@@ -104,6 +104,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    lintOptions {
+        fatal 'StopShip'
+    }
 }
 
 afterEvaluate {
@@ -129,7 +132,7 @@ dependencies {
 
     // support
     implementation "androidx.appcompat:appcompat:${versions.appcompat}"
-    implementation "com.google.android.material:material:${versions.androidx}"
+    implementation "com.google.android.material:material:${versions.material}"
     implementation "androidx.cardview:cardview:${versions.cardview}"
     implementation "androidx.browser:browser:${versions.browser}"
 
