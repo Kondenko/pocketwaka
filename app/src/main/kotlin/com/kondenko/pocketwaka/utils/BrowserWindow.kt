@@ -32,6 +32,8 @@ class BrowserWindow(private var context: Context? = null, lifecycleOwner: Lifecy
 
     private var isCustomTabsServiceBound = false
 
+    private var onWebViewRequired: (() -> Unit)? = null
+
     init {
         lifecycleOwner.lifecycle.addObserver(this)
     }
@@ -61,11 +63,15 @@ class BrowserWindow(private var context: Context? = null, lifecycleOwner: Lifecy
                       .firstOrNull()
                       ?.let { pkg ->
                           isCustomTabsServiceBound = CustomTabsClient.bindCustomTabsService(context, pkg, connection)
-                      } ?: TODO("Show a webview") // STOPSHIP
+                      } ?: onWebViewRequired?.invoke()
             }
         } else {
             Toast.makeText(context, R.string.all_error_invalid_url, Toast.LENGTH_LONG).show()
         }
+    }
+
+    fun onWebViewRequired(action: () -> Unit) {
+        onWebViewRequired = action
     }
 
     private fun getCustomTabsPackages(context: Context, url: String): List<ResolveInfo> {
@@ -92,6 +98,7 @@ class BrowserWindow(private var context: Context? = null, lifecycleOwner: Lifecy
         }
         connection = null
         context = null
+        onWebViewRequired = null
     }
 
 }

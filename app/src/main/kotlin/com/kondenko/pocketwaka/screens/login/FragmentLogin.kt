@@ -1,6 +1,5 @@
 package com.kondenko.pocketwaka.screens.login
 
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.view.*
 import androidx.annotation.StringRes
@@ -20,7 +19,6 @@ import com.kondenko.pocketwaka.screens.main.MainViewModel
 import com.kondenko.pocketwaka.screens.main.OnLogIn
 import com.kondenko.pocketwaka.ui.ButtonStateWrapper
 import com.kondenko.pocketwaka.utils.BrowserWindow
-import com.kondenko.pocketwaka.utils.extensions.apiAtLeast
 import com.kondenko.pocketwaka.utils.extensions.attachToLifecycle
 import com.kondenko.pocketwaka.utils.extensions.report
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -64,7 +62,6 @@ class FragmentLogin : Fragment(), LoginView {
         )
         loadingButtonStateWrapper.setDefault()
         buttonLogin.clicks()
-              .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
               .filter {
                   // setClickable(false) is reset to true after setting a click listener
                   buttonLogin.isClickable
@@ -89,6 +86,10 @@ class FragmentLogin : Fragment(), LoginView {
     override fun onResume() {
         super.onResume()
         screenTracker.log(activity, Screen.Auth)
+        onLoginScreenRevisited()
+    }
+
+    fun onLoginScreenRevisited() {
         presenter.checkIfAuthIsSuccessful(activity?.intent?.data)
     }
 
@@ -102,8 +103,11 @@ class FragmentLogin : Fragment(), LoginView {
         presenter.detach()
     }
 
-    override fun openAuthUrl(url: String) {
+    override fun openAuthUrl(url: String, authRedirectUri: String) {
         browserWindow.openUrl(url)
+        browserWindow.onWebViewRequired {
+            onLogin.openWebView(url, authRedirectUri)
+        }
     }
 
     override fun onGetTokenSuccess(token: AccessToken) {

@@ -14,7 +14,7 @@ class LoginPresenter(private val getAuthUrl: GetAuthUrl, private val getAccessTo
     fun onLoginButtonClicked() {
         isLoggingIn = true
         getAuthUrl.invoke(
-              onSuccess = { url -> view?.openAuthUrl(url) },
+              onSuccess = { url -> view?.openAuthUrl(url, Const.AUTH_REDIRECT_URI) },
               onError = { view?.showError(it) }
         )
     }

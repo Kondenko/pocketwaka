@@ -7,8 +7,8 @@ import com.kondenko.pocketwaka.domain.UseCaseCompletable
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.domain.main.FetchRemoteConfigValues
 import com.kondenko.pocketwaka.domain.main.RefreshAccessToken
-import com.kondenko.pocketwaka.screens.main.MainState.GoToLogin
-import com.kondenko.pocketwaka.screens.main.MainState.GoToContent
+import com.kondenko.pocketwaka.screens.main.MainAction.GoToContent
+import com.kondenko.pocketwaka.screens.main.MainAction.GoToLogin
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.extensions.report
 
@@ -20,7 +20,7 @@ class MainViewModel(
       fetchRemoteConfigValues: FetchRemoteConfigValues
 ) : ViewModel(), OnLogIn, OnLogOut {
 
-    private val state = MutableLiveData<MainState>()
+    private val action = MutableLiveData<MainAction>()
 
     init {
         checkIfLoggedIn()
@@ -30,30 +30,38 @@ class MainViewModel(
         )
     }
 
-    fun state(): LiveData<MainState> = state
+    fun actions(): LiveData<MainAction> = action
 
     private fun checkIfLoggedIn() {
         checkIfUserIsLoggedIn(
               onSuccess = { isLoggedIn ->
                   if (isLoggedIn) {
                       refreshAccessToken.invoke()
-                      state.postValue(GoToContent)
+                      action.postValue(GoToContent)
                   } else {
-                      state.postValue(GoToLogin())
+                      action.postValue(GoToLogin())
                   }
               },
               onError = { error ->
-                  clearCache(onFinish = { state.postValue(GoToLogin()) })
+                  clearCache(onFinish = { action.postValue(GoToLogin()) })
               }
         )
     }
 
     override fun logIn() {
-        state.value = GoToContent
+        action.value = GoToContent
+    }
+
+    override fun openWebView(url: String, redirectUrl: String) {
+        action.value = MainAction.OpenWebView(url, redirectUrl)
+    }
+
+    override fun closeWebView() {
+        action.postValue(MainAction.CloseWebView)
     }
 
     override fun logOut(forced: Boolean) {
-        state.value = GoToLogin(forced)
+        action.value = GoToLogin(forced)
     }
 
     override fun onCleared() {
