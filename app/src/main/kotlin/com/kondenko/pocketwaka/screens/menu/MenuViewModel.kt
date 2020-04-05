@@ -18,7 +18,9 @@ class MenuViewModel(
 ) : BaseViewModel<MenuUiModel?>() {
 
     private val rateAppClicks = PublishSubject.create<Unit>()
+
     private val sendFeedbackClicks = PublishSubject.create<Unit>()
+
     private val githubClicks = PublishSubject.create<Unit>()
 
     private val stateObservable = stateLiveData.toObservable()

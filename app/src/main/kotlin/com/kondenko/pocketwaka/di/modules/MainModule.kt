@@ -5,8 +5,11 @@ import com.kondenko.pocketwaka.domain.main.ClearCache
 import com.kondenko.pocketwaka.domain.main.GetStoredAccessToken
 import com.kondenko.pocketwaka.domain.main.RefreshAccessToken
 import com.kondenko.pocketwaka.screens.main.MainViewModel
+import com.kondenko.pocketwaka.screens.main.OnLogIn
+import com.kondenko.pocketwaka.screens.main.OnLogOut
 import com.kondenko.pocketwaka.utils.encryption.TokenEncryptor
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.binds
 import org.koin.dsl.module
 
 val mainModule = module {
@@ -42,9 +45,8 @@ val mainModule = module {
               getAppSecret = get()
         )
     }
-    viewModel { (defaultTabId: Int) ->
+    viewModel {
         MainViewModel(
-              defaultTabId,
               checkIfUserIsLoggedIn = get<CheckIfUserIsLoggedIn>(),
               clearCache = get<ClearCache>(),
               refreshAccessToken = get(),

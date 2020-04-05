@@ -14,10 +14,9 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.alphaDisabledView
 import com.kondenko.pocketwaka.analytics.Event
 import com.kondenko.pocketwaka.analytics.EventTracker
-import com.kondenko.pocketwaka.analytics.Screen
-import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.domain.menu.AppRatingBottomSheetDialog
-import com.kondenko.pocketwaka.screens.login.LoginActivity
+import com.kondenko.pocketwaka.screens.main.MainViewModel
+import com.kondenko.pocketwaka.screens.main.OnLogOut
 import com.kondenko.pocketwaka.utils.BrowserWindow
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.createAdapter
@@ -27,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_menu.*
 import kotlinx.android.synthetic.main.item_menu_action.view.*
 import kotlinx.android.synthetic.main.item_menu_logo.view.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -46,6 +46,8 @@ class FragmentMenu : Fragment() {
     }
 
     private val vm: MenuViewModel by viewModel()
+
+    private val onLogOut: OnLogOut by sharedViewModel<MainViewModel>()
 
     private val eventTracker: EventTracker by inject()
 
@@ -171,11 +173,8 @@ class FragmentMenu : Fragment() {
     )
 
     private fun logout() {
-        requireActivity().apply {
-            eventTracker.log(Event.Menu.Logout)
-            finish()
-            startActivity<LoginActivity>()
-        }
+        eventTracker.log(Event.Menu.Logout)
+        onLogOut.logOut(forced = false)
     }
 
     private fun getMailActivity() = context?.let {

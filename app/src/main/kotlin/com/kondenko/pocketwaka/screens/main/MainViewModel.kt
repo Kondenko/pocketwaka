@@ -5,31 +5,24 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kondenko.pocketwaka.domain.UseCaseCompletable
 import com.kondenko.pocketwaka.domain.UseCaseSingle
-import com.kondenko.pocketwaka.domain.main.ClearCache
 import com.kondenko.pocketwaka.domain.main.FetchRemoteConfigValues
 import com.kondenko.pocketwaka.domain.main.RefreshAccessToken
 import com.kondenko.pocketwaka.screens.main.MainState.GoToLogin
-import com.kondenko.pocketwaka.screens.main.MainState.ShowData
+import com.kondenko.pocketwaka.screens.main.MainState.GoToContent
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.extensions.report
 
 
 class MainViewModel(
-      defaultTabId: Int,
       private val checkIfUserIsLoggedIn: UseCaseSingle<Nothing, Boolean>,
       private val clearCache: UseCaseCompletable<Nothing>,
       private val refreshAccessToken: RefreshAccessToken,
       fetchRemoteConfigValues: FetchRemoteConfigValues
-) : ViewModel() {
+) : ViewModel(), OnLogIn, OnLogOut {
 
     private val state = MutableLiveData<MainState>()
 
-    private val selectedTab = MutableLiveData<Int>().apply {
-        value = defaultTabId
-    }
-
     init {
-        tabChanged(defaultTabId)
         checkIfLoggedIn()
         fetchRemoteConfigValues(
               onSuccess = { WakaLog.d("Remote config values updated") },
@@ -39,26 +32,28 @@ class MainViewModel(
 
     fun state(): LiveData<MainState> = state
 
-    fun tabSelections(): LiveData<Int> = selectedTab
-
     private fun checkIfLoggedIn() {
         checkIfUserIsLoggedIn(
               onSuccess = { isLoggedIn ->
                   if (isLoggedIn) {
                       refreshAccessToken.invoke()
-                      state.postValue(ShowData)
+                      state.postValue(GoToContent)
                   } else {
-                      state.postValue(GoToLogin)
+                      state.postValue(GoToLogin())
                   }
               },
               onError = { error ->
-                  clearCache(onFinish = { state.postValue(GoToLogin) })
+                  clearCache(onFinish = { state.postValue(GoToLogin()) })
               }
         )
     }
 
-    fun tabChanged(tab: Int) {
-        selectedTab.value = tab
+    override fun logIn() {
+        state.value = GoToContent
+    }
+
+    override fun logOut(forced: Boolean) {
+        state.value = GoToLogin(forced)
     }
 
     override fun onCleared() {

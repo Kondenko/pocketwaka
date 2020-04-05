@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_text_white_primary"
     android:fitsSystemWindows="true"
-    tools:context=".screens.login.LoginActivity"
+    tools:context=".screens.login.FragmentLogin"
     >
 
     <com.kondenko.pocketwaka.ui.LoadingView

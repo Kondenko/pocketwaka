@@ -19,7 +19,6 @@
             android:name="google_analytics_adid_collection_enabled"
             android:value="false"
             />
-
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="${enableCrashReporting}"
@@ -31,9 +30,14 @@
             />
 
         <activity
-            android:name=".screens.login.LoginActivity"
-            android:theme="@style/LoginActivityTheme"
+            android:name=".MainActivity"
+            android:hardwareAccelerated="true"
+            android:label="@string/all_app_name"
             >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -46,24 +50,10 @@
                     />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".screens.main.MainActivity"
-            android:hardwareAccelerated="true"
-            android:label="@string/all_app_name"
-            >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
         <activity
             android:name=".PlaygroundActivity"
             android:exported="true"
             />
-
     </application>
 
 </manifest>

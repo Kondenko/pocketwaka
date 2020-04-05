@@ -4,7 +4,7 @@
 
     <string name="all_error_invalid_url">Can\'t open this url</string>
 
-    <string name="all_error_invalid_access">Connection to Wakatime is lost.\nPlease, log in again.</string>
+    <string name="all_error_invalid_access">Connection to Wakatime was lost.\nPlease, log in again.</string>
 
     <!-- Main activity -->
 

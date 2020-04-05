@@ -61,7 +61,7 @@ class BrowserWindow(private var context: Context? = null, lifecycleOwner: Lifecy
                       .firstOrNull()
                       ?.let { pkg ->
                           isCustomTabsServiceBound = CustomTabsClient.bindCustomTabsService(context, pkg, connection)
-                      } ?: TODO("Show a webview")
+                      } ?: TODO("Show a webview") // STOPSHIP
             }
         } else {
             Toast.makeText(context, R.string.all_error_invalid_url, Toast.LENGTH_LONG).show()

@@ -1,15 +1,14 @@
 package com.kondenko.pocketwaka.screens.login
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.TextViewCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.view.longClicks
 import com.kondenko.pocketwaka.BuildConfig
@@ -19,35 +18,44 @@ import com.kondenko.pocketwaka.analytics.EventTracker
 import com.kondenko.pocketwaka.analytics.Screen
 import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.data.auth.model.server.AccessToken
-import com.kondenko.pocketwaka.screens.main.MainActivity
+import com.kondenko.pocketwaka.screens.main.MainViewModel
+import com.kondenko.pocketwaka.screens.main.OnLogIn
 import com.kondenko.pocketwaka.ui.ButtonStateWrapper
 import com.kondenko.pocketwaka.utils.BrowserWindow
 import com.kondenko.pocketwaka.utils.extensions.attachToLifecycle
 import com.kondenko.pocketwaka.utils.extensions.report
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.parameter.parametersOf
+import java.util.concurrent.TimeUnit
 
 // TODO Migrate to ViewModel
-class LoginActivity : AppCompatActivity(), LoginView {
+class FragmentLogin : Fragment(), LoginView {
 
     companion object {
-        const val wasAccessLost = "logoutForced"
+        const val wasLogoutForced = "logoutForced"
     }
 
     private val presenter: LoginPresenter by inject()
+
+    private val onLogin: OnLogIn by sharedViewModel<MainViewModel>()
 
     private val screenTracker: ScreenTracker by inject()
 
     private val eventTracker: EventTracker by inject()
 
-    private val browserWindow: BrowserWindow by inject { parametersOf(this as Context, this as LifecycleOwner) }
+    private val browserWindow: BrowserWindow by inject { parametersOf(context, this as LifecycleOwner) }
 
     private lateinit var loadingButtonStateWrapper: ButtonStateWrapper
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.activity_login, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         loadingView.z = 100f
         loadingButtonStateWrapper = ButtonStateWrapper(
               buttonLogin,
@@ -56,6 +64,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
         )
         loadingButtonStateWrapper.setDefault()
         buttonLogin.clicks()
+              .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
               .filter {
                   // setClickable(false) is reset to true after setting a click listener
                   buttonLogin.isClickable
@@ -71,8 +80,8 @@ class LoginActivity : AppCompatActivity(), LoginView {
                   .subscribe { throw RuntimeException("Test exception") }
                   .attachToLifecycle(this)
         }
-        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        if (intent?.getBooleanExtra(wasAccessLost, false) == true) {
+        activity?.window?.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        if (arguments?.getBoolean(wasLogoutForced, false) == true) {
             textViewSubhead.setText(R.string.all_error_invalid_access)
             TextViewCompat.setTextAppearance(textViewSubhead, R.style.TextAppearance_App_Login_Subhead_Error)
         }
@@ -80,12 +89,8 @@ class LoginActivity : AppCompatActivity(), LoginView {
 
     override fun onResume() {
         super.onResume()
-        screenTracker.log(this, Screen.Auth)
-        presenter.checkIfAuthIsSuccessful(intent.data)
-    }
-
-    override fun onLoginCancelled() {
-        eventTracker.log(Event.Login.Canceled)
+        screenTracker.log(activity, Screen.Auth)
+        presenter.checkIfAuthIsSuccessful(activity?.intent?.data)
     }
 
     override fun onStart() {
@@ -104,9 +109,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
 
     override fun onGetTokenSuccess(token: AccessToken) {
         eventTracker.log(Event.Login.Successful)
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finishAffinity()
+        onLogin.logIn()
     }
 
     override fun showLoading() {
@@ -115,6 +118,10 @@ class LoginActivity : AppCompatActivity(), LoginView {
             setText(R.string.loginactivity_subtitle_loading)
             TextViewCompat.setTextAppearance(this, R.style.TextAppearance_App_Login_Subhead)
         }
+    }
+
+    override fun onLoginCancelled() {
+        eventTracker.log(Event.Login.Canceled)
     }
 
     override fun showError(throwable: Throwable?, @StringRes messageStringRes: Int?) {
