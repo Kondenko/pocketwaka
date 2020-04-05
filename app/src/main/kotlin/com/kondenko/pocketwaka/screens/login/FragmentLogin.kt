@@ -1,10 +1,8 @@
 package com.kondenko.pocketwaka.screens.login
 
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import androidx.annotation.StringRes
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
@@ -22,10 +20,11 @@ import com.kondenko.pocketwaka.screens.main.MainViewModel
 import com.kondenko.pocketwaka.screens.main.OnLogIn
 import com.kondenko.pocketwaka.ui.ButtonStateWrapper
 import com.kondenko.pocketwaka.utils.BrowserWindow
+import com.kondenko.pocketwaka.utils.extensions.apiAtLeast
 import com.kondenko.pocketwaka.utils.extensions.attachToLifecycle
 import com.kondenko.pocketwaka.utils.extensions.report
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.parameter.parametersOf
@@ -50,9 +49,10 @@ class FragmentLogin : Fragment(), LoginView {
 
     private lateinit var loadingButtonStateWrapper: ButtonStateWrapper
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.activity_login, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+          inflater
+                .cloneInContext(ContextThemeWrapper(activity, R.style.LoginTheme))
+                .inflate(R.layout.fragment_login, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -80,7 +80,6 @@ class FragmentLogin : Fragment(), LoginView {
                   .subscribe { throw RuntimeException("Test exception") }
                   .attachToLifecycle(this)
         }
-        activity?.window?.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         if (arguments?.getBoolean(wasLogoutForced, false) == true) {
             textViewSubhead.setText(R.string.all_error_invalid_access)
             TextViewCompat.setTextAppearance(textViewSubhead, R.style.TextAppearance_App_Login_Subhead_Error)

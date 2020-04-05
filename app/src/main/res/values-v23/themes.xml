@@ -10,10 +10,11 @@
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <style name="LoginActivityTheme" parent="@style/Theme.MaterialComponents.NoActionBar">
+    <style name="LoginTheme" parent="@style/Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
+        <item name="colorControlNormal">?colorAccent</item>
         <item name="android:windowBackground">@color/color_primary_light</item>
         <item name="android:statusBarColor">@color/color_primary_light</item>
         <item name="android:windowLightStatusBar">true</item>

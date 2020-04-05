@@ -2,7 +2,6 @@ package com.kondenko.pocketwaka.screens.main
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.isInvisible
@@ -15,13 +14,12 @@ import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.screens.menu.FragmentMenu
 import com.kondenko.pocketwaka.screens.stats.FragmentStats
 import com.kondenko.pocketwaka.screens.summary.FragmentSummary
-import com.kondenko.pocketwaka.utils.extensions.*
+import com.kondenko.pocketwaka.utils.extensions.forEachNonNull
+import com.kondenko.pocketwaka.utils.extensions.transaction
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 
 
 class FragmentContent : Fragment() {
@@ -45,9 +43,10 @@ class FragmentContent : Fragment() {
 
     private val scrollingViewBehaviour = AppBarLayout.ScrollingViewBehavior()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_main, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+          inflater
+                .cloneInContext(ContextThemeWrapper(activity, R.style.AppTheme))
+                .inflate(R.layout.fragment_main, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
