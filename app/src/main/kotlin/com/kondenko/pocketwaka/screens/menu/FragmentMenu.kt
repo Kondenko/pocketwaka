@@ -54,6 +54,7 @@ class FragmentMenu : Fragment() {
     private val browserWindow: BrowserWindow by inject { parametersOf(context, viewLifecycleOwner) }
 
     private lateinit var ratingDialog: AppRatingBottomSheetDialog
+
     private val tagRatingDialog = "ratingDialog"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

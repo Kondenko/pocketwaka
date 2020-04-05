@@ -50,12 +50,14 @@ class FragmentContent : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         (activity as? AppCompatActivity?)?.setSupportActionBar(toolbar_main)
         showData()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.main_activity_menu, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_activity_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -89,6 +91,7 @@ class FragmentContent : Fragment() {
             }
             true
         }
+        main_bottom_navigation.selectedItemId = R.id.bottomnav_item_summaries
     }
 
     private fun showSummaries() {
