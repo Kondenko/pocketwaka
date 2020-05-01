@@ -22,7 +22,7 @@ class FragmentOauthWebView : Fragment() {
 
         private const val ARG_URL = "url"
 
-        private const val ARG_REDIRECT_URL = "reirect_url"
+        private const val ARG_REDIRECT_URL = "redirect_url"
 
         fun openUrl(url: String, redirectUrl: String) = FragmentOauthWebView().apply {
             arguments = bundleOf(ARG_URL to url, ARG_REDIRECT_URL to redirectUrl)
@@ -43,7 +43,7 @@ class FragmentOauthWebView : Fragment() {
 
         webview_fragmentwebview.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                if (redirectUrl != null && url != null && url.contains(redirectUrl) == true) {
+                if (redirectUrl != null && url != null && url.contains(redirectUrl)) {
                     activity?.intent = Intent(activity?.intent).apply {
                         data = url.toUri()
                     }
