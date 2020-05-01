@@ -114,8 +114,7 @@ class FragmentLogin : Fragment(), LoginView {
     }
 
     override fun openAuthUrl(url: String, authRedirectUri: String) {
-        browserWindow.openUrl(url)
-        browserWindow.onWebViewRequired {
+        browserWindow.openUrl(url) {
             onLogin.openWebView(url, authRedirectUri)
         }
     }

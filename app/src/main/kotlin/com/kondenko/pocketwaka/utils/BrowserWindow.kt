@@ -32,13 +32,11 @@ class BrowserWindow(private var context: Context? = null, lifecycleOwner: Lifecy
 
     private var isCustomTabsServiceBound = false
 
-    private var onWebViewRequired: (() -> Unit)? = null
-
     init {
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
-    fun openUrl(url: String) {
+    fun openUrl(url: String, onWebViewRequired: (() -> Unit)? = null) {
         val url = url.trim()
         val context = context
         if (url.isValidUrl() && context != null) {
@@ -70,10 +68,6 @@ class BrowserWindow(private var context: Context? = null, lifecycleOwner: Lifecy
         }
     }
 
-    fun onWebViewRequired(action: () -> Unit) {
-        onWebViewRequired = action
-    }
-
     private fun getCustomTabsPackages(context: Context, url: String): List<ResolveInfo> {
         // Get default VIEW intent handler.
         val activityIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
@@ -98,7 +92,6 @@ class BrowserWindow(private var context: Context? = null, lifecycleOwner: Lifecy
         }
         connection = null
         context = null
-        onWebViewRequired = null
     }
 
 }
