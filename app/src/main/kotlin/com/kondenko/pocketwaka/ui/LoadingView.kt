@@ -2,6 +2,7 @@ package com.kondenko.pocketwaka.ui
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
@@ -20,10 +21,10 @@ import com.kondenko.pocketwaka.utils.extensions.useAttributes
 import kotlin.math.roundToInt
 
 class LoadingView @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0,
-        defStyleRes: Int = 0
+      context: Context,
+      attrs: AttributeSet? = null,
+      defStyleAttr: Int = 0,
+      defStyleRes: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr, defStyleRes) {
 
     var dotsNumber: Int = 3
@@ -80,7 +81,7 @@ class LoadingView @JvmOverloads constructor(
 
     private fun construct() {
         val finalDotDrawable = dotDrawable
-                ?: throw IllegalViewUsageException("Dot drawable must be set")
+              ?: throw IllegalViewUsageException("Dot drawable must be set")
         removeAllViews()
         weightSum = dotsNumber.toFloat()
         for (i in 1..dotsNumber) {
@@ -125,15 +126,18 @@ class LoadingView @JvmOverloads constructor(
 
         val delay = dotIndex * animDuration + animationsOffsetMs
         val repeatDelay = (dotsNumber - 1).coerceAtLeast(1) * animDuration - animDuration
+        val doOnEnd = { set: AnimatorSet ->
+            set.doOnEnd {
+                set.setStartDelay(repeatDelay)
+                set.start()
+            }
+        }
 
         with(AnimatorSet()) {
             playSequentially(origToUp, upToDown, downToOrig, overshootDown)
             setDuration(animDuration)
             setStartDelay(delay)
-            doOnEnd {
-                setStartDelay(repeatDelay)
-                start()
-            }
+            doOnEnd(this)
             start()
         }
     }

@@ -186,6 +186,7 @@ dependencies {
     // remoteConfig
     implementation "com.google.firebase:firebase-config-ktx:${versions.remoteConfig}"
 
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
     debugImplementation "com.amitshekhar.android:debug-db:${versions.databaseBrowser}"
 
     kapt "androidx.room:room-compiler:${versions.room}"
