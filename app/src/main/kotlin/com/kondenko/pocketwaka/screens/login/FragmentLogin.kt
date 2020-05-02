@@ -47,7 +47,7 @@ class FragmentLogin : Fragment(), LoginView {
 
     private val eventTracker: EventTracker by inject()
 
-    private val browserWindow: BrowserWindow by inject { parametersOf(context, this as LifecycleOwner) }
+    private val browserWindow: BrowserWindow by inject { parametersOf(requireContext(), this as LifecycleOwner) }
 
     private lateinit var loadingButtonStateWrapper: ButtonStateWrapper
 

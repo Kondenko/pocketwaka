@@ -14,11 +14,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.utils.extensions.isValidUrl
 
 
-class BrowserWindow(private var context: Context? = null, lifecycleOwner: LifecycleOwner) : LifecycleObserver {
+class BrowserWindow(private var context: Context, lifecycleOwner: LifecycleOwner) : LifecycleObserver {
 
     companion object {
 
@@ -38,8 +37,7 @@ class BrowserWindow(private var context: Context? = null, lifecycleOwner: Lifecy
 
     fun openUrl(url: String, onWebViewRequired: (() -> Unit)? = null) {
         val url = url.trim()
-        val context = context
-        if (url.isValidUrl() && context != null) {
+        if (url.isValidUrl()) {
             connection = object : CustomTabsServiceConnection() {
 
                 override fun onCustomTabsServiceConnected(componentName: ComponentName, client: CustomTabsClient) {
@@ -64,7 +62,7 @@ class BrowserWindow(private var context: Context? = null, lifecycleOwner: Lifecy
                       } ?: onWebViewRequired?.invoke()
             }
         } else {
-            Toast.makeText(context, R.string.all_error_invalid_url, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Invalid url", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -88,10 +86,9 @@ class BrowserWindow(private var context: Context? = null, lifecycleOwner: Lifecy
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     private fun cleanup() {
         connection?.let {
-            if (isCustomTabsServiceBound) context?.unbindService(it)
+            if (isCustomTabsServiceBound) context.unbindService(it)
         }
         connection = null
-        context = null
     }
 
 }
