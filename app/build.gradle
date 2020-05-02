@@ -45,6 +45,10 @@ android {
             minifyEnabled true
             signingConfig signingConfigs.config
         }
+        preRelease {
+            initWith release
+            debuggable true
+        }
         debug {
             shrinkResources false
             minifyEnabled false
@@ -150,10 +154,11 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxandroid:${versions.rxAndroid}"
     implementation "com.jakewharton.rxbinding3:rxbinding:${versions.rxBinding}"
 
-    // retrofit
+    // networking
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
     implementation "com.squareup.retrofit2:adapter-rxjava2:${versions.retrofit}"
+    implementation("com.squareup.okhttp3:logging-interceptor:4.6.0")
 
     // smartTabLayout
     implementation "com.ogaclejapan.smarttablayout:library:${versions.smartTabLayout}@aar"
