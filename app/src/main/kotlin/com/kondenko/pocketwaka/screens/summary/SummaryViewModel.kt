@@ -2,7 +2,6 @@ package com.kondenko.pocketwaka.screens.summary
 
 import com.kondenko.pocketwaka.domain.UseCase
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
-import com.kondenko.pocketwaka.domain.summary.usecase.GetDefaultSummaryRange
 import com.kondenko.pocketwaka.domain.summary.usecase.GetSummary
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.base.BaseViewModel
@@ -12,8 +11,8 @@ import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.plusAssign
 
 class SummaryViewModel(
+      private val range: SummaryDate,
       private val uiScheduler: Scheduler,
-      private val getDefaultSummaryRange: GetDefaultSummaryRange,
       private val getSummaryState: UseCase<GetSummary.Params, State<List<SummaryUiModel>>, Observable<State<List<SummaryUiModel>>>>
 ) : BaseViewModel<List<SummaryUiModel>>() {
 
@@ -22,15 +21,15 @@ class SummaryViewModel(
     private val retryAttempts = 1
 
     init {
-        getSummaryForRange() // For today
+        fetchSummary()
     }
 
-    fun getSummaryForRange() {
-        val rangeSource = getDefaultSummaryRange()
-        disposables += rangeSource
-              .flatMapObservable { range ->
-                  getSummaryState.build(GetSummary.Params(range, refreshRate = refreshRate, retryAttempts = retryAttempts))
-              }
+    fun fetchSummary() {
+        disposables += getSummaryState.build(GetSummary.Params(
+              range.toDateRange(),
+              refreshRate = refreshRate,
+              retryAttempts = retryAttempts
+        ))
               .debounceStateUpdates(timeout = 100, scheduler = uiScheduler)
               .subscribe(::setState, this::handleError)
     }
@@ -41,7 +40,7 @@ class SummaryViewModel(
 
     fun updateDataIfRepoHasBeenConnected() {
         if (state is SummaryState.ConnectRepo) {
-            getSummaryForRange()
+            fetchSummary()
         }
     }
 

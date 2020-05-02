@@ -14,6 +14,7 @@ import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.screens.menu.FragmentMenu
 import com.kondenko.pocketwaka.screens.stats.FragmentStats
 import com.kondenko.pocketwaka.screens.summary.FragmentSummary
+import com.kondenko.pocketwaka.screens.summary.FragmentSummaryContainer
 import com.kondenko.pocketwaka.utils.extensions.forEachNonNull
 import com.kondenko.pocketwaka.utils.extensions.transaction
 import io.reactivex.disposables.Disposable
@@ -30,7 +31,7 @@ class FragmentContent : Fragment() {
 
     private var refreshEventsDisposable: Disposable? = null
 
-    private lateinit var fragmentSummary: FragmentSummary
+    private lateinit var fragmentSummary: FragmentSummaryContainer
     private val tagSummary = "summary"
 
     private lateinit var fragmentStats: FragmentStats
@@ -68,8 +69,8 @@ class FragmentContent : Fragment() {
     }
 
     private fun showData() {
-        fragmentSummary = childFragmentManager.findFragmentByTag(tagSummary) as? FragmentSummary
-              ?: FragmentSummary()
+        fragmentSummary = childFragmentManager.findFragmentByTag(tagSummary) as? FragmentSummaryContainer
+              ?: FragmentSummaryContainer()
         fragmentStats = childFragmentManager.findFragmentByTag(tagStats) as? FragmentStats
               ?: FragmentStats()
         fragmentMenu = childFragmentManager.findFragmentByTag(tagMenu) as? FragmentMenu

@@ -138,6 +138,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:${versions.appcompat}"
     implementation "com.google.android.material:material:${versions.material}"
     implementation "androidx.cardview:cardview:${versions.cardview}"
+    implementation "androidx.viewpager2:viewpager2:${versions.viewpager2}"
     implementation "androidx.browser:browser:${versions.browser}"
 
     // archComponents

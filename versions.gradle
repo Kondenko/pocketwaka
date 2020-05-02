@@ -36,6 +36,7 @@ ext {
             cardview         : '1.0.0',
             lifecycle        : '2.2.0',
             material         : '1.1.0',
+            viewpager2       : '1.0.0',
             room             : '2.2.5',
 
             googleServices   : '4.3.2',
