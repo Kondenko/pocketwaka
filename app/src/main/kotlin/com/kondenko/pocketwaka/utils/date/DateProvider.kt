@@ -1,5 +1,6 @@
 package com.kondenko.pocketwaka.utils.date
 
+import com.kondenko.pocketwaka.utils.extensions.roundDateToDay
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.time.days
@@ -8,17 +9,13 @@ class DateProvider {
 
     fun getCurrentTimeMillis() = System.currentTimeMillis()
 
-    fun getCurrentTimeSec() = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()).toFloat()
+    fun getCurrentTimeSec() = TimeUnit.MILLISECONDS.toSeconds(getCurrentTimeMillis()).toFloat()
 
-    /**
-     * Formats the current day ISO 8601 UTC datetime
-     */
-    fun getDayAsString(date: Long): String {
-        return Date(date).toString()
-    }
+    fun getToday() = Date().time.roundDateToDay()
 
-    fun getToday(): Date {
-        return Date()
+    fun getYear(date: Date = Date()) = Calendar.getInstance().run {
+        time = date
+        get(Calendar.YEAR)
     }
 
 }

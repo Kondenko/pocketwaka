@@ -65,6 +65,8 @@
 
     <!-- Summary -->
 
+    <dimen name="height_summary_toolbar_collapsed">54dp</dimen>
+
     <item name="height_summary_skeleton" type="integer">14</item>
 
     <dimen name="margin_summary_projects_section_title_top">4dp</dimen>

@@ -19,6 +19,7 @@ import io.reactivex.Single
 import timber.log.Timber
 import java.util.*
 import java.util.Calendar.*
+import kotlin.math.round
 
 fun notNull(vararg values: Any?): Boolean = values.all { it != null }
 
@@ -144,3 +145,5 @@ fun Long.roundDateToDay() = Calendar.getInstance().run {
     set(Calendar.MILLISECOND, 0)
     time.time
 }
+
+fun Long.isSameDay(other: Long) = other.roundDateToDay() == this.roundDateToDay()

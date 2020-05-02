@@ -86,6 +86,9 @@
     <string name="summary_template_average_delta_below" formatted="false">below</string>
     <string name="summary_template_average_delta" formatted="false">%d%% %s monthly average</string>
 
+    <string name="summary_range_separator" translatable="false">%s–%s</string>
+    <string name="summary_date_today">Today</string>
+
     <!-- MENU -->
     <string name="menu_version_template">Version %s</string>
     <string name="menu_action_rate">Rate PocketWaka</string>

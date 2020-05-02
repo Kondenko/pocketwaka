@@ -1,6 +1,7 @@
 package com.kondenko.pocketwaka.di.modules
 
 import android.content.Context
+import com.kondenko.pocketwaka.data.android.HumanReadableDateFormatter
 import com.kondenko.pocketwaka.data.persistence.AppDatabase
 import com.kondenko.pocketwaka.data.summary.converters.SummaryResponseConverter
 import com.kondenko.pocketwaka.data.summary.converters.TimeTrackedConverter
@@ -90,8 +91,11 @@ val summaryModule = module {
             )
         }
     }
+    factory {
+        HumanReadableDateFormatter(get(), get(), get())
+    }
     viewModel {
-        SummaryRangeViewModel(get())
+        SummaryRangeViewModel(get(), get())
     }
     viewModel { (date: DateRange) ->
         SummaryViewModel(

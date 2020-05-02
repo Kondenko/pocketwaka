@@ -98,7 +98,7 @@ class FragmentContent : Fragment() {
     private fun showSummaries() {
         setFragment(fragmentSummary) {
             screenTracker.log(activity, Screen.Summary)
-            showAppBar(true)
+            showAppBar(false)
             refreshEventsDisposable = fragmentSummary.subscribeToRefreshEvents(refreshEvents)
         }
     }

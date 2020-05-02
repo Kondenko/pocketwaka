@@ -6,8 +6,18 @@
     tools:context=".screens.summary.FragmentSummaryContainer"
     >
 
+    <TextView
+        android:id="@+id/textview_summary_current_date"
+        android:layout_width="match_parent"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:gravity="center"
+        android:layout_height="@dimen/height_summary_toolbar_collapsed"
+        tools:text="Today"
+        />
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewpager_summary_container"
+        android:layout_marginTop="@dimen/height_summary_toolbar_collapsed"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />

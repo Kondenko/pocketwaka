@@ -18,7 +18,7 @@ class DateFormatter(private val context: Context, private val stringProvider: St
     }
 
     fun formatDateAsParameter(date: Date): String =
-            paramDateFormat.format(date.time)
+          paramDateFormat.format(date.time)
 
     fun parseDateParameter(date: String): Long? {
         return try {
@@ -33,17 +33,17 @@ class DateFormatter(private val context: Context, private val stringProvider: St
         val locale = context.getCurrentLocale()
         val dateMillis = SimpleDateFormat("yyyy-MM-dd", locale).parse(date).time
         return DateUtils.formatDateTime(
-                context,
-                dateMillis,
-                DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_MONTH
+              context,
+              dateMillis,
+              DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_MONTH
         )
     }
 
-    fun formatDateForDisplay(seconds: Int): String {
+    fun formatDateForDisplay(seconds: Int, includeYear: Boolean = true): String {
         return DateUtils.formatDateTime(
-                context,
-                TimeUnit.SECONDS.toMillis(seconds.toLong()),
-                DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_MONTH
+              context,
+              TimeUnit.SECONDS.toMillis(seconds.toLong()),
+              (if (includeYear) DateUtils.FORMAT_SHOW_YEAR else DateUtils.FORMAT_NO_YEAR) or DateUtils.FORMAT_ABBREV_MONTH
         )
     }
 
