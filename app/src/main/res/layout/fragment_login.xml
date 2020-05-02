@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_text_white_primary"
+    android:background="@color/color_login_background"
     android:fitsSystemWindows="true"
-    tools:context=".screens.login.LoginActivity"
+    android:theme="@style/LoginTheme"
+    tools:context=".screens.login.FragmentLogin"
     >
 
     <com.kondenko.pocketwaka.ui.LoadingView
@@ -26,14 +27,14 @@
 
     <Button
         android:id="@+id/buttonLogin"
-        style="@style/Widget.AppCompat.Button.Colored"
+        android:backgroundTint="?colorAccent"
         android:layout_width="wrap_content"
         android:layout_height="54dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
         android:focusable="true"
         android:minWidth="98dp"
-        android:text="@string/loginactivity_sign_in"
+        android:text="@string/loginactivity_action_sign_in"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -45,6 +45,10 @@ android {
             minifyEnabled true
             signingConfig signingConfigs.config
         }
+        preRelease {
+            initWith release
+            debuggable true
+        }
         debug {
             shrinkResources false
             minifyEnabled false
@@ -104,6 +108,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    lintOptions {
+        fatal 'StopShip'
+    }
 }
 
 afterEvaluate {
@@ -129,7 +136,7 @@ dependencies {
 
     // support
     implementation "androidx.appcompat:appcompat:${versions.appcompat}"
-    implementation "com.google.android.material:material:${versions.androidx}"
+    implementation "com.google.android.material:material:${versions.material}"
     implementation "androidx.cardview:cardview:${versions.cardview}"
     implementation "androidx.browser:browser:${versions.browser}"
 
@@ -147,10 +154,11 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxandroid:${versions.rxAndroid}"
     implementation "com.jakewharton.rxbinding3:rxbinding:${versions.rxBinding}"
 
-    // retrofit
+    // networking
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
     implementation "com.squareup.retrofit2:adapter-rxjava2:${versions.retrofit}"
+    implementation("com.squareup.okhttp3:logging-interceptor:4.6.0")
 
     // smartTabLayout
     implementation "com.ogaclejapan.smarttablayout:library:${versions.smartTabLayout}@aar"
@@ -183,6 +191,7 @@ dependencies {
     // remoteConfig
     implementation "com.google.firebase:firebase-config-ktx:${versions.remoteConfig}"
 
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
     debugImplementation "com.amitshekhar.android:debug-db:${versions.databaseBrowser}"
 
     kapt "androidx.room:room-compiler:${versions.room}"

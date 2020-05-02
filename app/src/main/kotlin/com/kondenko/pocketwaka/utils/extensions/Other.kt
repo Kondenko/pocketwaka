@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.content.SharedPreferences
 import android.graphics.Matrix
 import android.graphics.Path
+import android.os.Build
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
 import androidx.fragment.app.DialogFragment
@@ -117,4 +118,20 @@ val DialogFragment.isShown
 
 fun DialogFragment.safeDismiss() {
     if (isShown) dismiss()
+}
+
+fun ifDebug(action: () -> Unit) =
+      if (BuildConfig.DEBUG) {
+          action()
+          true
+      } else {
+          false
+      }
+
+fun apiAtLeast(version: Int, action: (() -> Unit)? = null): Boolean {
+    if (Build.VERSION.SDK_INT >= version) {
+        action?.invoke()
+        return true
+    }
+    return false
 }

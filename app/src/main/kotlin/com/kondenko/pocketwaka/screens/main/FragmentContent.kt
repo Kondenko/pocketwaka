@@ -1,9 +1,7 @@
 package com.kondenko.pocketwaka.screens.main
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.Toast
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.isInvisible
@@ -13,22 +11,18 @@ import com.google.android.material.appbar.AppBarLayout
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.analytics.Screen
 import com.kondenko.pocketwaka.analytics.ScreenTracker
-import com.kondenko.pocketwaka.screens.login.LoginActivity
 import com.kondenko.pocketwaka.screens.menu.FragmentMenu
 import com.kondenko.pocketwaka.screens.stats.FragmentStats
 import com.kondenko.pocketwaka.screens.summary.FragmentSummary
-import com.kondenko.pocketwaka.utils.extensions.*
+import com.kondenko.pocketwaka.utils.extensions.forEachNonNull
+import com.kondenko.pocketwaka.utils.extensions.transaction
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_main.*
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 
 
-class MainActivity : AppCompatActivity() {
-
-    private val vm: MainViewModel by viewModel { parametersOf(R.id.bottomnav_item_summaries) }
+class FragmentContent : Fragment() {
 
     private val screenTracker: ScreenTracker by inject()
 
@@ -49,68 +43,60 @@ class MainActivity : AppCompatActivity() {
 
     private val scrollingViewBehaviour = AppBarLayout.ScrollingViewBehavior()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar_main)
-        vm.state().observe(this) {
-            when (it) {
-                is MainState.ShowData -> showData()
-                is MainState.GoToLogin -> goToLogin()
-                is MainState.Error -> showError(it.cause)
-            }
-        }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+          inflater
+                .cloneInContext(ContextThemeWrapper(activity, R.style.AppTheme))
+                .inflate(R.layout.fragment_main, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
+        (activity as? AppCompatActivity?)?.setSupportActionBar(toolbar_main)
+        showData()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_activity_menu, menu)
-        return true
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_activity_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.action_refresh -> refreshEvents.onNext(Unit)
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun showData() {
-        fragmentSummary = supportFragmentManager.findFragmentByTag(tagSummary) as? FragmentSummary
+        fragmentSummary = childFragmentManager.findFragmentByTag(tagSummary) as? FragmentSummary
               ?: FragmentSummary()
-        fragmentStats = supportFragmentManager.findFragmentByTag(tagStats) as? FragmentStats
+        fragmentStats = childFragmentManager.findFragmentByTag(tagStats) as? FragmentStats
               ?: FragmentStats()
-        fragmentMenu = supportFragmentManager.findFragmentByTag(tagMenu) as? FragmentMenu
+        fragmentMenu = childFragmentManager.findFragmentByTag(tagMenu) as? FragmentMenu
               ?: FragmentMenu()
-        supportFragmentManager.transaction {
+        childFragmentManager.transaction {
             forEachNonNull(fragmentSummary to tagSummary, fragmentStats to tagStats, fragmentMenu to tagMenu) { (fragment, tag) ->
-                if (supportFragmentManager.findFragmentByTag(tag) == null) {
+                if (childFragmentManager.findFragmentByTag(tag) == null) {
                     add(R.id.main_container, fragment, tag)
                 }
                 hide(fragment)
             }
         }
-        vm.tabSelections().observe(this) { selectedTab ->
-            when (selectedTab) {
+        main_bottom_navigation.setOnNavigationItemSelectedListener {
+            refreshEventsDisposable?.dispose()
+            when (it.itemId) {
                 R.id.bottomnav_item_summaries -> showSummaries()
                 R.id.bottomnav_item_stats -> showStats()
                 R.id.bottomnav_item_menu -> showMenu()
             }
-        }
-        main_bottom_navigation.setOnNavigationItemSelectedListener {
-            refreshEventsDisposable?.dispose()
-            vm.tabChanged(it.itemId)
             true
         }
-    }
-
-    private fun goToLogin() {
-        finish()
-        startActivity<LoginActivity>()
+        main_bottom_navigation.selectedItemId = R.id.bottomnav_item_summaries
     }
 
     private fun showSummaries() {
         setFragment(fragmentSummary) {
-            screenTracker.log(this, Screen.Summary)
+            screenTracker.log(activity, Screen.Summary)
             showAppBar(true)
             refreshEventsDisposable = fragmentSummary.subscribeToRefreshEvents(refreshEvents)
         }
@@ -125,7 +111,7 @@ class MainActivity : AppCompatActivity() {
                 but selected tab is initialized, so we report this event here.
             */
             fragmentStats.getSelectedTab()?.let { selectedTab ->
-                screenTracker.log(this, Screen.Stats(selectedTab))
+                screenTracker.log(activity, Screen.Stats(selectedTab))
             }
             showAppBar(true)
             refreshEventsDisposable = fragmentStats.subscribeToRefreshEvents(refreshEvents)
@@ -134,7 +120,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showMenu() {
         setFragment(fragmentMenu) {
-            screenTracker.log(this, Screen.Menu)
+            screenTracker.log(activity, Screen.Menu)
             showAppBar(false)
         }
     }
@@ -147,14 +133,9 @@ class MainActivity : AppCompatActivity() {
         main_container.requestLayout()
     }
 
-    private fun showError(throwable: Throwable?) {
-        throwable?.report()
-        Toast.makeText(this, R.string.error_refreshing_token, Toast.LENGTH_LONG).show()
-    }
-
     private fun setFragment(fragment: Fragment, onCompleted: (() -> Unit)? = null) {
         if (activeFragment == null || activeFragment?.tag != fragment.tag) {
-            supportFragmentManager.transaction {
+            childFragmentManager.transaction {
                 activeFragment?.let { hide(it) }
                 setCustomAnimations(R.anim.bottom_nav_in, R.anim.bottom_nav_out)
                 show(fragment)

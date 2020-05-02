@@ -7,9 +7,10 @@
     android:layout_height="match_parent"
     android:background="@color/color_text_white_primary"
     android:fitsSystemWindows="true"
-    tools:context=".screens.login.LoginActivity"
+    tools:context=".screens.login.FragmentLogin"
     tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="0dp">
+    tools:layout_editor_absoluteY="0dp"
+    >
 
     <com.kondenko.pocketwaka.ui.LoadingView
         android:id="@+id/loadingView"
@@ -29,17 +30,14 @@
 
     <Button
         android:id="@+id/buttonLogin"
-        style="@style/Widget.AppCompat.Button.Colored"
+        android:backgroundTint="?colorAccent"
         android:layout_width="wrap_content"
         android:layout_height="54dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
         android:focusable="true"
         android:minWidth="98dp"
-        android:text="@string/loginactivity_sign_in"
+        android:text="@string/loginactivity_action_sign_in"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -47,7 +45,8 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewSubhead"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1" />
+        tools:layout_constraintRight_creator="1"
+        />
 
     <TextView
         android:id="@+id/textViewSubhead"
@@ -62,7 +61,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline3"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        />
 
     <ImageView
         android:id="@+id/imageViewLogo"
@@ -77,13 +77,15 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="spread_inside"
-        app:srcCompat="@drawable/login_img_logo" />
+        app:srcCompat="@drawable/login_img_logo"
+        />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.5"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
