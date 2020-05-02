@@ -21,5 +21,5 @@ val appModule = module {
     single { DeviceInfoProvider() }
     single { TimeSpannableCreator(androidContext()) }
     single { DateFormatter(context = androidContext(), stringProvider = get()) }
-    factory { (context: Context?, lifecycleOwner: LifecycleOwner) -> BrowserWindow(context, lifecycleOwner) }
+    factory { (context: Context, lifecycleOwner: LifecycleOwner) -> BrowserWindow(context, lifecycleOwner) }
 }

@@ -10,7 +10,7 @@ class UnauthorizedAccessInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response =
             chain.proceed(chain.request()).let {
-                if (it.code() == HttpURLConnection.HTTP_UNAUTHORIZED) throw UnauthorizedException(it.message())
+                if (it.code == HttpURLConnection.HTTP_UNAUTHORIZED) throw UnauthorizedException(it.message)
                 else it
             }
 

@@ -120,6 +120,14 @@ fun DialogFragment.safeDismiss() {
     if (isShown) dismiss()
 }
 
+fun ifDebug(action: () -> Unit) =
+      if (BuildConfig.DEBUG) {
+          action()
+          true
+      } else {
+          false
+      }
+
 fun apiAtLeast(version: Int, action: (() -> Unit)? = null): Boolean {
     if (Build.VERSION.SDK_INT >= version) {
         action?.invoke()
