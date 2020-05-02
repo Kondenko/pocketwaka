@@ -11,10 +11,10 @@ class LoginPresenter(private val getAuthUrl: GetAuthUrl, private val getAccessTo
 
     private var isLoggingIn = false
 
-    fun onLoginButtonClicked() {
+    fun onLoginButtonClicked(forceWebView: Boolean = false) {
         isLoggingIn = true
         getAuthUrl.invoke(
-              onSuccess = { url -> view?.openAuthUrl(url, Const.AUTH_REDIRECT_URI) },
+              onSuccess = { url -> view?.openAuthUrl(url, Const.AUTH_REDIRECT_URI, forceWebView) },
               onError = { view?.showError(it) }
         )
     }

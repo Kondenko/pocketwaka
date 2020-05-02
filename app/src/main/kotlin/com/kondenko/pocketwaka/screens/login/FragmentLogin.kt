@@ -84,7 +84,9 @@ class FragmentLogin : Fragment(), LoginView {
             val clicksRequired = 3
             buttonLogin.longClicks()
                   .buffer(clicksRequired)
-                  .subscribe { throw RuntimeException("Test exception") }
+                  .subscribe {
+                      presenter.onLoginButtonClicked(true)
+                  }
                   .attachToLifecycle(this)
         }
         if (arguments?.getBoolean(wasLogoutForced, false) == true) {
@@ -113,9 +115,14 @@ class FragmentLogin : Fragment(), LoginView {
         presenter.detach()
     }
 
-    override fun openAuthUrl(url: String, authRedirectUri: String) {
-        browserWindow.openUrl(url) {
-            onLogin.openWebView(url, authRedirectUri)
+    override fun openAuthUrl(url: String, authRedirectUri: String, forceWebView: Boolean) {
+        fun openWebView() = onLogin.openWebView(url, authRedirectUri)
+        if (!forceWebView) {
+            browserWindow.openUrl(url) {
+                openWebView()
+            }
+        } else {
+            openWebView()
         }
     }
 
