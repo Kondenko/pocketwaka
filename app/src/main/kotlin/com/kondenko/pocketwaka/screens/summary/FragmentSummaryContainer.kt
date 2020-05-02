@@ -7,10 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.analytics.Event
 import com.kondenko.pocketwaka.analytics.EventTracker
 import com.kondenko.pocketwaka.screens.Refreshable
+import com.kondenko.pocketwaka.utils.WakaLog
+import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.diffutil.diffUtil
 import com.kondenko.pocketwaka.utils.extensions.observe
 import io.reactivex.Observable
@@ -18,6 +21,7 @@ import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_summary_container.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
 
 class FragmentSummaryContainer : Fragment(), Refreshable {
 
@@ -25,7 +29,14 @@ class FragmentSummaryContainer : Fragment(), Refreshable {
 
     private val eventTracker: EventTracker by inject()
 
-    private lateinit var pagesAdapter: SummaryContainerAdapter
+    private lateinit var pagerAdapter: SummaryContainerAdapter
+
+    private val onPageChanged = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            val day = pagerAdapter.summaryDates[position] as? DateRange.SingleDay
+            day?.start?.let(vm::loadAround)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -34,11 +45,22 @@ class FragmentSummaryContainer : Fragment(), Refreshable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        pagesAdapter = SummaryContainerAdapter(this)
-        viewpager_summary_container.adapter = pagesAdapter
+        pagerAdapter = SummaryContainerAdapter(this)
+        viewpager_summary_container.adapter = pagerAdapter
         vm.dateChanges().observe(viewLifecycleOwner) {
-            pagesAdapter.summaryDates = listOf(it)
+            WakaLog.d("New date list: ${it.filterIsInstance<DateRange.SingleDay>().map { Date(it.date) }}")
+            val setPageToLast = pagerAdapter.summaryDates.isEmpty()
+            pagerAdapter.summaryDates = it
+            if (setPageToLast) {
+                viewpager_summary_container.currentItem = pagerAdapter.summaryDates.lastIndex
+            }
         }
+        viewpager_summary_container.registerOnPageChangeCallback(onPageChanged)
+    }
+
+    override fun onDestroyView() {
+        viewpager_summary_container.unregisterOnPageChangeCallback(onPageChanged)
+        super.onDestroyView()
     }
 
     override fun subscribeToRefreshEvents(refreshEvents: Observable<Unit>): Disposable {
@@ -50,7 +72,13 @@ class FragmentSummaryContainer : Fragment(), Refreshable {
 
     private class SummaryContainerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
-        var summaryDates: List<SummaryDate> by diffUtil<SummaryDate, SummaryContainerAdapter>()
+        var summaryDates: List<DateRange> by diffUtil<DateRange, SummaryContainerAdapter>()
+
+        override fun getItemId(position: Int): Long =
+              summaryDates[position].hashCode().toLong()
+
+        override fun containsItem(itemId: Long): Boolean =
+              summaryDates.find { it.hashCode().toLong() == itemId } != null
 
         override fun getItemCount(): Int = summaryDates.size
 

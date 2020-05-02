@@ -135,3 +135,12 @@ fun apiAtLeast(version: Int, action: (() -> Unit)? = null): Boolean {
     }
     return false
 }
+
+fun Long.roundDateToDay() = Calendar.getInstance().run {
+    time = Date(this@roundDateToDay)
+    set(Calendar.HOUR_OF_DAY, 0)
+    set(Calendar.MINUTE, 0)
+    set(Calendar.SECOND, 0)
+    set(Calendar.MILLISECOND, 0)
+    time.time
+}

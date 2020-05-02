@@ -29,15 +29,6 @@ class DateFormatter(private val context: Context, private val stringProvider: St
         }
     }
 
-    fun roundToDay(date: Long): Long = Calendar.getInstance().run {
-        time = Date(date)
-        set(Calendar.HOUR_OF_DAY, 0)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-        time.time
-    }
-
     fun formatDateForDisplay(date: String): String {
         val locale = context.getCurrentLocale()
         val dateMillis = SimpleDateFormat("yyyy-MM-dd", locale).parse(date).time

@@ -12,6 +12,7 @@ import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.date.DateRangeString
+import com.kondenko.pocketwaka.utils.extensions.roundDateToDay
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.toObservable
@@ -49,7 +50,7 @@ class GetSummary(
                         val repoParams = SummaryRepository.Params(
                                 tokenHeader,
                                 params.dateRange.run {
-                                    DateRange(dateFormatter.roundToDay(start), dateFormatter.roundToDay(end))
+                                    DateRange.Range(start.roundDateToDay(), end.roundDateToDay())
                                 },
                                 DateRangeString(startDate, endDate),
                                 params.project,

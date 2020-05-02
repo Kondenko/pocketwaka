@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.analytics.Event
 import com.kondenko.pocketwaka.analytics.EventTracker
@@ -17,6 +18,8 @@ import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.base.BaseFragment
 import com.kondenko.pocketwaka.utils.BrowserWindow
 import com.kondenko.pocketwaka.utils.WakaLog
+import com.kondenko.pocketwaka.utils.date.DateRange
+import com.kondenko.pocketwaka.utils.extensions.ifDebug
 import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.toListOrEmpty
 import io.reactivex.rxkotlin.subscribeBy
@@ -25,7 +28,9 @@ import kotlinx.android.synthetic.main.fragment_summary.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import java.util.*
 
 class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, SummaryAdapter, SummaryState>() {
 
@@ -33,12 +38,12 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
 
         private const val KEY_DATE = "date"
 
-        fun create(date: SummaryDate) = FragmentSummary().apply {
+        fun create(date: DateRange) = FragmentSummary().apply {
             arguments = bundleOf(KEY_DATE to date)
         }
     }
 
-    private lateinit var vm: SummaryViewModel
+    private val vm: SummaryViewModel by viewModel { parametersOf(arguments?.getParcelable(KEY_DATE))}
 
     private val eventTracker: EventTracker by inject()
 
@@ -74,7 +79,6 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm = getViewModel { parametersOf(arguments?.getParcelable(KEY_DATE))}
         setupList(view)
         vm.state().observe(viewLifecycleOwner) {
             WakaLog.d("New summary state: $it")
