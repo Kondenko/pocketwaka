@@ -107,8 +107,9 @@ class FragmentDatePicker : Fragment() {
                     MotionEvent.ACTION_DOWN -> {
                         handleStateChange(this, TopSheetBehavior.STATE_DRAGGING)
                     }
-                    MotionEvent.ACTION_UP -> {
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                         handleStateChange(this, TopSheetBehavior.STATE_COLLAPSED)
+                        elevation = 0f
                     }
                 }
             }
@@ -146,12 +147,12 @@ class FragmentDatePicker : Fragment() {
     }
 
     private fun onOffsetChanged(bottomSheet: View, slideOffset: Float, opening: Boolean) {
-        WakaLog.d("onOffsetChanged(opening=$opening)")
+        WakaLog.d("onOffsetChanged(slideOffset=$slideOffset, opening=$opening)")
         val toolbarAlpha = 1 - (slideOffset / toolbarSlideOffsetBoundary).coerceAtMost(1f)
         textview_summary_current_date.alpha = toolbarAlpha
         imageview_icon_expand.alpha = toolbarAlpha
         imageview_handle.alpha = toolbarAlpha
-        bottomSheet.elevation = (finalElevation * slideOffset).coerceAtLeast(if (opening) initialElevation else 0f)
+        bottomSheet.elevation = (finalElevation * slideOffset).coerceAtLeast(if (opening && slideOffset > 0f) initialElevation else 0f)
     }
 
 }
