@@ -5,7 +5,9 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StyleableRes
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.*
+import java.util.function.Predicate
 import kotlin.math.max
 
 fun View.useAttributes(attrs: AttributeSet?, @StyleableRes styleable: IntArray, defStyleAttr: Int = 0, defStyleRes: Int = 0, actions: TypedArray.() -> Unit) {
@@ -99,3 +101,9 @@ fun ViewGroup.getOtherViewsWidthSum(vararg viewsToExclude: Int) =
 
 val View.widthWithMargins
     get() = width + max(marginLeft, marginStart) + max(marginRight, marginEnd)
+
+fun View.findViewWithParent(predicate: (ViewGroup) -> Boolean): View? = when {
+    parent == null -> null
+    predicate(parent as ViewGroup) -> this
+    else -> (parent as View).findViewWithParent(predicate)
+}

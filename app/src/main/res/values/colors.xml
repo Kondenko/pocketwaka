@@ -6,8 +6,11 @@
     <color name="color_accent">#2595ff</color>
     <color name="color_ripple">#402595FF</color>
 
-    <color name="color_login_background">@color/color_text_white_primary</color>
+    <color name="color_background_white">#FFFFFF</color>
+    <color name="color_login_background">@color/color_background_white</color>
     <color name="color_window_background">@color/color_primary_light</color>
+
+    <color name="color_handle">#d9d9e1</color>
 
     <color name="color_statusbar_legacy">#D0D6DC</color>
 

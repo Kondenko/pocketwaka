@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="528dp"
+    android:animateLayoutChanges="true"
+    tools:context=".FragmentDatePicker"
+    >
+
+    <TextView
+        android:id="@+id/textview_summary_current_date"
+        android:layout_width="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:gravity="center"
+        android:layout_gravity="bottom"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/imageview_handle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Today"
+        />
+
+    <ImageView
+        android:id="@+id/imageview_icon_expand"
+        android:src="@drawable/ic_expand_wide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textview_summary_current_date"
+        app:layout_constraintStart_toEndOf="@+id/textview_summary_current_date"
+        app:layout_constraintTop_toTopOf="@+id/textview_summary_current_date"
+        />
+
+    <ImageView
+        android:id="@+id/imageview_handle"
+        android:src="@drawable/handle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textview_summary_current_date"
+        app:layout_constraintStart_toStartOf="@+id/textview_summary_current_date"
+        />
+
+<!--
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_toolbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="textview_summary_current_date,imageview_icon_expand,imageview_handle"
+        />
+-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -72,6 +72,8 @@
 
     <!-- SUMMARIES -->
 
+    <string name="summary_tag_fragment_date_picker" translatable="false">fragment_date_picker</string>
+
     <string name="summary_title_time_tracked">Time tracked</string>
     <string name="summary_title_projects">Projects</string>
 
@@ -116,7 +118,5 @@
 
     <string name="stats_time_format_hours_short">%dh</string>
     <string name="stats_time_format_minutes_short">%dm</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
 
 </resources>
