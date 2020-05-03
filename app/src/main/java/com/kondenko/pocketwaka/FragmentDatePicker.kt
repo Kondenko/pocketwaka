@@ -10,6 +10,7 @@ import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
 import com.kondenko.pocketwaka.ui.TopSheetBehavior
 import com.kondenko.pocketwaka.utils.extensions.findViewWithParent
+import com.kondenko.pocketwaka.utils.extensions.getColorCompat
 import kotlinx.android.synthetic.main.fragment_date_picker.*
 
 class FragmentDatePicker : Fragment() {
@@ -17,6 +18,10 @@ class FragmentDatePicker : Fragment() {
     private val colorBackgroundResting = android.R.color.transparent
 
     private val colorBackgroundElevated = R.color.color_background_white
+
+    private val finalElevation = 12
+
+    private val toolbarSlideOffsetBoundary = 0.5f
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -37,7 +42,7 @@ class FragmentDatePicker : Fragment() {
         behavior.setTopSheetCallback(object : TopSheetBehavior.TopSheetCallback() {
 
             override fun onSlide(bottomSheet: View, slideOffset: Float, isOpening: Boolean?) =
-                  onOffsetChanged(slideOffset)
+                  onOffsetChanged(bottomSheet, slideOffset)
 
             override fun onStateChanged(bottomSheet: View, newState: Int) =
                   handleStateChange(bottomSheet, newState)
@@ -74,20 +79,23 @@ class FragmentDatePicker : Fragment() {
         }
     }
 
-    private fun updateBackground(bottomSheet: View, newState: Int) {
+    private fun updateBackground(bottomSheet: View, newState: Int) = context?.let {
+        // TODO Animate
         val backgroundColor = if (newState == TopSheetBehavior.STATE_COLLAPSED) {
             colorBackgroundResting
         } else {
             colorBackgroundElevated
-        }
-        bottomSheet.setBackgroundResource(backgroundColor)
+        }.let(it::getColorCompat)
+        bottomSheet.setBackgroundColor(backgroundColor)
+        activity?.window?.statusBarColor = backgroundColor
     }
 
-    private fun onOffsetChanged(slideOffset: Float) {
-        val toolbarAlpha = 1 - slideOffset.coerceAtLeast(0f)
+    private fun onOffsetChanged(bottomSheet: View, slideOffset: Float) {
+        val toolbarAlpha = 1 - (slideOffset / toolbarSlideOffsetBoundary).coerceAtMost(1f)
         textview_summary_current_date.alpha = toolbarAlpha
         imageview_icon_expand.alpha = toolbarAlpha
         imageview_handle.alpha = toolbarAlpha
+        bottomSheet.elevation = finalElevation * slideOffset
     }
 
 }
