@@ -22,7 +22,7 @@ class FragmentDatePicker : Fragment() {
 
     private val surfaceColorElevated = R.color.color_background_white
 
-    private val initialElevation = 0f
+    private val initialElevation = 6f
 
     private val finalElevation = 12f
 
@@ -53,7 +53,8 @@ class FragmentDatePicker : Fragment() {
         surfaceColorAnimator = createColorAnimator(
               context,
               surfaceColorResting,
-              surfaceColorElevated
+              surfaceColorElevated,
+              context.resources.getInteger(R.integer.duration_datepicker_elevation_anim).toLong()
         ) { color ->
             activity?.window?.statusBarColor = color
             this.setBackgroundColor(color)
@@ -119,11 +120,12 @@ class FragmentDatePicker : Fragment() {
     }
 
     private fun onOffsetChanged(bottomSheet: View, slideOffset: Float, opening: Boolean) {
+        WakaLog.d("onOffsetChanged(opening=$opening)")
         val toolbarAlpha = 1 - (slideOffset / toolbarSlideOffsetBoundary).coerceAtMost(1f)
         textview_summary_current_date.alpha = toolbarAlpha
         imageview_icon_expand.alpha = toolbarAlpha
         imageview_handle.alpha = toolbarAlpha
-        bottomSheet.elevation = (finalElevation * slideOffset)
+        bottomSheet.elevation = (finalElevation * slideOffset).coerceAtLeast(if (opening) initialElevation else 0f)
     }
 
 }

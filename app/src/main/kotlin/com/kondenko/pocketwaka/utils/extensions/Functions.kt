@@ -9,6 +9,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import com.kondenko.pocketwaka.BuildConfig
 import com.kondenko.pocketwaka.Const
+import java.time.Duration
 import java.util.*
 
 fun notNull(vararg values: Any?): Boolean = values.all { it != null }
@@ -48,19 +49,21 @@ fun createColorAnimator(
       context: Context?,
       @ColorRes initialColorRes: Int,
       @ColorRes finalColorRes: Int,
+      duration: Long = Const.DEFAULT_ANIM_DURATION,
       onUpdate: (color: Int) -> Unit
 ): ValueAnimator? = context?.run {
-    createColorAnimator(getColorCompat(initialColorRes), getColorCompat(finalColorRes), onUpdate)
+    createColorAnimator(getColorCompat(initialColorRes), getColorCompat(finalColorRes), duration, onUpdate)
 }
 
 @Suppress("UsePropertyAccessSyntax")
 fun createColorAnimator(
       @ColorInt initialColor: Int,
       @ColorInt finalColor: Int,
+      duration: Long = Const.DEFAULT_ANIM_DURATION,
       onUpdate: (color: Int) -> Unit
 ): ValueAnimator =
       ValueAnimator.ofInt(initialColor, finalColor).apply {
-          setDuration(Const.DEFAULT_ANIM_DURATION)
+          setDuration(duration)
           setEvaluator(ArgbEvaluator())
           addUpdateListener {
               onUpdate(animatedValue as Int)
