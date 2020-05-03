@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fitsSystemWindows="true"
         android:orientation="vertical"
         >
 
@@ -34,11 +33,21 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <FrameLayout
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/main_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/container_summary_date_picker"
+            android:name="com.kondenko.pocketwaka.FragmentDatePicker"
+            android:tag="@string/summary_tag_fragment_date_picker"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_summary_toolbar_expanded"
+            app:behavior_hideable="false"
+            app:behavior_peekHeight="@dimen/height_summary_toolbar_collapsed"
+            app:layout_behavior=".ui.TopSheetBehavior"
             />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.kondenko.pocketwaka.FragmentDatePicker
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.analytics.Event
@@ -21,16 +20,15 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_summary_container.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 class FragmentSummaryContainer : Fragment(), Refreshable {
 
-    private val vm: SummaryRangeViewModel by viewModel()
+    private val vm: SummaryRangeViewModel by sharedViewModel()
 
     private val eventTracker: EventTracker by inject()
-
-    private var fragmentDatePicker: FragmentDatePicker? = null
 
     private lateinit var pagerAdapter: SummaryContainerAdapter
 
@@ -48,7 +46,6 @@ class FragmentSummaryContainer : Fragment(), Refreshable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fragmentDatePicker = childFragmentManager.findFragmentByTag(getString(R.string.summary_tag_fragment_date_picker)) as? FragmentDatePicker
         pagerAdapter = SummaryContainerAdapter(this)
         with(viewpager_summary_container) {
             registerOnPageChangeCallback(onPageChanged)
@@ -61,9 +58,6 @@ class FragmentSummaryContainer : Fragment(), Refreshable {
             if (setPageToLast) {
                 viewpager_summary_container.currentItem = pagerAdapter.summaryDates.lastIndex
             }
-        }
-        vm.titleChanges().observe(viewLifecycleOwner) {
-            fragmentDatePicker?.setTitle(it)
         }
     }
 

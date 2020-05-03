@@ -66,6 +66,7 @@
     <!-- Summary -->
 
     <dimen name="height_summary_toolbar_collapsed">54dp</dimen>
+    <dimen name="height_summary_toolbar_expanded">528dp</dimen>
 
     <item name="height_summary_skeleton" type="integer">14</item>
 

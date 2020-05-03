@@ -5,22 +5,26 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
+import com.kondenko.pocketwaka.FragmentDatePicker
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.analytics.Screen
 import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.screens.menu.FragmentMenu
 import com.kondenko.pocketwaka.screens.stats.FragmentStats
-import com.kondenko.pocketwaka.screens.summary.FragmentSummary
 import com.kondenko.pocketwaka.screens.summary.FragmentSummaryContainer
+import com.kondenko.pocketwaka.screens.summary.SummaryRangeViewModel
 import com.kondenko.pocketwaka.utils.extensions.forEachNonNull
+import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.transaction
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class FragmentContent : Fragment() {
@@ -28,6 +32,8 @@ class FragmentContent : Fragment() {
     private val screenTracker: ScreenTracker by inject()
 
     private val refreshEvents = PublishSubject.create<Unit>()
+
+    private val vm: SummaryRangeViewModel by sharedViewModel()
 
     private var refreshEventsDisposable: Disposable? = null
 
@@ -54,6 +60,11 @@ class FragmentContent : Fragment() {
         setHasOptionsMenu(true)
         (activity as? AppCompatActivity?)?.setSupportActionBar(toolbar_main)
         showData()
+        val fragmentDatePicker = childFragmentManager
+              .findFragmentByTag(getString(R.string.summary_tag_fragment_date_picker)) as? FragmentDatePicker
+        vm.titleChanges().observe(viewLifecycleOwner) {
+            fragmentDatePicker?.setTitle(it)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -99,6 +110,7 @@ class FragmentContent : Fragment() {
         setFragment(fragmentSummary) {
             screenTracker.log(activity, Screen.Summary)
             showAppBar(false)
+            container_summary_date_picker.isVisible = true
             refreshEventsDisposable = fragmentSummary.subscribeToRefreshEvents(refreshEvents)
         }
     }
@@ -115,6 +127,7 @@ class FragmentContent : Fragment() {
                 screenTracker.log(activity, Screen.Stats(selectedTab))
             }
             showAppBar(true)
+            container_summary_date_picker.isVisible = false
             refreshEventsDisposable = fragmentStats.subscribeToRefreshEvents(refreshEvents)
         }
     }
@@ -123,6 +136,7 @@ class FragmentContent : Fragment() {
         setFragment(fragmentMenu) {
             screenTracker.log(activity, Screen.Menu)
             showAppBar(false)
+            container_summary_date_picker.isVisible = false
         }
     }
 
