@@ -4,7 +4,6 @@ import android.animation.ValueAnimator
 import android.content.SharedPreferences
 import android.graphics.Matrix
 import android.graphics.Path
-import android.os.Build
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
 import androidx.fragment.app.DialogFragment
@@ -18,10 +17,6 @@ import com.kondenko.pocketwaka.BuildConfig
 import io.reactivex.Single
 import timber.log.Timber
 import java.util.*
-import java.util.Calendar.*
-import kotlin.math.round
-
-fun notNull(vararg values: Any?): Boolean = values.all { it != null }
 
 fun Float.negateIfTrue(condition: Boolean) = if (condition) -this else this
 
@@ -43,11 +38,6 @@ fun Throwable.report(message: String? = null, printLog: Boolean = true) {
     if (!BuildConfig.DEBUG) {
         Crashlytics.logException(this)
     }
-}
-
-fun createPath(build: Path.() -> Unit): Path = Path().apply {
-    build()
-    close()
 }
 
 fun Path.applyMatrix(actions: Matrix.() -> Unit) = Matrix().also { matrix ->
@@ -103,38 +93,11 @@ inline fun <reified T : Any> T.className(includeSuperclass: Boolean = false, sep
     return if (!includeSuperclass || superclassName == null) className else "$superclassName$separator$className"
 }
 
-fun <T> forEachNonNull(vararg items: T, action: (T) -> Unit) = items.forEach(action)
-
-fun <T> forEach(vararg items: T?, action: (T?) -> Unit) = items.forEach(action)
-
-fun date(day: Int, month: Int, year: Int): Long = Calendar.getInstance().run {
-    set(DAY_OF_MONTH, day)
-    set(MONTH, month)
-    set(YEAR, year)
-    time.time
-}
-
 val DialogFragment.isShown
     get() = dialog?.isShowing == true && !isRemoving
 
 fun DialogFragment.safeDismiss() {
     if (isShown) dismiss()
-}
-
-fun ifDebug(action: () -> Unit) =
-      if (BuildConfig.DEBUG) {
-          action()
-          true
-      } else {
-          false
-      }
-
-fun apiAtLeast(version: Int, action: (() -> Unit)? = null): Boolean {
-    if (Build.VERSION.SDK_INT >= version) {
-        action?.invoke()
-        return true
-    }
-    return false
 }
 
 fun Long.roundDateToDay() = Calendar.getInstance().run {

@@ -6,7 +6,7 @@
         <item name="colorPrimaryDark">@color/color_primary_light</item>
         <item name="colorAccent">@color/color_accent</item>
         <item name="android:statusBarColor">@color/color_statusbar_legacy</item>
-        <item name="android:windowBackground">@color/color_primary_light</item>
+        <item name="android:windowBackground">@color/color_window_background</item>
     </style>
 
     <style name="LoginTheme" parent="@style/Theme.MaterialComponents.Light.NoActionBar" >

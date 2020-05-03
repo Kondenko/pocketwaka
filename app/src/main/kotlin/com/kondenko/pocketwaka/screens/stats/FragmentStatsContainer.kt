@@ -1,7 +1,6 @@
 package com.kondenko.pocketwaka.screens.stats
 
 
-import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -24,6 +23,7 @@ import com.kondenko.pocketwaka.screens.Refreshable
 import com.kondenko.pocketwaka.screens.stats.model.ScrollDirection
 import com.kondenko.pocketwaka.screens.stats.model.TabsElevationState
 import com.kondenko.pocketwaka.utils.WakaLog
+import com.kondenko.pocketwaka.utils.extensions.createColorAnimator
 import com.kondenko.pocketwaka.utils.extensions.getColorCompat
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
@@ -65,7 +65,11 @@ class FragmentStatsContainer : Fragment(), Refreshable {
         val surfaceColorResting = view.context.getColorCompat(R.color.color_app_bar_resting)
         val surfaceColorElevated = view.context.getColorCompat(R.color.color_app_bar_elevated)
         this.surfaceColorResting = surfaceColorResting
-        this.colorAnimator = createColorAnimator(activity as? AppCompatActivity, surfaceColorResting, surfaceColorElevated)
+        this.colorAnimator = createColorAnimator(surfaceColorResting, surfaceColorElevated) { color ->
+            activity?.window?.statusBarColor = color
+            appbar_main?.setBackgroundColor(color)
+            framelayout_stats_tab_container?.setBackgroundColor(color)
+        }
         setupViewPager()
     }
 
@@ -117,21 +121,6 @@ class FragmentStatsContainer : Fragment(), Refreshable {
             onFragmentSelected(0)
         }
     }
-
-    @Suppress("UsePropertyAccessSyntax")
-    private fun createColorAnimator(activity: AppCompatActivity?, initialColor: Int, finalColor: Int) =
-          ValueAnimator.ofInt(initialColor, finalColor).apply {
-              activity?.apply {
-                  setDuration(Const.DEFAULT_ANIM_DURATION)
-                  setEvaluator(ArgbEvaluator())
-                  addUpdateListener {
-                      val color = animatedValue as Int
-                      window.statusBarColor = color
-                      appbar_main?.setBackgroundColor(color)
-                      framelayout_stats_tab_container?.setBackgroundColor(color)
-                  }
-              }
-          }
 
     private fun onFragmentSelected(position: Int) =
           (pagerAdapter.getPage(position) as? FragmentStats?)?.let { fragment ->
