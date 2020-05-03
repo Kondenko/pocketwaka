@@ -14,7 +14,7 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.analytics.Screen
 import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.screens.menu.FragmentMenu
-import com.kondenko.pocketwaka.screens.stats.FragmentStats
+import com.kondenko.pocketwaka.screens.stats.FragmentStatsContainer
 import com.kondenko.pocketwaka.screens.summary.FragmentSummaryContainer
 import com.kondenko.pocketwaka.screens.summary.SummaryRangeViewModel
 import com.kondenko.pocketwaka.utils.extensions.forEachNonNull
@@ -40,7 +40,7 @@ class FragmentContent : Fragment() {
     private lateinit var fragmentSummary: FragmentSummaryContainer
     private val tagSummary = "summary"
 
-    private lateinit var fragmentStats: FragmentStats
+    private lateinit var fragmentStatsContainer: FragmentStatsContainer
     private val tagStats = "stats"
 
     private lateinit var fragmentMenu: FragmentMenu
@@ -82,12 +82,12 @@ class FragmentContent : Fragment() {
     private fun showData() {
         fragmentSummary = childFragmentManager.findFragmentByTag(tagSummary) as? FragmentSummaryContainer
               ?: FragmentSummaryContainer()
-        fragmentStats = childFragmentManager.findFragmentByTag(tagStats) as? FragmentStats
-              ?: FragmentStats()
+        fragmentStatsContainer = childFragmentManager.findFragmentByTag(tagStats) as? FragmentStatsContainer
+              ?: FragmentStatsContainer()
         fragmentMenu = childFragmentManager.findFragmentByTag(tagMenu) as? FragmentMenu
               ?: FragmentMenu()
         childFragmentManager.transaction {
-            forEachNonNull(fragmentSummary to tagSummary, fragmentStats to tagStats, fragmentMenu to tagMenu) { (fragment, tag) ->
+            forEachNonNull(fragmentSummary to tagSummary, fragmentStatsContainer to tagStats, fragmentMenu to tagMenu) { (fragment, tag) ->
                 if (childFragmentManager.findFragmentByTag(tag) == null) {
                     add(R.id.main_container, fragment, tag)
                 }
@@ -116,19 +116,19 @@ class FragmentContent : Fragment() {
     }
 
     private fun showStats() {
-        setFragment(fragmentStats) {
+        setFragment(fragmentStatsContainer) {
             /*
                 When this screen is opened for the first time in the session, selected tab is null.
                 OnPageChangeListener gets called and sends a screen_view event with the default tab (e.g. 7 days).
                 However when is screen is revisited during the same session, OnPageChangeListener is not called,
                 but selected tab is initialized, so we report this event here.
             */
-            fragmentStats.getSelectedTab()?.let { selectedTab ->
+            fragmentStatsContainer.getSelectedTab()?.let { selectedTab ->
                 screenTracker.log(activity, Screen.Stats(selectedTab))
             }
             showAppBar(true)
             container_summary_date_picker.isVisible = false
-            refreshEventsDisposable = fragmentStats.subscribeToRefreshEvents(refreshEvents)
+            refreshEventsDisposable = fragmentStatsContainer.subscribeToRefreshEvents(refreshEvents)
         }
     }
 
