@@ -7,7 +7,6 @@ import com.kondenko.pocketwaka.data.android.HumanReadableDateFormatter
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.date.DateRange
-import com.kondenko.pocketwaka.utils.extensions.roundDateToDay
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -38,12 +37,12 @@ class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatte
 
     private fun DateRange.SingleDay.load() {
         val currentValue = dates.value
-        if (currentValue == null || time != today.time) {
-            WakaLog.d("Loading items around ${Date(time)}")
-            val newDates = if (today.time == time) {
-                listOf((time - day * 2L), (time - day), time)
+        if (currentValue == null || date != today.date) {
+            WakaLog.d("Loading items around ${Date(date)}")
+            val newDates = if (today.date == date) {
+                listOf((date - day * 2L), (date - day), date)
             } else {
-                listOf((time - day), time, (time + day))
+                listOf((date - day), date, (date + day))
             }
                   .map { DateRange.SingleDay(it) }
                   .let { SummaryRangeState(it) }

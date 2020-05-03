@@ -17,7 +17,7 @@ class HumanReadableDateFormatter(
                 ?: formatDefault(date)
 
     private fun formatDefault(date: DateRange) = when (date) {
-        is DateRange.SingleDay -> date.time.formatDate()
+        is DateRange.SingleDay -> date.date.formatDate()
         is DateRange.Range -> stringProvider.getDateRangeWithSeparator(date.start.formatDate(), date.end.formatDate())
     }
 
@@ -29,7 +29,7 @@ class HumanReadableDateFormatter(
 
     @Suppress("IntroduceWhenSubject")
     private fun DateRange.asPredefinedRange(): DateRange.PredefinedRange? = when {
-        (this as? DateRange.SingleDay)?.time?.isSameDay(dateProvider.getToday()) == true -> {
+        (this as? DateRange.SingleDay)?.date?.isSameDay(dateProvider.getToday()) == true -> {
             DateRange.PredefinedRange.Today
         }
         else -> {
