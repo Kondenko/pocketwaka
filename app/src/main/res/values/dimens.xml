@@ -70,6 +70,10 @@
 
     <item name="duration_datepicker_elevation_anim" type="integer">300</item>
 
+    <dimen name="width_datepicker_button">148dp</dimen>
+    <dimen name="height_datepicker_button">40dp</dimen>
+    <dimen name="margin_datepicker_button">8dp</dimen>
+
     <item name="height_summary_skeleton" type="integer">14</item>
 
     <dimen name="margin_summary_projects_section_title_top">4dp</dimen>

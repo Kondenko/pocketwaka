@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/group_datepicker_buttons"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
@@ -45,13 +46,103 @@
         app:layout_constraintStart_toStartOf="@+id/textview_summary_current_date"
         />
 
-<!--
+    <Button
+        android:id="@+id/button_summary_today"
+        style="@style/App.Button.FlatButton"
+        android:layout_margin="@dimen/margin_datepicker_button"
+        android:text="@string/summary_date_today"
+        android:layout_width="@dimen/width_datepicker_button"
+        android:layout_height="@dimen/height_datepicker_button"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_summary_this_week"
+        app:layout_constraintEnd_toStartOf="@+id/button_summary_yesterday"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_summary_yesterday"
+        style="@style/App.Button.FlatButton"
+        android:layout_margin="@dimen/margin_datepicker_button"
+        android:text="@string/summary_date_yesterday"
+        android:layout_width="@dimen/width_datepicker_button"
+        android:layout_height="@dimen/height_datepicker_button"
+        app:layout_constraintBottom_toBottomOf="@+id/button_summary_today"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button_summary_today"
+        app:layout_constraintTop_toTopOf="@+id/button_summary_today"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_summary_this_week"
+        style="@style/App.Button.FlatButton"
+        android:layout_margin="@dimen/margin_datepicker_button"
+        android:text="@string/summary_date_this_week"
+        android:layout_width="@dimen/width_datepicker_button"
+        android:layout_height="@dimen/height_datepicker_button"
+        app:layout_constraintBottom_toTopOf="@+id/button_summary_last_month"
+        app:layout_constraintEnd_toEndOf="@+id/button_summary_today"
+        app:layout_constraintStart_toStartOf="@+id/button_summary_today"
+        app:layout_constraintTop_toBottomOf="@+id/button_summary_today"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_summary_last_week"
+        style="@style/App.Button.FlatButton"
+        android:layout_margin="@dimen/margin_datepicker_button"
+        android:text="@string/summary_date_last_week"
+        android:layout_width="@dimen/width_datepicker_button"
+        android:layout_height="@dimen/height_datepicker_button"
+        app:layout_constraintBottom_toBottomOf="@+id/button_summary_this_week"
+        app:layout_constraintEnd_toEndOf="@+id/button_summary_yesterday"
+        app:layout_constraintStart_toStartOf="@+id/button_summary_yesterday"
+        app:layout_constraintTop_toTopOf="@+id/button_summary_this_week"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_summary_this_month"
+        style="@style/App.Button.FlatButton"
+        android:layout_margin="@dimen/margin_datepicker_button"
+        android:text="@string/summary_date_this_month"
+        android:layout_width="@dimen/width_datepicker_button"
+        android:layout_height="@dimen/height_datepicker_button"
+        app:layout_constraintBottom_toBottomOf="@+id/button_summary_last_month"
+        app:layout_constraintEnd_toEndOf="@+id/button_summary_last_week"
+        app:layout_constraintStart_toStartOf="@+id/button_summary_last_week"
+        app:layout_constraintTop_toTopOf="@+id/button_summary_last_month"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_summary_last_month"
+        style="@style/App.Button.FlatButton"
+        android:layout_margin="@dimen/margin_datepicker_button"
+        android:text="@string/summary_date_last_month"
+        android:layout_width="@dimen/width_datepicker_button"
+        android:layout_height="@dimen/height_datepicker_button"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/button_summary_this_week"
+        app:layout_constraintStart_toStartOf="@+id/button_summary_this_week"
+        app:layout_constraintTop_toBottomOf="@+id/button_summary_this_week"
+        />
+
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_toolbar"
+        android:id="@+id/group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="textview_summary_current_date,imageview_icon_expand,imageview_handle"
+        app:constraint_referenced_ids="button_summary_this_month,button_summary_last_month,button_summary_yesterday,button_summary_this_week,button_summary_last_week"
         />
--->
+
+    <!--
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_toolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="textview_summary_current_date,imageview_icon_expand,imageview_handle"
+            />
+    -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

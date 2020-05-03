@@ -7,7 +7,9 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.forEach
 import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
 import com.kondenko.pocketwaka.ui.TopSheetBehavior
@@ -40,6 +42,30 @@ class FragmentDatePicker : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewWithParent { it is CoordinatorLayout }?.setupBottomSheetBehavior()
+        button_summary_today.setOnClickListener {
+            setButtonSelected(it)
+        }
+        button_summary_yesterday.setOnClickListener {
+            setButtonSelected(it)
+        }
+        button_summary_this_week.setOnClickListener {
+            setButtonSelected(it)
+        }
+        button_summary_last_week.setOnClickListener {
+            setButtonSelected(it)
+        }
+        button_summary_this_month.setOnClickListener {
+            setButtonSelected(it)
+        }
+        button_summary_last_month.setOnClickListener {
+            setButtonSelected(it)
+        }
+    }
+
+    private fun setButtonSelected(view: View) {
+        group_datepicker_buttons.forEach {
+            it.isSelected = it.id == view.id
+        }
     }
 
     fun setTitle(title: String) {

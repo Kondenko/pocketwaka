@@ -6,6 +6,8 @@
     <color name="color_accent">#2595ff</color>
     <color name="color_ripple">#402595FF</color>
 
+    <color name="color_primary_disabled">#3335434F</color>
+
     <color name="color_background_white">#FFFFFF</color>
     <color name="color_login_background">@color/color_background_white</color>
     <color name="color_window_background">@color/color_primary_light</color>
@@ -40,6 +42,9 @@
 
     <color name="color_growth">#49DE7A</color>
     <color name="color_descent">#8A3F617E</color>
+
+    <color name="color_datepicker_button_border">#1A35434F</color>
+    <color name="color_datepicker_button_background_selected">#0D2695FF</color>
 
     <array name="chart_colors">
         <item>#FA5757</item>
