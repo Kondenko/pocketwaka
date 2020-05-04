@@ -4,7 +4,7 @@ import com.kondenko.pocketwaka.di.modules.*
 
 val koinModules = listOf(
       appModule,
-      netModule,
+      networkModule,
       persistenceModule,
       firebaseModule,
       analyticsModule,

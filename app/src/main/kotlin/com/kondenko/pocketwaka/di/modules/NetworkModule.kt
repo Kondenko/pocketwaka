@@ -6,6 +6,7 @@ import com.kondenko.pocketwaka.di.qualifiers.Auth
 import com.kondenko.pocketwaka.di.qualifiers.Scheduler
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.UnauthorizedAccessInterceptor
+import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.extensions.ifDebug
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -19,14 +20,16 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-val netModule = module {
+val networkModule = module {
     factory(Scheduler.Worker) { Schedulers.io() }
     factory(Scheduler.Ui) { AndroidSchedulers.mainThread() }
     factory { SchedulersContainer(uiScheduler = get(Scheduler.Ui), workerScheduler = get(Scheduler.Worker)) }
     single { RxJava2CallAdapterFactory.create() }
     single { GsonConverterFactory.create() }
     single {
-        HttpLoggingInterceptor().apply {
+        HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
+            override fun log(message: String) = WakaLog.v(message)
+        }).apply {
             setLevel(HttpLoggingInterceptor.Level.BASIC)
         }
     }
