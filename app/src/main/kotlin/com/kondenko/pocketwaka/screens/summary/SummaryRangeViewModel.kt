@@ -14,13 +14,17 @@ import org.threeten.bp.LocalDate
 
 class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatter: HumanReadableDateFormatter) : ViewModel() {
 
-    private val today = DateRange.SingleDay(dateProvider.getToday())
+    // Events
 
     private val selectedRange = MutableLiveData<SummaryRangeState>()
 
     private val titles = MutableLiveData<String>()
 
     private val calendarInvalidation = MutableLiveData<Unit>()
+
+    // Dates
+
+    private val today = DateRange.SingleDay(dateProvider.getToday())
 
     private var startDate: LocalDate? = null
 
@@ -39,8 +43,10 @@ class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatte
     fun selectDate(dateRange: DateRange) {
         // TODO Limit scrolling by two weeks for free accounts
         titles.value = dateFormatter.format(dateRange)
-        if (dateRange is DateRange.SingleDay) dateRange.load()
-        else TODO("Load ranges")
+        when(dateRange) {
+            is DateRange.SingleDay -> dateRange.loadAdjacentDays()
+            is DateRange.Range -> dateRange.loadRange()
+        }
         calendarInvalidation.value = Unit
     }
 
@@ -64,6 +70,29 @@ class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatte
         WakaLog.d("End date: $endDate")
     }
 
+    fun confirmDateSelection() {
+        val startDate = startDate
+        val endDate = endDate
+        if (startDate == null && endDate == null) return
+        val selection = when {
+            (startDate != null) xor (endDate != null) -> {
+                DateRange.SingleDay(
+                      startDate
+                            ?: endDate
+                            ?: throw IllegalArgumentException("One of dates is null")
+                )
+            }
+            startDate != null && endDate != null -> {
+                DateRange.Range(startDate, endDate)
+            }
+            else -> {
+                throw IllegalArgumentException("Both start date and end date are null")
+            }
+        }
+        selectDate(selection)
+        calendarInvalidation.value = Unit
+    }
+
     fun getSelectionState(day: CalendarDay) = when {
         day.date == startDate -> {
             if (endDate != null) DaySelectionState.Start else DaySelectionState.Single
@@ -79,31 +108,11 @@ class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatte
         }
     }.also { if (it != DaySelectionState.Unselected) WakaLog.d("$day selection state: $it") }
 
-    fun confirmDateSelection() {
-        val startDate = startDate
-        val endDate = endDate
-        if (startDate == null && endDate == null) return
-        selectedRange.value = when {
-            (startDate != null) xor (endDate != null) -> {
-                DateRange.SingleDay(
-                      startDate
-                            ?: endDate
-                            ?: throw IllegalArgumentException("One of dates is null")
-                )
-            }
-            startDate != null && endDate != null -> {
-                DateRange.Range(startDate, endDate)
-            }
-            else -> {
-                throw IllegalArgumentException("Both start date and end date are null")
-            }
-        }.let { SummaryRangeState(listOf(it)) }
-        this.startDate = null
-        this.endDate = null
-        calendarInvalidation.value = Unit
+    private fun DateRange.Range.loadRange() {
+        selectedRange.value = SummaryRangeState(listOf(this))
     }
 
-    private fun DateRange.SingleDay.load() {
+    private fun DateRange.SingleDay.loadAdjacentDays() {
         val currentValue = selectedRange.value
         if (currentValue == null || date != today.date) {
             WakaLog.d("Loading items around $date")
