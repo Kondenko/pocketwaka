@@ -17,7 +17,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
-import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
@@ -34,15 +33,11 @@ import org.threeten.bp.format.TextStyle
 import org.threeten.bp.temporal.WeekFields
 
 class DayViewContainer(view: View) : ViewContainer(view) {
-
     val textViewDay: TextView = view.textview_calendar_day
-
 }
 
 class MonthViewContainer(view: View) : ViewContainer(view) {
-
     val textViewMonth: TextView = view.textview_calendar_month
-
 }
 
 enum class DaySelectionState {
@@ -86,7 +81,7 @@ class FragmentDatePicker : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewWithParent { it is CoordinatorLayout }?.setupBottomSheetBehavior()
+        val behavior = view.findViewWithParent { it is CoordinatorLayout }?.setupBottomSheetBehavior()
         contentViews = arrayOf(
               button_summary_today,
               button_summary_yesterday,
@@ -98,7 +93,7 @@ class FragmentDatePicker : Fragment() {
         )
         contentViews.forEach { it.isVisible = false }
         setupButtons()
-        setupCalendar(view.context)
+        setupCalendar(behavior, view.context)
         vm.calendarInvalidationEvents().observe(viewLifecycleOwner) {
             calendar_datepicker.notifyCalendarChanged()
         }
@@ -126,71 +121,77 @@ class FragmentDatePicker : Fragment() {
         }
     }
 
-    private fun setupCalendar(context: Context) = with(calendar_datepicker) {
+    private fun setupCalendar(behavior: TopSheetBehavior<*>?, context: Context) = with(calendar_datepicker) {
         val currentDay = MonthDay.now()
         val firstDayOfWeek = WeekFields.of(context.getCurrentLocale()).firstDayOfWeek
         setup(startMonth = YearMonth.of(firstYear, firstMonth), endMonth = currentMonth, firstDayOfWeek = firstDayOfWeek)
         scrollToMonth(currentMonth)
-
+        setOnTouchListener { v, event ->
+            behavior == null || behavior.state == TopSheetBehavior.STATE_COLLAPSED
+        }
         dayBinder = object : DayBinder<DayViewContainer> {
 
             override fun create(view: View) = DayViewContainer(view)
 
-            override fun bind(container: DayViewContainer, day: CalendarDay) = with(container.textViewDay) {
-                text = day.date.dayOfMonth.toString()
-                val isValidPastDate = day.date.run {
-                    month.value < currentMonth.monthValue && year == currentMonth.year
-                          || year < currentMonth.year
-                }
-                val isValidInCurrentMonth = day.date.run {
-                    monthValue == currentMonth.monthValue
-                          && dayOfMonth <= currentDay.dayOfMonth
-                          && year == currentMonth.year
-                }
-                isEnabled = isValidPastDate || isValidInCurrentMonth // TODO Also check if in the 2-week range for free accounts
-                isActivated = day.owner == DayOwner.THIS_MONTH
-                val drawableLevel = when (vm.getSelectionState(day)) {
-                    DaySelectionState.Single -> {
-                        isSelected = true
-                        4
-                    }
-                    DaySelectionState.Start -> {
-                        isSelected = true
-                        2
-                    }
-                    DaySelectionState.End -> {
-                        isSelected = true
-                        3
-                    }
-                    DaySelectionState.Middle -> {
-                        isSelected = false
-                        1
-                    }
-                    DaySelectionState.Unselected -> {
-                        isSelected = false
-                        0
-                    }
-                }
-                background = (context.getDrawable(R.drawable.background_calendar_day) as? LevelListDrawable)?.apply {
-                    level = drawableLevel
-                }
-                setOnClickListener { vm.onDayClicked(day) }
-            }
+            override fun bind(container: DayViewContainer, day: CalendarDay) = bindDay(container, day, currentDay)
 
         }
         monthHeaderBinder = object : MonthHeaderFooterBinder<MonthViewContainer> {
 
             override fun create(view: View) = MonthViewContainer(view)
 
-            override fun bind(container: MonthViewContainer, month: CalendarMonth) {
-                container.textViewMonth.text = month.yearMonth.month.getDisplayName(
-                      TextStyle.FULL,
-                      context.getCurrentLocale()
-                )
-                // TODO Append year if not the current one
-            }
+            override fun bind(container: MonthViewContainer, month: CalendarMonth) = bindMonth(container, month)
 
         }
+    }
+
+    private fun bindDay(container: DayViewContainer, day: CalendarDay, currentDay: MonthDay) = with(container.textViewDay) {
+        text = day.date.dayOfMonth.toString()
+        val isValidPastDate = day.date.run {
+            month.value < currentMonth.monthValue && year == currentMonth.year
+                  || year < currentMonth.year
+        }
+        val isValidInCurrentMonth = day.date.run {
+            monthValue == currentMonth.monthValue
+                  && dayOfMonth <= currentDay.dayOfMonth
+                  && year == currentMonth.year
+        }
+        isEnabled = isValidPastDate || isValidInCurrentMonth // TODO Also check if in the 2-week range for free accounts
+        isActivated = day.owner == com.kizitonwose.calendarview.model.DayOwner.THIS_MONTH
+        val drawableLevel = when (vm.getSelectionState(day)) {
+            DaySelectionState.Single -> {
+                isSelected = true
+                4
+            }
+            DaySelectionState.Start -> {
+                isSelected = true
+                2
+            }
+            DaySelectionState.End -> {
+                isSelected = true
+                3
+            }
+            DaySelectionState.Middle -> {
+                isSelected = false
+                1
+            }
+            DaySelectionState.Unselected -> {
+                isSelected = false
+                0
+            }
+        }
+        background = (context.getDrawable(com.kondenko.pocketwaka.R.drawable.background_calendar_day) as? LevelListDrawable)?.apply {
+            level = drawableLevel
+        }
+        setOnClickListener { vm.onDayClicked(day) }
+    }
+
+    private fun bindMonth(container: MonthViewContainer, month: CalendarMonth) = with(container.textViewMonth) {
+        text = month.yearMonth.month.getDisplayName(
+              TextStyle.FULL,
+              context.getCurrentLocale()
+        )
+        // TODO Append year if not the current one
     }
 
     private fun setButtonSelected(view: View) {
@@ -203,7 +204,7 @@ class FragmentDatePicker : Fragment() {
         textview_summary_current_date.text = title
     }
 
-    private fun View.setupBottomSheetBehavior() {
+    private fun View.setupBottomSheetBehavior(): TopSheetBehavior<*> {
         val behavior = TopSheetBehavior.from(this)
         isClickable = true
         stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.state_list_animator_date_picker)
@@ -244,6 +245,7 @@ class FragmentDatePicker : Fragment() {
             }
             false
         }
+        return behavior
     }
 
     private fun handleStateChange(newState: Int) {
