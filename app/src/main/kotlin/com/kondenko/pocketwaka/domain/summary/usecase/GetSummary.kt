@@ -119,9 +119,9 @@ class GetSummary(
                 .map { (_, branches) -> branches.reduce { a, b -> a.merge(b) } }
 
     private fun Commit.merge(other: Commit): Commit {
-        // TODO Use hashes for merging
+        require(hash == other.hash) { "Messages are different" }
         require(message == other.message) { "Messages are different" }
-        return Commit(message, totalSeconds + other.totalSeconds)
+        return Commit(hash, message, totalSeconds + other.totalSeconds)
     }
 
 }
