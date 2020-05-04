@@ -66,13 +66,15 @@
     <!-- Summary -->
 
     <dimen name="height_summary_toolbar_collapsed">54dp</dimen>
-    <dimen name="height_summary_toolbar_expanded">528dp</dimen>
+    <dimen name="height_summary_toolbar_expanded">540dp</dimen>
 
     <item name="duration_datepicker_elevation_anim" type="integer">300</item>
 
     <dimen name="width_datepicker_button">148dp</dimen>
     <dimen name="height_datepicker_button">40dp</dimen>
     <dimen name="margin_datepicker_button">8dp</dimen>
+
+    <dimen name="size_datepicker_calendar_day">36dp</dimen>
 
     <item name="height_summary_skeleton" type="integer">14</item>
 

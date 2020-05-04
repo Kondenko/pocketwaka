@@ -2,23 +2,51 @@ package com.kondenko.pocketwaka
 
 import android.animation.AnimatorInflater
 import android.animation.ValueAnimator
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.forEach
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.kizitonwose.calendarview.model.CalendarDay
+import com.kizitonwose.calendarview.model.CalendarMonth
+import com.kizitonwose.calendarview.ui.DayBinder
+import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
+import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kondenko.pocketwaka.ui.TopSheetBehavior
-import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.extensions.createColorAnimator
 import com.kondenko.pocketwaka.utils.extensions.findViewWithParent
+import com.kondenko.pocketwaka.utils.extensions.forEach
+import com.kondenko.pocketwaka.utils.extensions.getCurrentLocale
 import kotlinx.android.synthetic.main.fragment_date_picker.*
+import kotlinx.android.synthetic.main.item_calendar_day.view.*
+import kotlinx.android.synthetic.main.item_calendar_month.view.*
+import org.threeten.bp.MonthDay
+import org.threeten.bp.YearMonth
+import org.threeten.bp.format.TextStyle
+import org.threeten.bp.temporal.WeekFields
+
+class DayViewContainer(view: View) : ViewContainer(view) {
+
+    val textViewDay: TextView = view.textview_calendar_day
+
+}
+
+class MonthViewContainer(view: View) : ViewContainer(view) {
+
+    val textViewMonth: TextView = view.textview_calendar_month
+
+}
 
 class FragmentDatePicker : Fragment() {
+
+    // UI
 
     private val surfaceColorResting = R.color.color_window_background
 
@@ -34,6 +62,16 @@ class FragmentDatePicker : Fragment() {
 
     private var animationRequired = true
 
+    private lateinit var contentViews: Array<View>
+
+    // Logic
+
+    private val firstYear = 2013 // The year when Wakatime was created
+
+    private val firstMonth = 1
+
+    private val currentMonth = YearMonth.now()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_date_picker, container, false)
@@ -42,6 +80,21 @@ class FragmentDatePicker : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewWithParent { it is CoordinatorLayout }?.setupBottomSheetBehavior()
+        contentViews = arrayOf(
+              button_summary_today,
+              button_summary_yesterday,
+              button_summary_this_week,
+              button_summary_last_week,
+              button_summary_this_month,
+              button_summary_last_month,
+              calendar_datepicker
+        )
+        contentViews.forEach { it.isVisible = false }
+        setupButtons()
+        setupCalendar(view.context)
+    }
+
+    private fun setupButtons() {
         button_summary_today.setOnClickListener {
             setButtonSelected(it)
         }
@@ -59,6 +112,46 @@ class FragmentDatePicker : Fragment() {
         }
         button_summary_last_month.setOnClickListener {
             setButtonSelected(it)
+        }
+    }
+
+    private fun setupCalendar(context: Context) = with(calendar_datepicker) {
+        val currentDay = MonthDay.now()
+        val firstDayOfWeek = WeekFields.of(context.getCurrentLocale()).firstDayOfWeek
+        setup(startMonth = YearMonth.of(firstYear, firstMonth), endMonth = currentMonth, firstDayOfWeek = firstDayOfWeek)
+        scrollToMonth(currentMonth)
+
+        dayBinder = object : DayBinder<DayViewContainer> {
+
+            override fun create(view: View) = DayViewContainer(view)
+
+            override fun bind(container: DayViewContainer, day: CalendarDay) = with(container.textViewDay) {
+                text = day.date.dayOfMonth.toString()
+                val isValidPastDate = day.date.run {
+                    month.value < currentMonth.monthValue && year == currentMonth.year
+                          || year < currentMonth.year
+                }
+                val isValidInCurrentMonth = day.date.run {
+                    monthValue == currentMonth.monthValue
+                          && dayOfMonth <= currentDay.dayOfMonth
+                          && year == currentMonth.year
+                }
+                isEnabled = isValidPastDate || isValidInCurrentMonth // TODO Also check if in the 2-week range for free accounts
+            }
+
+        }
+        monthHeaderBinder = object : MonthHeaderFooterBinder<MonthViewContainer> {
+
+            override fun create(view: View) = MonthViewContainer(view)
+
+            override fun bind(container: MonthViewContainer, month: CalendarMonth) {
+                container.textViewMonth.text = month.yearMonth.month.getDisplayName(
+                      TextStyle.FULL,
+                      context.getCurrentLocale()
+                )
+                // TODO Append year if not the current one
+            }
+
         }
     }
 
@@ -91,24 +184,22 @@ class FragmentDatePicker : Fragment() {
                   onOffsetChanged(bottomSheet, slideOffset, isOpening == true)
 
             override fun onStateChanged(bottomSheet: View, newState: Int) =
-                  handleStateChange(bottomSheet, newState)
+                  handleStateChange(newState)
 
         })
-/*
         setOnClickListener {
             if (behavior.state == TopSheetBehavior.STATE_COLLAPSED) {
                 behavior.state = TopSheetBehavior.STATE_EXPANDED
             }
         }
-*/
         setOnTouchListener { v, event ->
             if (behavior.state == TopSheetBehavior.STATE_COLLAPSED) {
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
-                        handleStateChange(this, TopSheetBehavior.STATE_DRAGGING)
+                        handleStateChange(TopSheetBehavior.STATE_DRAGGING)
                     }
                     MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                        handleStateChange(this, TopSheetBehavior.STATE_COLLAPSED)
+                        handleStateChange(TopSheetBehavior.STATE_COLLAPSED)
                         elevation = 0f
                     }
                 }
@@ -117,10 +208,11 @@ class FragmentDatePicker : Fragment() {
         }
     }
 
-    private fun handleStateChange(bottomSheet: View, newState: Int) {
+    private fun handleStateChange(newState: Int) {
         updateBackground(newState)
         when (newState) {
             TopSheetBehavior.STATE_COLLAPSED -> {
+                calendar_datepicker.scrollToMonth(currentMonth)
                 imageview_icon_expand.isInvisible = false
                 imageview_handle.isInvisible = true
             }
@@ -147,11 +239,15 @@ class FragmentDatePicker : Fragment() {
     }
 
     private fun onOffsetChanged(bottomSheet: View, slideOffset: Float, opening: Boolean) {
-        WakaLog.d("onOffsetChanged(slideOffset=$slideOffset, opening=$opening)")
+        // WakaLog.d("onOffsetChanged(slideOffset=$slideOffset, opening=$opening)")
         val toolbarAlpha = 1 - (slideOffset / toolbarSlideOffsetBoundary).coerceAtMost(1f)
         textview_summary_current_date.alpha = toolbarAlpha
         imageview_icon_expand.alpha = toolbarAlpha
         imageview_handle.alpha = toolbarAlpha
+        forEach(*contentViews) {
+            it?.isVisible = true
+            it?.alpha = 1 - toolbarAlpha
+        }
         bottomSheet.elevation = (finalElevation * slideOffset).coerceAtLeast(if (opening && slideOffset > 0f) initialElevation else 0f)
     }
 

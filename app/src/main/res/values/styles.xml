@@ -104,9 +104,9 @@
         <item name="rippleColor">@color/color_ripple</item>
         <item name="android:gravity">center</item>
         <item name="android:focusable">true</item>
-        <item name="android:backgroundTint">@color/color_state_button_flat_background</item>
+        <item name="android:backgroundTint">@color/color_button_flat_background</item>
         <item name="android:letterSpacing">0</item>
-        <item name="android:textColor">@color/color_state_button_flat_text</item>
+        <item name="android:textColor">@color/color_button_flat_text</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
     </style>

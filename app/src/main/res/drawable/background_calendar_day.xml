@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/color_ripple"
+    >
+    <item>
+        <selector>
+            <item android:state_selected="true">
+                <shape
+                    android:shape="oval"
+                    android:tint="@color/color_accent"
+                    >
+                    <size
+                        android:height="@dimen/size_datepicker_calendar_day"
+                        android:width="@dimen/size_datepicker_calendar_day"
+                        />
+                </shape>
+            </item>
+            <item>
+                <shape android:shape="rectangle" />
+            </item>
+        </selector>
+    </item>
+</ripple>
+

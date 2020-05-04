@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/group_datepicker_buttons"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="@dimen/height_summary_toolbar_expanded"
     android:animateLayoutChanges="true"
+    android:paddingTop="24dp"
     tools:context=".FragmentDatePicker"
     >
 
@@ -53,7 +54,6 @@
         android:text="@string/summary_date_today"
         android:layout_width="@dimen/width_datepicker_button"
         android:layout_height="@dimen/height_datepicker_button"
-        android:layout_marginTop="24dp"
         app:layout_constraintBottom_toTopOf="@+id/button_summary_this_week"
         app:layout_constraintEnd_toStartOf="@+id/button_summary_yesterday"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -122,27 +122,27 @@
         android:text="@string/summary_date_last_month"
         android:layout_width="@dimen/width_datepicker_button"
         android:layout_height="@dimen/height_datepicker_button"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/calendar_datepicker"
         app:layout_constraintEnd_toEndOf="@+id/button_summary_this_week"
         app:layout_constraintStart_toStartOf="@+id/button_summary_this_week"
         app:layout_constraintTop_toBottomOf="@+id/button_summary_this_week"
         />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="button_summary_this_month,button_summary_last_month,button_summary_yesterday,button_summary_this_week,button_summary_last_week"
+    <com.kizitonwose.calendarview.CalendarView
+        android:id="@+id/calendar_datepicker"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="32dp"
+        app:cv_dayViewResource="@layout/item_calendar_day"
+        app:cv_monthHeaderResource="@layout/item_calendar_month"
+        app:cv_orientation="horizontal"
+        app:cv_scrollMode="paged"
+        app:cv_maxRowCount="5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_summary_this_month"
         />
-
-    <!--
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/group_toolbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="textview_summary_current_date,imageview_icon_expand,imageview_handle"
-            />
-    -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
