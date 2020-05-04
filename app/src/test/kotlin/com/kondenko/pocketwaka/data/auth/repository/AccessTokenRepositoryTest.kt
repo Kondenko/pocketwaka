@@ -5,6 +5,7 @@ import com.kondenko.pocketwaka.data.auth.model.server.AccessToken
 import com.kondenko.pocketwaka.data.auth.service.AccessTokenService
 import com.kondenko.pocketwaka.testutils.RxRule
 import com.kondenko.pocketwaka.testutils.getAccessTokenMock
+import com.kondenko.pocketwaka.utils.exceptions.UnauthorizedException
 import com.nhaarman.mockito_kotlin.anyOrNull
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
@@ -44,7 +45,7 @@ class AccessTokenRepositoryTest {
         whenever(sp.contains(anyString())).doReturn(false)
         val errorSingle = accessTokenRepository.getEncryptedToken()
         with(errorSingle.test()) {
-            assertFailure(NullPointerException::class.java)
+            assertFailure(UnauthorizedException::class.java)
             assertNotComplete()
             assertTerminated()
         }
