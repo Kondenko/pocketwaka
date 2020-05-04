@@ -3,7 +3,6 @@ package com.kondenko.pocketwaka.domain.summary.usecase
 import com.kondenko.pocketwaka.data.ContinuousCacheBackedRepository
 import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
-import com.kondenko.pocketwaka.data.summary.model.server.Summary
 import com.kondenko.pocketwaka.data.summary.model.server.SummaryData
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.domain.StatefulUseCase
@@ -14,12 +13,10 @@ import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.date.DateRangeString
 import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.rxkotlin.toObservable
-import java.sql.Date
 
 class GetSummary(
       private val schedulers: SchedulersContainer,
-      private val summaryRepository: ContinuousCacheBackedRepository<SummaryRepository.Params, Summary, SummaryDbModel>,
+      private val summaryRepository: ContinuousCacheBackedRepository<SummaryRepository.Params, SummaryData, SummaryDbModel>,
       private val getTokenHeader: UseCaseSingle<Nothing, String>,
       private val dateFormatter: DateFormatter,
       private val summaryResponseConverter: (SummaryRepository.Params, SummaryDbModel, SummaryDbModel) -> SummaryDbModel,
@@ -65,14 +62,10 @@ class GetSummary(
     /**
      * Fetches the time tracked for the specified period of time and for each project individually.
      */
-    private fun convert(tokenHeader: String, params: SummaryRepository.Params, data: Summary): Observable<SummaryDbModel> {
-        return data.summaryData
-              .toObservable()
-              .flatMap {
-                  val timeTrackedSource = timeTrackedConverter(params, it).toObservable()
-                  val projectsSource = fetchProjects.build(FetchProjects.Params(tokenHeader, it))
-                  Observable.concatArrayEagerDelayError(timeTrackedSource, projectsSource)
-              }
+    private fun convert(tokenHeader: String, params: SummaryRepository.Params, data: SummaryData): Observable<SummaryDbModel> {
+        val timeTrackedSource = timeTrackedConverter(params, data).toObservable()
+        val projectsSource = fetchProjects.build(FetchProjects.Params(tokenHeader, data))
+        return Observable.concatArrayEagerDelayError(timeTrackedSource, projectsSource)
     }
 
 }

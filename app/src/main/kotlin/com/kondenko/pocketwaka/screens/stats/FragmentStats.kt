@@ -54,7 +54,7 @@ class FragmentStats : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapte
 
     private var shadowAnimationNeeded = true
 
-    private val skeletonStatsCard = mutableListOf(StatsItem("", null, null, null)) * 3
+    private val skeletonStatsCard = mutableListOf(StatsItem("", null, null)) * 3
 
     private val skeletonItems = listOf(
           StatsUiModel.Info(null, null),

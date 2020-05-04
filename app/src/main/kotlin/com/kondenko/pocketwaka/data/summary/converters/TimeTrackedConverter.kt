@@ -24,7 +24,7 @@ class TimeTrackedConverter(
         return convertTimeTracked(model).flatMap { uiModel ->
             val date: Long? = dateFormatter.parseDateParameter(model.range.date)
             val isAccountEmpty = uiModel.run { time.isEmpty() && percentDelta == null }
-            val isTodayEmpty = model.grandTotal.run { hours + minutes == 0 } && !isAccountEmpty
+            val isTodayEmpty = model.grandTotal.totalSeconds == 0f && !isAccountEmpty
             date?.let {
                 Maybe.just(SummaryDbModel(
                         date = it,

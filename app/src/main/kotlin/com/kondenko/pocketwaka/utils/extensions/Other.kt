@@ -17,6 +17,7 @@ import com.kondenko.pocketwaka.BuildConfig
 import io.reactivex.Single
 import timber.log.Timber
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 fun Float.negateIfTrue(condition: Boolean) = if (condition) -this else this
 
@@ -110,3 +111,9 @@ fun Long.roundDateToDay() = Calendar.getInstance().run {
 }
 
 fun Long.isSameDay(other: Long) = other.roundDateToDay() == this.roundDateToDay()
+
+fun Long.secondsToHoursAndMinutes(): Pair<Long, Long> {
+    val hours = TimeUnit.SECONDS.toHours(this)
+    val minutes = TimeUnit.SECONDS.toMinutes(this) - TimeUnit.HOURS.toMinutes(hours)
+    return hours to minutes
+}

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.text.format.DateUtils
 import com.kondenko.pocketwaka.utils.extensions.getCurrentLocale
+import com.kondenko.pocketwaka.utils.extensions.secondsToHoursAndMinutes
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
@@ -58,8 +59,7 @@ class DateFormatter(private val context: Context, private val stringProvider: St
     fun secondsToHumanReadableTime(seconds: Long): String = secondsToHumanReadableTime(seconds, Format.Long)
 
     fun secondsToHumanReadableTime(seconds: Long, format: Format = Format.Long): String {
-        val hours = TimeUnit.SECONDS.toHours(seconds)
-        val minutes = TimeUnit.SECONDS.toMinutes(seconds) - TimeUnit.HOURS.toMinutes(hours)
+        val (hours, minutes) = seconds.secondsToHoursAndMinutes()
         return toHumanReadableTime(hours.toInt(), minutes.toInt(), format)
     }
 

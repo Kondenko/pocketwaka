@@ -61,7 +61,7 @@ class StatsResponseConverter(
     }
 
     private fun List<StatsEntity>?.toDomainModel(statsType: StatsType): StatsUiModel.Stats? {
-        val items = this?.filter { it.name != null }?.map { StatsItem(it.name!!, it.hours, it.minutes, it.percent) }
+        val items = this?.filter { it.name != null }?.map { StatsItem(it.name!!, it.totalSeconds!!, it.percent) }
         return colorProvider.provideColors(items)?.let { StatsUiModel.Stats(getCardTitle(statsType), it) }
     }
 
