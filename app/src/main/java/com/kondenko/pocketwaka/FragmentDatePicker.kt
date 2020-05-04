@@ -22,6 +22,7 @@ import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kondenko.pocketwaka.screens.summary.SummaryRangeViewModel
 import com.kondenko.pocketwaka.ui.TopSheetBehavior
+import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.extensions.*
 import kotlinx.android.synthetic.main.fragment_date_picker.*
 import kotlinx.android.synthetic.main.item_calendar_day.view.*
@@ -95,28 +96,39 @@ class FragmentDatePicker : Fragment() {
         setupButtons()
         setupCalendar(behavior, view.context)
         vm.calendarInvalidationEvents().observe(viewLifecycleOwner) {
+            // TODO Only update changed days
             calendar_datepicker.notifyCalendarChanged()
+        }
+        vm.closeEvents().observe(viewLifecycleOwner) {
+            behavior?.state = TopSheetBehavior.STATE_COLLAPSED
         }
     }
 
     private fun setupButtons() {
         button_summary_today.setOnClickListener {
+            vm.onButtonClicked(DateRange.PredefinedRange.Today.range)
             setButtonSelected(it)
         }
         button_summary_yesterday.setOnClickListener {
+            vm.onButtonClicked(DateRange.PredefinedRange.Yesterday.range)
             setButtonSelected(it)
         }
         button_summary_this_week.setOnClickListener {
+            vm.onButtonClicked(DateRange.PredefinedRange.ThisWeek.range)
             setButtonSelected(it)
         }
         button_summary_last_week.setOnClickListener {
+            vm.onButtonClicked(DateRange.PredefinedRange.LastWeek.range)
+            setButtonSelected(it)
+        }
+        // TODO Lock if more than 2 weeks passed
+        button_summary_this_month.setOnClickListener {
+            vm.onButtonClicked(DateRange.PredefinedRange.ThisMonth.range)
             setButtonSelected(it)
         }
         // TODO Lock for free accounts
-        button_summary_this_month.setOnClickListener {
-            setButtonSelected(it)
-        }
         button_summary_last_month.setOnClickListener {
+            vm.onButtonClicked(DateRange.PredefinedRange.LastMonth.range)
             setButtonSelected(it)
         }
     }
@@ -126,7 +138,8 @@ class FragmentDatePicker : Fragment() {
         val firstDayOfWeek = WeekFields.of(context.getCurrentLocale()).firstDayOfWeek
         setup(startMonth = YearMonth.of(firstYear, firstMonth), endMonth = currentMonth, firstDayOfWeek = firstDayOfWeek)
         scrollToMonth(currentMonth)
-        setOnTouchListener { v, event ->
+        setOnTouchListener { _, _ ->
+            // Propagate touch events to the bottom sheet when it's collapsed
             behavior == null || behavior.state == TopSheetBehavior.STATE_COLLAPSED
         }
         dayBinder = object : DayBinder<DayViewContainer> {

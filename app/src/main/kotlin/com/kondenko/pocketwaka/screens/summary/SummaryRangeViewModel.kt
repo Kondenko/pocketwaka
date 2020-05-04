@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kondenko.pocketwaka.DaySelectionState
 import com.kondenko.pocketwaka.data.android.HumanReadableDateFormatter
-import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.extensions.notNull
@@ -20,7 +19,9 @@ class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatte
 
     private val titles = MutableLiveData<String>()
 
-    private val calendarInvalidation = MutableLiveData<Unit>()
+    private val calendarInvalidationEvents = MutableLiveData<Unit>()
+
+    private val closeEvents = MutableLiveData<Unit>()
 
     // Dates
 
@@ -38,20 +39,26 @@ class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatte
 
     fun titleChanges(): LiveData<String> = titles
 
-    fun calendarInvalidationEvents(): LiveData<Unit> = calendarInvalidation
+    fun calendarInvalidationEvents(): LiveData<Unit> = calendarInvalidationEvents
+
+    fun closeEvents(): LiveData<Unit> = closeEvents
+
+    fun onButtonClicked(dateRange: DateRange) {
+        selectDate(dateRange)
+        closeEvents.value = Unit
+    }
 
     fun selectDate(dateRange: DateRange) {
         // TODO Limit scrolling by two weeks for free accounts
         titles.value = dateFormatter.format(dateRange)
-        when(dateRange) {
+        when (dateRange) {
             is DateRange.SingleDay -> dateRange.loadAdjacentDays()
             is DateRange.Range -> dateRange.loadRange()
         }
-        calendarInvalidation.value = Unit
+        calendarInvalidationEvents.value = Unit
     }
 
     fun onDayClicked(day: CalendarDay) {
-        WakaLog.d("Day selected: $day")
         val date = day.date
         if (startDate != null) {
             if (date < startDate || endDate != null) {
@@ -65,9 +72,7 @@ class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatte
         } else {
             startDate = date
         }
-        calendarInvalidation.value = Unit
-        WakaLog.d("Start date: $startDate")
-        WakaLog.d("End date: $endDate")
+        calendarInvalidationEvents.value = Unit
     }
 
     fun confirmDateSelection() {
@@ -90,7 +95,7 @@ class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatte
             }
         }
         selectDate(selection)
-        calendarInvalidation.value = Unit
+        calendarInvalidationEvents.value = Unit
     }
 
     fun getSelectionState(day: CalendarDay) = when {
@@ -106,7 +111,7 @@ class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatte
         else -> {
             DaySelectionState.Unselected
         }
-    }.also { if (it != DaySelectionState.Unselected) WakaLog.d("$day selection state: $it") }
+    }
 
     private fun DateRange.Range.loadRange() {
         selectedRange.value = SummaryRangeState(listOf(this))
@@ -115,7 +120,6 @@ class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatte
     private fun DateRange.SingleDay.loadAdjacentDays() {
         val currentValue = selectedRange.value
         if (currentValue == null || date != today.date) {
-            WakaLog.d("Loading items around $date")
             val newDates = if (today.date == date) {
                 listOf(date.minusDays(2), date.minusDays(1), date)
             } else {
@@ -123,7 +127,7 @@ class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatte
             }
                   .map { DateRange.SingleDay(it) }
                   .let { SummaryRangeState(it) }
-            selectedRange.postValue(newDates)
+            selectedRange.value = newDates
         }
     }
 

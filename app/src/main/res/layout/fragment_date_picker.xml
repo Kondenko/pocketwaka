@@ -103,29 +103,29 @@
         />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_summary_this_month"
-        style="@style/App.Button.FlatButton"
-        android:layout_margin="@dimen/margin_datepicker_button"
-        android:text="@string/summary_date_this_month"
-        android:layout_width="@dimen/width_datepicker_button"
-        android:layout_height="@dimen/height_datepicker_button"
-        app:layout_constraintBottom_toBottomOf="@+id/button_summary_last_month"
-        app:layout_constraintEnd_toEndOf="@+id/button_summary_last_week"
-        app:layout_constraintStart_toStartOf="@+id/button_summary_last_week"
-        app:layout_constraintTop_toTopOf="@+id/button_summary_last_month"
-        />
-
-    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_summary_last_month"
         style="@style/App.Button.FlatButton"
         android:layout_margin="@dimen/margin_datepicker_button"
+        android:layout_width="@dimen/width_datepicker_button"
+        android:layout_height="@dimen/height_datepicker_button"
         android:text="@string/summary_date_last_month"
+        app:layout_constraintBottom_toBottomOf="@+id/button_summary_this_month"
+        app:layout_constraintEnd_toEndOf="@+id/button_summary_this_week"
+        app:layout_constraintStart_toStartOf="@+id/button_summary_this_week"
+        app:layout_constraintTop_toTopOf="@+id/button_summary_this_month"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_summary_this_month"
+        style="@style/App.Button.FlatButton"
+        android:text="@string/summary_date_this_month"
+        android:layout_margin="@dimen/margin_datepicker_button"
         android:layout_width="@dimen/width_datepicker_button"
         android:layout_height="@dimen/height_datepicker_button"
         app:layout_constraintBottom_toTopOf="@+id/calendar_datepicker"
-        app:layout_constraintEnd_toEndOf="@+id/button_summary_this_week"
-        app:layout_constraintStart_toStartOf="@+id/button_summary_this_week"
-        app:layout_constraintTop_toBottomOf="@+id/button_summary_this_week"
+        app:layout_constraintEnd_toEndOf="@+id/button_summary_last_week"
+        app:layout_constraintStart_toStartOf="@+id/button_summary_last_week"
+        app:layout_constraintTop_toBottomOf="@+id/button_summary_last_week"
         />
 
     <com.kizitonwose.calendarview.CalendarView
