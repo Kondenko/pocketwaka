@@ -131,7 +131,7 @@
     <com.kizitonwose.calendarview.CalendarView
         android:id="@+id/calendar_datepicker"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintVertical_bias="0.0"
         android:layout_marginTop="28dp"
         android:layout_marginBottom="32dp"
