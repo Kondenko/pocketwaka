@@ -3,6 +3,7 @@ package com.kondenko.pocketwaka
 import android.animation.AnimatorInflater
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.drawable.LevelListDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -44,6 +45,10 @@ class MonthViewContainer(view: View) : ViewContainer(view) {
 
 }
 
+enum class DaySelectionState {
+    Unselected, Single, Start, Middle, End
+}
+
 class FragmentDatePicker : Fragment() {
 
     private val vm: SummaryRangeViewModel by sharedViewModel()
@@ -56,7 +61,7 @@ class FragmentDatePicker : Fragment() {
 
     private val initialElevation = 6f
 
-    private val finalElevation = 12f
+    private val finalElevation = 16f
 
     private val toolbarSlideOffsetBoundary = 0.5f
 
@@ -94,6 +99,9 @@ class FragmentDatePicker : Fragment() {
         contentViews.forEach { it.isVisible = false }
         setupButtons()
         setupCalendar(view.context)
+        vm.calendarInvalidationEvents().observe(viewLifecycleOwner) {
+            calendar_datepicker.notifyCalendarChanged()
+        }
     }
 
     private fun setupButtons() {
@@ -141,10 +149,32 @@ class FragmentDatePicker : Fragment() {
                 }
                 isEnabled = isValidPastDate || isValidInCurrentMonth // TODO Also check if in the 2-week range for free accounts
                 isActivated = day.owner == DayOwner.THIS_MONTH
-                setOnClickListener {
-                    vm.onDayClicked(day)
-                    notifyCalendarChanged()
+                val drawableLevel = when (vm.getSelectionState(day)) {
+                    DaySelectionState.Single -> {
+                        isSelected = true
+                        4
+                    }
+                    DaySelectionState.Start -> {
+                        isSelected = true
+                        2
+                    }
+                    DaySelectionState.End -> {
+                        isSelected = true
+                        3
+                    }
+                    DaySelectionState.Middle -> {
+                        isSelected = false
+                        1
+                    }
+                    DaySelectionState.Unselected -> {
+                        isSelected = false
+                        0
+                    }
                 }
+                background = (context.getDrawable(R.drawable.background_calendar_day) as? LevelListDrawable)?.apply {
+                    level = drawableLevel
+                }
+                setOnClickListener { vm.onDayClicked(day) }
             }
 
         }
