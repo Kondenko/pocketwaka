@@ -52,11 +52,9 @@ class SummaryRepository(
 
 }
 
-// TODO Check range usage for correctness
 private operator fun SummaryData?.plus(other: SummaryData): SummaryData {
     this ?: return other
     return SummaryData(
-          range,
           grandTotal + other.grandTotal,
           projects.merge(other.projects)
     )

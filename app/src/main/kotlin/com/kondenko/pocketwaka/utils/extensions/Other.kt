@@ -15,7 +15,9 @@ import com.airbnb.lottie.value.LottieValueCallback
 import com.crashlytics.android.Crashlytics
 import com.kondenko.pocketwaka.BuildConfig
 import io.reactivex.Single
+import org.threeten.bp.LocalDate
 import timber.log.Timber
+import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -116,4 +118,15 @@ fun Long.secondsToHoursAndMinutes(): Pair<Long, Long> {
     val hours = TimeUnit.SECONDS.toHours(this)
     val minutes = TimeUnit.SECONDS.toMinutes(this) - TimeUnit.HOURS.toMinutes(hours)
     return hours to minutes
+}
+
+infix fun LocalDate.dailyRangeTo(other: LocalDate): List<LocalDate> {
+    if (this.isAfter(other)) throw IllegalArgumentException("Start date comes after end ∂ate")
+    val list = mutableListOf<LocalDate>()
+    var nextDate: LocalDate = this
+    while (nextDate <= other) {
+        list.add(nextDate)
+        nextDate = nextDate.plusDays(1)
+    }
+    return list
 }

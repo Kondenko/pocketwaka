@@ -12,8 +12,10 @@ import com.kondenko.pocketwaka.screens.main.MainViewModel
 import com.kondenko.pocketwaka.screens.stats.StatsViewModel
 import com.kondenko.pocketwaka.screens.stats.adapter.StatsAdapter
 import com.kondenko.pocketwaka.screens.summary.SummaryAdapter
+import com.kondenko.pocketwaka.screens.summary.SummaryViewModel
 import com.kondenko.pocketwaka.ui.skeleton.RecyclerViewSkeleton
 import com.kondenko.pocketwaka.utils.BrowserWindow
+import com.kondenko.pocketwaka.utils.date.DateRange
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
@@ -59,6 +61,9 @@ class DependencyInjectionTest : KoinTest {
             }
             create<MainViewModel> {
                 parametersOf(0)
+            }
+            create<SummaryViewModel> {
+                parametersOf(mock<DateRange>())
             }
         }
     }

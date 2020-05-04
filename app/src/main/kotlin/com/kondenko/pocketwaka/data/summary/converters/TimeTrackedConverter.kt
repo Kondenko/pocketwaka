@@ -14,26 +14,24 @@ import kotlin.math.roundToInt
  * Converts a summary of a single day to a DTO.
  */
 class TimeTrackedConverter(
-        private val getAverage: GetAverage,
-        private val dateFormatter: DateFormatter
+      private val getAverage: GetAverage,
+      private val dateFormatter: DateFormatter
 ) : (SummaryRepository.Params, SummaryData) -> Maybe<SummaryDbModel> {
 
     private val averageRange = StatsRange.Month
 
     override fun invoke(param: SummaryRepository.Params, model: SummaryData): Maybe<SummaryDbModel> {
         return convertTimeTracked(model).flatMap { uiModel ->
-            val date: Long? = dateFormatter.parseDateParameter(model.range.date)
+            val date = param.dateRange.hashCode().toLong()
             val isAccountEmpty = uiModel.run { time.isEmpty() && percentDelta == null }
             val isTodayEmpty = model.grandTotal.totalSeconds == 0f && !isAccountEmpty
-            date?.let {
-                Maybe.just(SummaryDbModel(
-                        date = it,
-                        isAccountEmpty = isAccountEmpty,
-                        isFromCache = false,
-                        isEmpty = isTodayEmpty,
-                        data = listOf(uiModel)
-                ))
-            } ?: Maybe.empty()
+            Maybe.just(SummaryDbModel(
+                  date = date,
+                  isAccountEmpty = isAccountEmpty,
+                  isFromCache = false,
+                  isEmpty = isTodayEmpty,
+                  data = listOf(uiModel)
+            ))
         }
     }
 

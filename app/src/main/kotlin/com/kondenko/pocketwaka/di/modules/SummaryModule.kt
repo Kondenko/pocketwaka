@@ -64,6 +64,12 @@ val summaryModule = module {
         )
     }
     single {
+        ProjectsToUiModels(
+              get(),
+              get()
+        )
+    }
+    single {
         GetSummary(
               schedulers = get(),
               summaryRepository = get<SummaryRepository>(),
@@ -71,6 +77,7 @@ val summaryModule = module {
               dateFormatter = get(),
               summaryResponseConverter = get<SummaryResponseConverter>(),
               timeTrackedConverter = get<TimeTrackedConverter>(),
+              projectsToUiModels = get<ProjectsToUiModels>(),
               fetchProjects = get<FetchProjects>()
         )
     }

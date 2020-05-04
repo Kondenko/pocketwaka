@@ -24,6 +24,7 @@ import io.reactivex.schedulers.TestScheduler
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.ArgumentMatchers.anyString
+import org.threeten.bp.LocalDate
 import java.util.concurrent.TimeUnit
 
 class SummaryRepositoryTest {
@@ -45,7 +46,7 @@ class SummaryRepositoryTest {
 
     private val convertedDataFromServer = listOf(dbModel.copy(isAccountEmpty = true), dbModel)
 
-    private val params = SummaryRepository.Params("", DateRange(0, 0), DateRangeString("", ""), null, null)
+    private val params = SummaryRepository.Params("", DateRange.SingleDay(mock()), DateRangeString("", ""), null, null)
 
     @Test
     fun `should only emit data from cache`() {

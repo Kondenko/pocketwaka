@@ -9,7 +9,6 @@ data class Summary(
 )
 
 data class SummaryData(
-      val range: Range,
       @SerializedName("grand_total")
       val grandTotal: GrandTotal,
       val projects: List<StatsEntity>

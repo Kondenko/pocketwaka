@@ -53,6 +53,7 @@ class FragmentSummaryContainer : Fragment(), Refreshable {
             WakaLog.d("New date list: ${it.dates}")
             val setPageToLast = pagerAdapter.summaryDates.isEmpty()
             pagerAdapter.summaryDates = it.dates
+            // TODO Not working
             if (setPageToLast) {
                 viewpager_summary_container.currentItem = pagerAdapter.summaryDates.lastIndex
             }

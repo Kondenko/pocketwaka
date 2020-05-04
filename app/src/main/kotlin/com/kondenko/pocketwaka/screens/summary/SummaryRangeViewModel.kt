@@ -44,7 +44,10 @@ class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatte
     fun closeEvents(): LiveData<Unit> = closeEvents
 
     fun onButtonClicked(dateRange: DateRange) {
+        startDate = null
+        endDate = null
         selectDate(dateRange)
+        calendarInvalidationEvents.value = Unit
         closeEvents.value = Unit
     }
 
@@ -60,6 +63,7 @@ class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatte
 
     fun onDayClicked(day: CalendarDay) {
         val date = day.date
+        // TODO Allow selecting a date before start date (so the backwards selection order is also possible)
         if (startDate != null) {
             if (date < startDate || endDate != null) {
                 startDate = date
