@@ -13,6 +13,7 @@ import java.time.Duration
 import java.util.*
 
 fun notNull(vararg values: Any?): Boolean = values.all { it != null }
+
 fun createPath(build: Path.() -> Unit): Path = Path().apply {
     build()
     close()

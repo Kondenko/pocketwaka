@@ -18,12 +18,13 @@ class SummaryRepository(
 ) : ContinuousCacheBackedRepository<SummaryRepository.Params, Summary, SummaryDbModel>(
         workerScheduler = workerScheduler,
         serverDataProvider = { (tokenHeader, _, range, project, branches): Params ->
+            // TODO Reduce summaries that span over several dates
             summaryService.getSummaries(tokenHeader, range.start, range.end, project, branches)
         },
         continuousCachedDataProvider = {
             it.dateRange.run {
                 summaryDao
-                        .getSummaries(start, end)
+                        .getSummaries(start.toEpochDay(), end.toEpochDay())
                         .flatMapObservable { it.toObservable() }
             }
         },

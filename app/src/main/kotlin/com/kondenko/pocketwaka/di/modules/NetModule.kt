@@ -6,10 +6,10 @@ import com.kondenko.pocketwaka.di.qualifiers.Auth
 import com.kondenko.pocketwaka.di.qualifiers.Scheduler
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.UnauthorizedAccessInterceptor
-import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.extensions.ifDebug
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.scope.Scope
@@ -26,11 +26,16 @@ val netModule = module {
     single { RxJava2CallAdapterFactory.create() }
     single { GsonConverterFactory.create() }
     single {
+        HttpLoggingInterceptor().apply {
+            setLevel(HttpLoggingInterceptor.Level.BASIC)
+        }
+    }
+    single {
         OkHttpClient.Builder()
               .connectTimeout(15, TimeUnit.SECONDS)
               .readTimeout(30, TimeUnit.SECONDS)
-              .addLoggingInterceptor()
               .addNetworkInterceptor(UnauthorizedAccessInterceptor())
+              .addLoggingInterceptor(get<HttpLoggingInterceptor>())
               .build()
     }
     single {
@@ -43,11 +48,9 @@ val netModule = module {
     single(Api) { get<Retrofit.Builder>().baseUrl(Const.URL_API).build() }
 }
 
-private fun OkHttpClient.Builder.addLoggingInterceptor() = apply {
+private fun OkHttpClient.Builder.addLoggingInterceptor(loggingInterceptor: Interceptor) = apply {
     ifDebug {
-        addNetworkInterceptor(HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
-            override fun log(message: String) = WakaLog.d(message)
-        }))
+        addNetworkInterceptor(loggingInterceptor)
     }
 }
 

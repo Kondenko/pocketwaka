@@ -1,8 +1,11 @@
 package com.kondenko.pocketwaka.data.android
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.format.DateUtils
 import com.kondenko.pocketwaka.utils.extensions.getCurrentLocale
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -11,14 +14,15 @@ import java.util.concurrent.TimeUnit
 
 class DateFormatter(private val context: Context, private val stringProvider: StringProvider) {
 
+    @SuppressLint("SimpleDateFormat")
     private val paramDateFormat = SimpleDateFormat("yyyy-MM-dd")
 
     enum class Format {
         Short, Long
     }
 
-    fun formatDateAsParameter(date: Date): String =
-          paramDateFormat.format(date.time)
+    fun formatDateAsParameter(date: LocalDate): String =
+          date.format(DateTimeFormatter.ofPattern(paramDateFormat.toPattern()))
 
     fun parseDateParameter(date: String): Long? {
         return try {

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.kondenko.pocketwaka.FragmentDatePicker
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.analytics.Event
 import com.kondenko.pocketwaka.analytics.EventTracker
@@ -21,7 +20,6 @@ import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_summary_container.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 class FragmentSummaryContainer : Fragment(), Refreshable {
@@ -35,7 +33,7 @@ class FragmentSummaryContainer : Fragment(), Refreshable {
     private val onPageChanged = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             val day = pagerAdapter.summaryDates[position] as? DateRange.SingleDay
-            day?.let(vm::onDateScreenOpen)
+            day?.let(vm::selectDate)
         }
     }
 
@@ -52,7 +50,7 @@ class FragmentSummaryContainer : Fragment(), Refreshable {
             adapter = pagerAdapter
         }
         vm.dateChanges().observe(viewLifecycleOwner) {
-            WakaLog.d("New date list: ${it.dates.filterIsInstance<DateRange.SingleDay>().map { Date(it.date) }}")
+            WakaLog.d("New date list: ${it.dates}")
             val setPageToLast = pagerAdapter.summaryDates.isEmpty()
             pagerAdapter.summaryDates = it.dates
             if (setPageToLast) {

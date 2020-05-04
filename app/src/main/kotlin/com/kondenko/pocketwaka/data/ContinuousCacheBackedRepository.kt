@@ -41,17 +41,17 @@ abstract class ContinuousCacheBackedRepository<Params, ServerModel, DbModel>(
               .convert(params)
               .doOnComplete { dto: List<DbModel> ->
                   dto.takeIf { it.isNotEmpty() }
-                        ?.also { WakaLog.d("Reducing a non-empty collection") }
+                        ?.also { WakaLog.v("Reducing a non-empty collection") }
                         ?.reduce { a, b -> reduceModels(params, a, b) }
                         ?.let {
                             cacheData(it)
                                   .subscribeOn(workerScheduler)
                                   .subscribeBy(
-                                        onComplete = { WakaLog.d("Data cached: $dto") },
+                                        onComplete = { WakaLog.v("Data cached: $dto") },
                                         onError = { WakaLog.w("Failed to cache data") }
                                   )
                         }
-                        ?: WakaLog.d("An empty collection won't be reduced")
+                        ?: WakaLog.v("An empty collection won't be reduced")
               }
               .onErrorResumeNext { error: Throwable ->
                   // Pass the network error down the stream if cache is empty

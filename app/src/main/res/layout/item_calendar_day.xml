@@ -5,6 +5,8 @@
     android:layout_width="@dimen/size_datepicker_calendar_day"
     android:textSize="16sp"
     android:layout_height="@dimen/size_datepicker_calendar_day"
+    android:clickable="true"
+    android:focusable="true"
     android:background="@drawable/background_calendar_day"
     android:textColor="@color/color_text_calendar_day"
     android:gravity="center"

@@ -20,11 +20,13 @@ import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
+import com.kondenko.pocketwaka.screens.summary.SummaryRangeViewModel
 import com.kondenko.pocketwaka.ui.TopSheetBehavior
 import com.kondenko.pocketwaka.utils.extensions.*
 import kotlinx.android.synthetic.main.fragment_date_picker.*
 import kotlinx.android.synthetic.main.item_calendar_day.view.*
 import kotlinx.android.synthetic.main.item_calendar_month.view.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.threeten.bp.MonthDay
 import org.threeten.bp.YearMonth
 import org.threeten.bp.format.TextStyle
@@ -43,6 +45,8 @@ class MonthViewContainer(view: View) : ViewContainer(view) {
 }
 
 class FragmentDatePicker : Fragment() {
+
+    private val vm: SummaryRangeViewModel by sharedViewModel()
 
     // UI
 
@@ -137,6 +141,10 @@ class FragmentDatePicker : Fragment() {
                 }
                 isEnabled = isValidPastDate || isValidInCurrentMonth // TODO Also check if in the 2-week range for free accounts
                 isActivated = day.owner == DayOwner.THIS_MONTH
+                setOnClickListener {
+                    vm.onDayClicked(day)
+                    notifyCalendarChanged()
+                }
             }
 
         }
@@ -213,6 +221,7 @@ class FragmentDatePicker : Fragment() {
         when (newState) {
             TopSheetBehavior.STATE_COLLAPSED -> {
                 calendar_datepicker.scrollToMonth(currentMonth)
+                vm.confirmDateSelection()
                 imageview_icon_expand.isInvisible = false
                 imageview_handle.isInvisible = true
             }

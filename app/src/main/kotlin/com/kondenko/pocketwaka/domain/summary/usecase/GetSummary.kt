@@ -12,57 +12,54 @@ import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.date.DateRangeString
-import com.kondenko.pocketwaka.utils.extensions.roundDateToDay
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.toObservable
 import java.sql.Date
 
 class GetSummary(
-        private val schedulers: SchedulersContainer,
-        private val summaryRepository: ContinuousCacheBackedRepository<SummaryRepository.Params, Summary, SummaryDbModel>,
-        private val getTokenHeader: UseCaseSingle<Nothing, String>,
-        private val dateFormatter: DateFormatter,
-        private val summaryResponseConverter: (SummaryRepository.Params, SummaryDbModel, SummaryDbModel) -> SummaryDbModel,
-        private val timeTrackedConverter: (SummaryRepository.Params, SummaryData) -> Maybe<SummaryDbModel>,
-        private val fetchProjects: UseCaseObservable<FetchProjects.Params, SummaryDbModel>
+      private val schedulers: SchedulersContainer,
+      private val summaryRepository: ContinuousCacheBackedRepository<SummaryRepository.Params, Summary, SummaryDbModel>,
+      private val getTokenHeader: UseCaseSingle<Nothing, String>,
+      private val dateFormatter: DateFormatter,
+      private val summaryResponseConverter: (SummaryRepository.Params, SummaryDbModel, SummaryDbModel) -> SummaryDbModel,
+      private val timeTrackedConverter: (SummaryRepository.Params, SummaryData) -> Maybe<SummaryDbModel>,
+      private val fetchProjects: UseCaseObservable<FetchProjects.Params, SummaryDbModel>
 ) : UseCaseObservable<GetSummary.Params, SummaryDbModel>(schedulers) {
 
     data class Params(
-            val dateRange: DateRange,
-            val project: String? = null,
-            val branches: String? = null,
-            override val refreshRate: Int,
-            override val retryAttempts: Int
+          val dateRange: DateRange,
+          val project: String? = null,
+          val branches: String? = null,
+          override val refreshRate: Int,
+          override val retryAttempts: Int
     ) : StatefulUseCase.ParamsWrapper(refreshRate, retryAttempts) {
         override fun isValid(): Boolean = dateRange.end >= dateRange.start
     }
 
     override fun build(params: Params?): Observable<SummaryDbModel> =
-            params?.let(this::getSummary)
-                    ?: Observable.error(NullPointerException("Params are null"))
+          params?.let(this::getSummary)
+                ?: Observable.error(NullPointerException("Params are null"))
 
     private fun getSummary(params: Params): Observable<SummaryDbModel> =
-            getTokenHeader.build()
-                    .flatMapObservable { tokenHeader ->
-                        val startDate = dateFormatter.formatDateAsParameter(Date(params.dateRange.start))
-                        val endDate = dateFormatter.formatDateAsParameter(Date(params.dateRange.end))
-                        val repoParams = SummaryRepository.Params(
-                                tokenHeader,
-                                params.dateRange.run {
-                                    DateRange.Range(start.roundDateToDay(), end.roundDateToDay())
-                                },
-                                DateRangeString(startDate, endDate),
-                                params.project,
-                                params.branches
-                        )
-                        summaryRepository.getData(repoParams) { params ->
-                            flatMapObservable { data ->
-                                convert(tokenHeader, params, data)
-                            }
-                        }.scan { t1: SummaryDbModel, t2: SummaryDbModel -> summaryResponseConverter(repoParams, t1, t2) }
-                    }
-                    .subscribeOn(schedulers.workerScheduler)
+          getTokenHeader.build()
+                .flatMapObservable { tokenHeader ->
+                    val startDate = dateFormatter.formatDateAsParameter(params.dateRange.start)
+                    val endDate = dateFormatter.formatDateAsParameter(params.dateRange.end)
+                    val repoParams = SummaryRepository.Params(
+                          tokenHeader,
+                          params.dateRange,
+                          DateRangeString(startDate, endDate),
+                          params.project,
+                          params.branches
+                    )
+                    summaryRepository.getData(repoParams) { params ->
+                        flatMapObservable { data ->
+                            convert(tokenHeader, params, data)
+                        }
+                    }.scan { t1: SummaryDbModel, t2: SummaryDbModel -> summaryResponseConverter(repoParams, t1, t2) }
+                }
+                .subscribeOn(schedulers.workerScheduler)
 
 
     /**
@@ -70,12 +67,12 @@ class GetSummary(
      */
     private fun convert(tokenHeader: String, params: SummaryRepository.Params, data: Summary): Observable<SummaryDbModel> {
         return data.summaryData
-                .toObservable()
-                .flatMap {
-                    val timeTrackedSource = timeTrackedConverter(params, it).toObservable()
-                    val projectsSource = fetchProjects.build(FetchProjects.Params(tokenHeader, it))
-                    Observable.concatArrayEagerDelayError(timeTrackedSource, projectsSource)
-                }
+              .toObservable()
+              .flatMap {
+                  val timeTrackedSource = timeTrackedConverter(params, it).toObservable()
+                  val projectsSource = fetchProjects.build(FetchProjects.Params(tokenHeader, it))
+                  Observable.concatArrayEagerDelayError(timeTrackedSource, projectsSource)
+              }
     }
 
 }
