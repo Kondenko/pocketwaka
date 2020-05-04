@@ -16,14 +16,12 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
+import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kondenko.pocketwaka.ui.TopSheetBehavior
-import com.kondenko.pocketwaka.utils.extensions.createColorAnimator
-import com.kondenko.pocketwaka.utils.extensions.findViewWithParent
-import com.kondenko.pocketwaka.utils.extensions.forEach
-import com.kondenko.pocketwaka.utils.extensions.getCurrentLocale
+import com.kondenko.pocketwaka.utils.extensions.*
 import kotlinx.android.synthetic.main.fragment_date_picker.*
 import kotlinx.android.synthetic.main.item_calendar_day.view.*
 import kotlinx.android.synthetic.main.item_calendar_month.view.*
@@ -107,6 +105,7 @@ class FragmentDatePicker : Fragment() {
         button_summary_last_week.setOnClickListener {
             setButtonSelected(it)
         }
+        // TODO Lock for free accounts
         button_summary_this_month.setOnClickListener {
             setButtonSelected(it)
         }
@@ -137,6 +136,7 @@ class FragmentDatePicker : Fragment() {
                           && year == currentMonth.year
                 }
                 isEnabled = isValidPastDate || isValidInCurrentMonth // TODO Also check if in the 2-week range for free accounts
+                isActivated = day.owner == DayOwner.THIS_MONTH
             }
 
         }
@@ -239,7 +239,6 @@ class FragmentDatePicker : Fragment() {
     }
 
     private fun onOffsetChanged(bottomSheet: View, slideOffset: Float, opening: Boolean) {
-        // WakaLog.d("onOffsetChanged(slideOffset=$slideOffset, opening=$opening)")
         val toolbarAlpha = 1 - (slideOffset / toolbarSlideOffsetBoundary).coerceAtMost(1f)
         textview_summary_current_date.alpha = toolbarAlpha
         imageview_icon_expand.alpha = toolbarAlpha
@@ -248,7 +247,8 @@ class FragmentDatePicker : Fragment() {
             it?.isVisible = true
             it?.alpha = 1 - toolbarAlpha
         }
-        bottomSheet.elevation = (finalElevation * slideOffset).coerceAtLeast(if (opening && slideOffset > 0f) initialElevation else 0f)
+        bottomSheet.elevation = (finalElevation * slideOffset)
+              .coerceAtLeast(if (opening && slideOffset > 0f) initialElevation else 0f)
     }
 
 }

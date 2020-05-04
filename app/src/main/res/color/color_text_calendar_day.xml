@@ -2,6 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:color="@color/color_text_white_primary" android:state_selected="true" />
+    <item android:color="@color/color_text_secondary" android:state_activated="false" />
     <item android:color="@color/color_primary_disabled" android:state_enabled="false" />
     <item android:color="@color/color_text_primary" />
 
