@@ -25,7 +25,7 @@ abstract class StatefulUseCase<
       DATABASE_MODEL : CacheableModel<UI_MODEL>
       >(
       private val schedulers: SchedulersContainer,
-      private val useCase: UseCaseObservable<PARAMS, DATABASE_MODEL>,
+      private val dataProvider: UseCaseObservable<PARAMS, DATABASE_MODEL>,
       private val clearCache: UseCaseCompletable<Nothing>,
       private val connectivityStatusProvider: ConnectivityStatusProvider
 ) : UseCaseObservable<PARAMS, State<UI_MODEL>>(schedulers) {
@@ -57,7 +57,7 @@ abstract class StatefulUseCase<
     }
 
     private fun getData(params: PARAMS, retryAttempts: Int, isConnected: Boolean): Observable<State<UI_MODEL>> =
-          useCase.build(params)
+          dataProvider.build(params)
                 .retry(retryAttempts.toLong())
                 .map { databaseModelToState(it, isConnected) }
                 .onErrorResumeNext { t: Throwable ->

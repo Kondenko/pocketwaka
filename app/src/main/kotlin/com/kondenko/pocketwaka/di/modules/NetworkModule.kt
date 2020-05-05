@@ -10,9 +10,11 @@ import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.extensions.ifDebug
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -28,15 +30,33 @@ val networkModule = module {
     single { GsonConverterFactory.create() }
     single {
         HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
-            override fun log(message: String) = WakaLog.v(message)
+            override fun log(message: String) = WakaLog.d(message)
         }).apply {
             setLevel(HttpLoggingInterceptor.Level.BASIC)
         }
     }
     single {
+        val cacheSizeBytes: Long = 1024 * 1024 * 4
+        Cache(androidContext().cacheDir, cacheSizeBytes)
+    }
+    single {
         OkHttpClient.Builder()
               .connectTimeout(15, TimeUnit.SECONDS)
               .readTimeout(30, TimeUnit.SECONDS)
+              .addNetworkInterceptor {
+                  val maxAgeSec = TimeUnit.MINUTES.toSeconds(2) // read from cache for 60 seconds even if there is internet connection
+                  it.proceed(it.request()).newBuilder()
+                        .header("Cache-Control", "public, max-age=$maxAgeSec")
+                        .removeHeader("Pragma")
+                        .build()
+              }
+              .addNetworkInterceptor {
+                  it.proceed(it.request()).also {
+                      val wasCached = it.cacheResponse != null
+                      WakaLog.d("CACHED = $wasCached (${it.request.url})")
+                  }
+              }
+              .cache(get())
               .addNetworkInterceptor(UnauthorizedAccessInterceptor())
               .addLoggingInterceptor(get<HttpLoggingInterceptor>())
               .build()

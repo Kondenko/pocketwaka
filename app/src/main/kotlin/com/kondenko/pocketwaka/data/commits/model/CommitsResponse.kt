@@ -2,7 +2,7 @@ package com.kondenko.pocketwaka.data.commits.model
 
 import com.google.gson.annotations.SerializedName
 
-data class CommitsServiceModel(
+data class CommitsResponse(
       val error: String? = null,
       val project: Project,
       val author: Any?,

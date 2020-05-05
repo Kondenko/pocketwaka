@@ -3,18 +3,29 @@ package com.kondenko.pocketwaka.data.commits
 import com.kondenko.pocketwaka.data.commits.model.CommitServerModel
 import com.kondenko.pocketwaka.data.commits.service.CommitsService
 import com.kondenko.pocketwaka.utils.exceptions.WakatimeException
-import io.reactivex.Single
+import io.reactivex.Observable
 
 class CommitsRepository(private val commitsService: CommitsService) {
 
-    data class Params(val tokenHeader: String, val project: String, val author: String? = null, val page: Int? = null)
+    data class Params(val tokenHeader: String, val project: String, val author: String? = null)
 
-    fun getData(params: Params): Single<List<CommitServerModel>> =
-            commitsService.getCommits(params.tokenHeader, params.project, params.author, params.page)
-                  .flatMap {
-                      if (it.error == null) Single.just(it)
-                      else Single.error(WakatimeException(it.error))
+    // TODO Cache commits and only fetch from server if they're stale
+    fun getData(params: Params): Observable<List<CommitServerModel>> {
+        val firstPage = commitsService.getCommits(params.tokenHeader, params.project, params.author, 0).toObservable()
+        val otherPages = firstPage.flatMap {
+            Observable.concatEager(
+                  (1..it.totalPages).map { page ->
+                      commitsService.getCommits(params.tokenHeader, params.project, params.author, page)
+                            .toObservable()
                   }
-                  .map { it.commits }
+            )
+        }
+        return Observable.concatArray(firstPage, otherPages)
+              .flatMap {
+                  if (it.error == null) Observable.just(it)
+                  else Observable.error(WakatimeException(it.error))
+              }.map { it.commits }
+    }
+
 
 }

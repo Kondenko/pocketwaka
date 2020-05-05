@@ -6,6 +6,7 @@ import com.kondenko.pocketwaka.data.summary.dao.SummaryDao
 import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
 import com.kondenko.pocketwaka.data.summary.model.server.GrandTotal
 import com.kondenko.pocketwaka.data.summary.model.server.SummaryData
+import com.kondenko.pocketwaka.data.summary.model.server.plus
 import com.kondenko.pocketwaka.data.summary.service.SummaryService
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.date.DateRangeString
@@ -24,7 +25,7 @@ class SummaryRepository(
                 .flatMap {
                     it.summaryData
                           .toObservable()
-                          .reduce { t1: SummaryData?, t2: SummaryData -> t1 + t2 }
+                          .reduce(SummaryData?::plus)
                           .toSingle()
                 }
       },
@@ -50,30 +51,4 @@ class SummaryRepository(
 
     override fun setIsFromCache(model: SummaryDbModel, isFromCache: Boolean): SummaryDbModel = model.copy(isFromCache = isFromCache)
 
-}
-
-private operator fun SummaryData?.plus(other: SummaryData): SummaryData {
-    this ?: return other
-    return SummaryData(
-          grandTotal + other.grandTotal,
-          projects.merge(other.projects)
-    )
-}
-
-private operator fun GrandTotal?.plus(other: GrandTotal): GrandTotal {
-    this ?: return other
-    return GrandTotal(totalSeconds + other.totalSeconds)
-}
-
-private fun List<StatsEntity>?.merge(other: List<StatsEntity>): List<StatsEntity> {
-    this ?: return other
-    return (this + other)
-          .groupBy { it.name }
-          .map { (_, entities) -> entities.reduce(StatsEntity::plus) }
-}
-
-private operator fun StatsEntity?.plus(other: StatsEntity): StatsEntity {
-    this ?: return other
-    require(this.name == other.name) { "Entities are different" }
-    return StatsEntity(name, totalSeconds + other.totalSeconds, null)
 }

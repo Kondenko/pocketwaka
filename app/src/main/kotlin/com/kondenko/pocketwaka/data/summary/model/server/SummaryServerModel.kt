@@ -14,9 +14,33 @@ data class SummaryData(
       val projects: List<StatsEntity>
 )
 
-data class Range(val date: String)
-
 data class GrandTotal(
       @SerializedName("total_seconds")
       val totalSeconds: Float
 )
+
+operator fun SummaryData?.plus(other: SummaryData): SummaryData {
+      this ?: return other
+      return SummaryData(
+            grandTotal + other.grandTotal,
+            projects.merge(other.projects)
+      )
+}
+
+private operator fun GrandTotal?.plus(other: GrandTotal): GrandTotal {
+      this ?: return other
+      return GrandTotal(totalSeconds + other.totalSeconds)
+}
+
+private fun List<StatsEntity>?.merge(other: List<StatsEntity>): List<StatsEntity> {
+      this ?: return other
+      return (this + other)
+            .groupBy { it.name }
+            .map { (_, entities) -> entities.reduce(StatsEntity::plus) }
+}
+
+private operator fun StatsEntity?.plus(other: StatsEntity): StatsEntity {
+      this ?: return other
+      require(this.name == other.name) { "Entities are different" }
+      return StatsEntity(name, totalSeconds + other.totalSeconds, null)
+}

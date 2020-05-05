@@ -8,8 +8,6 @@ import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.domain.StatefulUseCase
 import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.UseCaseSingle
-import com.kondenko.pocketwaka.domain.summary.model.Branch
-import com.kondenko.pocketwaka.domain.summary.model.Commit
 import com.kondenko.pocketwaka.domain.summary.model.Project
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.date.DateRange
@@ -69,59 +67,15 @@ class GetSummary(
      */
     private fun convert(tokenHeader: String, params: SummaryRepository.Params, data: SummaryData): Observable<SummaryDbModel> {
         val timeTrackedSource = timeTrackedConverter(params, data).toObservable()
-        val projectsSource: Observable<SummaryDbModel> = params.dateRange
-              .run { start dailyRangeTo end }
-              .map {
-                  fetchProjects.build(FetchProjects.Params(tokenHeader, DateRange.SingleDay(it), data))
-              }
-              .reduce { a, b -> a.mergeWith(b) }
-              .groupBy { it.name }
-              .flatMap {
-                  it.reduce { t1: Project, t2: Project -> t1.merge(t2) }.toObservable()
-              }
-              .let { projectsToUiModels.build(ProjectsToUiModels.Params(params.dateRange, it)) }
-        return Observable.concatArrayEagerDelayError(timeTrackedSource, projectsSource)
-    }
-
-    private fun Project.merge(other: Project): Project {
-        require(name == other.name) {
-            "Projects are different"
+        val projectObservables = params.dateRange.run { start dailyRangeTo end }.map {
+            fetchProjects.build(FetchProjects.Params(tokenHeader, DateRange.SingleDay(it), data))
+        }.toTypedArray().let {
+            Observable.mergeArray(*it).flatMap {
+                projectsToUiModels.build(ProjectsToUiModels.Params(params.dateRange, it))
+            }
         }
-        require(totalSeconds == other.totalSeconds) {
-            /* See [SummaryRepositoryKt.plus(StatsEntity, StatsEntity)]  */
-            "Project totalSeconds values should have already been merged when fetching summaries"
-        }
-        return Project(
-              name,
-              totalSeconds,
-              isRepoConnected && other.isRepoConnected,
-              branches.merge(other.branches)
-        )
+        return projectObservables.startWith(timeTrackedSource)
     }
 
-    private fun List<Branch>.merge(other: List<Branch>): List<Branch> =
-          (this + other)
-                .groupBy { it.name }
-                .map { (_, branches) -> branches.reduce { a, b -> a.merge(b) } }
-
-    private fun Branch.merge(other: Branch): Branch {
-        require(name == other.name) { "Branches are different" }
-        return Branch(
-              name,
-              totalSeconds + other.totalSeconds,
-              commits.mergeCommits(other.commits)
-        )
-    }
-
-    private fun List<Commit>.mergeCommits(other: List<Commit>): List<Commit> =
-          (this + other)
-                .groupBy { it.message }
-                .map { (_, branches) -> branches.reduce { a, b -> a.merge(b) } }
-
-    private fun Commit.merge(other: Commit): Commit {
-        require(hash == other.hash) { "Messages are different" }
-        require(message == other.message) { "Messages are different" }
-        return Commit(hash, message, totalSeconds + other.totalSeconds)
-    }
 
 }

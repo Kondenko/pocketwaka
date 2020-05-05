@@ -3,6 +3,7 @@ package com.kondenko.pocketwaka.domain.summary.usecase
 import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
 import com.kondenko.pocketwaka.domain.UseCaseObservable
+import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.domain.summary.model.Commit
 import com.kondenko.pocketwaka.domain.summary.model.Project
 import com.kondenko.pocketwaka.domain.summary.model.ProjectModel
@@ -18,10 +19,11 @@ class ProjectsToUiModels(
       private val dateFormatter: DateFormatter
 ) : UseCaseObservable<ProjectsToUiModels.Params, SummaryDbModel>(schedulersContainer) {
 
-    data class Params(val date: DateRange, val projects: Observable<Project>)
+    data class Params(val date: DateRange, val project: Project)
 
     override fun build(params: Params?): Observable<SummaryDbModel> {
-        return (params?.projects ?: Observable.error(java.lang.NullPointerException("Null params")))
+        return (params?.project?.let { Observable.just(it) }
+              ?: Observable.error(java.lang.NullPointerException("Null params")))
               .map { it.toUiModel() }
               .startWithIfNotEmpty(SummaryUiModel.ProjectsTitle)
               .map {
@@ -39,7 +41,7 @@ class ProjectsToUiModels(
                         if (it.commits.isEmpty() && isRepoConnected) {
                             listOf(ProjectModel.NoCommitsLabel)
                         } else {
-                            it.commits.map<Commit, ProjectModel> { (message, timeTracked) ->
+                            it.commits.map<Commit, ProjectModel> { (_, message, timeTracked) ->
                                 ProjectModel.Commit(message, timeTracked.toFloat().toHumanReadable())
                             }
                         }
