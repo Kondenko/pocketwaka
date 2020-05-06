@@ -53,7 +53,7 @@ val networkModule = module {
               .addNetworkInterceptor {
                   it.proceed(it.request()).also {
                       val wasCached = it.cacheResponse != null
-                      WakaLog.d("CACHED = $wasCached (${it.request.url})")
+                      WakaLog.v("CACHED = $wasCached (${it.request.url})")
                   }
               }
               .cache(get())
