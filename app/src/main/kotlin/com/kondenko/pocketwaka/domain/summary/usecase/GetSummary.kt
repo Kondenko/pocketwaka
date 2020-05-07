@@ -9,10 +9,13 @@ import com.kondenko.pocketwaka.domain.StatefulUseCase
 import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.domain.summary.model.Project
+import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
+import com.kondenko.pocketwaka.domain.summary.model.mergeBranches
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.date.DateRangeString
 import com.kondenko.pocketwaka.utils.extensions.dailyRangeTo
+import com.kondenko.pocketwaka.utils.extensions.startWithIfNotEmpty
 import io.reactivex.Maybe
 import io.reactivex.Observable
 
@@ -23,8 +26,7 @@ class GetSummary(
       private val dateFormatter: DateFormatter,
       private val summaryResponseConverter: (SummaryRepository.Params, SummaryDbModel, SummaryDbModel) -> SummaryDbModel,
       private val timeTrackedConverter: (SummaryRepository.Params, SummaryData) -> Maybe<SummaryDbModel>,
-      private val fetchProjects: UseCaseObservable<FetchProjects.Params, Project>,
-      private val projectsToUiModels: UseCaseObservable<ProjectsToUiModels.Params, SummaryDbModel>
+      private val fetchProjects: UseCaseObservable<FetchProjects.Params, Project>
 ) : UseCaseObservable<GetSummary.Params, SummaryDbModel>(schedulers) {
 
     data class Params(
@@ -70,9 +72,15 @@ class GetSummary(
         val projectObservables = params.dateRange.run { start dailyRangeTo end }.map {
             fetchProjects.build(FetchProjects.Params(tokenHeader, DateRange.SingleDay(it), data))
         }.toTypedArray().let {
-            Observable.mergeArray(*it).flatMap {
-                projectsToUiModels.build(ProjectsToUiModels.Params(params.dateRange, it))
-            }
+            Observable.mergeArray(*it)
+                  .groupBy { it.name }
+                  .flatMapMaybe { it.reduce { t1: Project, t2: Project -> t1.mergeBranches(t2) } }
+                  .map(SummaryUiModel::ProjectItem)
+                  .cast(SummaryUiModel::class.java)
+                  .startWithIfNotEmpty(SummaryUiModel.ProjectsTitle)
+                  .map {
+                      SummaryDbModel(params.dateRange.hashCode().toLong(), data = listOf(it))
+                  }
         }
         return projectObservables.startWith(timeTrackedSource)
     }

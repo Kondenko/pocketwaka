@@ -31,6 +31,8 @@ class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatte
 
     private var endDate: LocalDate? = null
 
+    private val adjacentDatesNumber = 0 // STOPSHIP TODO Change to 2
+
     init {
         selectDate(today)
     }
@@ -125,9 +127,11 @@ class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatte
         val currentValue = selectedRange.value
         if (currentValue == null || date != today.date) {
             val newDates = if (today.date == date) {
-                listOf(date.minusDays(2), date.minusDays(1), date)
+                (adjacentDatesNumber downTo 0L).map(date::minusDays)
             } else {
-                listOf(date.minusDays(1), date, date.plusDays(1))
+                val daysOnEachSide = adjacentDatesNumber / 2
+                val range = (1L..daysOnEachSide)
+                range.reversed().map(date::minusDays) + listOf(date) + range.map(date::plusDays)
             }
                   .map { DateRange.SingleDay(it) }
                   .let { SummaryRangeState(it) }

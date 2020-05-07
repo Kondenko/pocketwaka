@@ -56,9 +56,9 @@ class DateFormatter(private val context: Context, private val stringProvider: St
      * A shorthand version of [secondsToHumanReadableTime] which uses [Format.Long] by default.
      * This overload is necessary to keep supporting method references to this method.
      */
-    fun secondsToHumanReadableTime(seconds: Long): String = secondsToHumanReadableTime(seconds, Format.Long)
+    fun secondsToHumanReadableTime(seconds: Number): String = secondsToHumanReadableTime(seconds, Format.Long)
 
-    fun secondsToHumanReadableTime(seconds: Long, format: Format = Format.Long): String {
+    fun secondsToHumanReadableTime(seconds: Number, format: Format = Format.Long): String {
         val (hours, minutes) = seconds.secondsToHoursAndMinutes()
         return toHumanReadableTime(hours.toInt(), minutes.toInt(), format)
     }

@@ -13,7 +13,6 @@ import com.kondenko.pocketwaka.domain.summary.model.Branch
 import com.kondenko.pocketwaka.domain.summary.model.Commit
 import com.kondenko.pocketwaka.domain.summary.model.Project
 import com.kondenko.pocketwaka.utils.SchedulersContainer
-import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.exceptions.WakatimeException
 import com.kondenko.pocketwaka.utils.extensions.concatMapEagerDelayError
@@ -55,10 +54,12 @@ class FetchProjects(
                     .map { KOptional.of(it) }
                     .onErrorReturnItem(KOptional.empty())
                     .toObservable()
+        // TODO Stop if the last commit in the page is older than [date]
+        // TODO Emit every project again every time commits are updated and replace it in the adapter completely
+        // E.g. Projects(commits) -> Project(commits + newCommits)
         val commitsObservable: Observable<Pair<Boolean, List<CommitServerModel>>> =
               commitsRepository.getData(CommitsRepository.Params(token, projectName))
                     .subscribeOn(schedulersContainer.workerScheduler)
-                    .doOnNext { WakaLog.d("${it.size} commits loaded") }
                     .map { true to it }
                     .onErrorReturn {
                         val isRepoConnected = (it as? WakatimeException)?.message?.contains(noRepoError, true) == false
@@ -84,13 +85,17 @@ class FetchProjects(
     ): Project {
         val commitsForDate = commits.filter {
             val commitLocalDate = LocalDate.parse(it.authorDate, DateTimeFormatter.ISO_DATE_TIME)
-            (commitLocalDate.isEqual(date)).also {
-                WakaLog.d("$commitLocalDate == $date: $it")
-            }
+            commitLocalDate.isEqual(date)
         }
         val branchesData = branchesServerModel.item?.branchesData ?: emptyList()
         val branches = groupByBranches(branchesData, commitsForDate)
-        return Project(project.name!!, project.totalSeconds, isRepoConnected, branches)
+        return Project(
+              project.name!!,
+              project.totalSeconds.toLong(),
+              isRepoConnected,
+              branches,
+              connectRepoLink(project.name).takeIf { !isRepoConnected && branches.isNotEmpty() }
+        )
     }
 
     private fun groupByBranches(branches: Iterable<Duration>, commits: Iterable<CommitServerModel>): List<Branch> =
@@ -102,9 +107,11 @@ class FetchProjects(
                     val commitsFromBranch = commits
                           .filter { it.ref?.contains(branch!!) == true }
                           .map {
-                              Commit(it.hash, it.message, it.totalSeconds)
+                              Commit(it.hash, it.message, it.totalSeconds.toLong())
                           }
-                    Branch(branch!!, duration.toFloat(), commitsFromBranch)
+                    Branch(branch!!, duration.toLong(), commitsFromBranch)
                 }
+
+    private fun connectRepoLink(project: String) = "https://wakatime.com/projects/$project/edit"
 
 }

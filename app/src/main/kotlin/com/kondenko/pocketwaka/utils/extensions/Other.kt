@@ -114,9 +114,9 @@ fun Long.roundDateToDay() = Calendar.getInstance().run {
 
 fun Long.isSameDay(other: Long) = other.roundDateToDay() == this.roundDateToDay()
 
-fun Long.secondsToHoursAndMinutes(): Pair<Long, Long> {
-    val hours = TimeUnit.SECONDS.toHours(this)
-    val minutes = TimeUnit.SECONDS.toMinutes(this) - TimeUnit.HOURS.toMinutes(hours)
+fun Number.secondsToHoursAndMinutes(): Pair<Long, Long> {
+    val hours = TimeUnit.SECONDS.toHours(this.toLong())
+    val minutes = TimeUnit.SECONDS.toMinutes(this.toLong()) - TimeUnit.HOURS.toMinutes(hours)
     return hours to minutes
 }
 
@@ -130,3 +130,5 @@ infix fun LocalDate.dailyRangeTo(other: LocalDate): List<LocalDate> {
     }
     return list
 }
+
+inline fun <reified R> Iterable<*>.findInstance(): R? = find { it is R } as R

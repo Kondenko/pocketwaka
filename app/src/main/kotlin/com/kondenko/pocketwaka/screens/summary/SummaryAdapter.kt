@@ -6,14 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
+import androidx.recyclerview.widget.DiffUtil
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.domain.summary.model.ProjectModel
-import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
+import com.kondenko.pocketwaka.data.android.DateFormatter
+import com.kondenko.pocketwaka.domain.summary.model.*
+import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel.*
+import com.kondenko.pocketwaka.screens.base.BaseAdapter
 import com.kondenko.pocketwaka.screens.renderStatus
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
+import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.createAdapter
+import com.kondenko.pocketwaka.utils.diffutil.SimpleCallback
 import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
+import com.kondenko.pocketwaka.utils.extensions.findInstance
+import com.kondenko.pocketwaka.utils.extensions.forEach
 import com.kondenko.pocketwaka.utils.extensions.limitWidthBy
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
 import io.reactivex.Observable
@@ -27,14 +34,22 @@ import kotlinx.android.synthetic.main.item_summary_time_tracked.view.*
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSpannableCreator: SpannableCreator)
-    : SkeletonAdapter<SummaryUiModel, SummaryAdapter.ViewHolder<SummaryUiModel>>(context, showSkeleton) {
+class SummaryAdapter(
+      context: Context,
+      showSkeleton: Boolean,
+      private val timeSpannableCreator: SpannableCreator,
+      private val dateFormatter: DateFormatter
+) : SkeletonAdapter<SummaryUiModel, SummaryAdapter.ViewHolder<SummaryUiModel>>(context, showSkeleton) {
+
+    sealed class Payload {
+        data class ProjectChanged(val mergedProject: ProjectItem) : Payload()
+    }
 
     private enum class ViewType(val type: Int) {
         Status(0),
         TimeTracked(1),
         ProjectsTitle(2),
-        Projects(3)
+        ProjectItem(3)
     }
 
     private val connectRepoClicks = PublishSubject.create<String>()
@@ -42,10 +57,10 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
     fun connectRepoClicks(): Observable<String> = connectRepoClicks
 
     override fun getItemViewType(position: Int): Int = when (items[position]) {
-        is SummaryUiModel.Status -> ViewType.Status
-        is SummaryUiModel.TimeTracked -> ViewType.TimeTracked
-        is SummaryUiModel.ProjectsTitle -> ViewType.ProjectsTitle
-        is SummaryUiModel.Project -> ViewType.Projects
+        is Status -> ViewType.Status
+        is TimeTracked -> ViewType.TimeTracked
+        is ProjectsTitle -> ViewType.ProjectsTitle
+        is ProjectItem -> ViewType.ProjectItem
     }.type
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (ViewType.values().getOrNull(viewType)) {
@@ -57,12 +72,72 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
         ViewType.ProjectsTitle -> {
             ProjectsTitleViewHolder(inflate(R.layout.item_summary_projects_title, parent))
         }
-        ViewType.Projects -> {
+        ViewType.ProjectItem -> {
             val view = inflate(R.layout.item_summary_project, parent)
-            ProjectsViewHolder(view, createSkeleton(view))
+            ProjectsViewHolder(view, provideBranchAdapter(), createSkeleton(view))
         }
         else -> throw IllegalViewTypeException()
     }
+
+    override fun onBindViewHolder(holder: ViewHolder<SummaryUiModel>, position: Int, payloads: MutableList<Any>) {
+        WakaLog.d("Payloads: $payloads")
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads)
+        } else {
+            val projectPayload = payloads.findInstance<Payload.ProjectChanged>()
+            if (projectPayload != null) {
+                (holder as? ProjectsViewHolder)?.bind(projectPayload.mergedProject)
+            }
+        }
+    }
+
+    /*
+            TODO Every time a project is updated with a new page of commits, it gets added to the list again.
+            We should merge projects so they stay the same but receive new commits
+         */
+    override fun getDiffCallback(oldList: List<SummaryUiModel>, newList: List<SummaryUiModel>): DiffUtil.Callback {
+        return SimpleCallback(
+              oldList, newList,
+              areItemsTheSame = { a, b ->
+                  val areProjectsTheSame = a is ProjectItem && b is ProjectItem && a.model.name == b.model.name
+                  WakaLog.d("""
+                      areProjectsTheSame(${(a as? ProjectItem)?.model?.name}, ${(b as? ProjectItem)?.model?.name})
+                      = $areProjectsTheSame
+                  """.trimMargin())
+                  val areItemsTheSame = a::class == b::class || areProjectsTheSame
+                  WakaLog.d("areItemsTheSame(${a::class.simpleName}, ${b::class.simpleName}) = $areItemsTheSame")
+                  areItemsTheSame
+              },
+              areContentsTheSame = { a, b ->
+                  val areContentsTheSame = a == b
+                  if (a is ProjectItem && b is ProjectItem) {
+                      WakaLog.d("areContentsTheSame($a, $b)\n= $areContentsTheSame")
+                  }
+                  areContentsTheSame
+              },
+              getChangePayload = { a, b ->
+                  WakaLog.d("getChangePayload($a, $b)")
+                  when {
+                      a areBranchesDifferent b -> {
+                          val mergedProject = (a as ProjectItem).model.mergeBranches((b as ProjectItem).model)
+                          Payload.ProjectChanged(ProjectItem(mergedProject))
+                      }
+                      else -> {
+                          null
+                      }
+                  }
+              }
+        )
+    }
+
+    private infix fun SummaryUiModel?.areBranchesDifferent(other: SummaryUiModel?): Boolean =
+          if (this == null || other == null) {
+              false
+          } else {
+              this is ProjectItem && other is ProjectItem
+                    && model.name == other.model.name
+                    && model.totalSeconds == model.totalSeconds
+          }
 
     override fun createSkeleton(view: View) = Skeleton(context, view).apply {
         onSkeletonShown { isSkeleton: Boolean ->
@@ -78,13 +153,13 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
     abstract inner class ViewHolder<out T : SummaryUiModel>(view: View, skeleton: Skeleton?)
         : SkeletonViewHolder<T>(view, skeleton)
 
-    private inner class StatusViewHolder(private val view: View) : ViewHolder<SummaryUiModel.Status>(view, null) {
-        override fun bind(item: SummaryUiModel.Status) = view.renderStatus(item.status)
+    private inner class StatusViewHolder(private val view: View) : ViewHolder<Status>(view, null) {
+        override fun bind(item: Status) = view.renderStatus(item.status)
     }
 
-    inner class TimeTrackedViewHolder(view: View, skeleton: Skeleton) : ViewHolder<SummaryUiModel.TimeTracked>(view, skeleton) {
+    inner class TimeTrackedViewHolder(view: View, skeleton: Skeleton) : ViewHolder<TimeTracked>(view, skeleton) {
 
-        override fun bind(item: SummaryUiModel.TimeTracked) = with(itemView) {
+        override fun bind(item: TimeTracked) = with(itemView) {
             val isBelowAverage = (item.percentDelta ?: 0) < 0
             setupIcon(isBelowAverage)
             setupText(isBelowAverage, item.percentDelta)
@@ -126,14 +201,37 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
 
     }
 
-    inner class ProjectsTitleViewHolder(view: View) : ViewHolder<SummaryUiModel.ProjectsTitle>(view, null)
+    inner class ProjectsTitleViewHolder(view: View) : ViewHolder<ProjectsTitle>(view, null)
 
-    inner class ProjectsViewHolder(view: View, skeleton: Skeleton?) : ViewHolder<SummaryUiModel.Project>(view, skeleton) {
+    inner class ProjectsViewHolder(
+          view: View,
+          private val branchesAdapter: BaseAdapter<ProjectInternalListItem, *>,
+          private val skeleton: Skeleton?
+    ) : ViewHolder<ProjectItem>(view, skeleton) {
 
-        override fun bind(item: SummaryUiModel.Project) {
+        override fun bind(item: ProjectItem) {
             super.bind(item)
-            itemView.recyclerview_summary_project.adapter = createAdapter<ProjectModel>(context) {
-                items { item.models }
+            val project = item.model
+            branchesAdapter.items = project.branches.flatMap {
+                listOf(it) + it.commits
+            }
+            with(itemView) {
+                textview_summary_project_name.text = project.name
+                textview_summary_project_time.text = dateFormatter.secondsToHumanReadableTime(project.totalSeconds)
+                textview_summary_project_name.limitWidthBy(textview_summary_project_time)
+                project.repositoryUrl?.let { repoUrl ->
+                    setOnClickListener {
+                        button_summary_project_connect_repo.performClick()
+                    }
+                    button_summary_project_connect_repo.setOnClickListener {
+                        connectRepoClicks.onNext(repoUrl)
+                    }
+                }
+                      ?: forEach(button_summary_project_connect_repo, button_summary_project_connect_repo) {
+                          it?.isGone = true
+                      }
+                recyclerview_summary_project_commits.adapter = branchesAdapter
+/*
                 if (showSkeleton) {
                     skeleton { view ->
                         Skeleton(context, view).apply {
@@ -145,33 +243,26 @@ class SummaryAdapter(context: Context, showSkeleton: Boolean, private val timeSp
                         }
                     }
                 }
-                viewHolder<ProjectModel.ProjectName>(R.layout.item_summary_project_name) { item, _ ->
-                    textview_summary_project_name.text = item.name
-                    textview_summary_project_time.text = item.timeTracked
-                    textview_summary_project_name.limitWidthBy(textview_summary_project_time)
-                }
-                viewHolder<ProjectModel.Branch>(R.layout.item_summary_project_branch) { item, _ ->
-                    textview_summary_project_branch.text = item.name
-                    textview_summary_project_branch_time.text = item.timeTracked
-                    textview_summary_project_branch.limitWidthBy(textview_summary_project_branch_time)
-                }
-                viewHolder<ProjectModel.Commit>(R.layout.item_summary_project_commit) { item, _ ->
-                    textview_summary_project_commit_message.text = item.message
-                    textview_summary_project_commit_time.text = item.timeTracked
-                    textview_summary_project_commit_message.limitWidthBy(textview_summary_project_commit_time)
-                }
-                viewHolder<ProjectModel.ConnectRepoAction>(R.layout.item_summary_project_connect_repo) { item, _ ->
-                    setOnClickListener {
-                        button_summary_project_connect_repo.performClick()
-                    }
-                    button_summary_project_connect_repo.setOnClickListener {
-                        connectRepoClicks.onNext(item.url)
-                    }
-                }
-                viewHolder<ProjectModel.NoCommitsLabel>(R.layout.item_summary_project_no_commits)
+*/
             }
         }
 
     }
+
+    val provideBranchAdapter = {
+        createAdapter<ProjectInternalListItem>(context) {
+            viewHolder<Branch>(R.layout.item_summary_project_branch) { item, _ ->
+                textview_summary_project_branch.text = item.name
+                textview_summary_project_branch_time.text = dateFormatter.secondsToHumanReadableTime(item.totalSeconds)
+                textview_summary_project_branch.limitWidthBy(textview_summary_project_branch_time)
+            }
+            viewHolder<Commit>(R.layout.item_summary_project_commit) { item, _ ->
+                textview_summary_project_commit_message.text = item.message
+                textview_summary_project_commit_time.text = dateFormatter.secondsToHumanReadableTime(item.totalSeconds)
+                textview_summary_project_commit_message.limitWidthBy(textview_summary_project_commit_time)
+            }
+        }
+    }
+
 
 }

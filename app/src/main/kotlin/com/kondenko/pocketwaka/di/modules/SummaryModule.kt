@@ -64,12 +64,6 @@ val summaryModule = module {
         )
     }
     single {
-        ProjectsToUiModels(
-              get(),
-              get()
-        )
-    }
-    single {
         GetSummary(
               schedulers = get(),
               summaryRepository = get<SummaryRepository>(),
@@ -77,7 +71,6 @@ val summaryModule = module {
               dateFormatter = get(),
               summaryResponseConverter = get<SummaryResponseConverter>(),
               timeTrackedConverter = get<TimeTrackedConverter>(),
-              projectsToUiModels = get<ProjectsToUiModels>(),
               fetchProjects = get<FetchProjects>()
         )
     }
@@ -89,7 +82,7 @@ val summaryModule = module {
               connectivityStatusProvider = get()
         )
     }
-    factory { (context: Context, showSkeleton: Boolean) -> SummaryAdapter(context, showSkeleton, get<TimeSpannableCreator>()) }
+    factory { (context: Context, showSkeleton: Boolean) -> SummaryAdapter(context, showSkeleton, get<TimeSpannableCreator>(), get()) }
     scope(named<FragmentSummary>()) {
         scoped { (context: Context, skeletonItems: List<SummaryUiModel>) ->
             RecyclerViewSkeleton(

@@ -19,7 +19,7 @@ data class GrandTotal(
       val totalSeconds: Float
 )
 
-operator fun SummaryData?.plus(other: SummaryData): SummaryData {
+operator fun SummaryData?. plus(other: SummaryData): SummaryData {
       this ?: return other
       return SummaryData(
             grandTotal + other.grandTotal,
@@ -32,7 +32,7 @@ private operator fun GrandTotal?.plus(other: GrandTotal): GrandTotal {
       return GrandTotal(totalSeconds + other.totalSeconds)
 }
 
-private fun List<StatsEntity>?.merge(other: List<StatsEntity>): List<StatsEntity> {
+private fun List<StatsEntity>?. merge(other: List<StatsEntity>): List<StatsEntity> {
       this ?: return other
       return (this + other)
             .groupBy { it.name }

@@ -20,8 +20,8 @@ internal constructor(
     operator fun setValue(thisRef: A?, property: KProperty<*>, value: List<T>) {
         val callback = callbackFactory(currentValue, value)
         val diff = DiffUtil.calculateDiff(callback)
-        thisRef?.let { diff.dispatchUpdatesTo(it) }
         currentValue = value
+        thisRef?.let { diff.dispatchUpdatesTo(it) }
     }
 
     operator fun getValue(thisRef: Any?, property: KProperty<*>): List<T> = currentValue
