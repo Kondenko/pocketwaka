@@ -104,16 +104,21 @@ class FetchProjects(
                 .toList()
                 .onErrorReturnItem(emptyList())
 
-    private fun getCommits(date: LocalDate, token: String, projectName: String, branch: String) =
+    private fun getCommits(date: LocalDate, token: String, projectName: String, branch: String): Observable<List<Commit>> =
           commitsRepository.getData(CommitsRepository.Params(token, projectName, branch))
                 .doOnNext { WakaLog.d("${it.size} commits loaded") }
                 .subscribeOn(schedulersContainer.workerScheduler)
-                .takeUntil {
-                    (it.lastOrNull()?.getLocalDate()?.isBefore(date) == true).apply {
-                        WakaLog.d("Stopping loading commits because ${it.lastOrNull()} is older than $date")
-                    }
-                }
-                .map { it.toUiModels() }
+                .flatMap { it.toObservable() }
+                .filter { it.getLocalDate() == date }
+// TODO Don't load ALL the commits
+//                .takeUntil {
+//                    (it.getLocalDate().isBefore(date)).apply {
+//                        WakaLog.d("Stop loading commits at $it")
+//                    }
+//                }
+                .map { it.toUiModel() }
+                .toList()
+                .toObservable()
 
     private fun groupByBranches(durations: DurationsServerModel): List<Branch> =
           durations.branchesData
@@ -122,8 +127,7 @@ class FetchProjects(
                 .filter { (branch, _) -> branch != null }
                 .map { (branch: String?, duration) -> Branch(branch!!, duration.toLong(), null) }
 
-    private fun List<CommitServerModel>.toUiModels(): List<Commit> =
-          map { Commit(it.hash, it.message, it.totalSeconds.toLong()) }
+    private fun CommitServerModel.toUiModel() = Commit(hash, message, totalSeconds.toLong())
 
     private fun connectRepoLink(project: String) = "https://wakatime.com/projects/$project/edit"
 

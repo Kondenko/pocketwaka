@@ -84,7 +84,7 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
         super.onViewCreated(view, savedInstanceState)
         setupList(view)
         vm.state().observe(viewLifecycleOwner) {
-            WakaLog.d("New summary state: $it")
+            // WakaLog.d("New summary state: $it")
             if (it is State.Empty) {
                 eventTracker.log(Event.EmptyState.Account(Screen.Summary))
             }

@@ -31,7 +31,7 @@ class SummaryResponseConverter : (SummaryRepository.Params, SummaryDbModel, Summ
         }
         newList.addAll(other)
         return newList.also {
-            WakaLog.d("Merging projects:\nOLD: ${this.projects()}\nNEW: ${other.projects()}\nRESULT: ${it.projects()}")
+             WakaLog.d("Merging projects:\nOLD: ${this.projects()}\nNEW: ${other.projects()}\nRESULT: ${it.projects()}")
         }
     }
 
