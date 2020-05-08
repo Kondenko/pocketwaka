@@ -22,6 +22,7 @@ import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.createAdapter
 import com.kondenko.pocketwaka.utils.diffutil.SimpleCallback
 import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
+import com.kondenko.pocketwaka.utils.extensions.findInstance
 import com.kondenko.pocketwaka.utils.extensions.forEach
 import com.kondenko.pocketwaka.utils.extensions.limitWidthBy
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
@@ -82,15 +83,14 @@ class SummaryAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder<SummaryUiModel>, position: Int, payloads: List<Any>) {
-//        if (payloads.isEmpty()) {
+        if (payloads.isEmpty()) {
             super.onBindViewHolder(holder, position, payloads)
-//        } else {
-//            val projectPayload = payloads.findInstance<Payload.ProjectChanged>()
-            // WakaLog.d("Project payload: $projectPayload")
-//            if (projectPayload != null) {
-//                (holder as? ProjectsViewHolder)?.bind(items[position] as ProjectItem)
-//            }
-//        }
+        } else {
+            val projectPayload = payloads.findInstance<Payload.ProjectChanged>()
+            if (projectPayload != null) {
+                (holder as? ProjectsViewHolder)?.bind(items[position] as ProjectItem, onlyUpdateBranches = true)
+            }
+        }
     }
 
     // TODO Fix jerky update animations
@@ -99,23 +99,18 @@ class SummaryAdapter(
               oldList, newList,
               areItemsTheSame = { a, b ->
                   val areProjectsTheSame = a is ProjectItem && b is ProjectItem && a.model.name == b.model.name
-//                  WakaLog.d("""
-//                      areProjectsTheSame(${(a as? ProjectItem)?.model?.name}, ${(b as? ProjectItem)?.model?.name})
-//                      = $areProjectsTheSame
-//                  """.trimIndent())
-                  val areItemsTheSame = a::class == b::class || areProjectsTheSame
-//                  WakaLog.d("areItemsTheSame(${a::class.simpleName}, ${b::class.simpleName}) = $areItemsTheSame")
-                  areProjectsTheSame || areItemsTheSame
+                  WakaLog.d("areProjectsTheSame:\n${(a as? ProjectItem)?.model?.name}\n${(b as? ProjectItem)?.model?.name}\n$areProjectsTheSame")
+                  areProjectsTheSame
               },
               areContentsTheSame = { a, b ->
                   val areContentsTheSame = a == b
-//                  if (a is ProjectItem && b is ProjectItem) {
-//                      WakaLog.d("areProjectContentsTheSame($a, $b)\n= $areContentsTheSame")
-//                  }
+                  if (a is ProjectItem && b is ProjectItem) {
+                      WakaLog.d("areProjectContentsTheSame:\n${(a as? ProjectItem)?.model?.name}\n${(b as? ProjectItem)?.model?.name}\n$areContentsTheSame")
+                  }
                   areContentsTheSame
               },
               getChangePayload = { a, b ->
-                  WakaLog.d("getChangePayload($a, $b)")
+                  WakaLog.d("getChangePayload:\n$a\n$b)")
                   Payload.ProjectChanged
               }
         )
@@ -192,11 +187,16 @@ class SummaryAdapter(
     ) : ViewHolder<ProjectItem>(view, skeleton) {
 
         override fun bind(item: ProjectItem) {
+            bind(item, false)
+        }
+
+        fun bind(item: ProjectItem, onlyUpdateBranches: Boolean) {
             super.bind(item)
             val project = item.model
             branchesAdapter.items = project.branches.values.flatMap {
                 listOf(it) + (it.commits ?: emptyList())
             }
+            if (onlyUpdateBranches) return
             with(itemView) {
                 textview_summary_project_name.text = project.name
                 textview_summary_project_time.text = dateFormatter.secondsToHumanReadableTime(project.totalSeconds)
@@ -239,6 +239,7 @@ class SummaryAdapter(
                 textview_summary_project_branch_time.text = dateFormatter.secondsToHumanReadableTime(item.totalSeconds)
                 textview_summary_project_branch.limitWidthBy(textview_summary_project_branch_time)
             }
+            // TODO Show the "no commit" view here if the branch is empty
             viewHolder<Commit>(R.layout.item_summary_project_commit) { item, _ ->
                 textview_summary_project_commit_message.text = item.message
                 textview_summary_project_commit_time.text = dateFormatter.secondsToHumanReadableTime(item.totalSeconds)

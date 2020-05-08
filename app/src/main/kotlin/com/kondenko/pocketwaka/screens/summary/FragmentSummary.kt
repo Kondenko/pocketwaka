@@ -111,6 +111,7 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
 
     private fun setupList(view: View) {
         with(view.recyclerview_summary) {
+            itemAnimator = null
             adapter = listSkeleton.actualAdapter.apply {
                 connectRepoClicks()
                       .doOnNext { eventTracker.log(Event.Summary.ConnectRepoClicks) }

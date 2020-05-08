@@ -22,6 +22,16 @@ class SummaryResponseConverter : (SummaryRepository.Params, SummaryDbModel, Summ
 
 
     // TODO Make sure projects order is maintained
+/*
+    private infix fun List<SummaryUiModel>.merge(other: List<SummaryUiModel>): List<SummaryUiModel> =
+          (other.reversed() + this.reversed())
+                .distinctBy { if (it is ProjectItem) it.model.name else it }
+                .reversed()
+                .also {
+                    WakaLog.d("Merging projects:\nOLD: ${this.projects()}\nNEW: ${other.projects()}\nRESULT: ${it.projects()}")
+                }
+*/
+
     private infix fun List<SummaryUiModel>.merge(other: List<SummaryUiModel>): List<SummaryUiModel> {
         val newList = mutableListOf<SummaryUiModel>()
         forEach { item ->
@@ -34,6 +44,7 @@ class SummaryResponseConverter : (SummaryRepository.Params, SummaryDbModel, Summ
              WakaLog.d("Merging projects:\nOLD: ${this.projects()}\nNEW: ${other.projects()}\nRESULT: ${it.projects()}")
         }
     }
+
 
     fun ProjectItem.isInOtherList(other: List<SummaryUiModel>) =
           other.filterIsInstance<ProjectItem>().find { this.model.name == it.model.name } != null

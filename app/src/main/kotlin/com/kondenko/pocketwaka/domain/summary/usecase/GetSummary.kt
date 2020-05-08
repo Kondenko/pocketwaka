@@ -17,6 +17,7 @@ import com.kondenko.pocketwaka.utils.extensions.dailyRangeTo
 import com.kondenko.pocketwaka.utils.extensions.startWithIfNotEmpty
 import io.reactivex.Maybe
 import io.reactivex.Observable
+import java.util.concurrent.TimeUnit
 
 class GetSummary(
       private val schedulers: SchedulersContainer,
@@ -55,10 +56,10 @@ class GetSummary(
                           params.branches
                     )
                     summaryRepository.getData(repoParams) { params ->
-                        flatMapObservable { data ->
-                            convert(tokenHeader, params, data)
-                        }
-                    }.scan { t1: SummaryDbModel, t2: SummaryDbModel -> summaryResponseConverter(repoParams, t1, t2) }
+                        flatMapObservable { data -> convert(tokenHeader, params, data) }
+                    }
+                          .scan { t1: SummaryDbModel, t2: SummaryDbModel -> summaryResponseConverter(repoParams, t1, t2) }
+                          .debounce(200, TimeUnit.MILLISECONDS, schedulers.uiScheduler)
                 }
                 .subscribeOn(schedulers.workerScheduler)
 
