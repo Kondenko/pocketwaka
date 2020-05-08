@@ -10,7 +10,6 @@ import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.domain.summary.model.Project
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
-import com.kondenko.pocketwaka.domain.summary.model.mergeBranches
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.date.DateRangeString
@@ -73,8 +72,6 @@ class GetSummary(
             fetchProjects.build(FetchProjects.Params(tokenHeader, DateRange.SingleDay(it), data))
         }.toTypedArray().let {
             Observable.mergeArray(*it)
-                  .groupBy { it.name }
-                  .flatMapMaybe { it.reduce { t1: Project, t2: Project -> t1.mergeBranches(t2) } }
                   .map(SummaryUiModel::ProjectItem)
                   .cast(SummaryUiModel::class.java)
                   .startWithIfNotEmpty(SummaryUiModel.ProjectsTitle)

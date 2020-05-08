@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CommitServerModel(
       val hash: String,
-      val ref: String?,
+      val branch: String,
       val message: String,
       @SerializedName("author_date")
       val authorDate: String,

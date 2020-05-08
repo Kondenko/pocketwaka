@@ -54,11 +54,11 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
           name = "",
           totalSeconds = 0,
           isRepoConnected = true,
-          repositoryUrl = null,
-          branches = listOf(
-                Branch("", 0, emptyList()),
-                Branch("", 0, emptyList()),
-                Branch("", 0, emptyList())
+          repositoryUrl = "",
+          branches = mapOf(
+                "" to Branch("", 0, emptyList()),
+                "" to Branch("", 0, emptyList()),
+                "" to Branch("", 0, emptyList())
           )
     ).let(SummaryUiModel::ProjectItem))
 
@@ -84,7 +84,7 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
         super.onViewCreated(view, savedInstanceState)
         setupList(view)
         vm.state().observe(viewLifecycleOwner) {
-            WakaLog.v("New summary state: $it")
+            WakaLog.d("New summary state: $it")
             if (it is State.Empty) {
                 eventTracker.log(Event.EmptyState.Account(Screen.Summary))
             }

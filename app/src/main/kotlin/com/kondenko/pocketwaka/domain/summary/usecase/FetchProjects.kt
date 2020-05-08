@@ -2,7 +2,6 @@ package com.kondenko.pocketwaka.domain.summary.usecase
 
 import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.branches.DurationsRepository
-import com.kondenko.pocketwaka.data.branches.model.Duration
 import com.kondenko.pocketwaka.data.branches.model.DurationsServerModel
 import com.kondenko.pocketwaka.data.commits.CommitsRepository
 import com.kondenko.pocketwaka.data.commits.model.CommitServerModel
@@ -13,15 +12,16 @@ import com.kondenko.pocketwaka.domain.summary.model.Branch
 import com.kondenko.pocketwaka.domain.summary.model.Commit
 import com.kondenko.pocketwaka.domain.summary.model.Project
 import com.kondenko.pocketwaka.utils.SchedulersContainer
+import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.DateRange
-import com.kondenko.pocketwaka.utils.exceptions.WakatimeException
 import com.kondenko.pocketwaka.utils.extensions.concatMapEagerDelayError
-import com.kondenko.pocketwaka.utils.types.KOptional
 import io.reactivex.Observable
-import io.reactivex.functions.BiFunction
+import io.reactivex.Single
 import io.reactivex.rxkotlin.toObservable
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
+import retrofit2.HttpException
+import java.net.HttpURLConnection
 
 class FetchProjects(
       private val schedulersContainer: SchedulersContainer,
@@ -42,76 +42,91 @@ class FetchProjects(
           summaryData.projects
                 .toObservable()
                 .filter { it.name != null }
-                .concatMapEagerDelayError { project: StatsEntity -> getBranchesAndCommits(date, token, project) }
+                .concatMapEagerDelayError { project: StatsEntity -> gatherProjectData(date, token, project) }
 
-    private fun getBranchesAndCommits(date: LocalDate, token: String, project: StatsEntity): Observable<Project> {
-        val projectName = project.name
-              ?: throw NullPointerException("A project with a null name wasn't filtered out: $project")
-        val dateParameter = dateFormatter.formatDateAsParameter(date)
-        val branchesSingle: Observable<KOptional<DurationsServerModel>> =
-              durationsRepository.getData(DurationsRepository.Params(token, dateParameter, projectName))
-                    .subscribeOn(schedulersContainer.workerScheduler)
-                    .map { KOptional.of(it) }
-                    .onErrorReturnItem(KOptional.empty())
-                    .toObservable()
-        // TODO Stop if the last commit in the page is older than [date]
-        // TODO Emit every project again every time commits are updated and replace it in the adapter completely
-        // E.g. Projects(commits) -> Project(commits + newCommits)
-        val commitsObservable: Observable<Pair<Boolean, List<CommitServerModel>>> =
-              commitsRepository.getData(CommitsRepository.Params(token, projectName))
-                    .subscribeOn(schedulersContainer.workerScheduler)
-                    .map { true to it }
-                    .onErrorReturn {
-                        val isRepoConnected = (it as? WakatimeException)?.message?.contains(noRepoError, true) == false
-                        isRepoConnected to emptyList()
+    private fun gatherProjectData(date: LocalDate, token: String, projectEntity: StatsEntity): Observable<Project> {
+        val projectName = projectEntity.name
+              ?: throw NullPointerException("A project with a null name wasn't filtered out: $projectEntity")
+        val projectObservable: Observable<Project> = Observable.just(
+              Project(
+                    projectName,
+                    projectEntity.totalSeconds.toLong(),
+                    isRepoConnected = false,
+                    branches = emptyMap(),
+                    repositoryUrl = connectRepoLink(projectName)
+              )
+        )
+        val projectWithBranchesObservable: Observable<Project> = projectObservable.flatMap { project ->
+            getBranches(date, token, projectName)
+                  .toObservable()
+                  .map { branches ->
+                      project.copy(branches = branches.associateBy { it.name })
+                  }
+        }
+        val projectWithCommitsObservable: Observable<Project> = projectWithBranchesObservable.flatMap { project ->
+            Observable.fromIterable(project.branches.values)
+                  .concatMapEagerDelayError { branch ->
+                      getCommits(date, token, projectName, branch.name)
+                            .onErrorReturn {
+                                val isRepoConnected = (it as? HttpException)?.code() != HttpURLConnection.HTTP_FORBIDDEN
+                                WakaLog.d("Repo connected for $projectName == $isRepoConnected")
+                                emptyList()
+                            }
+                            .map { newCommits ->
+                                val updatedCommits = branch.commits?.let { it + newCommits } ?: newCommits
+                                branch.copy(commits = updatedCommits).also {
+                                    WakaLog.d("""
+                                        Commits in ${branch.name} have changed:
+                                        BEFORE ${branch.commits}
+                                        AFTER ${it.commits}
+                                    """.trimIndent())
+                                }
+                            }
+                  }
+                  .map {
+                      val updatedBranches = project.branches + mapOf(it.name to it)
+                      project.copy(branches = updatedBranches).also {
+                          WakaLog.d("""
+                                        Branches in ${project.name} have changed:
+                                        BEFORE ${project.branches}
+                                        AFTER ${it.branches}
+                                    """.trimIndent())
+                      }
+                  }
+        }
+        return Observable.concatArray(projectObservable, projectWithBranchesObservable, projectWithCommitsObservable)
+    }
+
+    private fun getBranches(date: LocalDate, token: String, projectName: String): Single<List<Branch>> =
+          durationsRepository.getData(DurationsRepository.Params(token, dateFormatter.formatDateAsParameter(date), projectName))
+                .subscribeOn(schedulersContainer.workerScheduler)
+                .flatMapObservable { durationsModel -> groupByBranches(durationsModel).toObservable() }
+                .toList()
+                .onErrorReturnItem(emptyList())
+
+    private fun getCommits(date: LocalDate, token: String, projectName: String, branch: String) =
+          commitsRepository.getData(CommitsRepository.Params(token, projectName, branch))
+                .doOnNext { WakaLog.d("${it.size} commits loaded") }
+                .subscribeOn(schedulersContainer.workerScheduler)
+                .takeUntil {
+                    (it.lastOrNull()?.getLocalDate()?.isBefore(date) == true).apply {
+                        WakaLog.d("Stopping loading commits because ${it.lastOrNull()} is older than $date")
                     }
-        val zipper = BiFunction { branchesServerModel: KOptional<DurationsServerModel>,
-                                  (isRepoConnected, commits): Pair<Boolean, List<CommitServerModel>> ->
-            zipBranchesAndCommits(project, date, branchesServerModel, isRepoConnected, commits)
-        }
-        return Observable.combineLatest(
-              branchesSingle,
-              commitsObservable,
-              zipper
-        )
-    }
+                }
+                .map { it.toUiModels() }
 
-    private fun zipBranchesAndCommits(
-          project: StatsEntity,
-          date: LocalDate,
-          branchesServerModel: KOptional<DurationsServerModel>,
-          isRepoConnected: Boolean,
-          commits: List<CommitServerModel>
-    ): Project {
-        val commitsForDate = commits.filter {
-            val commitLocalDate = LocalDate.parse(it.authorDate, DateTimeFormatter.ISO_DATE_TIME)
-            commitLocalDate.isEqual(date)
-        }
-        val branchesData = branchesServerModel.item?.branchesData ?: emptyList()
-        val branches = groupByBranches(branchesData, commitsForDate)
-        return Project(
-              project.name!!,
-              project.totalSeconds.toLong(),
-              isRepoConnected,
-              branches,
-              connectRepoLink(project.name).takeIf { !isRepoConnected && branches.isNotEmpty() }
-        )
-    }
-
-    private fun groupByBranches(branches: Iterable<Duration>, commits: Iterable<CommitServerModel>): List<Branch> =
-          branches
+    private fun groupByBranches(durations: DurationsServerModel): List<Branch> =
+          durations.branchesData
                 .groupBy { it.branch }
                 .map { (name, durations) -> name to durations.sumByDouble { it.duration } }
                 .filter { (branch, _) -> branch != null }
-                .map { (branch: String?, duration) ->
-                    val commitsFromBranch = commits
-                          .filter { it.ref?.contains(branch!!) == true }
-                          .map {
-                              Commit(it.hash, it.message, it.totalSeconds.toLong())
-                          }
-                    Branch(branch!!, duration.toLong(), commitsFromBranch)
-                }
+                .map { (branch: String?, duration) -> Branch(branch!!, duration.toLong(), null) }
+
+    private fun List<CommitServerModel>.toUiModels(): List<Commit> =
+          map { Commit(it.hash, it.message, it.totalSeconds.toLong()) }
 
     private fun connectRepoLink(project: String) = "https://wakatime.com/projects/$project/edit"
+
+    private fun CommitServerModel.getLocalDate() = LocalDate.parse(authorDate, DateTimeFormatter.ISO_DATE_TIME)
 
 }

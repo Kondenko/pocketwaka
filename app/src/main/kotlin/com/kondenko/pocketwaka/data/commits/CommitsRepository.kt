@@ -7,28 +7,26 @@ import io.reactivex.Observable
 
 class CommitsRepository(private val commitsService: CommitsService) {
 
-    data class Params(val tokenHeader: String, val project: String, val author: String? = null)
+    data class Params(val tokenHeader: String, val project: String, val branch: String, val author: String? = null)
 
     // TODO Cache commits and only fetch from server if they're stale
     fun getData(params: Params): Observable<List<CommitServerModel>> {
-        val firstPage = commitsService.getCommits(params.tokenHeader, params.project, params.author, 0).toObservable()
-/* STOPSHIP
+        val firstPage = getCommits(params, 0)
         val otherPages = firstPage.flatMap {
             Observable.concatEager(
-                  (1..it.totalPages).map { page ->
-                      commitsService.getCommits(params.tokenHeader, params.project, params.author, page)
-                            .toObservable()
-                  }
+                  (1..it.totalPages).map { page -> getCommits(params, page) }
             )
         }
         return Observable.concatArray(firstPage, otherPages)
-*/
-        return firstPage
               .flatMap {
-                  if (it.error == null) Observable.just(it)
-                  else Observable.error(WakatimeException(it.error))
-              }.map { it.commits }
+                  if (it.error == null) Observable.just(it) else Observable.error(WakatimeException(it.error))
+              }
+              .map { it.commits }
     }
+
+    private fun getCommits(params: Params, page: Int) = params.run {
+        commitsService.getCommits(tokenHeader, project, author, branch, page)
+    }.toObservable()
 
 
 }

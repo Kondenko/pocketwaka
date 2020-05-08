@@ -9,7 +9,10 @@ import androidx.core.view.isGone
 import androidx.recyclerview.widget.DiffUtil
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.android.DateFormatter
-import com.kondenko.pocketwaka.domain.summary.model.*
+import com.kondenko.pocketwaka.domain.summary.model.Branch
+import com.kondenko.pocketwaka.domain.summary.model.Commit
+import com.kondenko.pocketwaka.domain.summary.model.ProjectInternalListItem
+import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel.*
 import com.kondenko.pocketwaka.screens.base.BaseAdapter
 import com.kondenko.pocketwaka.screens.renderStatus
@@ -19,7 +22,6 @@ import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.createAdapter
 import com.kondenko.pocketwaka.utils.diffutil.SimpleCallback
 import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
-import com.kondenko.pocketwaka.utils.extensions.findInstance
 import com.kondenko.pocketwaka.utils.extensions.forEach
 import com.kondenko.pocketwaka.utils.extensions.limitWidthBy
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
@@ -42,7 +44,7 @@ class SummaryAdapter(
 ) : SkeletonAdapter<SummaryUiModel, SummaryAdapter.ViewHolder<SummaryUiModel>>(context, showSkeleton) {
 
     sealed class Payload {
-        data class ProjectChanged(val mergedProject: ProjectItem) : Payload()
+        object ProjectChanged : Payload()
     }
 
     private enum class ViewType(val type: Int) {
@@ -79,65 +81,45 @@ class SummaryAdapter(
         else -> throw IllegalViewTypeException()
     }
 
-    override fun onBindViewHolder(holder: ViewHolder<SummaryUiModel>, position: Int, payloads: MutableList<Any>) {
-        WakaLog.d("Payloads: $payloads")
-        if (payloads.isEmpty()) {
+    override fun onBindViewHolder(holder: ViewHolder<SummaryUiModel>, position: Int, payloads: List<Any>) {
+//        if (payloads.isEmpty()) {
             super.onBindViewHolder(holder, position, payloads)
-        } else {
-            val projectPayload = payloads.findInstance<Payload.ProjectChanged>()
-            if (projectPayload != null) {
-                (holder as? ProjectsViewHolder)?.bind(projectPayload.mergedProject)
-            }
-        }
+//        } else {
+//            val projectPayload = payloads.findInstance<Payload.ProjectChanged>()
+            // WakaLog.d("Project payload: $projectPayload")
+//            if (projectPayload != null) {
+//                (holder as? ProjectsViewHolder)?.bind(items[position] as ProjectItem)
+//            }
+//        }
     }
 
-    /*
-            TODO Every time a project is updated with a new page of commits, it gets added to the list again.
-            We should merge projects so they stay the same but receive new commits
-         */
+    // TODO Fix jerky update animations
     override fun getDiffCallback(oldList: List<SummaryUiModel>, newList: List<SummaryUiModel>): DiffUtil.Callback {
         return SimpleCallback(
               oldList, newList,
               areItemsTheSame = { a, b ->
                   val areProjectsTheSame = a is ProjectItem && b is ProjectItem && a.model.name == b.model.name
-                  WakaLog.d("""
-                      areProjectsTheSame(${(a as? ProjectItem)?.model?.name}, ${(b as? ProjectItem)?.model?.name})
-                      = $areProjectsTheSame
-                  """.trimMargin())
+//                  WakaLog.d("""
+//                      areProjectsTheSame(${(a as? ProjectItem)?.model?.name}, ${(b as? ProjectItem)?.model?.name})
+//                      = $areProjectsTheSame
+//                  """.trimIndent())
                   val areItemsTheSame = a::class == b::class || areProjectsTheSame
-                  WakaLog.d("areItemsTheSame(${a::class.simpleName}, ${b::class.simpleName}) = $areItemsTheSame")
-                  areItemsTheSame
+//                  WakaLog.d("areItemsTheSame(${a::class.simpleName}, ${b::class.simpleName}) = $areItemsTheSame")
+                  areProjectsTheSame || areItemsTheSame
               },
               areContentsTheSame = { a, b ->
                   val areContentsTheSame = a == b
-                  if (a is ProjectItem && b is ProjectItem) {
-                      WakaLog.d("areContentsTheSame($a, $b)\n= $areContentsTheSame")
-                  }
+//                  if (a is ProjectItem && b is ProjectItem) {
+//                      WakaLog.d("areProjectContentsTheSame($a, $b)\n= $areContentsTheSame")
+//                  }
                   areContentsTheSame
               },
               getChangePayload = { a, b ->
                   WakaLog.d("getChangePayload($a, $b)")
-                  when {
-                      a areBranchesDifferent b -> {
-                          val mergedProject = (a as ProjectItem).model.mergeBranches((b as ProjectItem).model)
-                          Payload.ProjectChanged(ProjectItem(mergedProject))
-                      }
-                      else -> {
-                          null
-                      }
-                  }
+                  Payload.ProjectChanged
               }
         )
     }
-
-    private infix fun SummaryUiModel?.areBranchesDifferent(other: SummaryUiModel?): Boolean =
-          if (this == null || other == null) {
-              false
-          } else {
-              this is ProjectItem && other is ProjectItem
-                    && model.name == other.model.name
-                    && model.totalSeconds == model.totalSeconds
-          }
 
     override fun createSkeleton(view: View) = Skeleton(context, view).apply {
         onSkeletonShown { isSkeleton: Boolean ->
@@ -212,8 +194,8 @@ class SummaryAdapter(
         override fun bind(item: ProjectItem) {
             super.bind(item)
             val project = item.model
-            branchesAdapter.items = project.branches.flatMap {
-                listOf(it) + it.commits
+            branchesAdapter.items = project.branches.values.flatMap {
+                listOf(it) + (it.commits ?: emptyList())
             }
             with(itemView) {
                 textview_summary_project_name.text = project.name
@@ -232,6 +214,7 @@ class SummaryAdapter(
                       }
                 recyclerview_summary_project_commits.adapter = branchesAdapter
 /*
+                TODO Make sure it works after bringing back skeletons in FragmenSummary
                 if (showSkeleton) {
                     skeleton { view ->
                         Skeleton(context, view).apply {

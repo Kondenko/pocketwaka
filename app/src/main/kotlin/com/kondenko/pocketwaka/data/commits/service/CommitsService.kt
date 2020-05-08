@@ -17,6 +17,7 @@ interface CommitsService {
             @Header(Const.HEADER_BEARER_NAME) tokenHeaderValue: String,
             @Path(projectPathVariable) project: String? = null,
             @Query("author") author: String? = null,
+            @Query("branch") branch: String? = null,
             @Query("page") page: Int? = null
     ): Single<CommitsResponse>
 

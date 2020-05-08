@@ -3,14 +3,14 @@ package com.kondenko.pocketwaka.domain.summary.model
 data class Project(
       val name: String,
       val totalSeconds: Long,
-      val isRepoConnected: Boolean,
-      val branches: List<Branch>,
+      val isRepoConnected: Boolean = false, // TODO Make sure it is set and works
+      val branches: Map<String, Branch>,
       val repositoryUrl: String?
 )
 
 interface ProjectInternalListItem
 
-data class Branch(val name: String, val totalSeconds: Long, val commits: List<Commit>) : ProjectInternalListItem
+data class Branch(val name: String, val totalSeconds: Long, val commits: List<Commit>?) : ProjectInternalListItem
 
 data class Commit(val hash: String, val message: String, val totalSeconds: Long) : ProjectInternalListItem
 
@@ -33,18 +33,19 @@ fun Project.mergeBranches(other: Project): Project {
     )
 }
 
-private fun List<Branch>.merge(other: List<Branch>): List<Branch> =
-      (this + other)
-            .groupBy { it.name }
-            .map { (_, branches) -> branches.reduce { a, b -> a.merge(b) } }
+private fun Map<String, Branch>.merge(other: Map<String, Branch>): Map<String, Branch> =
+      (keys + other.keys).associateWith {
+          setOf(this[it], other[it]).filterNotNull().reduce(Branch::merge)
+      }.let { HashMap(it) }
 
-private fun Branch.merge(other: Branch): Branch {
-    require(name == other.name) { "Branches are different" }
-    return Branch(name, totalSeconds + other.totalSeconds, commits.mergeCommits(other.commits))
+private fun Branch.merge(other: Branch?): Branch {
+    require(name == other?.name) { "Branches are different" }
+    other ?: return this
+    return Branch(name, totalSeconds + other.totalSeconds, commits?.mergeCommits(other.commits))
 }
 
-private fun List<Commit>.mergeCommits(other: List<Commit>): List<Commit> =
-      (this + other)
+private fun List<Commit>.mergeCommits(other: List<Commit>?): List<Commit> =
+      (this + (other ?: emptyList()))
             .groupBy { it.message }
             .map { (_, branches) -> branches.reduce { a, b -> a.merge(b) } }
 
