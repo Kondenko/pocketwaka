@@ -4,6 +4,7 @@ import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel.ProjectItem
+import com.kondenko.pocketwaka.domain.summary.model.mergeBranches
 import com.kondenko.pocketwaka.utils.WakaLog
 
 /**
@@ -36,19 +37,27 @@ class SummaryResponseConverter : (SummaryRepository.Params, SummaryDbModel, Summ
     private infix fun List<SummaryUiModel>.merge(other: List<SummaryUiModel>): List<SummaryUiModel> {
         val newList = mutableListOf<SummaryUiModel>()
         forEach { item ->
-            if (item !is ProjectItem || !item.isInOtherList(other)) {
+            val projectInOtherList = (item as? ProjectItem)?.projectInOtherList(other)
+            if (item !is ProjectItem || projectInOtherList == null) {
                 newList.add(item)
             }
         }
-        newList.addAll(other)
+        other.forEach {
+            val projectInOtherList = (it as? ProjectItem)?.projectInOtherList(this)
+            if (it is ProjectItem && projectInOtherList != null) {
+                newList.add(ProjectItem(it.model.mergeBranches(projectInOtherList.model)))
+            } else {
+                newList.add(it)
+            }
+        }
         return newList.also {
              WakaLog.d("Merging projects:\nOLD: ${this.projects()}\nNEW: ${other.projects()}\nRESULT: ${it.projects()}")
         }
     }
 
 
-    fun ProjectItem.isInOtherList(other: List<SummaryUiModel>) =
-          other.filterIsInstance<ProjectItem>().find { this.model.name == it.model.name } != null
+    fun ProjectItem.projectInOtherList(other: List<SummaryUiModel>) =
+          other.filterIsInstance<ProjectItem>().find { this.model.name == it.model.name }
 
     private fun List<SummaryUiModel>.projects() = filterIsInstance<ProjectItem>()
           .map { it.model }

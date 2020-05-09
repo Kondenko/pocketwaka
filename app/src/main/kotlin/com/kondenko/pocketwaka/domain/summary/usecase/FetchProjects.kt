@@ -64,9 +64,6 @@ class FetchProjects(
                       project.copy(branches = branches.associateBy { it.name })
                   }
         }
-        /*
-         TODO Sometimes commits are duplicated in single-day view and don't appear at all in multi-day view
-         */
         val projectWithCommitsObservable: Observable<Project> = projectWithBranchesObservable.flatMap { project ->
             Observable.fromIterable(project.branches.values)
                   .concatMapEagerDelayError { branch ->

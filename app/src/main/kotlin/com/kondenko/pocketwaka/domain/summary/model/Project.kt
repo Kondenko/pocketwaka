@@ -16,7 +16,7 @@ data class Commit(val hash: String, val message: String, val totalSeconds: Long)
 
 
 // TODO Merge at UI level
-fun Project.mergeBranches(other: Project): Project {
+infix fun Project.mergeBranches(other: Project): Project {
     require(name == other.name) {
         "Projects are different"
     }
@@ -28,7 +28,12 @@ fun Project.mergeBranches(other: Project): Project {
           name,
           totalSeconds,
           other.isRepoConnected && isRepoConnected,
-          branches.merge(other.branches),
+          branches.merge(other.branches).also {
+              val oldNumberOfCommits = branches.values.sumBy { it.commits?.size ?: 0 }
+              val newNumberOfCommits = other.branches.values.sumBy { it.commits?.size ?: 0 }
+              val mergedNumberOfCommits = it.values.sumBy { it.commits?.size ?: 0 }
+              assert(mergedNumberOfCommits >= oldNumberOfCommits + newNumberOfCommits) { "Size decreased after merging branches" }
+          },
           other.repositoryUrl
     )
 }
@@ -41,11 +46,12 @@ private fun Map<String, Branch>.merge(other: Map<String, Branch>): Map<String, B
 private fun Branch.merge(other: Branch?): Branch {
     require(name == other?.name) { "Branches are different" }
     other ?: return this
-    return Branch(name, totalSeconds + other.totalSeconds, commits?.mergeCommits(other.commits))
+    // TODO Don't sum seconds?
+    return Branch(name, totalSeconds + other.totalSeconds, commits.mergeCommits(other.commits))
 }
 
-private fun List<Commit>.mergeCommits(other: List<Commit>?): List<Commit> =
-      (this + (other ?: emptyList()))
+private fun List<Commit>?.mergeCommits(other: List<Commit>?): List<Commit> =
+      ((this ?: emptyList()) + (other ?: emptyList()))
             .groupBy { it.message }
             .map { (_, branches) -> branches.reduce { a, b -> a.merge(b) } }
 
