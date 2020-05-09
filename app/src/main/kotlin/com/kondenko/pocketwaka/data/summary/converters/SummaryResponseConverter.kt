@@ -32,6 +32,7 @@ class SummaryResponseConverter : (SummaryRepository.Params, SummaryDbModel, Summ
                 }
 */
 
+    // TODO This is where projects with different lists of commits replace one another
     private infix fun List<SummaryUiModel>.merge(other: List<SummaryUiModel>): List<SummaryUiModel> {
         val newList = mutableListOf<SummaryUiModel>()
         forEach { item ->

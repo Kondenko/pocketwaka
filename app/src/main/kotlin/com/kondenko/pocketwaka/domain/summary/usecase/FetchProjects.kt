@@ -82,8 +82,8 @@ class FetchProjects(
                                 branch.copy(commits = updatedCommits).also {
                                     WakaLog.d("""
                                         Commits in ${branch.name} have changed:
-                                        BEFORE ${branch.commits}
-                                        AFTER ${it.commits}
+                                        BEFORE ${branch.commits?.map { it.message }?.joinToString()}
+                                        AFTER ${it.commits?.map { it.message }?.joinToString()}
                                     """.trimIndent())
                                 }
                             }
@@ -111,7 +111,6 @@ class FetchProjects(
 
     private fun getCommits(date: LocalDate, token: String, projectName: String, branch: String): Observable<List<Commit>> =
           commitsRepository.getData(CommitsRepository.Params(token, projectName, branch))
-                .doOnNext { WakaLog.d("${it.size} commits loaded") }
                 .subscribeOn(schedulersContainer.workerScheduler)
                 .flatMap { it.toObservable() }
                 .filter { it.getLocalDate() == date }

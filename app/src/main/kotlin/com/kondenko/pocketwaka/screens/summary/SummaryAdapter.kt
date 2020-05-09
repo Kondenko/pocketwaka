@@ -18,7 +18,6 @@ import com.kondenko.pocketwaka.screens.base.BaseAdapter
 import com.kondenko.pocketwaka.screens.renderStatus
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
-import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.createAdapter
 import com.kondenko.pocketwaka.utils.diffutil.SimpleCallback
 import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
@@ -99,18 +98,9 @@ class SummaryAdapter(
               oldList, newList,
               areItemsTheSame = { a, b ->
                   val areProjectsTheSame = a is ProjectItem && b is ProjectItem && a.model.name == b.model.name
-                  WakaLog.d("areProjectsTheSame:\n${(a as? ProjectItem)?.model?.name}\n${(b as? ProjectItem)?.model?.name}\n$areProjectsTheSame")
                   areProjectsTheSame
               },
-              areContentsTheSame = { a, b ->
-                  val areContentsTheSame = a == b
-                  if (a is ProjectItem && b is ProjectItem) {
-                      WakaLog.d("areProjectContentsTheSame:\n${(a as? ProjectItem)?.model?.name}\n${(b as? ProjectItem)?.model?.name}\n$areContentsTheSame")
-                  }
-                  areContentsTheSame
-              },
               getChangePayload = { a, b ->
-                  WakaLog.d("getChangePayload:\n$a\n$b)")
                   Payload.ProjectChanged
               }
         )
