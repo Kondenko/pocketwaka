@@ -45,7 +45,7 @@ class SummaryResponseConverter : (SummaryRepository.Params, SummaryDbModel, Summ
         other.forEach {
             val projectInOtherList = (it as? ProjectItem)?.projectInOtherList(this)
             if (it is ProjectItem && projectInOtherList != null) {
-                newList.add(ProjectItem(it.model.mergeBranches(projectInOtherList.model)))
+                newList.add(ProjectItem(it.model))
             } else {
                 newList.add(it)
             }

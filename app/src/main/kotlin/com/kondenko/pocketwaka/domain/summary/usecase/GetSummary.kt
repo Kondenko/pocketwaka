@@ -2,6 +2,7 @@ package com.kondenko.pocketwaka.domain.summary.usecase
 
 import com.kondenko.pocketwaka.data.ContinuousCacheBackedRepository
 import com.kondenko.pocketwaka.data.android.DateFormatter
+import com.kondenko.pocketwaka.data.common.model.database.StatsEntity
 import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
 import com.kondenko.pocketwaka.data.summary.model.server.SummaryData
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
@@ -10,6 +11,7 @@ import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.UseCaseSingle
 import com.kondenko.pocketwaka.domain.summary.model.Project
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
+import com.kondenko.pocketwaka.domain.summary.model.mergeBranches
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.date.DateRangeString
@@ -17,6 +19,8 @@ import com.kondenko.pocketwaka.utils.extensions.dailyRangeTo
 import com.kondenko.pocketwaka.utils.extensions.startWithIfNotEmpty
 import io.reactivex.Maybe
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.zip
+import org.threeten.bp.LocalDate
 import java.util.concurrent.TimeUnit
 
 class GetSummary(
@@ -26,7 +30,7 @@ class GetSummary(
       private val dateFormatter: DateFormatter,
       private val summaryResponseConverter: (SummaryRepository.Params, SummaryDbModel, SummaryDbModel) -> SummaryDbModel,
       private val timeTrackedConverter: (SummaryRepository.Params, SummaryData) -> Maybe<SummaryDbModel>,
-      private val fetchProjects: UseCaseObservable<FetchProjects.Params, Project>
+      private val fetchBranchesAndCommits: UseCaseObservable<FetchBranchesAndCommits.Params, Project>
 ) : UseCaseObservable<GetSummary.Params, SummaryDbModel>(schedulers) {
 
     data class Params(
@@ -69,19 +73,22 @@ class GetSummary(
      */
     private fun convert(tokenHeader: String, params: SummaryRepository.Params, data: SummaryData): Observable<SummaryDbModel> {
         val timeTrackedSource = timeTrackedConverter(params, data).toObservable()
-        val projectObservables = params.dateRange.run { start dailyRangeTo end }.map {
-            fetchProjects.build(FetchProjects.Params(tokenHeader, DateRange.SingleDay(it), data))
-        }.toTypedArray().let {
-            Observable.mergeArray(*it)
-                  .map(SummaryUiModel::ProjectItem)
+        val dates = params.dateRange.run { start dailyRangeTo end }
+        val projects: List<Observable<Project>> = data.projects.map { fetchAllDataForDate(tokenHeader, it, dates) }
+        val projectObservables = Observable.merge(projects)
+                  .map { SummaryUiModel.ProjectItem(it) }
                   .cast(SummaryUiModel::class.java)
                   .startWithIfNotEmpty(SummaryUiModel.ProjectsTitle)
                   .map {
                       SummaryDbModel(params.dateRange.hashCode().toLong(), data = listOf(it))
                   }
-        }
         return projectObservables.startWith(timeTrackedSource)
     }
+
+    private fun fetchAllDataForDate(tokenHeader: String, project: StatsEntity, dates: List<LocalDate>) =
+          dates.map {
+              fetchBranchesAndCommits.build(FetchBranchesAndCommits.Params(tokenHeader, DateRange.SingleDay(it), project))
+          }.zip { it.reduce { a, b -> a.mergeBranches(b) } }
 
 
 }

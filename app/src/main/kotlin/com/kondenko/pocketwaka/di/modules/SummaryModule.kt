@@ -56,7 +56,7 @@ val summaryModule = module {
         )
     }
     single {
-        FetchProjects(
+        FetchBranchesAndCommits(
               schedulersContainer = get(),
               durationsRepository = get(),
               commitsRepository = get(),
@@ -71,7 +71,7 @@ val summaryModule = module {
               dateFormatter = get(),
               summaryResponseConverter = get<SummaryResponseConverter>(),
               timeTrackedConverter = get<TimeTrackedConverter>(),
-              fetchProjects = get<FetchProjects>()
+              fetchBranchesAndCommits = get<FetchBranchesAndCommits>()
         )
     }
     single {

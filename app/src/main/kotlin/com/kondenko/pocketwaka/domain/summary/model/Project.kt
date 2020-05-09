@@ -1,5 +1,7 @@
 package com.kondenko.pocketwaka.domain.summary.model
 
+import com.kondenko.pocketwaka.utils.WakaLog
+
 data class Project(
       val name: String,
       val totalSeconds: Long,
@@ -28,14 +30,14 @@ infix fun Project.mergeBranches(other: Project): Project {
           name,
           totalSeconds,
           other.isRepoConnected && isRepoConnected,
-          branches.merge(other.branches).also {
-              val oldNumberOfCommits = branches.values.sumBy { it.commits?.size ?: 0 }
-              val newNumberOfCommits = other.branches.values.sumBy { it.commits?.size ?: 0 }
-              val mergedNumberOfCommits = it.values.sumBy { it.commits?.size ?: 0 }
-              assert(mergedNumberOfCommits >= oldNumberOfCommits + newNumberOfCommits) { "Size decreased after merging branches" }
-          },
+          branches.merge(other.branches),
           other.repositoryUrl
-    )
+    ).also {
+        val timeByBranches = it.branches.values.sumBy { it.totalSeconds.toInt() }
+        if (it.totalSeconds.toInt() != timeByBranches) {
+            WakaLog.w("Project's branches time doesn't sum up to project's total time (branches=$timeByBranches, total=$totalSeconds)")
+        }
+    }
 }
 
 private fun Map<String, Branch>.merge(other: Map<String, Branch>): Map<String, Branch> =
@@ -46,7 +48,6 @@ private fun Map<String, Branch>.merge(other: Map<String, Branch>): Map<String, B
 private fun Branch.merge(other: Branch?): Branch {
     require(name == other?.name) { "Branches are different" }
     other ?: return this
-    // TODO Don't sum seconds?
     return Branch(name, totalSeconds + other.totalSeconds, commits.mergeCommits(other.commits))
 }
 

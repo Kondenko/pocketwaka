@@ -6,7 +6,6 @@ import com.kondenko.pocketwaka.data.branches.model.DurationsServerModel
 import com.kondenko.pocketwaka.data.commits.CommitsRepository
 import com.kondenko.pocketwaka.data.commits.model.CommitServerModel
 import com.kondenko.pocketwaka.data.common.model.database.StatsEntity
-import com.kondenko.pocketwaka.data.summary.model.server.SummaryData
 import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.summary.model.Branch
 import com.kondenko.pocketwaka.domain.summary.model.Commit
@@ -23,28 +22,22 @@ import org.threeten.bp.format.DateTimeFormatter
 import retrofit2.HttpException
 import java.net.HttpURLConnection
 
-class FetchProjects(
+class FetchBranchesAndCommits(
       private val schedulersContainer: SchedulersContainer,
       private val durationsRepository: DurationsRepository,
       private val commitsRepository: CommitsRepository,
       private val dateFormatter: DateFormatter
-) : UseCaseObservable<FetchProjects.Params, Project>(schedulersContainer) {
+) : UseCaseObservable<FetchBranchesAndCommits.Params, Project>(schedulersContainer) {
 
     private val noRepoError = "This project is not associated with a repository"
 
-    data class Params(val tokenHeader: String, val date: DateRange.SingleDay, val summaryData: SummaryData)
+    data class Params(val tokenHeader: String, val date: DateRange.SingleDay, val project: StatsEntity)
 
     override fun build(params: Params?): Observable<Project> = params?.run {
-        getProjects(tokenHeader, date.date, summaryData)
+        fetchBranchesAndCommits(tokenHeader, date.date, project)
     } ?: Observable.error(NullPointerException("Params are null"))
 
-    private fun getProjects(token: String, date: LocalDate, summaryData: SummaryData): Observable<Project> =
-          summaryData.projects
-                .toObservable()
-                .filter { it.name != null }
-                .concatMapEagerDelayError { project: StatsEntity -> gatherProjectData(date, token, project) }
-
-    private fun gatherProjectData(date: LocalDate, token: String, projectEntity: StatsEntity): Observable<Project> {
+    private fun fetchBranchesAndCommits(token: String, date: LocalDate, projectEntity: StatsEntity): Observable<Project> {
         val projectName = projectEntity.name
               ?: throw NullPointerException("A project with a null name wasn't filtered out: $projectEntity")
         val projectObservable: Observable<Project> = Observable.just(
@@ -75,6 +68,7 @@ class FetchProjects(
                                 emptyList()
                             }
                             .map { newCommits ->
+                                // TODO Ensure commit list consistency over different dates
                                 val updatedCommits = branch.commits?.let { it + newCommits } ?: newCommits
                                 branch.copy(commits = updatedCommits).also {
                                     WakaLog.d("""
