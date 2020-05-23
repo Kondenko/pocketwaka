@@ -62,7 +62,7 @@ class GetSummaryStateMock(private val getSummaryState: GetSummaryState, private 
 
     override fun build(params: GetSummary.Params?): Observable<State<List<SummaryUiModel>>> {
         return concatWithDelay(
-              (State.Failure.Unknown<Nothing>(isFatal = true))
+              (State.Empty)
         )
     }
 

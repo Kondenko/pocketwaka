@@ -13,11 +13,13 @@
     <style name="App.Button.Icon" parent="Widget.MaterialComponents.Button.Icon">
         <item name="android:textAllCaps">false</item>
         <item name="android:letterSpacing">0.04</item>
+        <item name="rippleColor">@color/color_ripple</item>
     </style>
 
     <style name="App.Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:textColor">@color/color_text_primary</item>
         <item name="android:textAllCaps">false</item>
+        <item name="rippleColor">@color/color_ripple</item>
     </style>
 
     <!-- TEXT -->
@@ -97,11 +99,11 @@
 
     <!-- Summaries -->
 
-    <style name="App.Button.FlatButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+    <!--    TODO Rename to SelectableButton -->
+    <style name="App.Button.FlatButton" parent="App.Button.Outlined">
         <item name="android:textAllCaps">false</item>
         <item name="cornerRadius">20dp</item>
         <item name="android:clickable">true</item>
-        <item name="rippleColor">@color/color_ripple</item>
         <item name="android:gravity">center</item>
         <item name="android:focusable">true</item>
         <item name="android:letterSpacing">0</item>
