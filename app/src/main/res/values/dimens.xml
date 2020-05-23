@@ -69,6 +69,7 @@
     <dimen name="height_summary_toolbar_expanded">544dp</dimen>
 
     <item name="duration_datepicker_elevation_anim" type="integer">300</item>
+    <item name="duration_datepicker_color_anim" type="integer">200</item>
 
     <dimen name="width_datepicker_button">148dp</dimen>
     <dimen name="height_datepicker_button">40dp</dimen>
