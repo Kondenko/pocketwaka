@@ -11,11 +11,11 @@ class CommitsRepository(private val commitsService: CommitsService) {
 
     // TODO Cache commits and only fetch from server if they're stale
     fun getData(params: Params): Observable<List<CommitServerModel>> {
-        val firstPage = getCommits(params, 0)
+        val firstPage = getCommits(params, 1)
         val otherPages = firstPage
               .takeWhile { it.totalPages > 1 }
-              .flatMap { firstPageReponse ->
-                  Observable.concatEager((1..firstPageReponse.totalPages).map { page -> getCommits(params, page) })
+              .flatMap { firstPageResponse ->
+                  Observable.concatEager((2..firstPageResponse.totalPages).map { page -> getCommits(params, page) })
               }
         return Observable.concatArray(firstPage, otherPages)
               .flatMap {
@@ -27,6 +27,5 @@ class CommitsRepository(private val commitsService: CommitsService) {
     private fun getCommits(params: Params, page: Int) = params.run {
         commitsService.getCommits(tokenHeader, project, author, branch, page)
     }.toObservable()
-
 
 }
