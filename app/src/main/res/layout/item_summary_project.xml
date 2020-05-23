@@ -30,7 +30,6 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             />
 
-        <include layout="@layout/item_summary_project_no_commits" />
 
         <include layout="@layout/item_summary_project_connect_repo" />
 

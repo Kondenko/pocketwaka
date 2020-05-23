@@ -9,10 +9,7 @@ import androidx.core.view.isGone
 import androidx.recyclerview.widget.DiffUtil
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.android.DateFormatter
-import com.kondenko.pocketwaka.domain.summary.model.Branch
-import com.kondenko.pocketwaka.domain.summary.model.Commit
-import com.kondenko.pocketwaka.domain.summary.model.ProjectInternalListItem
-import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
+import com.kondenko.pocketwaka.domain.summary.model.*
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel.*
 import com.kondenko.pocketwaka.screens.base.BaseAdapter
 import com.kondenko.pocketwaka.screens.renderStatus
@@ -183,8 +180,10 @@ class SummaryAdapter(
         fun bind(item: ProjectItem, onlyUpdateBranches: Boolean) {
             super.bind(item)
             val project = item.model
-            branchesAdapter.items = project.branches.values.flatMap {
-                listOf(it) + (it.commits ?: emptyList())
+            branchesAdapter.items = project.branches.values.flatMap { branch ->
+                listOf(branch) + branch.commits.let {
+                    if (project.isRepoConnected && it?.isEmpty() == true) listOf(NoCommitsLabel) else it ?: emptyList()
+                }
             }
             if (onlyUpdateBranches) return
             with(itemView) {
@@ -222,21 +221,18 @@ class SummaryAdapter(
 
     }
 
-    val provideBranchAdapter = {
-        createAdapter<ProjectInternalListItem>(context) {
-            viewHolder<Branch>(R.layout.item_summary_project_branch) { item, _ ->
-                textview_summary_project_branch.text = item.name
-                textview_summary_project_branch_time.text = dateFormatter.secondsToHumanReadableTime(item.totalSeconds)
-                textview_summary_project_branch.limitWidthBy(textview_summary_project_branch_time)
-            }
-            // TODO Show the "no commit" view here if the branch is empty
-            viewHolder<Commit>(R.layout.item_summary_project_commit) { item, _ ->
-                textview_summary_project_commit_message.text = item.message
-                textview_summary_project_commit_time.text = dateFormatter.secondsToHumanReadableTime(item.totalSeconds)
-                textview_summary_project_commit_message.limitWidthBy(textview_summary_project_commit_time)
-            }
+    private fun provideBranchAdapter() = createAdapter<ProjectInternalListItem>(context) {
+        viewHolder<Branch>(R.layout.item_summary_project_branch) { item, _ ->
+            textview_summary_project_branch.text = item.name
+            textview_summary_project_branch_time.text = dateFormatter.secondsToHumanReadableTime(item.totalSeconds)
+            textview_summary_project_branch.limitWidthBy(textview_summary_project_branch_time)
         }
+        viewHolder<Commit>(R.layout.item_summary_project_commit) { item, _ ->
+            textview_summary_project_commit_message.text = item.message
+            textview_summary_project_commit_time.text = dateFormatter.secondsToHumanReadableTime(item.totalSeconds)
+            textview_summary_project_commit_message.limitWidthBy(textview_summary_project_commit_time)
+        }
+        viewHolder<NoCommitsLabel>(R.layout.item_summary_project_no_commits)
     }
-
 
 }

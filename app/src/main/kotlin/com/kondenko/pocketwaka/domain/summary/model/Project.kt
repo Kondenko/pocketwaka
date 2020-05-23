@@ -16,8 +16,8 @@ data class Branch(val name: String, val totalSeconds: Long, val commits: List<Co
 
 data class Commit(val hash: String, val message: String, val totalSeconds: Long) : ProjectInternalListItem
 
+object NoCommitsLabel : ProjectInternalListItem
 
-// TODO Merge at UI level
 infix fun Project.mergeBranches(other: Project): Project {
     require(name == other.name) {
         "Projects are different"
