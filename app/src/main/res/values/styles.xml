@@ -6,11 +6,7 @@
     </style>
 
     <style name="App.Button" parent="Widget.MaterialComponents.Button">
-        <item name="android:textAllCaps">false</item>
-        <item name="android:letterSpacing">0.04</item>
-    </style>
-
-    <style name="App.Button.Icon" parent="Widget.MaterialComponents.Button.Icon">
+        <item name="android:backgroundTint">@color/color_accent</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:letterSpacing">0.04</item>
         <item name="rippleColor">@color/color_ripple</item>
