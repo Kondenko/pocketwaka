@@ -2,10 +2,8 @@ package com.kondenko.pocketwaka.domain.summary.usecase
 
 import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.domain.UseCase
-import com.kondenko.pocketwaka.domain.summary.model.ProjectModel
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.screens.State
-import com.kondenko.pocketwaka.screens.summary.SummaryState
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
@@ -13,6 +11,7 @@ import java.util.concurrent.TimeUnit
 class GetSummaryStateMock(private val getSummaryState: GetSummaryState, private val dateFormatter: DateFormatter) :
       UseCase<GetSummary.Params, State<List<SummaryUiModel>>, Observable<State<List<SummaryUiModel>>>> by getSummaryState {
 
+/*
     private val mockModels = listOf(
           SummaryUiModel.TimeTracked(time(8, 12, DateFormatter.Format.Long), 15),
           SummaryUiModel.ProjectsTitle,
@@ -56,13 +55,14 @@ class GetSummaryStateMock(private val getSummaryState: GetSummaryState, private 
                 )
           )
     )
+*/
 
     private fun time(h: Int, m: Int = 0, format: DateFormatter.Format = DateFormatter.Format.Short) =
           dateFormatter.toHumanReadableTime(h, m, format)
 
     override fun build(params: GetSummary.Params?): Observable<State<List<SummaryUiModel>>> {
         return concatWithDelay(
-              (SummaryState.EmptyRange)
+              (State.Failure.Unknown<Nothing>(isFatal = true))
         )
     }
 

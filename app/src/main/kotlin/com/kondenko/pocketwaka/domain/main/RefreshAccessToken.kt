@@ -17,8 +17,7 @@ import timber.log.Timber
  * Refreshes AccessToken if the old one is expired.
  */
 
-class RefreshAccessToken
-(
+class RefreshAccessToken(
         schedulers: SchedulersContainer,
         private val dateProvider: DateProvider,
         private val tokenEncryptor: Encryptor<AccessToken>,
