@@ -33,18 +33,6 @@ import org.threeten.bp.YearMonth
 import org.threeten.bp.format.TextStyle
 import org.threeten.bp.temporal.WeekFields
 
-class DayViewContainer(view: View) : ViewContainer(view) {
-    val textViewDay: TextView = view.textview_calendar_day
-}
-
-class MonthViewContainer(view: View) : ViewContainer(view) {
-    val textViewMonth: TextView = view.textview_calendar_month
-}
-
-enum class DaySelectionState {
-    Unselected, Single, Start, Middle, End
-}
-
 class FragmentDatePicker : Fragment() {
 
     private val vm: SummaryRangeViewModel by sharedViewModel()
@@ -102,6 +90,50 @@ class FragmentDatePicker : Fragment() {
         vm.closeEvents().observe(viewLifecycleOwner) {
             behavior?.state = TopSheetBehavior.STATE_COLLAPSED
         }
+    }
+
+    private fun View.setupBottomSheetBehavior(): TopSheetBehavior<*> {
+        val behavior = TopSheetBehavior.from(this)
+        isClickable = true
+        stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.state_list_animator_date_picker)
+        surfaceColorAnimator = createColorAnimator(
+              context,
+              surfaceColorResting,
+              surfaceColorElevated,
+              resources.getInteger(R.integer.duration_datepicker_color_anim).toLong()
+        ) { color ->
+            activity?.window?.statusBarColor = color
+            this.setBackgroundColor(color)
+        }!!
+        behavior.setTopSheetCallback(object : TopSheetBehavior.TopSheetCallback() {
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float, isOpening: Boolean?) =
+                  onOffsetChanged(bottomSheet, slideOffset, isOpening == true)
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) =
+                  handleStateChange(newState)
+
+        })
+        setOnClickListener {
+            if (behavior.state == TopSheetBehavior.STATE_COLLAPSED) {
+                behavior.state = TopSheetBehavior.STATE_EXPANDED
+            }
+        }
+        setOnTouchListener { v, event ->
+            if (behavior.state == TopSheetBehavior.STATE_COLLAPSED) {
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        handleStateChange(TopSheetBehavior.STATE_DRAGGING)
+                    }
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                        handleStateChange(TopSheetBehavior.STATE_COLLAPSED)
+                        elevation = 0f
+                    }
+                }
+            }
+            false
+        }
+        return behavior
     }
 
     private fun setupButtons() {
@@ -217,50 +249,6 @@ class FragmentDatePicker : Fragment() {
         textview_summary_current_date.text = title
     }
 
-    private fun View.setupBottomSheetBehavior(): TopSheetBehavior<*> {
-        val behavior = TopSheetBehavior.from(this)
-        isClickable = true
-        stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.state_list_animator_date_picker)
-        surfaceColorAnimator = createColorAnimator(
-              context,
-              surfaceColorResting,
-              surfaceColorElevated,
-              context.resources.getInteger(R.integer.duration_datepicker_elevation_anim).toLong()
-        ) { color ->
-            activity?.window?.statusBarColor = color
-            this.setBackgroundColor(color)
-        }!!
-        behavior.setTopSheetCallback(object : TopSheetBehavior.TopSheetCallback() {
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float, isOpening: Boolean?) =
-                  onOffsetChanged(bottomSheet, slideOffset, isOpening == true)
-
-            override fun onStateChanged(bottomSheet: View, newState: Int) =
-                  handleStateChange(newState)
-
-        })
-        setOnClickListener {
-            if (behavior.state == TopSheetBehavior.STATE_COLLAPSED) {
-                behavior.state = TopSheetBehavior.STATE_EXPANDED
-            }
-        }
-        setOnTouchListener { v, event ->
-            if (behavior.state == TopSheetBehavior.STATE_COLLAPSED) {
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        handleStateChange(TopSheetBehavior.STATE_DRAGGING)
-                    }
-                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                        handleStateChange(TopSheetBehavior.STATE_COLLAPSED)
-                        elevation = 0f
-                    }
-                }
-            }
-            false
-        }
-        return behavior
-    }
-
     private fun handleStateChange(newState: Int) {
         updateBackground(newState)
         when (newState) {
@@ -303,6 +291,20 @@ class FragmentDatePicker : Fragment() {
         }
         bottomSheet.elevation = (finalElevation * slideOffset)
               .coerceAtLeast(if (opening && slideOffset > 0f) initialElevation else 0f)
+    }
+
+    enum class DaySelectionState {
+        Unselected, Single, Start, Middle, End
+    }
+
+    private inner class DayViewContainer(view: View) : ViewContainer(view) {
+        val textViewDay: TextView = view.textview_calendar_day
+
+    }
+
+    private inner class MonthViewContainer(view: View) : ViewContainer(view) {
+        val textViewMonth: TextView = view.textview_calendar_month
+
     }
 
 }
