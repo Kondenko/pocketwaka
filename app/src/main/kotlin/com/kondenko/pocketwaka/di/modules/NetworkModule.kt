@@ -32,7 +32,7 @@ val networkModule = module {
         HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
             override fun log(message: String) = WakaLog.d(message)
         }).apply {
-            setLevel(HttpLoggingInterceptor.Level.BODY)
+            setLevel(HttpLoggingInterceptor.Level.BASIC)
         }
     }
     single {

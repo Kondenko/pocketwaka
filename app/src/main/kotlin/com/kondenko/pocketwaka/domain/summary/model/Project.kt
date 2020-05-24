@@ -5,10 +5,11 @@ import com.kondenko.pocketwaka.utils.WakaLog
 data class Project(
       val name: String,
       val totalSeconds: Long,
-      val isRepoConnected: Boolean = false, // TODO Make sure it is set and works
+      val isRepoConnected: Boolean = true,
       val branches: Map<String, Branch>,
       val repositoryUrl: String?
 )
+
 
 interface ProjectInternalListItem
 
@@ -17,6 +18,7 @@ data class Branch(val name: String, val totalSeconds: Long, val commits: List<Co
 data class Commit(val hash: String, val message: String, val totalSeconds: Long) : ProjectInternalListItem
 
 object NoCommitsLabel : ProjectInternalListItem
+
 
 infix fun Project.mergeBranches(other: Project): Project {
     require(name == other.name) {

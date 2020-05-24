@@ -14,10 +14,12 @@ import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.extensions.concatMapEagerDelayError
+import com.kondenko.pocketwaka.utils.extensions.findInstance
 import com.kondenko.pocketwaka.utils.rx.scanMap
 import com.kondenko.pocketwaka.utils.types.KOptional
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.exceptions.CompositeException
 import io.reactivex.rxkotlin.toObservable
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
@@ -46,7 +48,7 @@ class FetchBranchesAndCommits(
               Project(
                     projectName,
                     projectEntity.totalSeconds.toLong(),
-                    isRepoConnected = false,
+                    isRepoConnected = true,
                     branches = emptyMap(),
                     repositoryUrl = connectRepoLink(projectName)
               )
@@ -63,35 +65,25 @@ class FetchBranchesAndCommits(
             Observable.fromIterable(project.branches.values.also { WakaLog.d("Fetching commits for $it ($date)") })
                   .concatMapEagerDelayError { branch ->
                       getCommits(date, token, projectName, branch.name)
-                            .onErrorReturn {
-                                // TODO Add actual implementation of this (use HttpException.code() == 403)
-                                val isRepoConnected = (it as? HttpException)?.code() != HttpURLConnection.HTTP_FORBIDDEN
-                                WakaLog.d("Repo connected for $projectName == $isRepoConnected")
-                                emptyList()
-                            }
                             .map { KOptional.of(it) }
                             .scanMap(KOptional.empty()) { prevCommits, newCommits ->
                                 KOptional.of(prevCommits.orElse(emptyList()) + newCommits.orElse(emptyList()))
                             }
                             .map { commits ->
-                                branch.copy(commits = commits.item).also {
-                                    WakaLog.d("""
-                                        Commits in ${branch.name} have changed:
-                                        BEFORE ${branch.commits?.map { it.message }?.joinToString()}
-                                        AFTER ${it.commits?.map { it.message }?.joinToString()}
-                                    """.trimIndent())
-                                }
+                                branch.copy(commits = commits.item)
                             }
                   }
                   .map {
                       val updatedBranches = project.branches + mapOf(it.name to it)
-                      project.copy(branches = updatedBranches).also {
-                          WakaLog.d("""
-                                        Branches in ${project.name} have changed:
-                                        BEFORE ${project.branches}
-                                        AFTER ${it.branches}
-                                    """.trimIndent())
-                      }
+                      project.copy(branches = updatedBranches)
+                  }
+                  .onErrorReturn {
+                      val noRepoException = (it as? CompositeException)
+                            ?.exceptions
+                            ?.findInstance<HttpException>()
+                            ?: it as? HttpException
+                      val isRepoMissing = noRepoException?.code() == HttpURLConnection.HTTP_FORBIDDEN
+                      project.copy(isRepoConnected = !isRepoMissing)
                   }
         }
         return Observable.concatArray(projectObservable, projectWithBranchesObservable, projectWithCommitsObservable)

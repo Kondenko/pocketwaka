@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.android.DateFormatter
@@ -69,7 +70,8 @@ class SummaryAdapter(
             TimeTrackedViewHolder(view, createSkeleton(view))
         }
         ViewType.ProjectsTitle -> {
-            ProjectsTitleViewHolder(inflate(R.layout.item_summary_projects_title, parent))
+            val view = inflate(R.layout.item_summary_projects_title, parent)
+            ProjectsTitleViewHolder(view)
         }
         ViewType.ProjectItem -> {
             val view = inflate(R.layout.item_summary_project, parent)
@@ -182,11 +184,13 @@ class SummaryAdapter(
             val project = item.model
             branchesAdapter.items = project.branches.values.flatMap { branch ->
                 listOf(branch) + branch.commits.let {
-                    if (project.isRepoConnected && it?.isEmpty() == true) listOf(NoCommitsLabel) else it ?: emptyList()
+                    if (project.isRepoConnected && it?.isEmpty() == true) listOf(NoCommitsLabel) else it
+                          ?: emptyList()
                 }
             }
-            if (onlyUpdateBranches) return
             with(itemView) {
+                relativelayout_connect_repo.isVisible = !project.isRepoConnected
+                if (onlyUpdateBranches) return
                 textview_summary_project_name.text = project.name
                 textview_summary_project_time.text = dateFormatter.secondsToHumanReadableTime(project.totalSeconds)
                 textview_summary_project_name.limitWidthBy(textview_summary_project_time)
@@ -197,10 +201,12 @@ class SummaryAdapter(
                     button_summary_project_connect_repo.setOnClickListener {
                         connectRepoClicks.onNext(repoUrl)
                     }
+                } ?: forEach(
+                      button_summary_project_connect_repo,
+                      button_summary_project_connect_repo
+                ) {
+                    it?.isGone = true
                 }
-                      ?: forEach(button_summary_project_connect_repo, button_summary_project_connect_repo) {
-                          it?.isGone = true
-                      }
                 recyclerview_summary_project_commits.adapter = branchesAdapter
 /*
                 TODO Make sure it works after bringing back skeletons in FragmenSummary
