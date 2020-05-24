@@ -12,7 +12,6 @@ import com.kondenko.pocketwaka.domain.summary.model.Branch
 import com.kondenko.pocketwaka.domain.summary.model.Commit
 import com.kondenko.pocketwaka.domain.summary.model.Project
 import com.kondenko.pocketwaka.utils.SchedulersContainer
-import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.extensions.concatMapEagerDelayError
 import com.kondenko.pocketwaka.utils.extensions.findInstance
@@ -61,7 +60,7 @@ class FetchBranchesAndCommits(
                   }
         }
         val projectWithCommitsObservable: Observable<Project> = projectWithBranchesObservable.flatMap { project ->
-            Observable.fromIterable(project.branches.values.also { WakaLog.d("Fetching commits for $it ($date)") })
+            Observable.fromIterable(project.branches.values)
                   .concatMapEagerDelayError { branch ->
                       getCommits(date, token, projectName, branch.name)
                             .map { KOptional.of(it) }
@@ -100,12 +99,8 @@ class FetchBranchesAndCommits(
                 .subscribeOn(schedulersContainer.workerScheduler)
                 .flatMap { it.toObservable() }
                 .filter { it.getLocalDate() == date }
-// TODO Don't load ALL the commits
-//                .takeUntil {
-//                    (it.getLocalDate().isBefore(date)).apply {
-//                        WakaLog.d("Stop loading commits at $it")
-//                    }
-//                }
+                // TODO Uncomment and test if this works
+                // .takeUntil { it.getLocalDate().isBefore(date) }
                 .map { it.toUiModel() }
                 .toList()
                 .toObservable()

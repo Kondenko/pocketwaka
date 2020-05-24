@@ -16,53 +16,12 @@ class SummaryResponseConverter : (SummaryRepository.Params, SummaryDbModel, Summ
                 isEmpty = first.isEmpty == true || second.isEmpty == true,
                 isAccountEmpty = first.isAccountEmpty == true || second.isAccountEmpty == true,
                 isFromCache = first.isFromCache || second.isFromCache,
-                data = first.data merge second.data
+                data = first.data merge second.data // This is where projects with different lists of commits replace one another
           )
 
-
-    // TODO Make sure projects order is retained
-/*
     private infix fun List<SummaryUiModel>.merge(other: List<SummaryUiModel>): List<SummaryUiModel> =
           (other.reversed() + this.reversed())
                 .distinctBy { if (it is ProjectItem) it.model.name else it }
                 .reversed()
-                .also {
-                    WakaLog.d("Merging projects:\nOLD: ${this.projects()}\nNEW: ${other.projects()}\nRESULT: ${it.projects()}")
-                }
-*/
-
-    // TODO This is where projects with different lists of commits replace one another
-    private infix fun List<SummaryUiModel>.merge(other: List<SummaryUiModel>): List<SummaryUiModel> {
-        val newList = mutableListOf<SummaryUiModel>()
-        forEach { item ->
-            val projectInOtherList = (item as? ProjectItem)?.projectInOtherList(other)
-            if (item !is ProjectItem || projectInOtherList == null) {
-                newList.add(item)
-            }
-        }
-        other.forEach {
-            val projectInOtherList = (it as? ProjectItem)?.projectInOtherList(this)
-            if (it is ProjectItem && projectInOtherList != null) {
-                newList.add(ProjectItem(it.model))
-            } else {
-                newList.add(it)
-            }
-        }
-        return newList.also {
-             // WakaLog.d("Merging projects:\nOLD: ${this.projects()}\nNEW: ${other.projects()}\nRESULT: ${it.projects()}")
-        }
-    }
-
-
-    fun ProjectItem.projectInOtherList(other: List<SummaryUiModel>) =
-          other.filterIsInstance<ProjectItem>().find { this.model.name == it.model.name }
-
-    private fun List<SummaryUiModel>.projects() = filterIsInstance<ProjectItem>()
-          .map { it.model }
-          .map {
-                """${it.name}:
-                    ${it.branches.map { (k, v) -> k to v.commits?.map { it.message } }.joinToString("\n") }
-                """.trimMargin()
-          }
 
 }
