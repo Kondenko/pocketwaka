@@ -23,8 +23,6 @@
             android:id="@+id/recyclerview_summary_project_commits"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/padding_summary_project_card_vertical"
-            android:paddingBottom="@dimen/padding_summary_project_card_vertical"
             android:overScrollMode="never"
             android:descendantFocusability="blocksDescendants"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

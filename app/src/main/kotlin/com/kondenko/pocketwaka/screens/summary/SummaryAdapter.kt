@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.domain.summary.model.*
@@ -189,6 +191,7 @@ class SummaryAdapter(
                 }
             }
             with(itemView) {
+                recyclerview_summary_project_commits.showPadding(!project.branches.isNullOrEmpty())
                 relativelayout_connect_repo.isVisible = !project.isRepoConnected
                 if (onlyUpdateBranches) return
                 textview_summary_project_name.text = project.name
@@ -223,6 +226,15 @@ class SummaryAdapter(
                 }
 */
             }
+        }
+
+        private fun RecyclerView.showPadding(show: Boolean) {
+            val padding = if (show) {
+                context.resources.getDimension(R.dimen.padding_summary_project_card_vertical)
+            } else {
+                0f
+            }.roundToInt()
+            updatePadding(bottom = padding)
         }
 
     }
