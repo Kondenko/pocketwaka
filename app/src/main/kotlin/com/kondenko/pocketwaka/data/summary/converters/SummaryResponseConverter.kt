@@ -4,8 +4,6 @@ import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel.ProjectItem
-import com.kondenko.pocketwaka.domain.summary.model.mergeBranches
-import com.kondenko.pocketwaka.utils.WakaLog
 
 /**
  * Converts [com.kondenko.pocketwaka.data.summary.service.SummaryService]'s response to a DbModel.
@@ -22,7 +20,7 @@ class SummaryResponseConverter : (SummaryRepository.Params, SummaryDbModel, Summ
           )
 
 
-    // TODO Make sure projects order is maintained
+    // TODO Make sure projects order is retained
 /*
     private infix fun List<SummaryUiModel>.merge(other: List<SummaryUiModel>): List<SummaryUiModel> =
           (other.reversed() + this.reversed())
@@ -51,7 +49,7 @@ class SummaryResponseConverter : (SummaryRepository.Params, SummaryDbModel, Summ
             }
         }
         return newList.also {
-             WakaLog.d("Merging projects:\nOLD: ${this.projects()}\nNEW: ${other.projects()}\nRESULT: ${it.projects()}")
+             // WakaLog.d("Merging projects:\nOLD: ${this.projects()}\nNEW: ${other.projects()}\nRESULT: ${it.projects()}")
         }
     }
 
@@ -62,8 +60,9 @@ class SummaryResponseConverter : (SummaryRepository.Params, SummaryDbModel, Summ
     private fun List<SummaryUiModel>.projects() = filterIsInstance<ProjectItem>()
           .map { it.model }
           .map {
-              "${it.name} (${it.branches.size} branches, ${it.branches.values.sumBy { it.commits?.size ?: 0 }} commits)"
+                """${it.name}:
+                    ${it.branches.map { (k, v) -> k to v.commits?.map { it.message } }.joinToString("\n") }
+                """.trimMargin()
           }
 
 }
-

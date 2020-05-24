@@ -32,7 +32,7 @@ val networkModule = module {
         HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
             override fun log(message: String) = WakaLog.d(message)
         }).apply {
-            setLevel(HttpLoggingInterceptor.Level.BASIC)
+            setLevel(HttpLoggingInterceptor.Level.BODY)
         }
     }
     single {
@@ -44,17 +44,12 @@ val networkModule = module {
               .connectTimeout(15, TimeUnit.SECONDS)
               .readTimeout(30, TimeUnit.SECONDS)
               .addNetworkInterceptor {
+                  // TODO Does not work
                   val maxAgeSec = TimeUnit.MINUTES.toSeconds(2) // read from cache for 60 seconds even if there is internet connection
                   it.proceed(it.request()).newBuilder()
                         .header("Cache-Control", "public, max-age=$maxAgeSec")
                         .removeHeader("Pragma")
                         .build()
-              }
-              .addNetworkInterceptor {
-                  it.proceed(it.request()).also {
-                      val wasCached = it.cacheResponse != null
-                      WakaLog.v("CACHED = $wasCached (${it.request.url})")
-                  }
               }
               .cache(get())
               .addNetworkInterceptor(UnauthorizedAccessInterceptor())

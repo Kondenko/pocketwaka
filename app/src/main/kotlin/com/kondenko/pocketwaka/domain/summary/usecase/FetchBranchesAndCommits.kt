@@ -14,6 +14,8 @@ import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.extensions.concatMapEagerDelayError
+import com.kondenko.pocketwaka.utils.rx.scanMap
+import com.kondenko.pocketwaka.utils.types.KOptional
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.toObservable
@@ -49,7 +51,7 @@ class FetchBranchesAndCommits(
                     repositoryUrl = connectRepoLink(projectName)
               )
         )
-        // TODO Total time branches doesn't match project's time
+        // TODO Total time in branches doesn't match project's time
         val projectWithBranchesObservable: Observable<Project> = projectObservable.flatMap { project ->
             getBranches(date, token, projectName)
                   .toObservable()
@@ -58,19 +60,21 @@ class FetchBranchesAndCommits(
                   }
         }
         val projectWithCommitsObservable: Observable<Project> = projectWithBranchesObservable.flatMap { project ->
-            Observable.fromIterable(project.branches.values)
+            Observable.fromIterable(project.branches.values.also { WakaLog.d("Fetching commits for $it ($date)") })
                   .concatMapEagerDelayError { branch ->
                       getCommits(date, token, projectName, branch.name)
                             .onErrorReturn {
-                                // TODO Add actual implementation of this
+                                // TODO Add actual implementation of this (use HttpException.code() == 403)
                                 val isRepoConnected = (it as? HttpException)?.code() != HttpURLConnection.HTTP_FORBIDDEN
                                 WakaLog.d("Repo connected for $projectName == $isRepoConnected")
                                 emptyList()
                             }
-                            .map { newCommits ->
-                                // TODO Ensure commit list consistency over different dates
-                                val updatedCommits = branch.commits?.let { it + newCommits } ?: newCommits
-                                branch.copy(commits = updatedCommits).also {
+                            .map { KOptional.of(it) }
+                            .scanMap(KOptional.empty()) { prevCommits, newCommits ->
+                                KOptional.of(prevCommits.orElse(emptyList()) + newCommits.orElse(emptyList()))
+                            }
+                            .map { commits ->
+                                branch.copy(commits = commits.item).also {
                                     WakaLog.d("""
                                         Commits in ${branch.name} have changed:
                                         BEFORE ${branch.commits?.map { it.message }?.joinToString()}

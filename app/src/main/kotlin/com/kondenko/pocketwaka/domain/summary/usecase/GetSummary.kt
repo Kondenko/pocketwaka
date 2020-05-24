@@ -19,7 +19,7 @@ import com.kondenko.pocketwaka.utils.extensions.dailyRangeTo
 import com.kondenko.pocketwaka.utils.extensions.startWithIfNotEmpty
 import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.rxkotlin.zip
+import io.reactivex.rxkotlin.combineLatest
 import org.threeten.bp.LocalDate
 import java.util.concurrent.TimeUnit
 
@@ -74,21 +74,21 @@ class GetSummary(
     private fun convert(tokenHeader: String, params: SummaryRepository.Params, data: SummaryData): Observable<SummaryDbModel> {
         val timeTrackedSource = timeTrackedConverter(params, data).toObservable()
         val dates = params.dateRange.run { start dailyRangeTo end }
-        val projects: List<Observable<Project>> = data.projects.map { fetchAllDataForDate(tokenHeader, it, dates) }
+        val projects: List<Observable<Project>> = data.projects
+              .map { fetchAllDataForDate(tokenHeader, it, dates) }
         val projectObservables = Observable.merge(projects)
-                  .map { SummaryUiModel.ProjectItem(it) }
-                  .cast(SummaryUiModel::class.java)
-                  .startWithIfNotEmpty(SummaryUiModel.ProjectsTitle)
-                  .map {
-                      SummaryDbModel(params.dateRange.hashCode().toLong(), data = listOf(it))
-                  }
+              .map { SummaryUiModel.ProjectItem(it) }
+              .cast(SummaryUiModel::class.java)
+              .startWithIfNotEmpty(SummaryUiModel.ProjectsTitle)
+              .map {
+                  SummaryDbModel(params.dateRange.hashCode().toLong(), data = listOf(it))
+              }
         return projectObservables.startWith(timeTrackedSource)
     }
 
     private fun fetchAllDataForDate(tokenHeader: String, project: StatsEntity, dates: List<LocalDate>) =
           dates.map {
               fetchBranchesAndCommits.build(FetchBranchesAndCommits.Params(tokenHeader, DateRange.SingleDay(it), project))
-          }.zip { it.reduce { a, b -> a.mergeBranches(b) } }
-
+          }.combineLatest { it.reduce(Project::mergeBranches) }
 
 }
