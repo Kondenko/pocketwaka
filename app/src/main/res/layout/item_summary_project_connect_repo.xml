@@ -33,7 +33,7 @@
 
     <ImageButton
         android:id="@+id/button_summary_project_connect_repo"
-        android:background="?attr/selectableItemBackground"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_width="@dimen/size_summary_icon_connect_repo"
         android:layout_height="@dimen/size_summary_icon_connect_repo"
         android:src="@drawable/ic_add_repository"

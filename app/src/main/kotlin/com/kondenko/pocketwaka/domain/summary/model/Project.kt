@@ -7,7 +7,7 @@ data class Project(
       val totalSeconds: Long,
       val isRepoConnected: Boolean = true,
       val branches: Map<String, Branch>,
-      val repositoryUrl: String?
+      val repositoryUrl: String
 )
 
 

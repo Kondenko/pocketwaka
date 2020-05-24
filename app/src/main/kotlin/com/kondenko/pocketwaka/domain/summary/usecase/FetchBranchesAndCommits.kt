@@ -1,5 +1,6 @@
 package com.kondenko.pocketwaka.domain.summary.usecase
 
+import android.net.Uri
 import com.kondenko.pocketwaka.data.android.DateFormatter
 import com.kondenko.pocketwaka.data.branches.DurationsRepository
 import com.kondenko.pocketwaka.data.branches.model.DurationsServerModel
@@ -32,8 +33,6 @@ class FetchBranchesAndCommits(
       private val commitsRepository: CommitsRepository,
       private val dateFormatter: DateFormatter
 ) : UseCaseObservable<FetchBranchesAndCommits.Params, Project>(schedulersContainer) {
-
-    private val noRepoError = "This project is not associated with a repository"
 
     data class Params(val tokenHeader: String, val date: DateRange.SingleDay, val project: StatsEntity)
 
@@ -120,7 +119,7 @@ class FetchBranchesAndCommits(
 
     private fun CommitServerModel.toUiModel() = Commit(hash, message, totalSeconds.toLong())
 
-    private fun connectRepoLink(project: String) = "https://wakatime.com/projects/$project/edit"
+    private fun connectRepoLink(project: String) = "https://wakatime.com/projects/${Uri.encode(project)}/edit"
 
     private fun CommitServerModel.getLocalDate() = LocalDate.parse(authorDate, DateTimeFormatter.ISO_DATE_TIME)
 

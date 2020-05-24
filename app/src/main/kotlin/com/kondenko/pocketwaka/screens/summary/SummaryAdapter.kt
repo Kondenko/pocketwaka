@@ -22,7 +22,6 @@ import com.kondenko.pocketwaka.utils.createAdapter
 import com.kondenko.pocketwaka.utils.diffutil.SimpleCallback
 import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
 import com.kondenko.pocketwaka.utils.extensions.findInstance
-import com.kondenko.pocketwaka.utils.extensions.forEach
 import com.kondenko.pocketwaka.utils.extensions.limitWidthBy
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
 import io.reactivex.Observable
@@ -192,25 +191,25 @@ class SummaryAdapter(
             }
             with(itemView) {
                 recyclerview_summary_project_commits.showPadding(!project.branches.isNullOrEmpty())
+                
                 relativelayout_connect_repo.isVisible = !project.isRepoConnected
+
                 if (onlyUpdateBranches) return
+
                 textview_summary_project_name.text = project.name
                 textview_summary_project_time.text = dateFormatter.secondsToHumanReadableTime(project.totalSeconds)
                 textview_summary_project_name.limitWidthBy(textview_summary_project_time)
-                project.repositoryUrl?.let { repoUrl ->
-                    setOnClickListener {
-                        button_summary_project_connect_repo.performClick()
-                    }
-                    button_summary_project_connect_repo.setOnClickListener {
-                        connectRepoClicks.onNext(repoUrl)
-                    }
-                } ?: forEach(
-                      button_summary_project_connect_repo,
-                      button_summary_project_connect_repo
-                ) {
-                    it?.isGone = true
+
+                val connectRepoButton = relativelayout_connect_repo.button_summary_project_connect_repo
+                relativelayout_connect_repo.setOnClickListener {
+                    connectRepoButton.performClick()
                 }
+                connectRepoButton.setOnClickListener {
+                    connectRepoClicks.onNext(project.repositoryUrl)
+                }
+
                 recyclerview_summary_project_commits.adapter = branchesAdapter
+
 /*
                 TODO Make sure it works after bringing back skeletons in FragmenSummary
                 if (showSkeleton) {
