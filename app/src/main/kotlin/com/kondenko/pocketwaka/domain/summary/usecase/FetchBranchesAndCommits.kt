@@ -51,14 +51,14 @@ class FetchBranchesAndCommits(
                     repositoryUrl = connectRepoLink(projectName)
               )
         )
-        val projectWithBranchesObservable: Observable<Project> = projectObservable.flatMap { project ->
+        val projectWithBranchesObservable: Observable<Project> = projectObservable.concatMapEagerDelayError { project ->
             getBranches(date, token, projectName)
                   .toObservable()
                   .map { branches ->
                       project.copy(branches = branches.associateBy { it.name })
                   }
         }
-        val projectWithCommitsObservable: Observable<Project> = projectWithBranchesObservable.flatMap { project ->
+        val projectWithCommitsObservable: Observable<Project> = projectWithBranchesObservable.concatMapEagerDelayError { project ->
             Observable.fromIterable(project.branches.values)
                   .concatMapEagerDelayError { branch ->
                       getCommits(date, token, projectName, branch.name)
@@ -83,7 +83,7 @@ class FetchBranchesAndCommits(
                       project.copy(isRepoConnected = !isRepoMissing)
                   }
         }
-        return Observable.concatArray(projectObservable, projectWithBranchesObservable, projectWithCommitsObservable)
+        return Observable.concatArrayEagerDelayError(projectObservable, projectWithBranchesObservable, projectWithCommitsObservable)
     }
 
     private fun getBranches(date: LocalDate, token: String, projectName: String): Single<List<Branch>> =

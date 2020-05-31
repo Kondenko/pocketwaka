@@ -4,6 +4,7 @@ import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel.ProjectItem
+import com.kondenko.pocketwaka.utils.extensions.appendOrReplace
 
 /**
  * Converts [com.kondenko.pocketwaka.data.summary.service.SummaryService]'s response to a DbModel.
@@ -20,8 +21,12 @@ class SummaryResponseConverter : (SummaryRepository.Params, SummaryDbModel, Summ
           )
 
     private infix fun List<SummaryUiModel>.merge(other: List<SummaryUiModel>): List<SummaryUiModel> =
-          (other.reversed() + this.reversed())
-                .distinctBy { if (it is ProjectItem) it.model.name else it }
-                .reversed()
-
+          appendOrReplace(other) {
+              when (it) {
+                  is SummaryUiModel.Status -> it
+                  is SummaryUiModel.TimeTracked -> it
+                  is SummaryUiModel.ProjectsTitle -> it
+                  is ProjectItem -> it.model.name
+              }
+          }
 }

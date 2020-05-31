@@ -17,7 +17,6 @@ import com.kondenko.pocketwaka.BuildConfig
 import io.reactivex.Single
 import org.threeten.bp.LocalDate
 import timber.log.Timber
-import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -132,3 +131,8 @@ infix fun LocalDate.dailyRangeTo(other: LocalDate): List<LocalDate> {
 }
 
 inline fun <reified R> Iterable<*>.findInstance(): R? = find { it is R } as R
+
+fun <T, R> List<T>.appendOrReplace(other: List<T>, keySelector: (T) -> R): List<T> =
+      (other.reversed() + this.reversed())
+            .distinctBy { keySelector(it) }
+            .reversed()

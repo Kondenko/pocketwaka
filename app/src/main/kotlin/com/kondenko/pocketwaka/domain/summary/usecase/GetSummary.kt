@@ -67,16 +67,16 @@ class GetSummary(
                 }
                 .subscribeOn(schedulers.workerScheduler)
 
-
     /**
      * Fetches the time tracked for the specified period of time and for each project individually.
      */
     private fun convert(tokenHeader: String, params: SummaryRepository.Params, data: SummaryData): Observable<SummaryDbModel> {
         val timeTrackedSource = timeTrackedConverter(params, data).toObservable()
         val dates = params.dateRange.run { start dailyRangeTo end }
-        val projects: List<Observable<Project>> = data.projects
+        val projects = data.projects
               .map { fetchAllDataForDate(tokenHeader, it, dates) }
-        val projectObservables = Observable.merge(projects)
+              .toTypedArray()
+        val projectObservables = Observable.concatArrayEagerDelayError(*projects)
               .map { SummaryUiModel.ProjectItem(it) }
               .cast(SummaryUiModel::class.java)
               .startWithIfNotEmpty(SummaryUiModel.ProjectsTitle)
