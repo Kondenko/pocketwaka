@@ -43,14 +43,6 @@ val networkModule = module {
         OkHttpClient.Builder()
               .connectTimeout(15, TimeUnit.SECONDS)
               .readTimeout(30, TimeUnit.SECONDS)
-              .addNetworkInterceptor {
-                  // TODO Does not work
-                  val maxAgeSec = TimeUnit.MINUTES.toSeconds(2) // read from cache for 60 seconds even if there is internet connection
-                  it.proceed(it.request()).newBuilder()
-                        .header("Cache-Control", "public, max-age=$maxAgeSec")
-                        .removeHeader("Pragma")
-                        .build()
-              }
               .cache(get())
               .addNetworkInterceptor(UnauthorizedAccessInterceptor())
               .addLoggingInterceptor(get<HttpLoggingInterceptor>())
