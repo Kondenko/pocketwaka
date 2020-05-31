@@ -84,7 +84,7 @@ class FragmentDatePicker : Fragment() {
         setupButtons()
         setupCalendar(behavior, view.context)
         vm.calendarInvalidationEvents().observe(viewLifecycleOwner) {
-            // TODO Only update changed days
+            // (secondary) TODO Only update changed days
             calendar_datepicker.notifyCalendarChanged()
         }
         vm.closeEvents().observe(viewLifecycleOwner) {

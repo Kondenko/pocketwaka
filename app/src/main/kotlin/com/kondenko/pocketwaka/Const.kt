@@ -6,7 +6,7 @@ const val databaseVersion = 2
 
 const val alphaDisabledView: Float = 0.5f
 
-// TODO Remove top Const object
+// (secondary) TODO Remove top Const object
 object Const {
 
     const val DEFAULT_ANIM_DURATION: Long = 400

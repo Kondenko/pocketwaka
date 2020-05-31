@@ -51,7 +51,6 @@ class FetchBranchesAndCommits(
                     repositoryUrl = connectRepoLink(projectName)
               )
         )
-        // TODO Total time in branches doesn't match project's time
         val projectWithBranchesObservable: Observable<Project> = projectObservable.flatMap { project ->
             getBranches(date, token, projectName)
                   .toObservable()
@@ -99,7 +98,7 @@ class FetchBranchesAndCommits(
                 .subscribeOn(schedulersContainer.workerScheduler)
                 .flatMap { it.toObservable() }
                 .filter { it.getLocalDate() == date }
-                // TODO Uncomment and test if this works
+                // (secondary) TODO Uncomment and test if this works
                 // .takeUntil { it.getLocalDate().isBefore(date) }
                 .map { it.toUiModel() }
                 .toList()
