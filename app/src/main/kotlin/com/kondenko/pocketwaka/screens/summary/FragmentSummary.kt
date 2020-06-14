@@ -13,6 +13,7 @@ import com.kondenko.pocketwaka.analytics.Event
 import com.kondenko.pocketwaka.analytics.EventTracker
 import com.kondenko.pocketwaka.analytics.Screen
 import com.kondenko.pocketwaka.domain.summary.model.Branch
+import com.kondenko.pocketwaka.domain.summary.model.Commit
 import com.kondenko.pocketwaka.domain.summary.model.Project
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.screens.ScreenStatus
@@ -52,24 +53,23 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
 
     override val stateFragment = SummaryStateFragment()
 
-    private val projectSkeleton = listOf(Project(
+    private val commit = Commit("", "", 0)
+
+    private val projectSkeleton = Project(
           name = "",
           totalSeconds = 0,
           isRepoConnected = true,
           repositoryUrl = "",
-          branches = mapOf(
-                "" to Branch("", 0, emptyList()),
-                "" to Branch("", 0, emptyList()),
-                "" to Branch("", 0, emptyList())
+          branches = mapOf("" to Branch("", 0, listOf(commit, commit, commit))
           )
-    ).let(SummaryUiModel::ProjectItem))
+    ).let(SummaryUiModel::ProjectItem)
 
-    private val skeletonItems = listOf(
+    private val skeletonItems: List<SummaryUiModel> = listOf(
           SummaryUiModel.TimeTracked("", 1),
-          SummaryUiModel.ProjectsTitle
-          // TODO Bring these items back and fix the crash occurring because of them
-//          projectSkeleton,
-//          projectSkeleton
+          SummaryUiModel.ProjectsTitle,
+          projectSkeleton,
+          projectSkeleton,
+          projectSkeleton
     )
 
     override fun onAttach(context: Context) {

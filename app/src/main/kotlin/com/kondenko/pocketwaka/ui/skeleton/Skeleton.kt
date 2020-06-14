@@ -19,7 +19,8 @@ class Skeleton(
       private val context: Context,
       private val root: View? = null,
       private val skeletonBackground: Drawable = context.getDrawable(R.drawable.all_skeleton)
-            ?: ColorDrawable(Color.TRANSPARENT)
+            ?: ColorDrawable(Color.TRANSPARENT),
+      private var onSkeletonShown: ((Boolean) -> Unit)? = null
 ) {
 
     private data class InitialState(
@@ -33,8 +34,6 @@ class Skeleton(
     private val pulseAnimations: MutableSet<ValueAnimator> = mutableSetOf()
 
     private val initialStates: MutableMap<View, InitialState> by lazy { findViews(root) }
-
-    private var onSkeletonShown: ((Boolean) -> Unit)? = null
 
     var isShown: Boolean = false
         private set

@@ -76,7 +76,7 @@ class SummaryAdapter(
         }
         ViewType.ProjectItem -> {
             val view = inflate(R.layout.item_summary_project, parent)
-            ProjectsViewHolder(view, provideBranchAdapter(), createSkeleton(view))
+            ProjectsViewHolder(view, createSkeleton(view))
         }
         else -> throw IllegalViewTypeException()
     }
@@ -92,7 +92,7 @@ class SummaryAdapter(
         }
     }
 
-    // TODO Fix jerky update animations
+    // (secondary) TODO Fix jerky update animations
     override fun getDiffCallback(oldList: List<SummaryUiModel>, newList: List<SummaryUiModel>): DiffUtil.Callback {
         return SimpleCallback(
               oldList, newList,
@@ -113,6 +113,9 @@ class SummaryAdapter(
             }
             view.linearlayout_delta_container?.run {
                 y += 32f.adjustValue(isSkeleton).roundToInt()
+            }
+            view.textview_summary_project_name?.run {
+                y += 4f.adjustValue(isSkeleton)
             }
         }
     }
@@ -172,9 +175,10 @@ class SummaryAdapter(
 
     inner class ProjectsViewHolder(
           view: View,
-          private val branchesAdapter: BaseAdapter<ProjectInternalListItem, *>,
           private val skeleton: Skeleton?
     ) : ViewHolder<ProjectItem>(view, skeleton) {
+
+        private val branchesAdapter: BaseAdapter<ProjectInternalListItem, *> = provideBranchAdapter()
 
         override fun bind(item: ProjectItem) {
             bind(item, false)
@@ -184,14 +188,15 @@ class SummaryAdapter(
             super.bind(item)
             val project = item.model
             branchesAdapter.items = project.branches.values.flatMap { branch ->
-                listOf(branch) + branch.commits.let {
+                val branchItem = if (showSkeleton) emptyList() else listOf(branch)
+                branchItem + branch.commits.let {
                     if (project.isRepoConnected && it?.isEmpty() == true) listOf(NoCommitsLabel) else it
                           ?: emptyList()
                 }
             }
             with(itemView) {
                 recyclerview_summary_project_commits.showPadding(!project.branches.isNullOrEmpty())
-                
+
                 relativelayout_connect_repo.isVisible = !project.isRepoConnected
 
                 if (onlyUpdateBranches) return
@@ -209,21 +214,6 @@ class SummaryAdapter(
                 }
 
                 recyclerview_summary_project_commits.adapter = branchesAdapter
-
-/*
-                TODO Make sure it works after bringing back skeletons in FragmenSummary
-                if (showSkeleton) {
-                    skeleton { view ->
-                        Skeleton(context, view).apply {
-                            onSkeletonShown { isSkeleton ->
-                                view.textview_summary_project_name?.run {
-                                    y += 4f.adjustValue(isSkeleton)
-                                }
-                            }
-                        }
-                    }
-                }
-*/
             }
         }
 
@@ -236,20 +226,25 @@ class SummaryAdapter(
             updatePadding(bottom = padding)
         }
 
-    }
+        private fun provideBranchAdapter() = createAdapter<ProjectInternalListItem>(context) {
+            viewHolder<Branch>(R.layout.item_summary_project_branch) { item, _ ->
+                textview_summary_project_branch.text = item.name
+                textview_summary_project_branch_time.text = dateFormatter.secondsToHumanReadableTime(item.totalSeconds)
+                textview_summary_project_branch.limitWidthBy(textview_summary_project_branch_time)
+            }
+            viewHolder<Commit>(R.layout.item_summary_project_commit) { item, _ ->
+                textview_summary_project_commit_message.text = item.message
+                textview_summary_project_commit_time.text = dateFormatter.secondsToHumanReadableTime(item.totalSeconds)
+                textview_summary_project_commit_message.limitWidthBy(textview_summary_project_commit_time)
+            }
+            viewHolder<NoCommitsLabel>(R.layout.item_summary_project_no_commits)
+            if (showSkeleton) {
+                skeleton { view ->
+                    Skeleton(context, view)
+                }
+            }
+        }
 
-    private fun provideBranchAdapter() = createAdapter<ProjectInternalListItem>(context) {
-        viewHolder<Branch>(R.layout.item_summary_project_branch) { item, _ ->
-            textview_summary_project_branch.text = item.name
-            textview_summary_project_branch_time.text = dateFormatter.secondsToHumanReadableTime(item.totalSeconds)
-            textview_summary_project_branch.limitWidthBy(textview_summary_project_branch_time)
-        }
-        viewHolder<Commit>(R.layout.item_summary_project_commit) { item, _ ->
-            textview_summary_project_commit_message.text = item.message
-            textview_summary_project_commit_time.text = dateFormatter.secondsToHumanReadableTime(item.totalSeconds)
-            textview_summary_project_commit_message.limitWidthBy(textview_summary_project_commit_time)
-        }
-        viewHolder<NoCommitsLabel>(R.layout.item_summary_project_no_commits)
     }
 
 }
