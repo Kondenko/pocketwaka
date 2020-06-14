@@ -133,6 +133,9 @@ dependencies {
 
     // androidKtx
     implementation "androidx.core:core-ktx:${versions.ktx}"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
 
     // support
     implementation "androidx.appcompat:appcompat:${versions.appcompat}"
@@ -159,7 +162,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
     implementation "com.squareup.retrofit2:adapter-rxjava2:${versions.retrofit}"
-    implementation("com.squareup.okhttp3:logging-interceptor:4.6.0")
+    implementation('com.squareup.okhttp3:logging-interceptor:4.7.2')
 
     // smartTabLayout
     implementation "com.ogaclejapan.smarttablayout:library:${versions.smartTabLayout}@aar"
