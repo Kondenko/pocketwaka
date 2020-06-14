@@ -41,7 +41,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/container_summary_date_picker"
-            android:name="com.kondenko.pocketwaka.FragmentDatePicker"
+            android:name="com.kondenko.pocketwaka.screens.FragmentDatePicker"
             android:tag="@string/summary_tag_fragment_date_picker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

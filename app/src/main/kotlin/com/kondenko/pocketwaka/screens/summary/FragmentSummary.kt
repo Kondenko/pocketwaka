@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.lifecycle.observe
+import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.analytics.Event
 import com.kondenko.pocketwaka.analytics.EventTracker
@@ -19,7 +21,6 @@ import com.kondenko.pocketwaka.screens.base.BaseFragment
 import com.kondenko.pocketwaka.utils.BrowserWindow
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.DateRange
-import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.toListOrEmpty
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_summary.*
@@ -38,6 +39,7 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
         fun create(date: DateRange) = FragmentSummary().apply {
             arguments = bundleOf(KEY_DATE to date)
         }
+
     }
 
     private val vm: SummaryViewModel by viewModel { parametersOf(arguments?.getParcelable(KEY_DATE)) }
@@ -83,6 +85,9 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupList(view)
+        vm.premiumFeaturesAvailable().observe(viewLifecycleOwner) {
+            WakaLog.d("Premium available: $it")
+        }
         vm.state().observe(viewLifecycleOwner) {
             // WakaLog.d("New summary state: $it")
             if (it is State.Empty) {
@@ -107,7 +112,7 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
         vm.updateDataIfRepoHasBeenConnected()
     }
 
-    override fun getDataView() = recyclerview_summary
+    override fun getDataView(): RecyclerView = recyclerview_summary
 
     private fun setupList(view: View) {
         with(view.recyclerview_summary) {
