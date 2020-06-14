@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kizitonwose.calendarview.model.CalendarDay
-import com.kondenko.pocketwaka.FragmentDatePicker.DaySelectionState
 import com.kondenko.pocketwaka.data.android.HumanReadableDateFormatter
+import com.kondenko.pocketwaka.screens.FragmentDatePicker.DaySelectionState
 import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.extensions.notNull

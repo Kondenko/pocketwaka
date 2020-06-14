@@ -9,10 +9,10 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
-import com.kondenko.pocketwaka.FragmentDatePicker
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.analytics.Screen
 import com.kondenko.pocketwaka.analytics.ScreenTracker
+import com.kondenko.pocketwaka.screens.FragmentDatePicker
 import com.kondenko.pocketwaka.screens.menu.FragmentMenu
 import com.kondenko.pocketwaka.screens.stats.FragmentStatsContainer
 import com.kondenko.pocketwaka.screens.summary.FragmentSummaryContainer

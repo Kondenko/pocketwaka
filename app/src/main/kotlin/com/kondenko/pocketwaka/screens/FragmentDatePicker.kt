@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka
+package com.kondenko.pocketwaka.screens
 
 import android.animation.AnimatorInflater
 import android.animation.ValueAnimator
@@ -20,6 +20,7 @@ import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
+import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.screens.summary.SummaryRangeViewModel
 import com.kondenko.pocketwaka.ui.TopSheetBehavior
 import com.kondenko.pocketwaka.utils.date.DateRange
@@ -57,7 +58,7 @@ class FragmentDatePicker : Fragment() {
 
     // Logic
 
-    private val firstYear = 2013 // The year when Wakatime was created
+    private val firstYear = 2013 // The year Wakatime was created
 
     private val firstMonth = 1
 
@@ -225,7 +226,7 @@ class FragmentDatePicker : Fragment() {
                 0
             }
         }
-        background = (context.getDrawable(com.kondenko.pocketwaka.R.drawable.background_calendar_day) as? LevelListDrawable)?.apply {
+        background = (context.getDrawable(R.drawable.background_calendar_day) as? LevelListDrawable)?.apply {
             level = drawableLevel
         }
         setOnClickListener { vm.onDayClicked(day) }
