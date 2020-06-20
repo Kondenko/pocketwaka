@@ -15,21 +15,28 @@ import androidx.core.view.forEach
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.observe
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
+import com.kizitonwose.calendarview.model.DayOwner.THIS_MONTH
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kondenko.pocketwaka.R
+import com.kondenko.pocketwaka.domain.summary.model.AvailableRange
 import com.kondenko.pocketwaka.screens.summary.SummaryRangeViewModel
 import com.kondenko.pocketwaka.ui.TopSheetBehavior
 import com.kondenko.pocketwaka.utils.date.DateRange
-import com.kondenko.pocketwaka.utils.extensions.*
+import com.kondenko.pocketwaka.utils.date.contains
+import com.kondenko.pocketwaka.utils.extensions.createColorAnimator
+import com.kondenko.pocketwaka.utils.extensions.findViewWithParent
+import com.kondenko.pocketwaka.utils.extensions.forEach
+import com.kondenko.pocketwaka.utils.extensions.getCurrentLocale
 import kotlinx.android.synthetic.main.fragment_date_picker.*
 import kotlinx.android.synthetic.main.item_calendar_day.view.*
 import kotlinx.android.synthetic.main.item_calendar_month.view.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.threeten.bp.MonthDay
+import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
 import org.threeten.bp.format.TextStyle
 import org.threeten.bp.temporal.WeekFields
@@ -64,10 +71,8 @@ class FragmentDatePicker : Fragment() {
 
     private val currentMonth = YearMonth.now()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_date_picker, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+          inflater.inflate(R.layout.fragment_date_picker, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -83,13 +88,20 @@ class FragmentDatePicker : Fragment() {
         )
         contentViews.forEach { it.isVisible = false }
         setupButtons()
-        setupCalendar(behavior, view.context)
+        setupCalendar(behavior, view.context, null)
         vm.calendarInvalidationEvents().observe(viewLifecycleOwner) {
             // (secondary) TODO Only update changed days
             calendar_datepicker.notifyCalendarChanged()
         }
         vm.closeEvents().observe(viewLifecycleOwner) {
             behavior?.state = TopSheetBehavior.STATE_COLLAPSED
+        }
+
+        vm.availableRangeChanges().observe(viewLifecycleOwner) { availableRange ->
+            setupCalendar(behavior, view.context, availableRange)
+            val lockButtons = availableRange != AvailableRange.Unlimited
+            button_summary_last_month.isEnabled = !lockButtons
+            button_summary_last_month.isEnabled = !lockButtons // TODO Unlock if today is less that 2 weeks away from start of month
         }
     }
 
@@ -154,44 +166,54 @@ class FragmentDatePicker : Fragment() {
             vm.onButtonClicked(DateRange.PredefinedRange.LastWeek.range)
             setButtonSelected(it)
         }
-        // TODO Lock if more than 2 weeks passed
         button_summary_this_month.setOnClickListener {
             vm.onButtonClicked(DateRange.PredefinedRange.ThisMonth.range)
             setButtonSelected(it)
         }
-        // TODO Lock for free accounts
         button_summary_last_month.setOnClickListener {
             vm.onButtonClicked(DateRange.PredefinedRange.LastMonth.range)
             setButtonSelected(it)
         }
     }
 
-    private fun setupCalendar(behavior: TopSheetBehavior<*>?, context: Context) = with(calendar_datepicker) {
-        val currentDay = MonthDay.now()
+    private fun setupCalendar(
+          behavior: TopSheetBehavior<*>?,
+          context: Context,
+          availableRange: AvailableRange?
+    ) = with(calendar_datepicker) {
         val firstDayOfWeek = WeekFields.of(context.getCurrentLocale()).firstDayOfWeek
         setup(startMonth = YearMonth.of(firstYear, firstMonth), endMonth = currentMonth, firstDayOfWeek = firstDayOfWeek)
         scrollToMonth(currentMonth)
-        setOnTouchListener { _, _ ->
+        setOnTouchListener { view, event ->
             // Propagate touch events to the bottom sheet when it's collapsed
             behavior == null || behavior.state == TopSheetBehavior.STATE_COLLAPSED
         }
         dayBinder = object : DayBinder<DayViewContainer> {
 
-            override fun create(view: View) = DayViewContainer(view)
+            override fun create(view: View) =
+                  DayViewContainer(view)
 
-            override fun bind(container: DayViewContainer, day: CalendarDay) = bindDay(container, day, currentDay)
+            override fun bind(container: DayViewContainer, day: CalendarDay) =
+                  bindDay(container, day, availableRange)
 
         }
         monthHeaderBinder = object : MonthHeaderFooterBinder<MonthViewContainer> {
 
-            override fun create(view: View) = MonthViewContainer(view)
+            override fun create(view: View) =
+                  MonthViewContainer(view)
 
-            override fun bind(container: MonthViewContainer, month: CalendarMonth) = bindMonth(container, month)
+            override fun bind(container: MonthViewContainer, month: CalendarMonth) =
+                  bindMonth(container, month, availableRange)
 
         }
     }
 
-    private fun bindDay(container: DayViewContainer, day: CalendarDay, currentDay: MonthDay) = with(container.textViewDay) {
+    private fun bindDay(
+          container: DayViewContainer,
+          day: CalendarDay,
+          availableRange: AvailableRange?
+    ) = with(container.textViewDay) {
+        val today = LocalDate.now()
         text = day.date.dayOfMonth.toString()
         val isValidPastDate = day.date.run {
             month.value < currentMonth.monthValue && year == currentMonth.year
@@ -199,11 +221,16 @@ class FragmentDatePicker : Fragment() {
         }
         val isValidInCurrentMonth = day.date.run {
             monthValue == currentMonth.monthValue
-                  && dayOfMonth <= currentDay.dayOfMonth
+                  && dayOfMonth <= today.dayOfMonth
                   && year == currentMonth.year
         }
-        isEnabled = isValidPastDate || isValidInCurrentMonth // TODO Also check if in the 2-week range for free accounts
-        isActivated = day.owner == com.kizitonwose.calendarview.model.DayOwner.THIS_MONTH
+        val isUnlocked = when (availableRange) {
+            null -> false
+            is AvailableRange.Unlimited -> true
+            is AvailableRange.Limited -> day.date in availableRange.date
+        }
+        isActivated = if (isUnlocked) day.run { owner == THIS_MONTH } else false
+        isEnabled = (isValidPastDate || isValidInCurrentMonth) && isUnlocked
         val drawableLevel = when (vm.getSelectionState(day)) {
             DaySelectionState.Single -> {
                 isSelected = true
@@ -229,10 +256,16 @@ class FragmentDatePicker : Fragment() {
         background = (context.getDrawable(R.drawable.background_calendar_day) as? LevelListDrawable)?.apply {
             level = drawableLevel
         }
-        setOnClickListener { vm.onDayClicked(day) }
+        setOnClickListener {
+            vm.onDayClicked(day)
+        }
     }
 
-    private fun bindMonth(container: MonthViewContainer, month: CalendarMonth) = with(container.textViewMonth) {
+    private fun bindMonth(
+          container: MonthViewContainer,
+          month: CalendarMonth,
+          availableRange: AvailableRange?
+    ) = with(container.textViewMonth) {
         text = month.yearMonth.month.getDisplayName(
               TextStyle.FULL,
               context.getCurrentLocale()
@@ -300,12 +333,10 @@ class FragmentDatePicker : Fragment() {
 
     private inner class DayViewContainer(view: View) : ViewContainer(view) {
         val textViewDay: TextView = view.textview_calendar_day
-
     }
 
     private inner class MonthViewContainer(view: View) : ViewContainer(view) {
         val textViewMonth: TextView = view.textview_calendar_month
-
     }
 
 }

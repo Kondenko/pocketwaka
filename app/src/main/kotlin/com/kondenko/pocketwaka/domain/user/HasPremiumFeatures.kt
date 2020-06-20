@@ -11,13 +11,11 @@ class HasPremiumFeatures(
       private val usersRepository: UsersRepository
 ) : UseCaseSingle<Nothing?, Boolean>(schedulersContainer) {
 
-    override fun build(params: Nothing?): Single<Boolean> {
-        return getTokenHeader
-              .build()
-              .flatMap { token ->
-                  usersRepository.getCurrentUser(token)
-                        .map { it.hasPremiumFeatures }
-              }
-    }
+    override fun build(params: Nothing?): Single<Boolean> =
+          getTokenHeader.build()
+                .flatMap { token ->
+                    usersRepository.getCurrentUser(token)
+                          .map { it.hasPremiumFeatures }
+                }
 
 }

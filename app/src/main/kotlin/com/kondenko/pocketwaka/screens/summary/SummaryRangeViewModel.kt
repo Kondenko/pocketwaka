@@ -2,18 +2,29 @@ package com.kondenko.pocketwaka.screens.summary
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kondenko.pocketwaka.data.android.HumanReadableDateFormatter
+import com.kondenko.pocketwaka.domain.summary.model.AvailableRange
+import com.kondenko.pocketwaka.domain.summary.usecase.GetAvailableRange
 import com.kondenko.pocketwaka.screens.FragmentDatePicker.DaySelectionState
+import com.kondenko.pocketwaka.screens.base.BaseViewModel
+import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.extensions.notNull
+import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
 import org.threeten.bp.LocalDate
 
-class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatter: HumanReadableDateFormatter) : ViewModel() {
+class SummaryRangeViewModel(
+      dateProvider: DateProvider,
+      private val dateFormatter: HumanReadableDateFormatter,
+      private val getAvailableRange: GetAvailableRange
+) : BaseViewModel<Nothing>() {
 
     // Events
+
+    private val availableRange = MutableLiveData<AvailableRange>()
 
     private val selectedRange = MutableLiveData<SummaryRangeState>()
 
@@ -34,8 +45,13 @@ class SummaryRangeViewModel(dateProvider: DateProvider, private val dateFormatte
     private val adjacentDatesNumber = 0 // STOPSHIP TODO Change to 2
 
     init {
-        selectDate(today)
+        disposables += getAvailableRange.build()
+              .map { AvailableRange.Unlimited } // STOPSHIP
+              .doOnSuccess { selectDate(today) }
+              .subscribeBy(onSuccess = availableRange::postValue, onError = WakaLog::e)
     }
+
+    fun availableRangeChanges(): LiveData<AvailableRange> = availableRange
 
     fun dateChanges(): LiveData<SummaryRangeState> = selectedRange
 

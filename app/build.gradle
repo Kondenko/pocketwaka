@@ -197,6 +197,7 @@ dependencies {
 
     // calendar
     implementation "com.github.kizitonwose:CalendarView:0.3.4"
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.3'
 
     preReleaseImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
     debugImplementation "com.amitshekhar.android:debug-db:${versions.databaseBrowser}"
@@ -209,8 +210,14 @@ dependencies {
     testImplementation "androidx.test:rules:${versions.testRunner}"
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
     testImplementation "com.nhaarman:mockito-kotlin:${versions.mockitoKotlin}"
-    testImplementation "org.robolectric:robolectric:${versions.robolectric}"
     testImplementation "org.koin:koin-test:${versions.koin}"
+    testImplementation("org.robolectric:robolectric:${versions.robolectric}") {
+        exclude group: 'commons-logging', module: 'commons-logging'
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
+    testImplementation('org.threeten:threetenbp:1.4.2') {
+        exclude group: 'com.jakewharton.threetenabp', module: 'threetenabp'
+    }
 
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: versions.mockito
 

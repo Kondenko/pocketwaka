@@ -85,9 +85,6 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupList(view)
-        vm.premiumFeaturesAvailable().observe(viewLifecycleOwner) {
-            WakaLog.d("Premium available: $it")
-        }
         vm.state().observe(viewLifecycleOwner) {
             // WakaLog.d("New summary state: $it")
             if (it is State.Empty) {

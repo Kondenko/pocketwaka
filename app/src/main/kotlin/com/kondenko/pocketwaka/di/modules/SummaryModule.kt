@@ -12,11 +12,7 @@ import com.kondenko.pocketwaka.di.qualifiers.Scheduler
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.main.ClearCache
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
-import com.kondenko.pocketwaka.domain.summary.usecase.FetchBranchesAndCommits
-import com.kondenko.pocketwaka.domain.summary.usecase.GetAverage
-import com.kondenko.pocketwaka.domain.summary.usecase.GetSummary
-import com.kondenko.pocketwaka.domain.summary.usecase.GetSummaryState
-import com.kondenko.pocketwaka.domain.user.HasPremiumFeatures
+import com.kondenko.pocketwaka.domain.summary.usecase.*
 import com.kondenko.pocketwaka.screens.summary.FragmentSummary
 import com.kondenko.pocketwaka.screens.summary.SummaryAdapter
 import com.kondenko.pocketwaka.screens.summary.SummaryRangeViewModel
@@ -99,17 +95,19 @@ val summaryModule = module {
         }
     }
     factory {
+        GetAvailableRange(get(), get(), get())
+    }
+    factory {
         HumanReadableDateFormatter(get(), get(), get())
     }
     viewModel {
-        SummaryRangeViewModel(get(), get())
+        SummaryRangeViewModel(get(), get(), get())
     }
     viewModel { (date: DateRange) ->
         SummaryViewModel(
               range = date,
               uiScheduler = get(Scheduler.Ui),
-              getSummaryState = get<GetSummaryState>(),
-              hasPremiumFeatures = get<HasPremiumFeatures>()
+              getSummaryState = get<GetSummaryState>()
         )
     }
 }

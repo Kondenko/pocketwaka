@@ -5,6 +5,7 @@ import kotlinx.android.parcel.Parcelize
 import org.threeten.bp.LocalDate
 
 
+// TODO Rename to Date
 sealed class DateRange(open val start: LocalDate, open val end: LocalDate) : Parcelable {
 
     @Parcelize
@@ -42,3 +43,7 @@ sealed class DateRange(open val start: LocalDate, open val end: LocalDate) : Par
     }
 
 }
+
+operator fun DateRange.contains(date: LocalDate) =
+      if (start == end) date == start
+      else date.isAfter(start) && date.isBefore(end)
