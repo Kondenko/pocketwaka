@@ -3,6 +3,7 @@ package com.kondenko.pocketwaka.screens
 import android.animation.AnimatorInflater
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.Typeface
 import android.graphics.drawable.LevelListDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -40,6 +41,14 @@ import org.threeten.bp.format.TextStyle
 import org.threeten.bp.temporal.WeekFields
 
 class FragmentDatePicker : Fragment() {
+
+    companion object {
+
+        private val FONT_DAY_ACTIVE = Typeface.create("sans-serif", Typeface.NORMAL)
+
+        private val FONT_DAY_INACTIVE = Typeface.create("sans-serif-light", Typeface.NORMAL)
+
+    }
 
     private val vm: SummaryRangeViewModel by sharedViewModel()
 
@@ -107,9 +116,9 @@ class FragmentDatePicker : Fragment() {
 
     private fun MaterialButton.lock(lock: Boolean) {
         isEnabled = !lock
+        // TODO Test on pre 8.0 Android versions
         val drawableStart = if (lock) context.drawable(R.drawable.ic_date_locked) else null
         icon = drawableStart
-        // setCompoundDrawables(drawableStart, null, null, null)
     }
 
     private fun View.setupBottomSheetBehavior(): TopSheetBehavior<*> {
@@ -195,6 +204,7 @@ class FragmentDatePicker : Fragment() {
             // Propagate touch events to the bottom sheet when it's collapsed
             behavior == null || behavior.state == TopSheetBehavior.STATE_COLLAPSED
         }
+        // (secondary) TODO Extract binders into separate files
         dayBinder = object : DayBinder<DayViewContainer> {
 
             override fun create(view: View) =
@@ -237,6 +247,7 @@ class FragmentDatePicker : Fragment() {
             is AvailableRange.Limited -> day.date in availableRange.date
         }
         isActivated = if (isUnlocked) day.run { owner == THIS_MONTH } else false
+        typeface = if (isActivated) FONT_DAY_ACTIVE else FONT_DAY_INACTIVE
         isEnabled = (isValidPastDate || isValidInCurrentMonth) && isUnlocked
         val drawableLevel = when (vm.getSelectionState(day)) {
             DaySelectionState.Single -> {
