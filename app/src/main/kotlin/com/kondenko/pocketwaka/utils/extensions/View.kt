@@ -5,9 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StyleableRes
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.*
-import java.util.function.Predicate
 import kotlin.math.max
 
 fun View.useAttributes(attrs: AttributeSet?, @StyleableRes styleable: IntArray, defStyleAttr: Int = 0, defStyleRes: Int = 0, actions: TypedArray.() -> Unit) {

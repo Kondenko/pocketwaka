@@ -49,7 +49,7 @@
 
     <Button
         android:id="@+id/button_summary_today"
-        style="@style/App.Button.SelectableButton"
+        style="@style/App.Button.SelectableButton.Date"
         android:layout_margin="@dimen/margin_datepicker_button"
         android:text="@string/summary_date_today"
         android:layout_width="@dimen/width_datepicker_button"
@@ -65,7 +65,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_summary_yesterday"
-        style="@style/App.Button.SelectableButton"
+        style="@style/App.Button.SelectableButton.Date"
         android:layout_margin="@dimen/margin_datepicker_button"
         android:text="@string/summary_date_yesterday"
         android:layout_width="@dimen/width_datepicker_button"
@@ -78,7 +78,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_summary_this_week"
-        style="@style/App.Button.SelectableButton"
+        style="@style/App.Button.SelectableButton.Date"
         android:layout_margin="@dimen/margin_datepicker_button"
         android:text="@string/summary_date_this_week"
         android:layout_width="@dimen/width_datepicker_button"
@@ -91,7 +91,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_summary_last_week"
-        style="@style/App.Button.SelectableButton"
+        style="@style/App.Button.SelectableButton.Date"
         android:layout_margin="@dimen/margin_datepicker_button"
         android:text="@string/summary_date_last_week"
         android:layout_width="@dimen/width_datepicker_button"
@@ -104,7 +104,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_summary_last_month"
-        style="@style/App.Button.SelectableButton"
+        style="@style/App.Button.SelectableButton.Date"
         android:layout_margin="@dimen/margin_datepicker_button"
         android:layout_width="@dimen/width_datepicker_button"
         android:layout_height="@dimen/height_datepicker_button"
@@ -118,11 +118,14 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_summary_this_month"
-        style="@style/App.Button.SelectableButton"
+        style="@style/App.Button.SelectableButton.Date"
         android:text="@string/summary_date_this_month"
         android:layout_margin="@dimen/margin_datepicker_button"
         android:layout_width="@dimen/width_datepicker_button"
         android:layout_height="@dimen/height_datepicker_button"
+        tools:enabled="false"
+        tools:icon="@drawable/ic_date_locked"
+        tools:iconTint="@null"
         app:layout_constraintBottom_toBottomOf="@id/button_summary_last_month"
         app:layout_constraintEnd_toEndOf="@+id/button_summary_last_week"
         app:layout_constraintStart_toStartOf="@+id/button_summary_last_week"

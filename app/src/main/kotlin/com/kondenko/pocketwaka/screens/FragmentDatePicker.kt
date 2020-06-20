@@ -16,6 +16,7 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
+import com.google.android.material.button.MaterialButton
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner.THIS_MONTH
@@ -28,10 +29,7 @@ import com.kondenko.pocketwaka.screens.summary.SummaryRangeViewModel
 import com.kondenko.pocketwaka.ui.TopSheetBehavior
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.date.contains
-import com.kondenko.pocketwaka.utils.extensions.createColorAnimator
-import com.kondenko.pocketwaka.utils.extensions.findViewWithParent
-import com.kondenko.pocketwaka.utils.extensions.forEach
-import com.kondenko.pocketwaka.utils.extensions.getCurrentLocale
+import com.kondenko.pocketwaka.utils.extensions.*
 import kotlinx.android.synthetic.main.fragment_date_picker.*
 import kotlinx.android.synthetic.main.item_calendar_day.view.*
 import kotlinx.android.synthetic.main.item_calendar_month.view.*
@@ -100,9 +98,18 @@ class FragmentDatePicker : Fragment() {
         vm.availableRangeChanges().observe(viewLifecycleOwner) { availableRange ->
             setupCalendar(behavior, view.context, availableRange)
             val lockButtons = availableRange != AvailableRange.Unlimited
-            button_summary_last_month.isEnabled = !lockButtons
-            button_summary_last_month.isEnabled = !lockButtons // TODO Unlock if today is less that 2 weeks away from start of month
+            forEach(button_summary_last_month, button_summary_this_month) {
+                // TODO Unlock button_summary_this_month if today is less that 2 weeks away from start of month
+                it?.lock(lockButtons)
+            }
         }
+    }
+
+    private fun MaterialButton.lock(lock: Boolean) {
+        isEnabled = !lock
+        val drawableStart = if (lock) context.drawable(R.drawable.ic_date_locked) else null
+        icon = drawableStart
+        // setCompoundDrawables(drawableStart, null, null, null)
     }
 
     private fun View.setupBottomSheetBehavior(): TopSheetBehavior<*> {

@@ -107,4 +107,8 @@
         <item name="android:insetBottom">0dp</item>
     </style>
 
+    <style name="App.Button.SelectableButton.Date" parent="App.Button.SelectableButton">
+        <item name="android:textColor">@color/color_button_date_text</item>
+    </style>
+
 </resources>

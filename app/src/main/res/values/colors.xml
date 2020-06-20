@@ -47,6 +47,8 @@
     <color name="color_datepicker_button_border">#1A35434F</color>
     <color name="color_datepicker_button_background_selected">#0D2695FF</color>
 
+    <color name="color_datepicker_day_disabled">@color/color_text_disabled</color>
+
     <array name="chart_colors">
         <item>#FA5757</item>
         <item>#5E8DDF</item>

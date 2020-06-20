@@ -46,7 +46,7 @@ class SummaryRangeViewModel(
 
     init {
         disposables += getAvailableRange.build()
-              .map { AvailableRange.Unlimited } // STOPSHIP
+              //.map { AvailableRange.Unlimited } // STOPSHIP
               .doOnSuccess { selectDate(today) }
               .subscribeBy(onSuccess = availableRange::postValue, onError = WakaLog::e)
     }
