@@ -65,8 +65,6 @@ class SummaryRangeViewModel(
     fun closeEvents(): LiveData<Unit> = closeEvents
 
     fun onButtonClicked(dateRange: DateRange) {
-        startDate = null
-        endDate = null
         selectDate(dateRange, true)
         calendarInvalidationEvents.value = Unit
         closeEvents.value = Unit
@@ -75,16 +73,23 @@ class SummaryRangeViewModel(
     fun selectDate(dateRange: DateRange, invalidateScreens: Boolean) {
         // TODO Limit scrolling by two weeks for free accounts
         titles.value = dateFormatter.format(dateRange)
+        startDate = dateRange.start
         when (dateRange) {
-            is DateRange.SingleDay -> dateRange.loadAdjacentDays(invalidateScreens)
-            is DateRange.Range -> dateRange.loadRange(invalidateScreens)
+            is DateRange.SingleDay -> {
+                endDate = null
+                dateRange.loadAdjacentDays(invalidateScreens)
+            }
+            is DateRange.Range -> {
+                endDate = dateRange.end
+                dateRange.loadRange(invalidateScreens)
+            }
         }
         calendarInvalidationEvents.value = Unit
     }
 
     fun onDayClicked(day: CalendarDay) {
         val date = day.date
-        // TODO Allow selecting a date before start date (so the backwards selection order is also possible)
+        // (secondary) TODO Allow selecting a date before start date (so the backwards selection order is also possible)
         if (startDate != null) {
             if (date < startDate || endDate != null) {
                 startDate = date
