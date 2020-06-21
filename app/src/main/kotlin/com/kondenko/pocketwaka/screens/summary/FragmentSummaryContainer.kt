@@ -41,17 +41,15 @@ class FragmentSummaryContainer : Fragment(), Refreshable {
         override fun onPageScrollStateChanged(state: Int) {
             super.onPageScrollStateChanged(state)
             if (state == ViewPager2.SCROLL_STATE_IDLE) {
-                val day = pagerAdapter.summaryDates[position] as? DateRange.SingleDay
+                val day = pagerAdapter.dates[position] as? DateRange.SingleDay
                 WakaLog.d(DATE_PICKER, "onPageSelected($position), day = $day")
                 day?.let { rangeViewModel.selectDate(it, false) }
             }
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_summary_container, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+          inflater.inflate(R.layout.fragment_summary_container, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -60,13 +58,17 @@ class FragmentSummaryContainer : Fragment(), Refreshable {
             registerOnPageChangeCallback(onPageChanged)
             adapter = pagerAdapter
         }
-        rangeViewModel.dateChanges().observe(viewLifecycleOwner) {
-            WakaLog.d(DATE_PICKER, "New date list: ${it.dates}")
-            pagerAdapter.summaryDates = it.dates
-            if (it.invalidateScreens) {
-                viewpager_summary_container.invalidate()
-                viewpager_summary_container.currentItem = pagerAdapter.summaryDates.lastIndex.also {
-                    WakaLog.d(DATE_PICKER, "Setting current item to $it")
+        rangeViewModel.dateChanges().observe(viewLifecycleOwner) { state ->
+            WakaLog.d(DATE_PICKER, "New dates: $state")
+            pagerAdapter.dates = state.dates
+            WakaLog.d(DATE_PICKER, "Items in view pager have changed to ${pagerAdapter.dates}")
+            if (state.invalidateScreens) {
+                viewpager_summary_container.post {
+                    viewpager_summary_container.currentItem = (state.dates.lastIndex)
+                          .let { if (state.openLastItem) it else it / 2 }
+                          .also {
+                              WakaLog.d(DATE_PICKER, "Setting current item to $it")
+                          }
                 }
             }
         }
@@ -86,17 +88,18 @@ class FragmentSummaryContainer : Fragment(), Refreshable {
 
     private class SummaryContainerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
-        var summaryDates: List<DateRange> by diffUtil()
+        var dates: List<DateRange> by diffUtil()
 
-        override fun getItemId(position: Int): Long =
-              summaryDates[position].hashCode().toLong()
+        private val DateRange.id
+            get() = hashCode().toLong()
 
-        override fun containsItem(itemId: Long): Boolean =
-              summaryDates.find { it.hashCode().toLong() == itemId } != null
+        override fun createFragment(position: Int): Fragment = FragmentSummary.create(dates[position])
 
-        override fun getItemCount(): Int = summaryDates.size
+        override fun getItemId(position: Int): Long = dates[position].id
 
-        override fun createFragment(position: Int): Fragment = FragmentSummary.create(summaryDates[position])
+        override fun containsItem(itemId: Long): Boolean = dates.indexOfFirst { it.id == itemId } >= 0
+
+        override fun getItemCount(): Int = dates.size
 
     }
 

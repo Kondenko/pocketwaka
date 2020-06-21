@@ -2,6 +2,7 @@ package com.kondenko.pocketwaka.screens.summary
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.distinctUntilChanged
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kondenko.pocketwaka.data.android.HumanReadableDateFormatter
 import com.kondenko.pocketwaka.domain.summary.model.AvailableRange
@@ -26,7 +27,9 @@ class SummaryRangeViewModel(
 
     private val availableRange = MutableLiveData<AvailableRange>()
 
-    private val selectedRange = MutableLiveData<SummaryRangeState>()
+    private val selectedRange = MutableLiveData<SummaryRangeState>().apply {
+        distinctUntilChanged()
+    }
 
     private val titles = MutableLiveData<String>()
 
@@ -136,23 +139,21 @@ class SummaryRangeViewModel(
     }
 
     private fun DateRange.Range.loadRange(invalidateScreens: Boolean) {
-        selectedRange.value = SummaryRangeState(invalidateScreens, listOf(this))
+        selectedRange.value = SummaryRangeState(listOf(this), invalidateScreens)
     }
 
     private fun DateRange.SingleDay.loadAdjacentDays(invalidateScreens: Boolean) {
-        val currentValue = selectedRange.value
-        if (currentValue == null || date != today.date) {
-            val newDates = if (today.date == date) {
-                (adjacentDatesNumber downTo 0L).map(date::minusDays)
-            } else {
-                val daysOnEachSide = adjacentDatesNumber / 2
-                val range = (1L..daysOnEachSide)
-                range.reversed().map(date::minusDays) + listOf(date) + range.map(date::plusDays)
-            }
-                  .map { DateRange.SingleDay(it) }
-                  .let { SummaryRangeState(invalidateScreens, it) }
-            selectedRange.value = newDates
+        val isTodaySelected = today.date == date
+        val newDates = if (isTodaySelected) {
+            (adjacentDatesNumber downTo 0L).map(date::minusDays)
+        } else {
+            val daysOnEachSide = adjacentDatesNumber / 2
+            val range = (1L..daysOnEachSide)
+            range.reversed().map(date::minusDays) + listOf(date) + range.map(date::plusDays)
         }
+              .map { DateRange.SingleDay(it) }
+              .let { SummaryRangeState(dates = it, invalidateScreens = invalidateScreens, openLastItem = isTodaySelected) }
+        selectedRange.value = newDates
     }
 
 }
