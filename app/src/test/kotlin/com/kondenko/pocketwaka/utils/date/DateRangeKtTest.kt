@@ -30,6 +30,15 @@ class DateRangeKtTest {
     }
 
     @Test
+    fun `range should be inclusive`() {
+        val end = LocalDate.now()
+        val start = end.minusDays(5)
+        val range = DateRange.Range(start, end)
+        assertTrue(start in range)
+        assertTrue(end in range)
+    }
+
+    @Test
     fun `range should NOT contain the date`() {
         val end = LocalDate.now()
         val start = end.minusDays(5)

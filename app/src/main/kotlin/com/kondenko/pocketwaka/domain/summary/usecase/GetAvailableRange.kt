@@ -30,7 +30,7 @@ class GetAvailableRange(
     private fun getDatesAvailableToFreeUsers() =
           dateProvider.getToday()
                 .let { today ->
-                    DateRange.Range(today.minusWeeks(WEEKS_AVAILABLE_TO_FREE_USERS), today)
+                    DateRange.Range(today.minusWeeks(WEEKS_AVAILABLE_TO_FREE_USERS).plusDays(1), today)
                 }
                 .let {
                     AvailableRange.Limited(it)

@@ -46,4 +46,4 @@ sealed class DateRange(open val start: LocalDate, open val end: LocalDate) : Par
 
 operator fun DateRange.contains(date: LocalDate) =
       if (start == end) date == start
-      else date.isAfter(start) && date.isBefore(end)
+      else date == start || date == end || (date.isAfter(start) && date.isBefore(end))
