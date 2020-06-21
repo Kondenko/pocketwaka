@@ -22,6 +22,7 @@ import com.kondenko.pocketwaka.utils.createAdapter
 import com.kondenko.pocketwaka.utils.diffutil.SimpleCallback
 import com.kondenko.pocketwaka.utils.exceptions.IllegalViewTypeException
 import com.kondenko.pocketwaka.utils.extensions.findInstance
+import com.kondenko.pocketwaka.utils.extensions.forEach
 import com.kondenko.pocketwaka.utils.extensions.limitWidthBy
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
 import io.reactivex.Observable
@@ -130,9 +131,15 @@ class SummaryAdapter(
     inner class TimeTrackedViewHolder(view: View, skeleton: Skeleton) : ViewHolder<TimeTracked>(view, skeleton) {
 
         override fun bind(item: TimeTracked) = with(itemView) {
-            val isBelowAverage = (item.percentDelta ?: 0) < 0
-            setupIcon(isBelowAverage)
-            setupText(isBelowAverage, item.percentDelta)
+            if (item.percentDelta != null) {
+                val isBelowAverage = (item.percentDelta ?: 0) < 0
+                setupIcon(isBelowAverage)
+                setupText(isBelowAverage, item.percentDelta)
+            } else {
+                forEach(imageview_summary_delta_icon, textview_summary_average_delta) {
+                    it?.isGone = true
+                }
+            }
             if (!showSkeleton) {
                 textview_summary_time.text = timeSpannableCreator.create(item.time, R.dimen.textsize_summary_number, R.dimen.textsize_summary_text)
             }
@@ -149,18 +156,14 @@ class SummaryAdapter(
             }
         }
 
-        private fun View.setupText(isBelowAverage: Boolean, delta: Int?) = with(textview_summary_average_delta) {
-            if (delta != null) {
-                val directionRes = if (isBelowAverage) {
-                    R.string.summary_template_average_delta_below
-                } else {
-                    R.string.summary_template_average_delta_above
-                }
-                val deltaText = context.getString(directionRes)
-                text = context.getString(R.string.summary_template_average_delta, abs(delta), deltaText)
+        private fun View.setupText(isBelowAverage: Boolean, delta: Int) = with(textview_summary_average_delta) {
+            val directionRes = if (isBelowAverage) {
+                R.string.summary_template_average_delta_below
             } else {
-                isGone = true
+                R.string.summary_template_average_delta_above
             }
+            val deltaText = context.getString(directionRes)
+            text = context.getString(R.string.summary_template_average_delta, abs(delta), deltaText)
         }
 
         private fun getDeltaIcon(isBelowAverage: Boolean): Drawable? =

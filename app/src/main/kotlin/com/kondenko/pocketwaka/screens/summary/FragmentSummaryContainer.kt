@@ -40,7 +40,7 @@ class FragmentSummaryContainer : Fragment(), Refreshable {
 
         override fun onPageScrollStateChanged(state: Int) {
             super.onPageScrollStateChanged(state)
-            if (state == ViewPager2.SCROLL_STATE_IDLE) {
+            if (state == ViewPager2.SCROLL_STATE_IDLE && position in pagerAdapter.dates.indices) {
                 val day = pagerAdapter.dates[position] as? DateRange.SingleDay
                 WakaLog.d(DATE_PICKER, "onPageSelected($position), day = $day")
                 day?.let { rangeViewModel.selectDate(it, false) }

@@ -84,7 +84,6 @@ class StatsAdapter(
 
         private fun View.render(item: StatsUiModel.Status) = renderStatus(item.status)
 
-        // TODO Hide average if more than 1 day is selected
         private fun View.render(item: StatsUiModel.Info) {
             textview_stats_time_total.text = timeSpannableCreator.create(item.humanReadableTotal, digitsSizeDimenId, textSizeDimenId)
             textview_stats_daily_average.text = timeSpannableCreator.create(item.humanReadableDailyAverage, digitsSizeDimenId, textSizeDimenId)

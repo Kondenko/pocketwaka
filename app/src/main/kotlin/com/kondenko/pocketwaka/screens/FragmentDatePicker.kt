@@ -220,7 +220,7 @@ class FragmentDatePicker : Fragment() {
                   MonthViewContainer(view)
 
             override fun bind(container: MonthViewContainer, month: CalendarMonth) =
-                  bindMonth(container, month, availableRange)
+                  bindMonth(container, month)
 
         }
     }
@@ -281,8 +281,7 @@ class FragmentDatePicker : Fragment() {
 
     private fun bindMonth(
           container: MonthViewContainer,
-          month: CalendarMonth,
-          availableRange: AvailableRange?
+          month: CalendarMonth
     ) = with(container.textViewMonth) {
         text = month.yearMonth.month.getDisplayName(
               TextStyle.FULL,
