@@ -42,12 +42,12 @@ class SummaryRangeViewModel(
 
     private var endDate: LocalDate? = null
 
-    private val adjacentDatesNumber = 0 // STOPSHIP TODO Change to 2
+    private val adjacentDatesNumber = 2
 
     init {
         disposables += getAvailableRange.build()
               //.map { AvailableRange.Unlimited } // STOPSHIP TODO Remove
-              .doOnSuccess { selectDate(today) }
+              .doOnSuccess { selectDate(today, true) }
               .subscribeBy(onSuccess = availableRange::postValue, onError = WakaLog::e)
     }
 
@@ -64,17 +64,17 @@ class SummaryRangeViewModel(
     fun onButtonClicked(dateRange: DateRange) {
         startDate = null
         endDate = null
-        selectDate(dateRange)
+        selectDate(dateRange, true)
         calendarInvalidationEvents.value = Unit
         closeEvents.value = Unit
     }
 
-    fun selectDate(dateRange: DateRange) {
+    fun selectDate(dateRange: DateRange, invalidateScreens: Boolean) {
         // TODO Limit scrolling by two weeks for free accounts
         titles.value = dateFormatter.format(dateRange)
         when (dateRange) {
-            is DateRange.SingleDay -> dateRange.loadAdjacentDays()
-            is DateRange.Range -> dateRange.loadRange()
+            is DateRange.SingleDay -> dateRange.loadAdjacentDays(invalidateScreens)
+            is DateRange.Range -> dateRange.loadRange(invalidateScreens)
         }
         calendarInvalidationEvents.value = Unit
     }
@@ -116,7 +116,7 @@ class SummaryRangeViewModel(
                 throw IllegalArgumentException("Both start date and end date are null")
             }
         }
-        selectDate(selection)
+        selectDate(selection, true)
         calendarInvalidationEvents.value = Unit
     }
 
@@ -135,11 +135,11 @@ class SummaryRangeViewModel(
         }
     }
 
-    private fun DateRange.Range.loadRange() {
-        selectedRange.value = SummaryRangeState(listOf(this))
+    private fun DateRange.Range.loadRange(invalidateScreens: Boolean) {
+        selectedRange.value = SummaryRangeState(invalidateScreens, listOf(this))
     }
 
-    private fun DateRange.SingleDay.loadAdjacentDays() {
+    private fun DateRange.SingleDay.loadAdjacentDays(invalidateScreens: Boolean) {
         val currentValue = selectedRange.value
         if (currentValue == null || date != today.date) {
             val newDates = if (today.date == date) {
@@ -150,7 +150,7 @@ class SummaryRangeViewModel(
                 range.reversed().map(date::minusDays) + listOf(date) + range.map(date::plusDays)
             }
                   .map { DateRange.SingleDay(it) }
-                  .let { SummaryRangeState(it) }
+                  .let { SummaryRangeState(invalidateScreens, it) }
             selectedRange.value = newDates
         }
     }

@@ -36,6 +36,12 @@ object Const {
 
 }
 
+object Tags {
+
+    const val DATE_PICKER = "DatePicker"
+
+}
+
 enum class StatsRange(val value: String) {
     Week("last_7_days"),
     Month("last_30_days"),
