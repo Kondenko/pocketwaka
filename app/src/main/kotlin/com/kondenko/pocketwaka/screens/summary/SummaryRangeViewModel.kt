@@ -49,7 +49,6 @@ class SummaryRangeViewModel(
 
     init {
         disposables += getAvailableRange.build()
-              //.map { AvailableRange.Unlimited } // STOPSHIP TODO Remove
               .doOnSuccess { selectDate(today, true) }
               .subscribeBy(onSuccess = availableRange::postValue, onError = WakaLog::e)
     }
@@ -71,7 +70,6 @@ class SummaryRangeViewModel(
     }
 
     fun selectDate(dateRange: DateRange, invalidateScreens: Boolean) {
-        // TODO Limit scrolling by two weeks for free accounts
         titles.value = dateFormatter.format(dateRange)
         startDate = dateRange.start
         when (dateRange) {
@@ -152,9 +150,18 @@ class SummaryRangeViewModel(
         val newDates = if (isTodaySelected) {
             (adjacentDatesNumber downTo 0L).map(date::minusDays)
         } else {
-            val daysOnEachSide = adjacentDatesNumber / 2
-            val range = (1L..daysOnEachSide)
-            range.reversed().map(date::minusDays) + listOf(date) + range.map(date::plusDays)
+            val numberOfDaysOnEachSide = adjacentDatesNumber / 2
+            val range = (1L..numberOfDaysOnEachSide)
+            val daysOnLeftLimit = when(val range = availableRange.value) {
+                is AvailableRange.Limited -> range.date.start
+                else -> null
+            }
+            // Discard days that are out of the range available to free users (i.e. 2 weeks)
+            val daysOnLeftSide = range.reversed()
+                  .map(date::minusDays)
+                  .takeLastWhile { daysOnLeftLimit == null || it == daysOnLeftLimit || it.isAfter(daysOnLeftLimit) }
+            val daysOnRightSide = range.map(date::plusDays)
+            daysOnLeftSide + listOf(date) + daysOnRightSide
         }
               .map { DateRange.SingleDay(it) }
               .let { SummaryRangeState(dates = it, invalidateScreens = invalidateScreens, openLastItem = isTodaySelected) }

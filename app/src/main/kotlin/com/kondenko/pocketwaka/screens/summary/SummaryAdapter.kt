@@ -93,7 +93,6 @@ class SummaryAdapter(
         }
     }
 
-    // (secondary) TODO Fix jerky update animations
     override fun getDiffCallback(oldList: List<SummaryUiModel>, newList: List<SummaryUiModel>): DiffUtil.Callback {
         return SimpleCallback(
               oldList, newList,

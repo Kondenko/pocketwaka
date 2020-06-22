@@ -82,7 +82,7 @@ class FragmentSummaryContainer : Fragment(), Refreshable {
     override fun subscribeToRefreshEvents(refreshEvents: Observable<Unit>): Disposable {
         return refreshEvents.subscribe {
             eventTracker.log(Event.ManualUpdate)
-            // TODO Update selected Fragment using ViewModel
+            // (secondary) TODO Update selected Fragment using ViewModel
         }
     }
 
