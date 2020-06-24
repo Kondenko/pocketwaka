@@ -7,9 +7,8 @@ import com.kondenko.pocketwaka.data.commits.model.CommitServerModel
 import com.kondenko.pocketwaka.data.commits.service.CommitsService
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.exceptions.WakatimeException
-import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.rxkotlin.toObservable
+import io.reactivex.rxkotlin.subscribeBy
 
 
 private typealias CommitsObservable = Observable<List<CommitServerModel>>
@@ -24,12 +23,15 @@ class CommitsRepository(
     fun getData(params: Params): CommitsObservable {
         val server = getFromServer(params)
         return getFromCache(params)
-              .switchIfEmpty(getFromServer(params))
+              .flatMapObservable { cachedCommits ->
+                  if (cachedCommits.isEmpty()) server
+                  else Observable.just(cachedCommits)
+              }
               .onErrorResumeNext(server)
     }
 
     private fun getFromServer(params: Params): CommitsObservable {
-        WakaLog.d(COMMITS, "{SERVER] Getting from server (params=$params)")
+        WakaLog.d(COMMITS, "[SERVER] Getting from server (params=$params)")
         val firstPage = getCommits(params, 1)
         val otherPages = firstPage
               .takeWhile { it.totalPages > 1 }
@@ -41,28 +43,24 @@ class CommitsRepository(
                   if (it.error == null) Observable.just(it) else Observable.error(WakatimeException(it.error))
               }
               .map { it.commits }
-              .doOnNext { WakaLog.d(COMMITS, "{SERVER] Got ${it.size} commits from server") }
-              .doOnNext { it.saveToCache(params.project) }
+              .doOnNext { WakaLog.d(COMMITS, "[SERVER] Got ${it.size} commits from server") }
+              .doOnNext {
+                  it.saveToCache(params.project).subscribeBy(
+                        onComplete = { WakaLog.d(COMMITS, "[CACHE] Saved commits to cache") },
+                        onError = { WakaLog.e("[CACHE] Failed to cache commits", it) }
+                  )
+              }
     }
 
-    private fun getFromCache(params: Params): CommitsObservable = params.run {
-        WakaLog.d(COMMITS, "{SERVER] Getting from cache (params=$params)")
+    private fun getFromCache(params: Params) = params.run {
+        WakaLog.d(COMMITS, "[SERVER] Getting from cache (params=$params)")
         commitsDao.get(project, branch)
-              .map { it.toServerModel() }
-              .toList()
-              .doOnSuccess { WakaLog.d(COMMITS, "[CACHE} Got ${it.size} commits from cache") }
-              .toObservable()
+              .map { it.map { it.toServerModel() } }
+              .doOnSuccess { WakaLog.d(COMMITS, "[CACHE] Got ${it.size} commits from cache") }
     }
 
-    private fun List<CommitServerModel>.saveToCache(project: String): Completable {
-        return this
-              .toObservable()
-              .map { it.toDbModel(project) }
-              .toList()
-              .doOnSuccess { commitsDao.insert(it) }
-              .doOnSuccess { WakaLog.d(COMMITS, "[CACHE} Saved ${it.size} commits to cache") }
-              .ignoreElement()
-    }
+    private fun List<CommitServerModel>.saveToCache(project: String) =
+          map { it.toDbModel(project) }.let { commits -> commitsDao._insert(commits) /* TODO Use public method */ }
 
     private fun CommitServerModel.toDbModel(project: String) = CommitDbModel(hash, project, branch, message, authorDate, totalSeconds)
 

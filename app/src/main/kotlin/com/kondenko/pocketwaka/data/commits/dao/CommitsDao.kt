@@ -2,11 +2,11 @@ package com.kondenko.pocketwaka.data.commits.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import com.kondenko.pocketwaka.data.commits.model.CommitDbModel
 import io.reactivex.Completable
-import io.reactivex.Observable
+import io.reactivex.Single
 
 @Dao
 abstract class CommitsDao {
@@ -18,18 +18,17 @@ abstract class CommitsDao {
     """)
     //  AND table_name="${CommitDbModel.TABLE_NAME}"  AND (updated_at + :cacheLifetimeMillis <= DATE()) TODO Bring back
     // , cacheLifetimeMillis: Long = cacheLifetimeCommits
-    abstract fun get(project: String, branch: String): Observable<CommitDbModel>
+    abstract fun get(project: String, branch: String): Single<List<CommitDbModel>>
 
-    @Transaction
-    open fun insert(list: List<CommitDbModel>) {
-        _insert(list)
-        onCommitsCacheUpdated()
+    open fun insert(list: List<CommitDbModel>): Completable {
+        return _insert(list).andThen(_onCommitsCacheUpdated())
     }
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun _insert(list: List<CommitDbModel>): Completable
 
+    // TODO Move into a separate DAO
     @Query("""INSERT INTO cache_update VALUES("${CommitDbModel.TABLE_NAME}", DATE())""")
-    abstract fun onCommitsCacheUpdated(): Completable
+    abstract fun _onCommitsCacheUpdated(): Completable
 
 }
