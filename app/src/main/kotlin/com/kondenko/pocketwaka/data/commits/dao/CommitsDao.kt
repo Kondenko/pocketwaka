@@ -6,19 +6,24 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.kondenko.pocketwaka.data.commits.model.CommitDbModel
 import io.reactivex.Completable
-import io.reactivex.Single
+import io.reactivex.Observable
 
 @Dao
 abstract class CommitsDao {
 
+/*
     @Query("""
             SELECT hash, project, branch, message, author_date, total_seconds
-            FROM ${CommitDbModel.TABLE_NAME}, cache_update 
+            FROM ${CommitDbModel.TABLE_NAME} 
             WHERE project=:project AND branch=:branch
     """)
+*/
+//    , cache_update
     //  AND table_name="${CommitDbModel.TABLE_NAME}"  AND (updated_at + :cacheLifetimeMillis <= DATE()) TODO Bring back
     // , cacheLifetimeMillis: Long = cacheLifetimeCommits
-    abstract fun get(project: String, branch: String): Single<List<CommitDbModel>>
+    @Query("SELECT * FROM commits")
+    abstract fun get(): Observable<List<CommitDbModel>>
+//    abstract fun get(project: String, branch: String): Observable<List<CommitDbModel>>
 
     open fun insert(list: List<CommitDbModel>): Completable {
         return _insert(list).andThen(_onCommitsCacheUpdated())

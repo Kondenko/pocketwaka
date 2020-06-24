@@ -21,13 +21,8 @@ class CommitsRepository(
     data class Params(val tokenHeader: String, val project: String, val branch: String, val author: String? = null)
 
     fun getData(params: Params): CommitsObservable {
-        val server = getFromServer(params)
         return getFromCache(params)
-              .flatMapObservable { cachedCommits ->
-                  if (cachedCommits.isEmpty()) server
-                  else Observable.just(cachedCommits)
-              }
-              .onErrorResumeNext(server)
+//              .onErrorResumeNext(getFromServer(params)) TODO Bring back
     }
 
     private fun getFromServer(params: Params): CommitsObservable {
@@ -43,20 +38,22 @@ class CommitsRepository(
                   if (it.error == null) Observable.just(it) else Observable.error(WakatimeException(it.error))
               }
               .map { it.commits }
-              .doOnNext { WakaLog.d(COMMITS, "[SERVER] Got ${it.size} commits from server") }
+              .doOnComplete { WakaLog.d(COMMITS, "[SERVER] Got all commits from server") }
               .doOnNext {
                   it.saveToCache(params.project).subscribeBy(
-                        onComplete = { WakaLog.d(COMMITS, "[CACHE] Saved commits to cache") },
+                        onComplete = { WakaLog.d(COMMITS, "[CACHE] Saved ${it.size} commits to cache") },
                         onError = { WakaLog.e("[CACHE] Failed to cache commits", it) }
                   )
               }
     }
 
     private fun getFromCache(params: Params) = params.run {
-        WakaLog.d(COMMITS, "[SERVER] Getting from cache (params=$params)")
-        commitsDao.get(project, branch)
+        WakaLog.d(COMMITS, "[CACHE] Getting from cache (params=$params)")
+        // TODO Add timeout
+        commitsDao.get(/*project, branch*/)
               .map { it.map { it.toServerModel() } }
-              .doOnSuccess { WakaLog.d(COMMITS, "[CACHE] Got ${it.size} commits from cache") }
+              .doOnNext { WakaLog.d(COMMITS, "[CACHE] Got ${it.size} commits from cache") }
+              .take(1)
     }
 
     private fun List<CommitServerModel>.saveToCache(project: String) =
