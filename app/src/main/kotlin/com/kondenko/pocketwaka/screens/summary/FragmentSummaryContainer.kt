@@ -9,11 +9,9 @@ import androidx.lifecycle.observe
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.kondenko.pocketwaka.R
-import com.kondenko.pocketwaka.Tags.DATE_PICKER
 import com.kondenko.pocketwaka.analytics.Event
 import com.kondenko.pocketwaka.analytics.EventTracker
 import com.kondenko.pocketwaka.screens.Refreshable
-import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.diffutil.diffUtil
 import io.reactivex.Observable
@@ -42,7 +40,6 @@ class FragmentSummaryContainer : Fragment(), Refreshable {
             super.onPageScrollStateChanged(state)
             if (state == ViewPager2.SCROLL_STATE_IDLE && position in pagerAdapter.dates.indices) {
                 val day = pagerAdapter.dates[position] as? DateRange.SingleDay
-                WakaLog.d(DATE_PICKER, "onPageSelected($position), day = $day")
                 day?.let { rangeViewModel.selectDate(it, false) }
             }
         }
@@ -59,16 +56,11 @@ class FragmentSummaryContainer : Fragment(), Refreshable {
             adapter = pagerAdapter
         }
         rangeViewModel.dateChanges().observe(viewLifecycleOwner) { state ->
-            WakaLog.d(DATE_PICKER, "New dates: $state")
             pagerAdapter.dates = state.dates
-            WakaLog.d(DATE_PICKER, "Items in view pager have changed to ${pagerAdapter.dates}")
             if (state.invalidateScreens) {
                 viewpager_summary_container.post {
                     viewpager_summary_container.currentItem = (state.dates.lastIndex)
                           .let { if (state.openLastItem) it else it / 2 }
-                          .also {
-                              WakaLog.d(DATE_PICKER, "Setting current item to $it")
-                          }
                 }
             }
         }
