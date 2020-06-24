@@ -2,9 +2,13 @@ package com.kondenko.pocketwaka
 
 const val databaseName = "pocketwaka-database"
 
-const val databaseVersion = 2
+const val databaseVersion = 3
 
 const val alphaDisabledView: Float = 0.5f
+
+const val cacheLifetimeDefault: Long = 30 * 60 * 1000
+
+const val cacheLifetimeCommits: Long = cacheLifetimeDefault
 
 // (secondary) TODO Remove top Const object
 object Const {
@@ -38,7 +42,7 @@ object Const {
 
 object Tags {
 
-    const val DATE_PICKER = "DatePicker"
+    const val COMMITS = "Commits"
 
 }
 

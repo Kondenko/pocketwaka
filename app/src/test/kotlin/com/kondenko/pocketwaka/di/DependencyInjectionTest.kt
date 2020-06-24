@@ -1,6 +1,7 @@
 package com.kondenko.pocketwaka.di
 
 import android.content.Context
+import android.os.Looper.getMainLooper
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.test.core.app.ApplicationProvider
@@ -26,6 +27,7 @@ import org.koin.core.parameter.parametersOf
 import org.koin.dsl.koinApplication
 import org.koin.test.KoinTest
 import org.koin.test.check.checkModules
+import org.robolectric.Shadows.shadowOf
 
 @RunWith(AndroidJUnit4::class)
 class DependencyInjectionTest : KoinTest {
@@ -36,6 +38,7 @@ class DependencyInjectionTest : KoinTest {
         val lifecycleOwner: LifecycleOwner = mock()
         val lifecycle: Lifecycle = mock()
         whenever(lifecycleOwner.lifecycle) doReturn lifecycle
+        shadowOf(getMainLooper()).idle()
         FirebaseApp.initializeApp(context)
         koinApplication {
             androidContext(context)
@@ -63,7 +66,7 @@ class DependencyInjectionTest : KoinTest {
                 parametersOf(0)
             }
             create<SummaryViewModel> {
-                parametersOf(mock<DateRange>())
+                parametersOf(DateRange.PredefinedRange.Today.range)
             }
         }
     }

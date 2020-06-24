@@ -21,6 +21,14 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         vectorDrawables.useSupportLibrary = true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                        "room.incremental": "true",
+                ]
+            }
+        }
     }
 
     signingConfigs {
@@ -151,6 +159,7 @@ dependencies {
     // room
     implementation "androidx.room:room-runtime:${versions.room}"
     implementation "androidx.room:room-rxjava2:${versions.room}"
+    kapt "androidx.room:room-compiler:${versions.room}"
 
     // rx
     implementation "io.reactivex.rxjava2:rxjava:${versions.rxJava}"
@@ -201,8 +210,6 @@ dependencies {
 
     preReleaseImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
     debugImplementation "com.amitshekhar.android:debug-db:${versions.databaseBrowser}"
-
-    kapt "androidx.room:room-compiler:${versions.room}"
 
     testImplementation "androidx.test:core:${versions.androidxTest}"
     testImplementation "androidx.test.ext:junit:${versions.junit}"

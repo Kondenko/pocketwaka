@@ -2,6 +2,7 @@ package com.kondenko.pocketwaka.data.commits.model
 
 import com.google.gson.annotations.SerializedName
 
+// TODO Delete if not used in the repo
 data class CommitsServiceModel(
       val error: String? = null,
       val project: Project,
