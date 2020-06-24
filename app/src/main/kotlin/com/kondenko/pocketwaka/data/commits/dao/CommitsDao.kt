@@ -29,10 +29,11 @@ abstract class CommitsDao {
         return _insert(list).andThen(_onCommitsCacheUpdated())
     }
 
+    // TODO See if it can be made protected
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun _insert(list: List<CommitDbModel>): Completable
 
-    // TODO Move into a separate DAO
+    // (secondary) TODO Move into a separate DAO
     @Query("""INSERT INTO cache_update VALUES("${CommitDbModel.TABLE_NAME}", DATE())""")
     abstract fun _onCommitsCacheUpdated(): Completable
 

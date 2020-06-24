@@ -7,6 +7,7 @@ import com.kondenko.pocketwaka.data.commits.model.CommitServerModel
 import com.kondenko.pocketwaka.data.commits.service.CommitsService
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.exceptions.WakatimeException
+import com.kondenko.pocketwaka.utils.types.KOptional
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 
@@ -22,7 +23,10 @@ class CommitsRepository(
 
     fun getData(params: Params): CommitsObservable {
         return getFromCache(params)
-//              .onErrorResumeNext(getFromServer(params)) TODO Bring back
+              .flatMap { commitsOptional ->
+                  if (commitsOptional.isNotEmpty()) Observable.just(commitsOptional.get())
+                  else getFromServer(params)
+              }
     }
 
     private fun getFromServer(params: Params): CommitsObservable {
@@ -39,11 +43,14 @@ class CommitsRepository(
               }
               .map { it.commits }
               .doOnComplete { WakaLog.d(COMMITS, "[SERVER] Got all commits from server") }
-              .doOnNext {
-                  it.saveToCache(params.project).subscribeBy(
-                        onComplete = { WakaLog.d(COMMITS, "[CACHE] Saved ${it.size} commits to cache") },
-                        onError = { WakaLog.e("[CACHE] Failed to cache commits", it) }
-                  )
+              .doOnNext { latestCommits ->
+                  WakaLog.d(COMMITS, "[CACHE] Ready to cache ${latestCommits.size} commits")
+                  latestCommits.saveToCache(params.project)
+                        .doOnSubscribe { WakaLog.d(COMMITS, "[CACHE] Subscribed to cache ${latestCommits.size} commits") }
+                        .subscribeBy(
+                              onComplete = { WakaLog.d(COMMITS, "[CACHE] Cached ${latestCommits.size} commits") },
+                              onError = { WakaLog.e("[CACHE] Failed to cache commits", it) }
+                        )
               }
     }
 
@@ -52,12 +59,21 @@ class CommitsRepository(
         // TODO Add timeout
         commitsDao.get(/*project, branch*/)
               .map { it.map { it.toServerModel() } }
-              .doOnNext { WakaLog.d(COMMITS, "[CACHE] Got ${it.size} commits from cache") }
-              .take(1)
+              .firstElement()
+              .map {
+                  it.takeIf { it.isNotEmpty() }
+                    ?.let { KOptional.of(it) }
+              }
+              .defaultIfEmpty(KOptional.empty())
+              .onErrorReturnItem(KOptional.empty())
+              .doOnSuccess { WakaLog.d(COMMITS, "[CACHE] Got ${it?.item?.size} commits from cache") }
+              .toObservable()
     }
 
     private fun List<CommitServerModel>.saveToCache(project: String) =
-          map { it.toDbModel(project) }.let { commits -> commitsDao._insert(commits) /* TODO Use public method */ }
+          map { it.toDbModel(project) }.let { commits ->
+              commitsDao.insert(commits)
+          }
 
     private fun CommitServerModel.toDbModel(project: String) = CommitDbModel(hash, project, branch, message, authorDate, totalSeconds)
 
