@@ -6,9 +6,9 @@ const val databaseVersion = 3
 
 const val alphaDisabledView: Float = 0.5f
 
-const val cacheLifetimeDefault: Long = 30 * 60 * 1000
+const val cacheLifetimeDefaultMillis: Long = 1000 * 60 * 30
 
-const val cacheLifetimeCommits: Long = cacheLifetimeDefault
+const val cacheLifetimeCommitsMillis: Long = cacheLifetimeDefaultMillis
 
 // (secondary) TODO Remove top Const object
 object Const {

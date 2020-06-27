@@ -11,5 +11,5 @@ import retrofit2.Retrofit
 val commitsModule = module {
     factory { get<Retrofit>(Api).create<CommitsService>() }
     factory { get<AppDatabase>().commitsDao() }
-    factory { CommitsRepository(get(), get()) }
+    factory { CommitsRepository(get(), get(), get()) }
 }
