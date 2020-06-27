@@ -70,9 +70,18 @@ class FetchBranchesAndCommits(
                                 branch.copy(commits = commits.item)
                             }
                   }
-                  .map {
-                      val updatedBranches = project.branches + mapOf(it.name to it)
-                      project.copy(branches = updatedBranches)
+                  .map { KOptional.of(it) }
+                  .scanMap(KOptional.empty()) { prev, next ->
+                      project.branches
+                            .toMutableMap()
+                            .also { updatedBranches ->
+                                fun KOptional<Branch>.addBranch() = item?.let { branch ->
+                                    updatedBranches += branch.name to branch
+                                }
+                                prev.addBranch()
+                                next.addBranch()
+                            }
+                            .let { project.copy(branches = it) }
                   }
                   .onErrorReturn {
                       val noRepoException = (it as? CompositeException)

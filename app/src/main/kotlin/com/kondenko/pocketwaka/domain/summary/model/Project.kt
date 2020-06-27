@@ -25,8 +25,8 @@ infix fun Project.mergeBranches(other: Project): Project {
         "Projects are different"
     }
     require(totalSeconds == other.totalSeconds) {
-        /* See [StatsEntity.plus(StatsEntity)]  */
         "This project's totalSeconds values should have already been merged when fetching summaries"
+        /* See [StatsEntity.plus(StatsEntity)]  */
     }
     return Project(
           name,
