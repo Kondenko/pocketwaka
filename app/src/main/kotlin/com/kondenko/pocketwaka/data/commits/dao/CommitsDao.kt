@@ -21,16 +21,15 @@ abstract class CommitsDao {
     """)
     abstract fun get(project: String, branch: String, currentTimeMillis: Long, cacheLifetimeMillis: Long = cacheLifetimeCommitsMillis): Observable<List<CommitDbModel>>
 
-    open fun insert(list: List<CommitDbModel>, currentTimeSec: Long): Completable {
-        return _insert(list).andThen(_onCommitsCacheUpdated(currentTimeSec))
+    fun insert(list: List<CommitDbModel>, currentTimeSec: Long): Completable {
+        return insert(list).andThen(onCommitsCacheUpdated(currentTimeSec))
     }
 
-    // TODO See if it can be made protected
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun _insert(list: List<CommitDbModel>): Completable
+    protected abstract fun insert(list: List<CommitDbModel>): Completable
 
     // (secondary) TODO Move into a separate DAO
     @Query("""INSERT OR REPLACE INTO cache_update VALUES("${CommitDbModel.TABLE_NAME}", :currentTimeMillis)""")
-    abstract fun _onCommitsCacheUpdated(currentTimeMillis: Long): Completable
+    protected abstract fun onCommitsCacheUpdated(currentTimeMillis: Long): Completable
 
 }
