@@ -45,6 +45,8 @@
             android:tag="@string/summary_tag_fragment_date_picker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/background_date_picker"
+            android:outlineProvider="background"
             app:behavior_hideable="false"
             app:behavior_peekHeight="@dimen/height_summary_toolbar_collapsed"
             app:layout_behavior=".ui.TopSheetBehavior"

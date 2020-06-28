@@ -40,6 +40,7 @@ import org.threeten.bp.YearMonth
 import org.threeten.bp.format.TextStyle
 import org.threeten.bp.temporal.WeekFields
 
+// TODO Dim background and make it closable by clicking on the outside
 class FragmentDatePicker : Fragment() {
 
     companion object {
@@ -54,9 +55,9 @@ class FragmentDatePicker : Fragment() {
 
     // UI
 
-    private val surfaceColorResting = R.color.color_window_background
+    private val surfaceColorResting = R.color.color_window_background // TODO Check if should be changed to color_app_bar_resting
 
-    private val surfaceColorElevated = R.color.color_background_white
+    private val surfaceColorElevated = R.color.color_background_white // TODO Check if should be changed to color_app_bar_elevated
 
     private val initialElevation = 6f
 
@@ -108,9 +109,10 @@ class FragmentDatePicker : Fragment() {
             setupCalendar(behavior, view.context, availableRange)
             val lockButtons = availableRange != AvailableRange.Unlimited
             forEach(button_summary_last_month, button_summary_this_month) {
-                // TODO Unlock button_summary_this_month if today is less that 2 weeks away from start of month
+                // (secondary) TODO Unlock button_summary_this_month if today is less that 2 weeks away from start of month
                 it?.lock(lockButtons)
             }
+            // TODO Show message about locked stats
         }
     }
 
@@ -132,7 +134,7 @@ class FragmentDatePicker : Fragment() {
               resources.getInteger(R.integer.duration_datepicker_color_anim).toLong()
         ) { color ->
             activity?.window?.statusBarColor = color
-            this.setBackgroundColor(color)
+            background.setTint(color)
         }!!
         behavior.setTopSheetCallback(object : TopSheetBehavior.TopSheetCallback() {
 
@@ -319,6 +321,7 @@ class FragmentDatePicker : Fragment() {
     private fun updateBackground(newState: Int) = context?.let {
         when (newState) {
             TopSheetBehavior.STATE_COLLAPSED -> {
+                // TODO Update backgound as per design
                 surfaceColorAnimator.reverse()
                 animationRequired = true
             }
