@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.forEach
@@ -54,6 +55,15 @@ class FragmentDatePicker : Fragment() {
 
     // UI
 
+    private val predefinedRangeToButtonIdMap = mapOf(
+          DateRange.PredefinedRange.Today.range to R.id.button_summary_today,
+          DateRange.PredefinedRange.Yesterday.range to R.id.button_summary_yesterday,
+          DateRange.PredefinedRange.ThisWeek.range to R.id.button_summary_this_week,
+          DateRange.PredefinedRange.LastWeek.range to R.id.button_summary_last_week,
+          DateRange.PredefinedRange.ThisMonth.range to R.id.button_summary_this_month,
+          DateRange.PredefinedRange.LastMonth.range to R.id.button_summary_last_month
+    )
+
     private val surfaceColorResting = R.color.color_window_background // TODO Check if should be changed to color_app_bar_resting
 
     private val surfaceColorElevated = R.color.color_background_white // TODO Check if should be changed to color_app_bar_elevatedxc
@@ -97,9 +107,11 @@ class FragmentDatePicker : Fragment() {
         contentViews.forEach { it.isVisible = false }
         setupButtons()
         setupCalendar(behavior, view.context, null)
-        vm.calendarInvalidationEvents().observe(viewLifecycleOwner) {
+        vm.dataSelectionEvents().observe(viewLifecycleOwner) { selectedDate ->
             // (secondary) TODO Only update changed days
             calendar_datepicker.notifyCalendarChanged()
+            val buttonToSelect = predefinedRangeToButtonIdMap[selectedDate]
+            setButtonSelected(buttonToSelect?.let { view.findViewById<Button>(it) })
         }
         vm.closeEvents().observe(viewLifecycleOwner) {
             behavior?.state = TopSheetBehavior.STATE_COLLAPSED
@@ -167,30 +179,19 @@ class FragmentDatePicker : Fragment() {
     }
 
     private fun setupButtons() {
-        button_summary_today.setOnClickListener {
-            vm.onButtonClicked(DateRange.PredefinedRange.Today.range)
-            setButtonSelected(it) // TODO Control selection state by the data coming from VM
+        fun onClick(view: View) {
+            predefinedRangeToButtonIdMap
+                  .entries
+                  .find { (_, id) -> view.id == id }
+                  ?.key // date
+                  ?.let(vm::onButtonClicked)
         }
-        button_summary_yesterday.setOnClickListener {
-            vm.onButtonClicked(DateRange.PredefinedRange.Yesterday.range)
-            setButtonSelected(it)
-        }
-        button_summary_this_week.setOnClickListener {
-            vm.onButtonClicked(DateRange.PredefinedRange.ThisWeek.range)
-            setButtonSelected(it)
-        }
-        button_summary_last_week.setOnClickListener {
-            vm.onButtonClicked(DateRange.PredefinedRange.LastWeek.range)
-            setButtonSelected(it)
-        }
-        button_summary_this_month.setOnClickListener {
-            vm.onButtonClicked(DateRange.PredefinedRange.ThisMonth.range)
-            setButtonSelected(it)
-        }
-        button_summary_last_month.setOnClickListener {
-            vm.onButtonClicked(DateRange.PredefinedRange.LastMonth.range)
-            setButtonSelected(it)
-        }
+        button_summary_today.setOnClickListener(::onClick)
+        button_summary_yesterday.setOnClickListener(::onClick)
+        button_summary_this_week.setOnClickListener(::onClick)
+        button_summary_last_week.setOnClickListener(::onClick)
+        button_summary_this_month.setOnClickListener(::onClick)
+        button_summary_last_month.setOnClickListener(::onClick)
     }
 
     private fun setupCalendar(
@@ -288,9 +289,9 @@ class FragmentDatePicker : Fragment() {
         text = month.yearMonth.format(formatter)
     }
 
-    private fun setButtonSelected(view: View) {
+    private fun setButtonSelected(view: View?) {
         group_datepicker_buttons.forEach {
-            it.isSelected = it.id == view.id
+            it.isSelected = it.id == view?.id
         }
     }
 

@@ -3,6 +3,7 @@ package com.kondenko.pocketwaka.screens.summary
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.map
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kondenko.pocketwaka.data.android.HumanReadableDateFormatter
 import com.kondenko.pocketwaka.domain.summary.model.AvailableRange
@@ -49,6 +50,13 @@ class SummaryRangeViewModel(
 
     // Properties
 
+    private val selectedDateRange: DateRange?
+        get() = when {
+            startDate != null && endDate != null -> DateRange.Range(startDate!!, endDate!!)
+            startDate != null -> DateRange.SingleDay(startDate!!)
+            else -> null
+        }
+
     val isStatsRangeUnlimited: Boolean
         get() = availableRange.value == AvailableRange.Unlimited
 
@@ -70,7 +78,7 @@ class SummaryRangeViewModel(
 
     fun titleChanges(): LiveData<String> = titles
 
-    fun calendarInvalidationEvents(): LiveData<Unit> = calendarInvalidationEvents
+    fun dataSelectionEvents(): LiveData<DateRange?> = calendarInvalidationEvents.map { selectedDateRange }
 
     fun closeEvents(): LiveData<Unit> = closeEvents
 
