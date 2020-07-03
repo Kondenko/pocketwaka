@@ -31,6 +31,7 @@
     <color name="color_text_disabled">#3335434F</color>
     <color name="color_text_black_primary">#DD000000</color>
     <color name="color_text_black_secondary">#89000000</color>
+    <color name="color_text_black_tertiary">#61000000</color>
     <color name="color_text_white_primary">#FFFFFF</color>
     <color name="color_text_error">#FF001F</color>
 

@@ -47,6 +47,11 @@ class SummaryRangeViewModel(
 
     private val adjacentDatesNumber = 2
 
+    // Properties
+
+    val isStatsRangeUnlimited: Boolean
+        get() = availableRange.value == AvailableRange.Unlimited
+
     init {
         disposables += getAvailableRange.build()
               .doOnSuccess { selectDate(today, true) }

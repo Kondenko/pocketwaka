@@ -147,6 +147,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_summary_this_month"
         app:layout_constraintVertical_bias="0.0"
+        tools:layout_height="240dp"
+        />
+
+    <TextView
+        android:id="@+id/textViewDatePickerLimitedCaption"
+        android:text="@string/summary_date_picker_limited_caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/color_text_black_tertiary"
+        android:visibility="invisible"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="14dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendar_datepicker"
+        tools:visibility="visible"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

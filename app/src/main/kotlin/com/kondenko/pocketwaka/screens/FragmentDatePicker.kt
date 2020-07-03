@@ -57,7 +57,7 @@ class FragmentDatePicker : Fragment() {
 
     private val surfaceColorResting = R.color.color_window_background // TODO Check if should be changed to color_app_bar_resting
 
-    private val surfaceColorElevated = R.color.color_background_white // TODO Check if should be changed to color_app_bar_elevated
+    private val surfaceColorElevated = R.color.color_background_white // TODO Check if should be changed to color_app_bar_elevatedxc
 
     private val initialElevation = 6f
 
@@ -84,7 +84,8 @@ class FragmentDatePicker : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val behavior = view.findViewWithParent { it is CoordinatorLayout }?.setupBottomSheetBehavior()
+        val bottomSheetView = view.findViewWithParent { it is CoordinatorLayout }
+        val behavior = bottomSheetView?.setupBottomSheetBehavior()
         contentViews = arrayOf(
               button_summary_today,
               button_summary_yesterday,
@@ -107,12 +108,11 @@ class FragmentDatePicker : Fragment() {
 
         vm.availableRangeChanges().observe(viewLifecycleOwner) { availableRange ->
             setupCalendar(behavior, view.context, availableRange)
-            val lockButtons = availableRange != AvailableRange.Unlimited
+            val isRangeLimited = availableRange != AvailableRange.Unlimited
             forEach(button_summary_last_month, button_summary_this_month) {
                 // (secondary) TODO Unlock button_summary_this_month if today is less that 2 weeks away from start of month
-                it?.lock(lockButtons)
+                it?.lock(isRangeLimited)
             }
-            // TODO Show message about locked stats
         }
     }
 
@@ -311,6 +311,12 @@ class FragmentDatePicker : Fragment() {
                 imageview_icon_expand.isInvisible = false
                 imageview_handle.isInvisible = true
             }
+            TopSheetBehavior.STATE_DRAGGING -> {
+                textViewDatePickerLimitedCaption.isInvisible = true
+            }
+            TopSheetBehavior.STATE_EXPANDED -> {
+                textViewDatePickerLimitedCaption.isInvisible = vm.isStatsRangeUnlimited
+            }
             else -> {
                 imageview_icon_expand.isInvisible = true
                 imageview_handle.isInvisible = false
@@ -321,7 +327,6 @@ class FragmentDatePicker : Fragment() {
     private fun updateBackground(newState: Int) = context?.let {
         when (newState) {
             TopSheetBehavior.STATE_COLLAPSED -> {
-                // TODO Update backgound as per design
                 surfaceColorAnimator.reverse()
                 animationRequired = true
             }
@@ -336,9 +341,9 @@ class FragmentDatePicker : Fragment() {
 
     private fun onOffsetChanged(bottomSheet: View, slideOffset: Float, opening: Boolean) {
         val toolbarAlpha = 1 - (slideOffset / toolbarSlideOffsetBoundary).coerceAtMost(1f)
-        textview_summary_current_date.alpha = toolbarAlpha
-        imageview_icon_expand.alpha = toolbarAlpha
-        imageview_handle.alpha = toolbarAlpha
+        forEach(textview_summary_current_date, imageview_icon_expand, imageview_handle) {
+            it?.alpha = toolbarAlpha
+        }
         forEach(*contentViews) {
             it?.isVisible = true
             it?.alpha = 1 - toolbarAlpha

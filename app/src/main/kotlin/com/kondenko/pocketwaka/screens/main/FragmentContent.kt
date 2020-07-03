@@ -61,7 +61,7 @@ class FragmentContent : Fragment() {
         (activity as? AppCompatActivity?)?.setSupportActionBar(toolbar_main)
         showData()
         val fragmentDatePicker = childFragmentManager
-              .findFragmentByTag(getString(R.string.summary_tag_fragment_date_picker)) as? FragmentDatePicker
+              .findFragmentByTag(getString(R.string.summary_date_picker_tag)) as? FragmentDatePicker
         vm.titleChanges().observe(viewLifecycleOwner) {
             fragmentDatePicker?.setTitle(it)
         }

@@ -72,7 +72,7 @@
 
     <!-- SUMMARIES -->
 
-    <string name="summary_tag_fragment_date_picker" translatable="false">fragment_date_picker</string>
+    <string name="summary_date_picker_tag" translatable="false">fragment_date_picker</string>
 
     <string name="summary_title_time_tracked">Time tracked</string>
     <string name="summary_title_projects">Projects</string>
@@ -95,6 +95,8 @@
     <string name="summary_date_last_week">Last week</string>
     <string name="summary_date_this_month">This month</string>
     <string name="summary_date_last_month">Last month</string>
+
+    <string name="summary_date_picker_limited_caption">Stats older than 2 weeks are not available on the free plan</string>
 
     <!-- MENU -->
     <string name="menu_version_template">Version %s</string>
