@@ -8,8 +8,8 @@ import com.kizitonwose.calendarview.model.CalendarDay
 import com.kondenko.pocketwaka.data.android.HumanReadableDateFormatter
 import com.kondenko.pocketwaka.domain.summary.model.AvailableRange
 import com.kondenko.pocketwaka.domain.summary.usecase.GetAvailableRange
-import com.kondenko.pocketwaka.screens.FragmentDatePicker.DaySelectionState
 import com.kondenko.pocketwaka.screens.base.BaseViewModel
+import com.kondenko.pocketwaka.screens.summary.FragmentDatePicker.DaySelectionState
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.date.DateRange

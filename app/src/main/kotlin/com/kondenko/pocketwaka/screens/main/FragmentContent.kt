@@ -12,9 +12,9 @@ import com.google.android.material.appbar.AppBarLayout
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.analytics.Screen
 import com.kondenko.pocketwaka.analytics.ScreenTracker
-import com.kondenko.pocketwaka.screens.FragmentDatePicker
 import com.kondenko.pocketwaka.screens.menu.FragmentMenu
 import com.kondenko.pocketwaka.screens.stats.FragmentStatsContainer
+import com.kondenko.pocketwaka.screens.summary.FragmentDatePicker
 import com.kondenko.pocketwaka.screens.summary.FragmentSummaryContainer
 import com.kondenko.pocketwaka.screens.summary.SummaryRangeViewModel
 import com.kondenko.pocketwaka.utils.extensions.forEachNonNull

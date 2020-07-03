@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:paddingTop="24dp"
-    tools:context=".screens.FragmentDatePicker"
+    tools:context=".screens.summary.FragmentDatePicker"
     >
 
     <TextView

@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka.screens
+package com.kondenko.pocketwaka.screens.summary
 
 import android.animation.AnimatorInflater
 import android.animation.ValueAnimator
@@ -27,7 +27,6 @@ import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.summary.model.AvailableRange
-import com.kondenko.pocketwaka.screens.summary.SummaryRangeViewModel
 import com.kondenko.pocketwaka.ui.TopSheetBehavior
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.date.contains
