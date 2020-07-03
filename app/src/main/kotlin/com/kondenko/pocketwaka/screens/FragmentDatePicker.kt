@@ -37,7 +37,6 @@ import kotlinx.android.synthetic.main.item_calendar_month.view.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
-import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.WeekFields
 
 // TODO Dim background and make it closable by clicking on the outside
@@ -105,10 +104,10 @@ class FragmentDatePicker : Fragment() {
         vm.closeEvents().observe(viewLifecycleOwner) {
             behavior?.state = TopSheetBehavior.STATE_COLLAPSED
         }
-
         vm.availableRangeChanges().observe(viewLifecycleOwner) { availableRange ->
             setupCalendar(behavior, view.context, availableRange)
             val isRangeLimited = availableRange != AvailableRange.Unlimited
+            // TODO Only show the arrow when data is available
             forEach(button_summary_last_month, button_summary_this_month) {
                 // (secondary) TODO Unlock button_summary_this_month if today is less that 2 weeks away from start of month
                 it?.lock(isRangeLimited)
@@ -170,7 +169,7 @@ class FragmentDatePicker : Fragment() {
     private fun setupButtons() {
         button_summary_today.setOnClickListener {
             vm.onButtonClicked(DateRange.PredefinedRange.Today.range)
-            setButtonSelected(it)
+            setButtonSelected(it) // TODO Control selection state by the data coming from VM
         }
         button_summary_yesterday.setOnClickListener {
             vm.onButtonClicked(DateRange.PredefinedRange.Yesterday.range)
@@ -303,7 +302,9 @@ class FragmentDatePicker : Fragment() {
         updateBackground(newState)
         when (newState) {
             TopSheetBehavior.STATE_COLLAPSED -> {
-                calendar_datepicker.scrollToMonth(currentMonth)
+                vm.dateToScrollTo?.let { date ->
+                    calendar_datepicker.scrollToMonth(YearMonth.of(date.year, date.month))
+                }
                 vm.confirmDateSelection()
                 imageview_icon_expand.isInvisible = false
                 imageview_handle.isInvisible = true

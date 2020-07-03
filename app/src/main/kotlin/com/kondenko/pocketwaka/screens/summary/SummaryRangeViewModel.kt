@@ -39,7 +39,7 @@ class SummaryRangeViewModel(
 
     // Dates
 
-    private val today = DateRange.SingleDay(dateProvider.getToday())
+    private val today = DateRange.SingleDay(dateProvider.today)
 
     private var startDate: LocalDate? = null
 
@@ -51,6 +51,12 @@ class SummaryRangeViewModel(
 
     val isStatsRangeUnlimited: Boolean
         get() = availableRange.value == AvailableRange.Unlimited
+
+    /**
+     * Which month the calendar should show when the date picker is opened
+     */
+    val dateToScrollTo
+        get() = endDate ?: startDate
 
     init {
         disposables += getAvailableRange.build()
