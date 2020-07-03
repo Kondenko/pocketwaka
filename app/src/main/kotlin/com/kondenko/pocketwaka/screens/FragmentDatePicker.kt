@@ -37,7 +37,7 @@ import kotlinx.android.synthetic.main.item_calendar_month.view.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
-import org.threeten.bp.format.TextStyle
+import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.WeekFields
 
 // TODO Dim background and make it closable by clicking on the outside
@@ -285,11 +285,11 @@ class FragmentDatePicker : Fragment() {
           container: MonthViewContainer,
           month: CalendarMonth
     ) = with(container.textViewMonth) {
-        text = month.yearMonth.month.getDisplayName(
-              TextStyle.FULL,
-              context.getCurrentLocale()
-        )
-        // TODO Append year if not the current one
+        val patternCurrentYear = "MMMM"
+        val patternOtherYear = "MMMM yyyy"
+        val pattern = if (month.year == currentMonth.year) patternCurrentYear else patternOtherYear
+        val formatter = DateTimeFormatter.ofPattern(pattern)
+        text = month.yearMonth.format(formatter)
     }
 
     private fun setButtonSelected(view: View) {

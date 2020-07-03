@@ -18,9 +18,9 @@ import io.reactivex.rxkotlin.subscribeBy
 import org.threeten.bp.LocalDate
 
 class SummaryRangeViewModel(
-      dateProvider: DateProvider,
+      private val dateProvider: DateProvider,
       private val dateFormatter: HumanReadableDateFormatter,
-      private val getAvailableRange: GetAvailableRange
+      getAvailableRange: GetAvailableRange
 ) : BaseViewModel<Nothing>() {
 
     // Events
@@ -92,7 +92,6 @@ class SummaryRangeViewModel(
 
     fun onDayClicked(day: CalendarDay) {
         val date = day.date
-        // (secondary) TODO Allow selecting a date before start date (so the backwards selection order is also possible)
         if (startDate != null) {
             if (date < startDate || endDate != null) {
                 startDate = date
@@ -144,6 +143,10 @@ class SummaryRangeViewModel(
         else -> {
             DaySelectionState.Unselected
         }
+    }
+
+    fun toText(date: LocalDate) {
+
     }
 
     private fun DateRange.Range.loadRange(invalidateScreens: Boolean) {
