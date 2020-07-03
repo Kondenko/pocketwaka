@@ -10,7 +10,6 @@ import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 class DateFormatter(private val context: Context, private val stringProvider: StringProvider) {
@@ -44,13 +43,12 @@ class DateFormatter(private val context: Context, private val stringProvider: St
         )
     }
 
-    fun formatDateForDisplay(seconds: Int, includeYear: Boolean = true): String {
-        return DateUtils.formatDateTime(
-              context,
-              TimeUnit.SECONDS.toMillis(seconds.toLong()),
-              (if (includeYear) DateUtils.FORMAT_SHOW_YEAR else DateUtils.FORMAT_NO_YEAR) or DateUtils.FORMAT_ABBREV_MONTH
-        )
-    }
+    fun formatDateForDisplay(seconds: Long, includeYear: Boolean = true): String =
+          DateUtils.formatDateTime(
+                context,
+                TimeUnit.SECONDS.toMillis(seconds),
+                (if (includeYear) DateUtils.FORMAT_SHOW_YEAR else DateUtils.FORMAT_NO_YEAR) or DateUtils.FORMAT_ABBREV_MONTH
+          )
 
     /**
      * A shorthand version of [secondsToHumanReadableTime] which uses [Format.Long] by default.

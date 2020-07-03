@@ -16,6 +16,8 @@ import com.crashlytics.android.Crashlytics
 import com.kondenko.pocketwaka.BuildConfig
 import io.reactivex.Single
 import org.threeten.bp.LocalDate
+import org.threeten.bp.YearMonth
+import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -128,6 +130,15 @@ infix fun LocalDate.dailyRangeTo(other: LocalDate): List<LocalDate> {
         nextDate = nextDate.plusDays(1)
     }
     return list
+}
+
+fun YearMonth.getMonthYearFormat(currentYear: Int) = getMonthYearFormat(year, currentYear)
+
+fun getMonthYearFormat(year: Int, currentYear: Int): DateTimeFormatter {
+    val patternCurrentYear = "MMMM"
+    val patternOtherYear = "MMMM yyyy"
+    val pattern = if (year == currentYear) patternCurrentYear else patternOtherYear
+    return DateTimeFormatter.ofPattern(pattern)
 }
 
 inline fun <reified R> Iterable<*>.findInstance(): R? = find { it is R } as R

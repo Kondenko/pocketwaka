@@ -285,10 +285,7 @@ class FragmentDatePicker : Fragment() {
           container: MonthViewContainer,
           month: CalendarMonth
     ) = with(container.textViewMonth) {
-        val patternCurrentYear = "MMMM"
-        val patternOtherYear = "MMMM yyyy"
-        val pattern = if (month.year == currentMonth.year) patternCurrentYear else patternOtherYear
-        val formatter = DateTimeFormatter.ofPattern(pattern)
+        val formatter = month.yearMonth.getMonthYearFormat(currentMonth.year)
         text = month.yearMonth.format(formatter)
     }
 

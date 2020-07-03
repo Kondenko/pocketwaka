@@ -28,7 +28,7 @@ class GetAvailableRange(
                 }
 
     private fun getDatesAvailableToFreeUsers() =
-          dateProvider.getToday()
+          dateProvider.today
                 .let { today ->
                     DateRange.Range(today.minusWeeks(WEEKS_AVAILABLE_TO_FREE_USERS).plusDays(1), today)
                 }
