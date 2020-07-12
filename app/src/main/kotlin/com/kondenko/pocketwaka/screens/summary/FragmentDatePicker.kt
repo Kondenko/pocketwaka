@@ -64,9 +64,9 @@ class FragmentDatePicker : Fragment() {
           DateRange.PredefinedRange.LastMonth.range to R.id.button_summary_last_month
     )
 
-    private val surfaceColorResting = R.color.color_window_background // TODO Check if should be changed to color_app_bar_resting
+    private val surfaceColorResting = R.color.color_app_bar_resting
 
-    private val surfaceColorElevated = R.color.color_background_white // TODO Check if should be changed to color_app_bar_elevatedxc
+    private val surfaceColorElevated = R.color.color_app_bar_elevated
 
     private val initialElevation = 6f
 
