@@ -5,6 +5,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.LevelListDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -308,13 +309,17 @@ class FragmentDatePicker : Fragment() {
                 }
                 vm.confirmDateSelection()
                 imageview_icon_expand.isInvisible = false
-                imageview_handle.isInvisible = true
             }
             TopSheetBehavior.STATE_DRAGGING -> {
                 textViewDatePickerLimitedCaption.isInvisible = true
+                imageview_handle.isInvisible = true
             }
             TopSheetBehavior.STATE_EXPANDED -> {
                 textViewDatePickerLimitedCaption.isInvisible = vm.isStatsRangeUnlimited
+            }
+            TopSheetBehavior.STATE_SETTLING -> {
+                imageview_handle.isInvisible = true
+                textViewDatePickerLimitedCaption.isInvisible = true
             }
             else -> {
                 imageview_icon_expand.isInvisible = true
@@ -326,8 +331,10 @@ class FragmentDatePicker : Fragment() {
     private fun updateBackground(newState: Int) = context?.let {
         when (newState) {
             TopSheetBehavior.STATE_COLLAPSED -> {
-                surfaceColorAnimator.reverse()
-                animationRequired = true
+                if (animationRequired) {
+                    surfaceColorAnimator.reverse()
+                    animationRequired = true
+                }
             }
             else -> {
                 if (animationRequired) {
@@ -338,7 +345,7 @@ class FragmentDatePicker : Fragment() {
         }
     }
 
-    private fun onOffsetChanged(bottomSheet: View, slideOffset: Float, opening: Boolean) {
+    private fun onOffsetChanged(bottomSheet: View, slideOffset: Float, isOpening: Boolean) {
         val toolbarAlpha = 1 - (slideOffset / toolbarSlideOffsetBoundary).coerceAtMost(1f)
         forEach(textview_summary_current_date, imageview_icon_expand, imageview_handle) {
             it?.alpha = toolbarAlpha
@@ -348,7 +355,16 @@ class FragmentDatePicker : Fragment() {
             it?.alpha = 1 - toolbarAlpha
         }
         bottomSheet.elevation = (finalElevation * slideOffset)
-              .coerceAtLeast(if (opening && slideOffset > 0f) initialElevation else 0f)
+              .coerceAtLeast(if (isOpening && slideOffset > 0f) initialElevation else 0f)
+        animateBackground(slideOffset, isOpening)
+    }
+
+    private fun animateBackground(fraction: Float, isOpening: Boolean) {
+        // TODO Bump minSdk
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            surfaceColorAnimator.setCurrentFraction(fraction)
+            animationRequired = isOpening
+        }
     }
 
     enum class DaySelectionState {
