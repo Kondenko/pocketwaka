@@ -27,12 +27,14 @@
         android:id="@+id/imageview_icon_expand"
         android:src="@drawable/ic_expand_wide"
         android:layout_width="wrap_content"
+        android:visibility="invisible"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginStart="6dp"
         app:layout_constraintBottom_toBottomOf="@+id/textview_summary_current_date"
         app:layout_constraintStart_toEndOf="@+id/textview_summary_current_date"
         app:layout_constraintTop_toTopOf="@+id/textview_summary_current_date"
+        tools:visibility="visible"
         />
 
     <ImageView
@@ -110,10 +112,10 @@
         android:layout_height="@dimen/height_datepicker_button"
         android:text="@string/summary_date_last_month"
         app:layout_constraintBottom_toBottomOf="@+id/button_summary_this_month"
+        app:layout_constraintBottom_toTopOf="@+id/calendar_datepicker"
         app:layout_constraintEnd_toEndOf="@+id/button_summary_this_week"
         app:layout_constraintStart_toStartOf="@+id/button_summary_this_week"
         app:layout_constraintTop_toBottomOf="@+id/button_summary_this_week"
-        app:layout_constraintBottom_toTopOf="@+id/calendar_datepicker"
         />
 
     <com.google.android.material.button.MaterialButton
@@ -123,13 +125,13 @@
         android:layout_margin="@dimen/margin_datepicker_button"
         android:layout_width="@dimen/width_datepicker_button"
         android:layout_height="@dimen/height_datepicker_button"
-        tools:enabled="false"
-        tools:icon="@drawable/ic_date_locked"
-        tools:iconTint="@null"
         app:layout_constraintBottom_toBottomOf="@id/button_summary_last_month"
         app:layout_constraintEnd_toEndOf="@+id/button_summary_last_week"
         app:layout_constraintStart_toStartOf="@+id/button_summary_last_week"
         app:layout_constraintTop_toTopOf="@+id/button_summary_last_month"
+        tools:enabled="false"
+        tools:icon="@drawable/ic_date_locked"
+        tools:iconTint="@null"
         />
 
     <com.kizitonwose.calendarview.CalendarView

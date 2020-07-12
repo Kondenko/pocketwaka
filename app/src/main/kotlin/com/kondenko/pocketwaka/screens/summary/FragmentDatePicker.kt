@@ -117,9 +117,9 @@ class FragmentDatePicker : Fragment() {
             behavior?.state = TopSheetBehavior.STATE_COLLAPSED
         }
         vm.availableRangeChanges().observe(viewLifecycleOwner) { availableRange ->
+            imageview_icon_expand.isVisible = true
             setupCalendar(behavior, view.context, availableRange)
             val isRangeLimited = availableRange != AvailableRange.Unlimited
-            // TODO Only show the arrow when data is available
             forEach(button_summary_last_month, button_summary_this_month) {
                 // (secondary) TODO Unlock button_summary_this_month if today is less that 2 weeks away from start of month
                 it?.lock(isRangeLimited)
