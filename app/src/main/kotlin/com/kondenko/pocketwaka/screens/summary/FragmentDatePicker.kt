@@ -39,7 +39,8 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
 import org.threeten.bp.temporal.WeekFields
 
-// TODO Dim background and make it closable by clicking on the outside
+// (won't implement for now) TODO Dim background and make it closable by clicking on the outside
+// should be the topmost fragment
 class FragmentDatePicker : Fragment() {
 
     companion object {
@@ -69,7 +70,7 @@ class FragmentDatePicker : Fragment() {
 
     private val initialElevation = 6f
 
-    private val finalElevation = 16f
+    private val finalElevation = 32f
 
     private val toolbarSlideOffsetBoundary = 0.5f
 
