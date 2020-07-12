@@ -4,7 +4,6 @@ import android.content.Context
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.date.DateRange.PredefinedRange.Today
-import java.lang.IllegalArgumentException
 
 class StringProvider(private val context: Context) {
 
@@ -26,9 +25,9 @@ class StringProvider(private val context: Context) {
     fun getDateRangeWithSeparator(start: String, end: String) =
           context.getString(R.string.summary_range_separator, start, end)
 
-    fun getHumanReadableDateRange(dateRange: DateRange.PredefinedRange): String = when (dateRange) {
+    fun getHumanReadableDateRange(dateRange: DateRange.PredefinedRange): String? = when (dateRange) {
         Today -> R.string.summary_date_today
-        else -> TODO("Range not found")
-    }.let { context.resources.getString(it) }
+        else -> null
+    }?.let { context.resources.getString(it) }
 
 }

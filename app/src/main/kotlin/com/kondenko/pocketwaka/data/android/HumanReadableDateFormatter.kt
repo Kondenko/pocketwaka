@@ -11,8 +11,9 @@ class HumanReadableDateFormatter(
       private val stringProvider: StringProvider
 ) {
 
-    fun format(date: DateRange) =
-          date.asPredefinedRange()?.let(stringProvider::getHumanReadableDateRange)
+    fun format(date: DateRange): String =
+          date.asPredefinedRange()
+                ?.let(stringProvider::getHumanReadableDateRange)
                 ?: formatDefault(date)
 
     private fun formatDefault(date: DateRange) = when (date) {
