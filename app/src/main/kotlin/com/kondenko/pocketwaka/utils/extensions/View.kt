@@ -99,3 +99,9 @@ fun ViewGroup.getOtherViewsWidthSum(vararg viewsToExclude: Int) =
 
 val View.widthWithMargins
     get() = width + max(marginLeft, marginStart) + max(marginRight, marginEnd)
+
+fun View.findViewWithParent(predicate: (ViewGroup) -> Boolean): View? = when {
+    parent == null -> null
+    predicate(parent as ViewGroup) -> this
+    else -> (parent as View).findViewWithParent(predicate)
+}

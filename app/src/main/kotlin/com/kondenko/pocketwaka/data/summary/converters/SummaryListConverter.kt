@@ -4,8 +4,7 @@ import androidx.room.TypeConverter
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory
-import com.kondenko.pocketwaka.domain.summary.model.ProjectModel
-import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
+import com.kondenko.pocketwaka.domain.summary.model.*
 
 object SummaryListConverter {
 
@@ -13,26 +12,19 @@ object SummaryListConverter {
             .of(SummaryUiModel::class.java)
             .registerSubtype(SummaryUiModel.TimeTracked::class.java)
             .registerSubtype(SummaryUiModel.ProjectsTitle::class.java)
-            .registerSubtype(SummaryUiModel.Project::class.java)
-
-    private val projectModelFactory = RuntimeTypeAdapterFactory
-            .of(ProjectModel::class.java)
-            .registerSubtype(ProjectModel.ProjectName::class.java)
-            .registerSubtype(ProjectModel.Branch::class.java)
-            .registerSubtype(ProjectModel.Commit::class.java)
-            .registerSubtype(ProjectModel.ConnectRepoAction::class.java)
-            .registerSubtype(ProjectModel.MoreCommitsAction::class.java)
-            .registerSubtype(ProjectModel.NoCommitsLabel::class.java)
+            .registerSubtype(SummaryUiModel.ProjectItem::class.java)
 
     private val gson = GsonBuilder()
             .serializeNulls()
             .registerTypeAdapterFactory(summaryFactory)
-            .registerTypeAdapterFactory(projectModelFactory)
+            .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(Project::class.java))
+            .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(Branch::class.java))
+            .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(Commit::class.java))
             .create()
 
     private val summaryTypeToken = object : TypeToken<List<SummaryUiModel>>() {}.type
 
-    private val projectsTypeToken = object : TypeToken<List<ProjectModel>>() {}.type
+    private val projectsTypeToken = object : TypeToken<List<Project>>() {}.type
 
     @TypeConverter
     @JvmStatic
@@ -48,13 +40,13 @@ object SummaryListConverter {
 
     @TypeConverter
     @JvmStatic
-    fun projectsToJson(model: List<ProjectModel>): String {
+    fun projectsToJson(model: List<Project>): String {
         return gson.toJson(model, projectsTypeToken)
     }
 
     @TypeConverter
     @JvmStatic
-    fun projectsFromJson(model: String): List<ProjectModel> {
+    fun projectsFromJson(model: String): List<Project> {
         return gson.fromJson(model, projectsTypeToken)
     }
 

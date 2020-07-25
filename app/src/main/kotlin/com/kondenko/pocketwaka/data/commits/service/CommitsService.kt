@@ -1,7 +1,7 @@
 package com.kondenko.pocketwaka.data.commits.service
 
 import com.kondenko.pocketwaka.Const
-import com.kondenko.pocketwaka.data.commits.model.CommitsServiceModel
+import com.kondenko.pocketwaka.data.commits.model.CommitsResponse
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -17,7 +17,8 @@ interface CommitsService {
             @Header(Const.HEADER_BEARER_NAME) tokenHeaderValue: String,
             @Path(projectPathVariable) project: String? = null,
             @Query("author") author: String? = null,
+            @Query("branch") branch: String? = null,
             @Query("page") page: Int? = null
-    ): Single<CommitsServiceModel>
+    ): Single<CommitsResponse>
 
 }

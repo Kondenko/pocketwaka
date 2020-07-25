@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/background_calendar_day_selected"/>
+    <item>
+        <shape
+            android:shape="rectangle"
+            android:tint="@color/color_ripple"
+            >
+            <corners
+                android:bottomLeftRadius="@dimen/size_datepicker_calendar_day"
+                android:topLeftRadius="@dimen/size_datepicker_calendar_day"
+                android:topRightRadius="0dp"
+                android:bottomRightRadius="0dp"
+                />
+            <size
+                android:height="@dimen/size_datepicker_calendar_day"
+                android:width="@dimen/size_datepicker_calendar_day"
+                />
+        </shape>
+    </item>
+</layer-list>

@@ -5,6 +5,7 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
@@ -12,14 +13,18 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.analytics.Screen
 import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.screens.menu.FragmentMenu
-import com.kondenko.pocketwaka.screens.stats.FragmentStats
-import com.kondenko.pocketwaka.screens.summary.FragmentSummary
+import com.kondenko.pocketwaka.screens.stats.FragmentStatsContainer
+import com.kondenko.pocketwaka.screens.summary.FragmentDatePicker
+import com.kondenko.pocketwaka.screens.summary.FragmentSummaryContainer
+import com.kondenko.pocketwaka.screens.summary.SummaryRangeViewModel
 import com.kondenko.pocketwaka.utils.extensions.forEachNonNull
+import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.transaction
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.android.synthetic.main.fragment_content.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class FragmentContent : Fragment() {
@@ -28,12 +33,14 @@ class FragmentContent : Fragment() {
 
     private val refreshEvents = PublishSubject.create<Unit>()
 
+    private val vm: SummaryRangeViewModel by sharedViewModel()
+
     private var refreshEventsDisposable: Disposable? = null
 
-    private lateinit var fragmentSummary: FragmentSummary
+    private lateinit var fragmentSummary: FragmentSummaryContainer
     private val tagSummary = "summary"
 
-    private lateinit var fragmentStats: FragmentStats
+    private lateinit var fragmentStatsContainer: FragmentStatsContainer
     private val tagStats = "stats"
 
     private lateinit var fragmentMenu: FragmentMenu
@@ -46,13 +53,18 @@ class FragmentContent : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
           inflater
                 .cloneInContext(ContextThemeWrapper(activity, R.style.AppTheme))
-                .inflate(R.layout.fragment_main, container, false)
+                .inflate(R.layout.fragment_content, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         (activity as? AppCompatActivity?)?.setSupportActionBar(toolbar_main)
         showData()
+        val fragmentDatePicker = childFragmentManager
+              .findFragmentByTag(getString(R.string.summary_date_picker_tag)) as? FragmentDatePicker
+        vm.titleChanges().observe(viewLifecycleOwner) {
+            fragmentDatePicker?.setTitle(it)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -68,14 +80,14 @@ class FragmentContent : Fragment() {
     }
 
     private fun showData() {
-        fragmentSummary = childFragmentManager.findFragmentByTag(tagSummary) as? FragmentSummary
-              ?: FragmentSummary()
-        fragmentStats = childFragmentManager.findFragmentByTag(tagStats) as? FragmentStats
-              ?: FragmentStats()
+        fragmentSummary = childFragmentManager.findFragmentByTag(tagSummary) as? FragmentSummaryContainer
+              ?: FragmentSummaryContainer()
+        fragmentStatsContainer = childFragmentManager.findFragmentByTag(tagStats) as? FragmentStatsContainer
+              ?: FragmentStatsContainer()
         fragmentMenu = childFragmentManager.findFragmentByTag(tagMenu) as? FragmentMenu
               ?: FragmentMenu()
         childFragmentManager.transaction {
-            forEachNonNull(fragmentSummary to tagSummary, fragmentStats to tagStats, fragmentMenu to tagMenu) { (fragment, tag) ->
+            forEachNonNull(fragmentSummary to tagSummary, fragmentStatsContainer to tagStats, fragmentMenu to tagMenu) { (fragment, tag) ->
                 if (childFragmentManager.findFragmentByTag(tag) == null) {
                     add(R.id.main_container, fragment, tag)
                 }
@@ -97,24 +109,26 @@ class FragmentContent : Fragment() {
     private fun showSummaries() {
         setFragment(fragmentSummary) {
             screenTracker.log(activity, Screen.Summary)
-            showAppBar(true)
+            showAppBar(false)
+            container_summary_date_picker.isVisible = true
             refreshEventsDisposable = fragmentSummary.subscribeToRefreshEvents(refreshEvents)
         }
     }
 
     private fun showStats() {
-        setFragment(fragmentStats) {
+        setFragment(fragmentStatsContainer) {
             /*
                 When this screen is opened for the first time in the session, selected tab is null.
                 OnPageChangeListener gets called and sends a screen_view event with the default tab (e.g. 7 days).
                 However when is screen is revisited during the same session, OnPageChangeListener is not called,
                 but selected tab is initialized, so we report this event here.
             */
-            fragmentStats.getSelectedTab()?.let { selectedTab ->
+            fragmentStatsContainer.getSelectedTab()?.let { selectedTab ->
                 screenTracker.log(activity, Screen.Stats(selectedTab))
             }
             showAppBar(true)
-            refreshEventsDisposable = fragmentStats.subscribeToRefreshEvents(refreshEvents)
+            container_summary_date_picker.isVisible = false
+            refreshEventsDisposable = fragmentStatsContainer.subscribeToRefreshEvents(refreshEvents)
         }
     }
 
@@ -122,6 +136,7 @@ class FragmentContent : Fragment() {
         setFragment(fragmentMenu) {
             screenTracker.log(activity, Screen.Menu)
             showAppBar(false)
+            container_summary_date_picker.isVisible = false
         }
     }
 

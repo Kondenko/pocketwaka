@@ -6,7 +6,7 @@
     android:paddingStart="@dimen/padding_menu_item"
     android:paddingEnd="@dimen/padding_menu_item"
     android:gravity="center_vertical"
-    android:background="@drawable/menu_item_background"
+    android:background="@drawable/background_menu_item"
     >
 
     <ImageView

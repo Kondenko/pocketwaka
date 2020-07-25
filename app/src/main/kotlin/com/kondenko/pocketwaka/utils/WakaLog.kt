@@ -14,6 +14,20 @@ object WakaLog {
         }
     }
 
+    fun d(tag: String, message: String) {
+        Timber.tag(tag).d(message)
+        ifNoTimber {
+            println(message)
+        }
+    }
+
+    inline fun v(message: String) {
+        Timber.v(message)
+        ifNoTimber {
+            println(message)
+        }
+    }
+
     inline fun w(message: String, throwable: Throwable? = null) {
         throwable?.report(message, printLog = false)
         Timber.w(throwable, message)

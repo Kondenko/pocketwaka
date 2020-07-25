@@ -5,11 +5,12 @@ import com.kondenko.pocketwaka.data.summary.converters.TimeTrackedConverter
 import com.kondenko.pocketwaka.data.summary.repository.SummaryRepository
 import com.kondenko.pocketwaka.di.qualifiers.Scheduler
 import com.kondenko.pocketwaka.domain.auth.MockGetTokenHeaderValue
-import com.kondenko.pocketwaka.domain.summary.usecase.FetchProjects
+import com.kondenko.pocketwaka.domain.summary.usecase.FetchBranchesAndCommits
 import com.kondenko.pocketwaka.domain.summary.usecase.GetAverage
 import com.kondenko.pocketwaka.domain.summary.usecase.GetSummary
 import com.kondenko.pocketwaka.domain.summary.usecase.GetSummaryStateMock
 import com.kondenko.pocketwaka.screens.summary.SummaryViewModel
+import com.kondenko.pocketwaka.utils.date.DateRange
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -29,7 +30,7 @@ val mockSummaryModule = module(override = true) {
               dateFormatter = get(),
               summaryResponseConverter = get<SummaryResponseConverter>(),
               timeTrackedConverter = get<TimeTrackedConverter>(),
-              fetchProjects = get<FetchProjects>()
+              fetchBranchesAndCommits = get<FetchBranchesAndCommits>()
         )
     }
     single {
@@ -37,8 +38,8 @@ val mockSummaryModule = module(override = true) {
     }
     viewModel {
         SummaryViewModel(
+              range = DateRange.PredefinedRange.Today.range,
               uiScheduler = get(Scheduler.Ui),
-              getDefaultSummaryRange = get(),
               getSummaryState = get<GetSummaryStateMock>()
         )
     }

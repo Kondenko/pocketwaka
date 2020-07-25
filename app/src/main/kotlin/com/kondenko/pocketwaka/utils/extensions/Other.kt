@@ -4,7 +4,6 @@ import android.animation.ValueAnimator
 import android.content.SharedPreferences
 import android.graphics.Matrix
 import android.graphics.Path
-import android.os.Build
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
 import androidx.fragment.app.DialogFragment
@@ -16,11 +15,12 @@ import com.airbnb.lottie.value.LottieValueCallback
 import com.crashlytics.android.Crashlytics
 import com.kondenko.pocketwaka.BuildConfig
 import io.reactivex.Single
+import org.threeten.bp.LocalDate
+import org.threeten.bp.YearMonth
+import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import java.util.*
-import java.util.Calendar.*
-
-fun notNull(vararg values: Any?): Boolean = values.all { it != null }
+import java.util.concurrent.TimeUnit
 
 fun Float.negateIfTrue(condition: Boolean) = if (condition) -this else this
 
@@ -42,11 +42,6 @@ fun Throwable.report(message: String? = null, printLog: Boolean = true) {
     if (!BuildConfig.DEBUG) {
         Crashlytics.logException(this)
     }
-}
-
-fun createPath(build: Path.() -> Unit): Path = Path().apply {
-    build()
-    close()
 }
 
 fun Path.applyMatrix(actions: Matrix.() -> Unit) = Matrix().also { matrix ->
@@ -102,17 +97,6 @@ inline fun <reified T : Any> T.className(includeSuperclass: Boolean = false, sep
     return if (!includeSuperclass || superclassName == null) className else "$superclassName$separator$className"
 }
 
-fun <T> forEachNonNull(vararg items: T, action: (T) -> Unit) = items.forEach(action)
-
-fun <T> forEach(vararg items: T?, action: (T?) -> Unit) = items.forEach(action)
-
-fun date(day: Int, month: Int, year: Int): Long = Calendar.getInstance().run {
-    set(DAY_OF_MONTH, day)
-    set(MONTH, month)
-    set(YEAR, year)
-    time.time
-}
-
 val DialogFragment.isShown
     get() = dialog?.isShowing == true && !isRemoving
 
@@ -120,18 +104,46 @@ fun DialogFragment.safeDismiss() {
     if (isShown) dismiss()
 }
 
-fun ifDebug(action: () -> Unit) =
-      if (BuildConfig.DEBUG) {
-          action()
-          true
-      } else {
-          false
-      }
-
-fun apiAtLeast(version: Int, action: (() -> Unit)? = null): Boolean {
-    if (Build.VERSION.SDK_INT >= version) {
-        action?.invoke()
-        return true
-    }
-    return false
+fun Long.roundDateToDay() = Calendar.getInstance().run {
+    time = Date(this@roundDateToDay)
+    set(Calendar.HOUR_OF_DAY, 0)
+    set(Calendar.MINUTE, 0)
+    set(Calendar.SECOND, 0)
+    set(Calendar.MILLISECOND, 0)
+    time.time
 }
+
+fun Long.isSameDay(other: Long) = other.roundDateToDay() == this.roundDateToDay()
+
+fun Number.secondsToHoursAndMinutes(): Pair<Long, Long> {
+    val hours = TimeUnit.SECONDS.toHours(this.toLong())
+    val minutes = TimeUnit.SECONDS.toMinutes(this.toLong()) - TimeUnit.HOURS.toMinutes(hours)
+    return hours to minutes
+}
+
+infix fun LocalDate.dailyRangeTo(other: LocalDate): List<LocalDate> {
+    if (this.isAfter(other)) throw IllegalArgumentException("Start date comes after end ∂ate")
+    val list = mutableListOf<LocalDate>()
+    var nextDate: LocalDate = this
+    while (nextDate <= other) {
+        list.add(nextDate)
+        nextDate = nextDate.plusDays(1)
+    }
+    return list
+}
+
+fun YearMonth.getMonthYearFormat(currentYear: Int) = getMonthYearFormat(year, currentYear)
+
+fun getMonthYearFormat(year: Int, currentYear: Int): DateTimeFormatter {
+    val patternCurrentYear = "MMMM"
+    val patternOtherYear = "MMMM yyyy"
+    val pattern = if (year == currentYear) patternCurrentYear else patternOtherYear
+    return DateTimeFormatter.ofPattern(pattern)
+}
+
+inline fun <reified R> Iterable<*>.findInstance(): R? = find { it is R } as R
+
+fun <T, R> List<T>.appendOrReplace(other: List<T>, keySelector: (T) -> R): List<T> =
+      (other.reversed() + this.reversed())
+            .distinctBy { keySelector(it) }
+            .reversed()

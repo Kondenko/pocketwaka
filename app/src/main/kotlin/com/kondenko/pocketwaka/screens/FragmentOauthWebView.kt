@@ -1,4 +1,4 @@
-package com.kondenko.pocketwaka
+package com.kondenko.pocketwaka.screens
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,10 +10,10 @@ import android.webkit.WebViewClient
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.screens.main.MainViewModel
 import com.kondenko.pocketwaka.screens.main.OnLogIn
 import kotlinx.android.synthetic.main.fragment_web_view.*
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class FragmentOauthWebView : Fragment() {

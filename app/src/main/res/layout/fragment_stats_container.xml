@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="screens.stats.FragmentStats"
+    tools:context="screens.stats.FragmentStatsContainer"
     >
 
     <FrameLayout
@@ -22,7 +22,7 @@
             android:clipToPadding="false"
             android:padding="@dimen/margin_all_vertical_small"
             app:stl_defaultTabBackground="@android:color/transparent"
-            app:stl_defaultTabTextColor="@color/color_state_stats_tab"
+            app:stl_defaultTabTextColor="@color/color_stats_tab"
             app:stl_defaultTabTextSize="@dimen/textsize_stats_tabs"
             app:stl_distributeEvenly="false"
             app:stl_dividerThickness="0dp"

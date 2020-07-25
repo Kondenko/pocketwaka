@@ -17,7 +17,7 @@ class GetSummaryState(
       connectivityStatusProvider: ConnectivityStatusProvider
 ) : StatefulUseCase<GetSummary.Params, List<SummaryUiModel>, SummaryDbModel>(
       schedulers = schedulers,
-      useCase = getSummary,
+      dataProvider = getSummary,
       clearCache = clearCache,
       connectivityStatusProvider = connectivityStatusProvider
 ) {

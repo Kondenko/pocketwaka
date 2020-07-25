@@ -6,8 +6,13 @@
     <color name="color_accent">#2595ff</color>
     <color name="color_ripple">#402595FF</color>
 
-    <color name="color_login_background">@color/color_text_white_primary</color>
+    <color name="color_primary_disabled">#3335434F</color>
+
+    <color name="color_background_white">#FFFFFF</color>
+    <color name="color_login_background">@color/color_background_white</color>
     <color name="color_window_background">@color/color_primary_light</color>
+
+    <color name="color_handle">#d9d9e1</color>
 
     <color name="color_statusbar_legacy">#D0D6DC</color>
 
@@ -23,8 +28,10 @@
 
     <color name="color_text_primary">#DE35434F</color>
     <color name="color_text_secondary">#8A35434F</color>
+    <color name="color_text_disabled">#3335434F</color>
     <color name="color_text_black_primary">#DD000000</color>
     <color name="color_text_black_secondary">#89000000</color>
+    <color name="color_text_black_tertiary">#61000000</color>
     <color name="color_text_white_primary">#FFFFFF</color>
     <color name="color_text_error">#FF001F</color>
 
@@ -37,6 +44,11 @@
 
     <color name="color_growth">#49DE7A</color>
     <color name="color_descent">#8A3F617E</color>
+
+    <color name="color_datepicker_button_border">#1A35434F</color>
+    <color name="color_datepicker_button_background_selected">#0D2695FF</color>
+
+    <color name="color_datepicker_day_disabled">@color/color_text_disabled</color>
 
     <array name="chart_colors">
         <item>#FA5757</item>

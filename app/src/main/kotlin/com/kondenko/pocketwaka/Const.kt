@@ -2,11 +2,15 @@ package com.kondenko.pocketwaka
 
 const val databaseName = "pocketwaka-database"
 
-const val databaseVersion = 2
+const val databaseVersion = 3
 
 const val alphaDisabledView: Float = 0.5f
 
-// TODO Remove top Const object
+const val cacheLifetimeDefaultSec: Long = 60 * 30
+
+const val cacheLifetimeCommitsSec: Long = cacheLifetimeDefaultSec
+
+// (secondary) TODO Remove top Const object
 object Const {
 
     const val DEFAULT_ANIM_DURATION: Long = 400
@@ -33,6 +37,12 @@ object Const {
     const val STATS_RANGE_1_YEAR = "last_year"
 
     const val MAX_SHADOW_OPACITY = .2f
+
+}
+
+object Tags {
+
+    const val COMMITS = "Commits"
 
 }
 

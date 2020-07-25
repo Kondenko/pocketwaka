@@ -1,3 +1,4 @@
+
 # Release files
 **/release/output.json
 
@@ -61,8 +62,6 @@ projectFilesBackup*/
 .settings/
 app/.classpath
 app/release/
-app/src/main/res/values-v26/
-app/src/mock/kotlin/com/kondenko/pocketwaka/screens/
 
 **/*.trace
 **/.cxx

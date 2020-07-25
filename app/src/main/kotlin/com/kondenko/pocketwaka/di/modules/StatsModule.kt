@@ -12,7 +12,7 @@ import com.kondenko.pocketwaka.domain.main.ClearCache
 import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
 import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsForRange
 import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsState
-import com.kondenko.pocketwaka.screens.stats.FragmentStatsTab
+import com.kondenko.pocketwaka.screens.stats.FragmentStats
 import com.kondenko.pocketwaka.screens.stats.StatsViewModel
 import com.kondenko.pocketwaka.screens.stats.adapter.StatsAdapter
 import com.kondenko.pocketwaka.ui.skeleton.RecyclerViewSkeleton
@@ -68,7 +68,7 @@ val statsModule = module {
               get()
         )
     }
-    scope(named<FragmentStatsTab>()) {
+    scope(named<FragmentStats>()) {
         scoped { (context: Context, skeletonItems: List<StatsUiModel>) ->
             RecyclerViewSkeleton<StatsUiModel, StatsAdapter>(
                   adapterCreator = { showSkeleton: Boolean -> get { parametersOf(context, showSkeleton) } },

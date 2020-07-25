@@ -32,7 +32,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.parameter.parametersOf
 
-// TODO Migrate to ViewModel
+// (secondary) TODO Migrate to ViewModel
 class FragmentLogin : Fragment(), LoginView {
 
     companion object {

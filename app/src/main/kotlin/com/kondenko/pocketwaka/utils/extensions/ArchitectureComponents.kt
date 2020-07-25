@@ -7,8 +7,9 @@ import androidx.lifecycle.toPublisher
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
+@Deprecated("Use KTX function", replaceWith = ReplaceWith("observe", "androidx.lifecycle.observe"))
 fun <T> LiveData<T>.observe(lifecycleOwner: LifecycleOwner, observer: (T) -> Unit) =
-        observe(lifecycleOwner, Observer(observer))
+      observe(lifecycleOwner, Observer(observer))
 
 fun <T> LiveData<T>.toObservable(lifecycleOwner: LifecycleOwner) =
       Observable.fromPublisher(this.toPublisher(lifecycleOwner))

@@ -1,6 +1,7 @@
 package com.kondenko.pocketwaka.di.modules
 
 import android.content.Context
+import com.kondenko.pocketwaka.data.android.HumanReadableDateFormatter
 import com.kondenko.pocketwaka.data.persistence.AppDatabase
 import com.kondenko.pocketwaka.data.summary.converters.SummaryResponseConverter
 import com.kondenko.pocketwaka.data.summary.converters.TimeTrackedConverter
@@ -14,8 +15,10 @@ import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.domain.summary.usecase.*
 import com.kondenko.pocketwaka.screens.summary.FragmentSummary
 import com.kondenko.pocketwaka.screens.summary.SummaryAdapter
+import com.kondenko.pocketwaka.screens.summary.SummaryRangeViewModel
 import com.kondenko.pocketwaka.screens.summary.SummaryViewModel
 import com.kondenko.pocketwaka.ui.skeleton.RecyclerViewSkeleton
+import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.extensions.create
 import com.kondenko.pocketwaka.utils.spannable.TimeSpannableCreator
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -56,7 +59,7 @@ val summaryModule = module {
         )
     }
     single {
-        FetchProjects(
+        FetchBranchesAndCommits(
               schedulersContainer = get(),
               durationsRepository = get(),
               commitsRepository = get(),
@@ -71,13 +74,7 @@ val summaryModule = module {
               dateFormatter = get(),
               summaryResponseConverter = get<SummaryResponseConverter>(),
               timeTrackedConverter = get<TimeTrackedConverter>(),
-              fetchProjects = get<FetchProjects>()
-        )
-    }
-    single {
-        GetDefaultSummaryRange(
-              dateProvider = get(),
-              schedulers = get()
+              fetchBranchesAndCommits = get<FetchBranchesAndCommits>()
         )
     }
     single {
@@ -88,7 +85,7 @@ val summaryModule = module {
               connectivityStatusProvider = get()
         )
     }
-    factory { (context: Context, showSkeleton: Boolean) -> SummaryAdapter(context, showSkeleton, get<TimeSpannableCreator>()) }
+    factory { (context: Context, showSkeleton: Boolean) -> SummaryAdapter(context, showSkeleton, get<TimeSpannableCreator>(), get()) }
     scope(named<FragmentSummary>()) {
         scoped { (context: Context, skeletonItems: List<SummaryUiModel>) ->
             RecyclerViewSkeleton(
@@ -97,10 +94,19 @@ val summaryModule = module {
             )
         }
     }
+    factory {
+        GetAvailableRange(get(), get(), get())
+    }
+    factory {
+        HumanReadableDateFormatter(get(), get(), get())
+    }
     viewModel {
+        SummaryRangeViewModel(get(), get(), get())
+    }
+    viewModel { (date: DateRange) ->
         SummaryViewModel(
+              range = date,
               uiScheduler = get(Scheduler.Ui),
-              getDefaultSummaryRange = get(),
               getSummaryState = get<GetSummaryState>()
         )
     }

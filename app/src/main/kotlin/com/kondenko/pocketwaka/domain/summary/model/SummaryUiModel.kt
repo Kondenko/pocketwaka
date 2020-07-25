@@ -11,16 +11,6 @@ sealed class SummaryUiModel {
 
     object ProjectsTitle : SummaryUiModel()
 
-    data class Project(val models: List<ProjectModel>) : SummaryUiModel()
+    data class ProjectItem(val model: Project) : SummaryUiModel()
 
 }
-
-sealed class ProjectModel {
-    data class ProjectName(val name: String, val timeTracked: String?) : ProjectModel()
-    data class Branch(val name: String, val timeTracked: String?) : ProjectModel()
-    data class Commit(val message: String, val timeTracked: String?) : ProjectModel()
-    data class ConnectRepoAction(val url: String) : ProjectModel()
-    object MoreCommitsAction : ProjectModel()
-    object NoCommitsLabel : ProjectModel()
-}
-

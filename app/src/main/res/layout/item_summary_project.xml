@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    app:cardCornerRadius="@dimen/radius_all_card"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/App.CardView.Light"
     android:layout_width="match_parent"
@@ -9,17 +8,28 @@
     android:layout_marginTop="@dimen/margin_stats_card_vertical"
     android:layout_marginEnd="@dimen/margin_stats_card_horizontal"
     android:layout_marginBottom="@dimen/margin_stats_card_vertical"
+    app:cardCornerRadius="@dimen/radius_all_card"
     >
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_summary_project"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/padding_summary_project_card_vertical"
-        android:paddingBottom="@dimen/padding_summary_project_card_vertical"
-        android:overScrollMode="never"
-        android:descendantFocusability="blocksDescendants"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <include layout="@layout/item_summary_project_name" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_summary_project_commits"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            android:descendantFocusability="blocksDescendants"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            />
+
+        <include layout="@layout/item_summary_project_connect_repo" />
+
+    </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

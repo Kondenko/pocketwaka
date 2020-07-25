@@ -73,4 +73,11 @@
     <string name="all_error_invalid_access">Не можем соединиться с Wakatime.\nПожалуйста, войдите снова.</string>
     <string name="loginactivity_subtitle_default">"Думайте о коде,\nа не о тайм-трекинге "</string>
     <string name="loginactivity_title_webview">Вход</string>
+    <string name="summary_date_today">Сегодня</string>
+    <string name="summary_date_yesterday">Вчера</string>
+    <string name="summary_date_this_week">Эта неделя</string>
+    <string name="summary_date_last_week">7 дней</string>
+    <string name="summary_date_this_month">Этот месяц</string>
+    <string name="summary_date_last_month">30 дней</string>
+    <string name="summary_date_picker_limited_caption">Данные старше 2 недель недоступны без премиум-аккаунта</string>
 </resources>

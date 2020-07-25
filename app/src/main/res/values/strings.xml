@@ -72,12 +72,14 @@
 
     <!-- SUMMARIES -->
 
+    <string name="summary_date_picker_tag" translatable="false">fragment_date_picker</string>
+
     <string name="summary_title_time_tracked">Time tracked</string>
     <string name="summary_title_projects">Projects</string>
 
     <string name="summary_projects_state_empty_today_title">No activity today</string>
 
-    <string name="summary_projects_label_no_commits">No commits pushed this day</string>
+    <string name="summary_projects_label_no_commits">No commits pushed during this time</string>
     <string name="summary_projects_label_no_repo">Connect repository to see commits</string>
     <string name="summary_projects_template_more_commits">Show %d more commites</string>
 
@@ -85,6 +87,16 @@
     <string name="summary_template_average_delta_above" formatted="false">above</string>
     <string name="summary_template_average_delta_below" formatted="false">below</string>
     <string name="summary_template_average_delta" formatted="false">%d%% %s monthly average</string>
+
+    <string name="summary_range_separator" translatable="false">%s–%s</string>
+    <string name="summary_date_today">Today</string>
+    <string name="summary_date_yesterday">Yesterday</string>
+    <string name="summary_date_this_week">This week</string>
+    <string name="summary_date_last_week">Last week</string>
+    <string name="summary_date_this_month">This month</string>
+    <string name="summary_date_last_month">Last month</string>
+
+    <string name="summary_date_picker_limited_caption">Stats older than 2 weeks are not available on the free plan</string>
 
     <!-- MENU -->
     <string name="menu_version_template">Version %s</string>
@@ -113,7 +125,5 @@
 
     <string name="stats_time_format_hours_short">%dh</string>
     <string name="stats_time_format_minutes_short">%dm</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
 
 </resources>

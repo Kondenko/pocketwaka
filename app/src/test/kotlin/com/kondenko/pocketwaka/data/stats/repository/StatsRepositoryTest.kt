@@ -112,6 +112,6 @@ class StatsRepositoryTest {
         }
     }
 
-    // TODO Add a test case for empty data
+    // (secondary) TODO Add a test case for empty data
 
 }

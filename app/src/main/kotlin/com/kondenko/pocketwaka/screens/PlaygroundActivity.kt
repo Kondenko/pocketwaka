@@ -1,7 +1,8 @@
-package com.kondenko.pocketwaka
+package com.kondenko.pocketwaka.screens
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.ui.skeleton.Skeleton
 import kotlinx.android.synthetic.main.activity_playground.*
 

@@ -1,17 +1,16 @@
-package com.kondenko.pocketwaka
+package com.kondenko.pocketwaka.screens
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.screens.login.FragmentLogin
 import com.kondenko.pocketwaka.screens.main.FragmentContent
 import com.kondenko.pocketwaka.screens.main.MainAction
 import com.kondenko.pocketwaka.screens.main.MainViewModel
-import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.report
 import com.kondenko.pocketwaka.utils.extensions.transaction

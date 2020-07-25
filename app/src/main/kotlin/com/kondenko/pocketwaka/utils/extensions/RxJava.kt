@@ -50,7 +50,7 @@ fun Disposable?.attachToLifecycle(lifecycle: LifecycleOwner) {
 }
 
 fun <T> Observable<State<T>>.debounceStateUpdates(timeout: Long = 50, scheduler: Scheduler): Observable<State<T>> =
-      compose { it.debounce(50, TimeUnit.MILLISECONDS, scheduler) }
+      compose { it.debounce(timeout, TimeUnit.MILLISECONDS, scheduler) }
 
 /* Assert in order */
 
