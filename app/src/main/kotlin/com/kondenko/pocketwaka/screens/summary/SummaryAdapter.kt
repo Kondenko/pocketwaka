@@ -192,8 +192,8 @@ class SummaryAdapter(
             branchesAdapter.items = project.branches.values.flatMap { branch ->
                 val branchItem = if (showSkeleton) emptyList() else listOf(branch)
                 branchItem + branch.commits.let {
-                    if (project.isRepoConnected && it?.isEmpty() == true) listOf(NoCommitsLabel) else it
-                          ?: emptyList()
+                    // If commits list is null, then there are commits to load, so we don't show an empty commit message
+                    if (project.isRepoConnected && it?.isEmpty() == true) listOf(NoCommitsLabel) else it ?: emptyList()
                 }
             }
             with(itemView) {

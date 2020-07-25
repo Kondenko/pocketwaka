@@ -6,6 +6,8 @@ import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.State.*
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.exceptions.UnauthorizedException
+import com.kondenko.pocketwaka.utils.rx.scanMap
+import io.reactivex.Notification
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
@@ -16,7 +18,6 @@ import java.util.concurrent.TimeUnit
  * @param modelMapper if the class stored in the database is not the class to be rendered, convert it
  *
  * @param UI_MODEL the class to be passed to a ViewModel and rendered
- * @param INTERMEDIATE_MODEL the class stored in the database
  * @param DATABASE_MODEL the class returned from a repository
  */
 abstract class StatefulUseCase<
@@ -43,11 +44,31 @@ abstract class StatefulUseCase<
               TimeUnit.MINUTES,
               schedulers.workerScheduler
         )
-        val loading = Observable.just(Loading(null, true))
+        val loading = Observable.just(Loading<UI_MODEL>(null, true))
         return connectivityStatus
               .switchMapDelayError { isConnected ->
-                  interval.flatMap {
-                      val data = getData(params, params.retryAttempts, isConnected)
+                  interval.flatMap { _ ->
+                      val data: Observable<State<UI_MODEL>> = getData(params, params.retryAttempts, isConnected)
+                            .concatMap { state ->
+                                state
+                                      .takeIf { it is Success }
+                                      ?.let { loading.map { it.copy(data = state.data) } }
+                                      ?: Observable.just(state)
+                            }
+                            .materialize()
+                            .scanMap { prev, next ->
+                                val prevState = prev.value
+                                val prevData = prevState?.data
+                                when {
+                                    next.isOnComplete -> {
+                                        prevData?.let { Notification.createOnNext(changeState(prevState, Success(prevData))) } ?: prev
+                                    }
+                                    else -> {
+                                        next
+                                    }
+                                }
+                            }
+                            .dematerialize()
                       Observable.concatArray(loading, data)
                   }
               }

@@ -9,7 +9,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import com.kondenko.pocketwaka.BuildConfig
 import com.kondenko.pocketwaka.Const
-import java.time.Duration
 import java.util.*
 
 fun notNull(vararg values: Any?): Boolean = values.all { it != null }
@@ -29,6 +28,8 @@ fun date(day: Int, month: Int, year: Int): Long = Calendar.getInstance().run {
     set(Calendar.YEAR, year)
     time.time
 }
+
+val isDebug get() = BuildConfig.DEBUG
 
 fun ifDebug(action: () -> Unit) =
       if (BuildConfig.DEBUG) {
