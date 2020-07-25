@@ -79,4 +79,5 @@
     <string name="summary_date_last_week">7 дней</string>
     <string name="summary_date_this_month">Этот месяц</string>
     <string name="summary_date_last_month">30 дней</string>
+    <string name="summary_date_picker_limited_caption">Данные старше 2 недель недоступны без премиум-аккаунта</string>
 </resources>
