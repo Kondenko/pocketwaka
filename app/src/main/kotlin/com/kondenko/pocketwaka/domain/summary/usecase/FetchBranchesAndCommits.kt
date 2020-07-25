@@ -26,6 +26,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import retrofit2.HttpException
 import java.net.HttpURLConnection
 
+// (secondary) TODO Split up into two use cases for branches and commits
 class FetchBranchesAndCommits(
       private val schedulersContainer: SchedulersContainer,
       private val durationsRepository: DurationsRepository,
@@ -53,10 +54,10 @@ class FetchBranchesAndCommits(
         )
         val projectWithBranchesObservable: Observable<Project> = projectObservable.concatMapEagerDelayError { project ->
             getBranches(date, token, projectName)
-                  .toObservable()
                   .map { branches ->
                       project.copy(branches = branches.associateBy { it.name })
                   }
+                  .toObservable()
         }
         val projectWithCommitsObservable: Observable<Project> = projectWithBranchesObservable.concatMapEagerDelayError { project ->
             Observable.fromIterable(project.branches.values)
@@ -88,7 +89,9 @@ class FetchBranchesAndCommits(
                             ?.exceptions
                             ?.findInstance<HttpException>()
                             ?: it as? HttpException
-                      val isRepoMissing = noRepoException?.code() == HttpURLConnection.HTTP_FORBIDDEN
+                      val isRepoMissing = noRepoException?.code() in listOf(
+                            HttpURLConnection.HTTP_FORBIDDEN, HttpURLConnection.HTTP_NOT_FOUND
+                      )
                       project.copy(isRepoConnected = !isRepoMissing)
                   }
         }
