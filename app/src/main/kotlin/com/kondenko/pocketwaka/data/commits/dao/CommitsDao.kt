@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.kondenko.pocketwaka.cacheLifetimeCommitsMillis
+import com.kondenko.pocketwaka.cacheLifetimeCommitsSec
 import com.kondenko.pocketwaka.data.commits.model.CommitDbModel
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -17,9 +17,9 @@ abstract class CommitsDao {
             FROM ${CommitDbModel.TABLE_NAME}, cache_update
             WHERE project=:project AND branch=:branch 
             AND table_name="${CommitDbModel.TABLE_NAME}" 
-            AND (updated_at + :cacheLifetimeMillis) >= :currentTimeMillis
+            AND (updated_at + :cacheLifetimeSec) >= :currentTimeSec
     """)
-    abstract fun get(project: String, branch: String, currentTimeMillis: Long, cacheLifetimeMillis: Long = cacheLifetimeCommitsMillis): Observable<List<CommitDbModel>>
+    abstract fun get(project: String, branch: String, currentTimeSec: Long, cacheLifetimeSec: Long = cacheLifetimeCommitsSec): Observable<List<CommitDbModel>>
 
     fun insert(list: List<CommitDbModel>, currentTimeSec: Long): Completable {
         return insert(list).andThen(onCommitsCacheUpdated(currentTimeSec))
@@ -29,7 +29,7 @@ abstract class CommitsDao {
     protected abstract fun insert(list: List<CommitDbModel>): Completable
 
     // (secondary) TODO Move into a separate DAO
-    @Query("""INSERT OR REPLACE INTO cache_update VALUES("${CommitDbModel.TABLE_NAME}", :currentTimeMillis)""")
-    protected abstract fun onCommitsCacheUpdated(currentTimeMillis: Long): Completable
+    @Query("""INSERT OR REPLACE INTO cache_update VALUES("${CommitDbModel.TABLE_NAME}", :currentTimeSec)""")
+    protected abstract fun onCommitsCacheUpdated(currentTimeSec: Long): Completable
 
 }
