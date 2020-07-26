@@ -59,6 +59,7 @@ class FragmentStats : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapte
     private val skeletonItems = listOf(
           StatsUiModel.Info(null, null),
           StatsUiModel.BestDay("", "", 0),
+          StatsUiModel.Stats("", skeletonStatsCard),
           StatsUiModel.Stats("", skeletonStatsCard)
     )
 
