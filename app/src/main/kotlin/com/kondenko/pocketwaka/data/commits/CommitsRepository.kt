@@ -54,6 +54,7 @@ class CommitsRepository(
                   // WakaLog.d(COMMITS, "[CACHE] Ready to cache ${latestCommits.size} commits")
                   latestCommits.saveToCache(params.project)
                         // .doOnSubscribe { WakaLog.d(COMMITS, "[CACHE] Subscribed to cache ${latestCommits.size} commits") }
+                        .onErrorComplete() // Don't let caching errors interrupt loading
                         .subscribeBy(
                               onComplete = { WakaLog.d(COMMITS, "[CACHE] Cached ${latestCommits.size} commits") },
                               onError = { WakaLog.e("[CACHE] Failed to cache commits", it) }
