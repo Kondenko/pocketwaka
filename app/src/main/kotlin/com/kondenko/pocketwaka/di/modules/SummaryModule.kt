@@ -13,9 +13,9 @@ import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.main.ClearCache
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.domain.summary.usecase.*
+import com.kondenko.pocketwaka.screens.summary.DatePickerViewModel
 import com.kondenko.pocketwaka.screens.summary.FragmentSummary
 import com.kondenko.pocketwaka.screens.summary.SummaryAdapter
-import com.kondenko.pocketwaka.screens.summary.SummaryRangeViewModel
 import com.kondenko.pocketwaka.screens.summary.SummaryViewModel
 import com.kondenko.pocketwaka.ui.skeleton.RecyclerViewSkeleton
 import com.kondenko.pocketwaka.utils.date.DateRange
@@ -101,7 +101,7 @@ val summaryModule = module {
         HumanReadableDateFormatter(get(), get(), get())
     }
     viewModel {
-        SummaryRangeViewModel(get(), get(), get())
+        DatePickerViewModel(get(), get(), get())
     }
     viewModel { (date: DateRange) ->
         SummaryViewModel(

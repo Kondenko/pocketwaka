@@ -52,7 +52,7 @@ class FragmentDatePicker : Fragment() {
 
     }
 
-    private val vm: SummaryRangeViewModel by sharedViewModel()
+    private val vm: DatePickerViewModel by sharedViewModel()
 
     // UI
 

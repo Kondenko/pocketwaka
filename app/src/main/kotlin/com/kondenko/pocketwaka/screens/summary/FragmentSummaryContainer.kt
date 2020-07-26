@@ -22,7 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class FragmentSummaryContainer : Fragment(), Refreshable {
 
-    private val rangeViewModel: SummaryRangeViewModel by sharedViewModel()
+    private val rangeViewModel: DatePickerViewModel by sharedViewModel()
 
     private val eventTracker: EventTracker by inject()
 

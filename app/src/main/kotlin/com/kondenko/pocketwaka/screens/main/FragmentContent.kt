@@ -14,9 +14,9 @@ import com.kondenko.pocketwaka.analytics.Screen
 import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.screens.menu.FragmentMenu
 import com.kondenko.pocketwaka.screens.stats.FragmentStatsContainer
+import com.kondenko.pocketwaka.screens.summary.DatePickerViewModel
 import com.kondenko.pocketwaka.screens.summary.FragmentDatePicker
 import com.kondenko.pocketwaka.screens.summary.FragmentSummaryContainer
-import com.kondenko.pocketwaka.screens.summary.SummaryRangeViewModel
 import com.kondenko.pocketwaka.utils.extensions.forEachNonNull
 import com.kondenko.pocketwaka.utils.extensions.observe
 import com.kondenko.pocketwaka.utils.extensions.transaction
@@ -33,7 +33,7 @@ class FragmentContent : Fragment() {
 
     private val refreshEvents = PublishSubject.create<Unit>()
 
-    private val vm: SummaryRangeViewModel by sharedViewModel()
+    private val vm: DatePickerViewModel by sharedViewModel()
 
     private var refreshEventsDisposable: Disposable? = null
 
