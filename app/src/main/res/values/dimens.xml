@@ -68,6 +68,7 @@
     <dimen name="height_summary_toolbar_collapsed">54dp</dimen>
     <dimen name="height_summary_toolbar_expanded">544dp</dimen>
 
+
     <dimen name="radius_datepicker_corner">16dp</dimen>
 
     <item name="duration_datepicker_elevation_anim" type="integer">300</item>
@@ -84,6 +85,7 @@
     <dimen name="margin_summary_projects_section_title_top">4dp</dimen>
     <dimen name="margin_summary_projects_section_title_bottom">8dp</dimen>
 
+    <dimen name="min_height_summary_time">106dp</dimen>
     <dimen name="textsize_summary_number">29sp</dimen> <!-- Total and average time -->
     <dimen name="textsize_summary_text">18sp</dimen>
 

@@ -66,7 +66,10 @@ class SummaryAdapter(
     }.type
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (ViewType.values().getOrNull(viewType)) {
-        ViewType.Status -> StatusViewHolder(inflate(R.layout.item_status, parent))
+        ViewType.Status -> {
+            val view = inflate(R.layout.item_status, parent)
+            StatusViewHolder(view)
+        }
         ViewType.TimeTracked -> {
             val view = inflate(R.layout.item_summary_time_tracked, parent)
             TimeTrackedViewHolder(view, createSkeleton(view))
@@ -79,7 +82,9 @@ class SummaryAdapter(
             val view = inflate(R.layout.item_summary_project, parent)
             ProjectsViewHolder(view, createSkeleton(view))
         }
-        else -> throw IllegalViewTypeException()
+        else -> {
+            throw IllegalViewTypeException()
+        }
     }
 
     override fun onBindViewHolder(holder: ViewHolder<SummaryUiModel>, position: Int, payloads: List<Any>) {
@@ -130,14 +135,20 @@ class SummaryAdapter(
     inner class TimeTrackedViewHolder(view: View, skeleton: Skeleton) : ViewHolder<TimeTracked>(view, skeleton) {
 
         override fun bind(item: TimeTracked) = with(itemView) {
-            if (item.percentDelta != null) {
-                val isBelowAverage = (item.percentDelta ?: 0) < 0
+            val delta = item.percentDelta
+            val showAverage = delta != null || showSkeleton
+            forEach(imageview_summary_delta_icon, textview_summary_average_delta) {
+                it?.isVisible = showAverage
+            }
+            if (showAverage) {
+                val isBelowAverage = showSkeleton || (item.percentDelta ?: 0) < 0
                 setupIcon(isBelowAverage)
-                setupText(isBelowAverage, item.percentDelta)
+                setupText(isBelowAverage, delta ?: 0)
+            }
+            minimumHeight = if (showAverage) {
+                resources.getDimension(R.dimen.min_height_summary_time).roundToInt()
             } else {
-                forEach(imageview_summary_delta_icon, textview_summary_average_delta) {
-                    it?.isGone = true
-                }
+                0
             }
             if (!showSkeleton) {
                 textview_summary_time.text = timeSpannableCreator.create(item.time, R.dimen.textsize_summary_number, R.dimen.textsize_summary_text)
@@ -175,10 +186,7 @@ class SummaryAdapter(
 
     inner class ProjectsTitleViewHolder(view: View) : ViewHolder<ProjectsTitle>(view, null)
 
-    inner class ProjectsViewHolder(
-          view: View,
-          private val skeleton: Skeleton?
-    ) : ViewHolder<ProjectItem>(view, skeleton) {
+    inner class ProjectsViewHolder(view: View, skeleton: Skeleton?) : ViewHolder<ProjectItem>(view, skeleton) {
 
         private val branchesAdapter: BaseAdapter<ProjectInternalListItem, *> = provideBranchAdapter()
 
