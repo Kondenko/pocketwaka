@@ -9,6 +9,8 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import com.kondenko.pocketwaka.BuildConfig
 import com.kondenko.pocketwaka.Const
+import io.reactivex.exceptions.CompositeException
+import retrofit2.HttpException
 import java.util.*
 
 fun notNull(vararg values: Any?): Boolean = values.all { it != null }
@@ -71,3 +73,9 @@ fun createColorAnimator(
               onUpdate(animatedValue as Int)
           }
       }
+
+fun Throwable?.asHttpException(): HttpException? =
+      (this as? CompositeException)
+            ?.exceptions
+            ?.findInstance<HttpException>()
+            ?: this as? HttpException

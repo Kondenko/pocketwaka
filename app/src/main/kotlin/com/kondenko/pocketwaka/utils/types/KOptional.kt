@@ -14,6 +14,6 @@ class KOptional<T>(val item: T?) {
 
     fun isNotEmpty() = item != null
 
-    fun orElse(defaultItem: T): T = item ?: defaultItem
+    infix fun orElse(defaultItem: T): T = item ?: defaultItem
 
 }

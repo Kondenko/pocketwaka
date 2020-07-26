@@ -13,6 +13,7 @@ import com.kondenko.pocketwaka.screens.summary.FragmentDatePicker.DaySelectionSt
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.date.DateRange
+import com.kondenko.pocketwaka.utils.extensions.isDebug
 import com.kondenko.pocketwaka.utils.extensions.notNull
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
@@ -46,7 +47,7 @@ class DatePickerViewModel(
 
     private var endDate: LocalDate? = null
 
-    private val adjacentDatesNumber = 2
+    private val adjacentDatesNumber = if (isDebug) 0 else 2
 
     // Properties
 

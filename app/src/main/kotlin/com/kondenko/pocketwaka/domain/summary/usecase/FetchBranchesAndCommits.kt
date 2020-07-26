@@ -12,18 +12,18 @@ import com.kondenko.pocketwaka.domain.summary.model.Branch
 import com.kondenko.pocketwaka.domain.summary.model.Commit
 import com.kondenko.pocketwaka.domain.summary.model.Project
 import com.kondenko.pocketwaka.utils.SchedulersContainer
+import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.DateRange
+import com.kondenko.pocketwaka.utils.extensions.asHttpException
 import com.kondenko.pocketwaka.utils.extensions.concatMapEagerDelayError
-import com.kondenko.pocketwaka.utils.extensions.findInstance
+import com.kondenko.pocketwaka.utils.rx.mapLatestOnError
 import com.kondenko.pocketwaka.utils.rx.scanMap
 import com.kondenko.pocketwaka.utils.types.KOptional
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.exceptions.CompositeException
 import io.reactivex.rxkotlin.toObservable
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
-import retrofit2.HttpException
 import java.net.HttpURLConnection
 
 // (secondary) TODO Split up into two use cases for branches and commits
@@ -65,10 +65,7 @@ class FetchBranchesAndCommits(
                       getCommits(date, token, projectName, branch.name)
                             .map { KOptional.of(it) }
                             .scanMap(KOptional.empty()) { prevCommits, newCommits ->
-                                KOptional.of(prevCommits.orElse(emptyList()) + newCommits.orElse(emptyList()))
-                            }
-                            .map { commits ->
-                                branch.copy(commits = commits.item)
+                                branch.copy(commits = (prevCommits orElse emptyList()) + (newCommits orElse emptyList()))
                             }
                   }
                   .map { KOptional.of(it) }
@@ -84,18 +81,14 @@ class FetchBranchesAndCommits(
                             }
                             .let { project.copy(branches = it) }
                   }
-                  .onErrorReturn {
-                      val noRepoException = (it as? CompositeException)
-                            ?.exceptions
-                            ?.findInstance<HttpException>()
-                            ?: it as? HttpException
-                      val isRepoMissing = noRepoException?.code() in listOf(
-                            HttpURLConnection.HTTP_FORBIDDEN, HttpURLConnection.HTTP_NOT_FOUND
-                      )
-                      project.copy(isRepoConnected = !isRepoMissing)
-                  }
         }
         return Observable.concatArrayEagerDelayError(projectObservable, projectWithBranchesObservable, projectWithCommitsObservable)
+              .mapLatestOnError { project, throwable ->
+                  val noRepoException = throwable.asHttpException() ?: throwable?.let { throw it }
+                  val isRepoMissing = noRepoException?.code() == HttpURLConnection.HTTP_FORBIDDEN
+                  project.copy(isRepoConnected = !isRepoMissing)
+              }
+
     }
 
     private fun getBranches(date: LocalDate, token: String, projectName: String): Single<List<Branch>> =
@@ -108,6 +101,17 @@ class FetchBranchesAndCommits(
     private fun getCommits(date: LocalDate, token: String, projectName: String, branch: String): Observable<List<Commit>> =
           commitsRepository.getData(CommitsRepository.Params(token, projectName, branch))
                 .subscribeOn(schedulersContainer.workerScheduler)
+                .doOnError { WakaLog.d("Commits error $it") }
+                .onErrorReturnItem(emptyList()) // TODO remove this in favor of mapLatestOnError
+/*
+                .mapLatestOnError { list, throwable ->
+                    when {
+                        throwable.asHttpException()?.code() == HttpURLConnection.HTTP_NOT_FOUND -> emptyList()
+                        throwable != null -> throw throwable
+                        else -> list
+                    }
+                }
+*/
                 .flatMap { it.toObservable() }
                 .filter { it.getLocalDate() == date }
                 // (secondary) TODO Uncomment and test if this works
