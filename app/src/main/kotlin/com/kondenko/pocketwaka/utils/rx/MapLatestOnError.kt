@@ -5,10 +5,11 @@ import io.reactivex.ObservableOperator
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 
-fun <T : Any> Observable<T>.mapLatestOnError(scanMap: (T?, Throwable?) -> T): Observable<T> = lift(MapLatestOnError(scanMap))
+fun <T : Any> Observable<T>.mapLatestOnError(defaultItem: T? = null, scanMap: (T, Throwable?) -> T): Observable<T> =
+      lift(MapLatestOnError(defaultItem, scanMap))
 
 
-class MapLatestOnError<T>(private val scanMap: (T?, Throwable?) -> T) : ObservableOperator<T, T> {
+class MapLatestOnError<T>(private val defaultItem: T?, private val scanMap: (T, Throwable?) -> T) : ObservableOperator<T, T> {
 
     override fun apply(observer: Observer<in T>): Observer<in T> = ActualObserver(observer)
 
@@ -18,17 +19,24 @@ class MapLatestOnError<T>(private val scanMap: (T?, Throwable?) -> T) : Observab
 
         override fun onNext(next: T) {
             previousValue = next
-            observer.onNext(scanMap(next, null))
+            observer.onNext(next)
         }
 
         override fun onComplete() = observer.onComplete()
 
         override fun onSubscribe(d: Disposable) = observer.onSubscribe(d)
 
-        override fun onError(e: Throwable) = try {
-            previousValue = scanMap(previousValue, e).also(observer::onNext)
-        } catch (e: Throwable) {
-            observer.onError(e)
+        override fun onError(e: Throwable) {
+            try {
+                previousValue?.let {
+                    previousValue = scanMap(it, e).also(observer::onNext)
+                } ?: defaultItem?.let {
+                    onNext(defaultItem)
+                    observer.onComplete()
+                } ?: observer.onError(e)
+            } catch (e: Throwable) {
+                observer.onError(e)
+            }
         }
 
     }

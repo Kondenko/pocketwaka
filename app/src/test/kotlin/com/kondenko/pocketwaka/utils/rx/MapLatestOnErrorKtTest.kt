@@ -30,6 +30,26 @@ class MapLatestOnErrorKtTest {
     }
 
     @Test
+    fun `should complete if an exception happens right away`() {
+        Observable.error<Int>(TestException())
+              .mapLatestOnError { i, throwable -> i }
+              .test()
+              .assertNoValues()
+              .assertError(TestException::class.java)
+              .assertTerminated()
+    }
+
+    @Test
+    fun `should return default item if it's present and an exception happens right away`() {
+        Observable.error<Int>(TestException())
+              .mapLatestOnError(0) { i, throwable -> i }
+              .test()
+              .assertValue(0)
+              .assertNoErrors()
+              .assertComplete()
+    }
+
+    @Test
     fun `should not fail if no values are present`() {
         Observable.never<Int>()
               .mapLatestOnError { i, throwable -> i!!.let { it * 2 } }

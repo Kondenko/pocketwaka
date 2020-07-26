@@ -12,7 +12,6 @@ import com.kondenko.pocketwaka.domain.summary.model.Branch
 import com.kondenko.pocketwaka.domain.summary.model.Commit
 import com.kondenko.pocketwaka.domain.summary.model.Project
 import com.kondenko.pocketwaka.utils.SchedulersContainer
-import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.extensions.asHttpException
 import com.kondenko.pocketwaka.utils.extensions.concatMapEagerDelayError
@@ -88,7 +87,6 @@ class FetchBranchesAndCommits(
                   val isRepoMissing = noRepoException?.code() == HttpURLConnection.HTTP_FORBIDDEN
                   project.copy(isRepoConnected = !isRepoMissing)
               }
-
     }
 
     private fun getBranches(date: LocalDate, token: String, projectName: String): Single<List<Branch>> =
@@ -101,17 +99,13 @@ class FetchBranchesAndCommits(
     private fun getCommits(date: LocalDate, token: String, projectName: String, branch: String): Observable<List<Commit>> =
           commitsRepository.getData(CommitsRepository.Params(token, projectName, branch))
                 .subscribeOn(schedulersContainer.workerScheduler)
-                .doOnError { WakaLog.d("Commits error $it") }
-                .onErrorReturnItem(emptyList()) // TODO remove this in favor of mapLatestOnError
-/*
-                .mapLatestOnError { list, throwable ->
+                .mapLatestOnError(emptyList()) { list, throwable ->
                     when {
                         throwable.asHttpException()?.code() == HttpURLConnection.HTTP_NOT_FOUND -> emptyList()
                         throwable != null -> throw throwable
                         else -> list
                     }
                 }
-*/
                 .flatMap { it.toObservable() }
                 .filter { it.getLocalDate() == date }
                 // (secondary) TODO Uncomment and test if this works
