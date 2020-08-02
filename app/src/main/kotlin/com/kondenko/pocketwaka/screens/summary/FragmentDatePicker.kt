@@ -277,7 +277,7 @@ class FragmentDatePicker : Fragment() {
                 0
             }
         }
-        background = (context.getDrawable(R.drawable.background_calendar_day) as? LevelListDrawable)?.apply {
+        background = (context.drawable(R.drawable.background_calendar_day) as? LevelListDrawable)?.apply {
             level = drawableLevel
         }
         setOnClickListener {
@@ -312,17 +312,19 @@ class FragmentDatePicker : Fragment() {
                 }
                 vm.confirmDateSelection()
                 imageview_icon_expand.isInvisible = false
+                imageview_handle.isInvisible = true
             }
             TopSheetBehavior.STATE_DRAGGING -> {
                 textViewDatePickerLimitedCaption.isInvisible = true
-                imageview_handle.isInvisible = true
+                imageview_handle.isInvisible = false
             }
             TopSheetBehavior.STATE_EXPANDED -> {
                 textViewDatePickerLimitedCaption.isInvisible = vm.isStatsRangeUnlimited
+                imageview_handle.isInvisible = false
             }
             TopSheetBehavior.STATE_SETTLING -> {
-                imageview_handle.isInvisible = true
                 textViewDatePickerLimitedCaption.isInvisible = true
+                imageview_handle.isInvisible = false
             }
             else -> {
                 imageview_icon_expand.isInvisible = true
@@ -350,7 +352,7 @@ class FragmentDatePicker : Fragment() {
 
     private fun onOffsetChanged(bottomSheet: View, slideOffset: Float, isOpening: Boolean) {
         val toolbarAlpha = 1 - (slideOffset / toolbarSlideOffsetBoundary).coerceAtMost(1f)
-        forEach(textview_summary_current_date, imageview_icon_expand, imageview_handle) {
+        forEach(textview_summary_current_date, imageview_icon_expand) {
             it?.alpha = toolbarAlpha
         }
         forEach(*contentViews) {

@@ -31,7 +31,7 @@ fun Context.getCurrentLocale(): Locale = resources.configuration.run {
 fun Context.dp(number: Number): Float
     = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, number.toFloat(), resources.displayMetrics)
 
-fun Context.getColorCompat(@ColorRes colorRes: Int) = ContextCompat.getColor(this, colorRes)
+fun Context.color(@ColorRes colorRes: Int) = ContextCompat.getColor(this, colorRes)
 
 fun Context.drawable(@DrawableRes drawableRes: Int) = ContextCompat.getDrawable(this, drawableRes)
 

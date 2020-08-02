@@ -56,7 +56,7 @@ fun createColorAnimator(
       duration: Long = Const.DEFAULT_ANIM_DURATION,
       onUpdate: (color: Int) -> Unit
 ): ValueAnimator? = context?.run {
-    createColorAnimator(getColorCompat(initialColorRes), getColorCompat(finalColorRes), duration, onUpdate)
+    createColorAnimator(color(initialColorRes), color(finalColorRes), duration, onUpdate)
 }
 
 @Suppress("UsePropertyAccessSyntax")

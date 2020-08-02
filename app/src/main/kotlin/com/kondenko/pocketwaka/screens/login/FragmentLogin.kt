@@ -25,7 +25,7 @@ import com.kondenko.pocketwaka.ui.ButtonStateWrapper
 import com.kondenko.pocketwaka.utils.BrowserWindow
 import com.kondenko.pocketwaka.utils.extensions.apiAtLeast
 import com.kondenko.pocketwaka.utils.extensions.attachToLifecycle
-import com.kondenko.pocketwaka.utils.extensions.getColorCompat
+import com.kondenko.pocketwaka.utils.extensions.color
 import com.kondenko.pocketwaka.utils.extensions.report
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.android.ext.android.inject
@@ -60,7 +60,7 @@ class FragmentLogin : Fragment(), LoginView {
         super.onViewCreated(view, savedInstanceState)
         apiAtLeast(Build.VERSION_CODES.M) {
             activity?.window?.statusBarColor =
-                  view.context.getColorCompat(R.color.color_login_background)
+                  view.context.color(R.color.color_login_background)
         }
         loadingView.z = 100f
         loadingButtonStateWrapper = ButtonStateWrapper(

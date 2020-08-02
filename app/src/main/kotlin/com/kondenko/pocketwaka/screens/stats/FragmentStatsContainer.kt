@@ -23,8 +23,8 @@ import com.kondenko.pocketwaka.screens.Refreshable
 import com.kondenko.pocketwaka.screens.stats.model.ScrollDirection
 import com.kondenko.pocketwaka.screens.stats.model.TabsElevationState
 import com.kondenko.pocketwaka.utils.WakaLog
+import com.kondenko.pocketwaka.utils.extensions.color
 import com.kondenko.pocketwaka.utils.extensions.createColorAnimator
-import com.kondenko.pocketwaka.utils.extensions.getColorCompat
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
 import io.reactivex.Observable
@@ -62,8 +62,8 @@ class FragmentStatsContainer : Fragment(), Refreshable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         tabsElevation = savedInstanceState?.getParcelable(keyTabsElevation) ?: TabsElevationState()
-        val surfaceColorResting = view.context.getColorCompat(R.color.color_app_bar_resting)
-        val surfaceColorElevated = view.context.getColorCompat(R.color.color_app_bar_elevated)
+        val surfaceColorResting = view.context.color(R.color.color_app_bar_resting)
+        val surfaceColorElevated = view.context.color(R.color.color_app_bar_elevated)
         this.surfaceColorResting = surfaceColorResting
         this.colorAnimator = createColorAnimator(surfaceColorResting, surfaceColorElevated) { color ->
             activity?.window?.statusBarColor = color
