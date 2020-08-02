@@ -79,7 +79,7 @@ class FragmentDatePicker : Fragment() {
 
     private lateinit var surfaceColorAnimator: ValueAnimator
 
-    private var animationRequired = true
+    private var isToolbarColorAnimationRequired = true
 
     private lateinit var contentViews: Array<View>
 
@@ -172,8 +172,10 @@ class FragmentDatePicker : Fragment() {
                         elevation = initialElevation
                     }
                     MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                        handleStateChange(TopSheetBehavior.STATE_COLLAPSED)
-                        elevation = 0f
+                        if (isToolbarColorAnimationRequired) {
+                            handleStateChange(TopSheetBehavior.STATE_COLLAPSED)
+                            elevation = 0f
+                        }
                     }
                 }
             }
@@ -336,15 +338,15 @@ class FragmentDatePicker : Fragment() {
     private fun updateBackground(newState: Int) = context?.let {
         when (newState) {
             TopSheetBehavior.STATE_COLLAPSED -> {
-                if (animationRequired) {
+                if (isToolbarColorAnimationRequired) {
                     surfaceColorAnimator.reverse()
-                    animationRequired = true
+                    isToolbarColorAnimationRequired = true
                 }
             }
             else -> {
-                if (animationRequired) {
+                if (isToolbarColorAnimationRequired) {
                     surfaceColorAnimator.start()
-                    animationRequired = false
+                    isToolbarColorAnimationRequired = false
                 }
             }
         }
@@ -368,7 +370,7 @@ class FragmentDatePicker : Fragment() {
         // TODO Bump minSdk
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             surfaceColorAnimator.setCurrentFraction(fraction)
-            animationRequired = isOpening
+            isToolbarColorAnimationRequired = isOpening
         }
     }
 
