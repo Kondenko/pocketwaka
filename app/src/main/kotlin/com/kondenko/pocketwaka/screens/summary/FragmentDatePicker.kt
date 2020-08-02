@@ -69,7 +69,9 @@ class FragmentDatePicker : Fragment() {
 
     private val surfaceColorElevated = R.color.color_app_bar_elevated
 
-    private val initialElevation = 6f
+    private val initialElevation by lazy {
+        resources.getDimension(R.dimen.elevation_datepicker_min)
+    }
 
     private val finalElevation = 32f
 
@@ -167,6 +169,7 @@ class FragmentDatePicker : Fragment() {
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
                         handleStateChange(TopSheetBehavior.STATE_DRAGGING)
+                        elevation = initialElevation
                     }
                     MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                         handleStateChange(TopSheetBehavior.STATE_COLLAPSED)
