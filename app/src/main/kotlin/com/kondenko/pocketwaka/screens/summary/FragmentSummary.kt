@@ -45,22 +45,23 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
 
     private val vm: SummaryViewModel by viewModel { parametersOf(arguments?.getParcelable(KEY_DATE)) }
 
+
     private val eventTracker: EventTracker by inject()
 
     private val browserWindow: BrowserWindow by inject { parametersOf(context, viewLifecycleOwner) }
+
 
     override val containerId: Int = R.id.framelayout_summary_root
 
     override val stateFragment = SummaryStateFragment()
 
-    private val commit = Commit("", "", 0)
 
     private val projectSkeleton = Project(
           name = "",
           totalSeconds = 0,
           isRepoConnected = true,
           repositoryUrl = "",
-          branches = mapOf("" to Branch("", 0, listOf(commit, commit, commit))
+          branches = mapOf("" to Branch("", 0, (0..2).map { Commit("", "", 0) } )
           )
     ).let(SummaryUiModel::ProjectItem)
 
@@ -71,6 +72,9 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
           projectSkeleton,
           projectSkeleton
     )
+
+
+    override fun getDataView(): RecyclerView = recyclerview_summary
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -85,6 +89,29 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupList(view)
+        loadData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        vm.updateDataIfRepoHasBeenConnected()
+    }
+
+    private fun setupList(view: View) {
+        with(view.recyclerview_summary) {
+            itemAnimator = null
+            listSkeleton.actualAdapter.apply {
+                connectRepoClicks()
+                      .doOnNext { eventTracker.log(Event.Summary.ConnectRepoClicks) }
+                      .subscribeBy(
+                            onNext = vm::connectRepoClicked,
+                            onError = WakaLog::w
+                      )
+            }
+        }
+    }
+
+    private fun loadData() {
         vm.state().observe(viewLifecycleOwner) {
             // WakaLog.d("New summary state: $it")
             if (it is State.Empty) {
@@ -100,27 +127,6 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
                     connectRepo(it.url)
                 }
                 else -> it.render()
-            }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        vm.updateDataIfRepoHasBeenConnected()
-    }
-
-    override fun getDataView(): RecyclerView = recyclerview_summary
-
-    private fun setupList(view: View) {
-        with(view.recyclerview_summary) {
-            itemAnimator = null
-            adapter = listSkeleton.actualAdapter.apply {
-                connectRepoClicks()
-                      .doOnNext { eventTracker.log(Event.Summary.ConnectRepoClicks) }
-                      .subscribeBy(
-                            onNext = vm::connectRepoClicked,
-                            onError = WakaLog::w
-                      )
             }
         }
     }

@@ -47,7 +47,7 @@ class DatePickerViewModel(
 
     private var endDate: LocalDate? = null
 
-    private val adjacentDatesNumber = if (isDebug) 0 else 2
+    private val adjacentDatesNumber = if (isDebug) 2 else 2
 
     // Properties
 

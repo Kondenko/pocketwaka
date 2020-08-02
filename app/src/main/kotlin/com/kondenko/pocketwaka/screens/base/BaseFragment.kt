@@ -24,7 +24,6 @@ import com.kondenko.pocketwaka.utils.extensions.report
 import com.kondenko.pocketwaka.utils.extensions.transaction
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import kotlin.random.Random
 
 abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> : Fragment() {
 
@@ -39,6 +38,7 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
     private val eventTracker: EventTracker by inject()
 
     private val onLogOut: OnLogOut by sharedViewModel<MainViewModel>()
+
 
     protected abstract fun updateData(data: ST?, status: ScreenStatus? = null)
 
