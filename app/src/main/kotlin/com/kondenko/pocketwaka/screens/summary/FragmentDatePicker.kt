@@ -32,6 +32,7 @@ import com.kondenko.pocketwaka.ui.TopSheetBehavior
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.date.contains
 import com.kondenko.pocketwaka.utils.extensions.*
+import kotlinx.android.synthetic.main.fragment_content.*
 import kotlinx.android.synthetic.main.fragment_date_picker.*
 import kotlinx.android.synthetic.main.item_calendar_day.view.*
 import kotlinx.android.synthetic.main.item_calendar_month.view.*
@@ -98,7 +99,14 @@ class FragmentDatePicker : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val bottomSheetView = view.findViewWithParent { it is CoordinatorLayout }
         val behavior = bottomSheetView?.setupBottomSheetBehavior()
+        val scrimBottomNav = requireActivity().view_scrim_bottom_nav
+        val scrimContent = requireActivity().view_scrim_content
+        forEachNonNull(scrimBottomNav, scrimContent) {
+            it.setOnClickListener { behavior?.state = TopSheetBehavior.STATE_COLLAPSED }
+        }
         contentViews = arrayOf(
+              scrimBottomNav,
+              scrimContent,
               button_summary_today,
               button_summary_yesterday,
               button_summary_this_week,

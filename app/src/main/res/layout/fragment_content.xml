@@ -39,6 +39,15 @@
             android:layout_height="match_parent"
             />
 
+        <View
+            android:id="@+id/view_scrim_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_bottom_sheet_scrim"
+            android:alpha="0"
+            tools:alpha="1"
+            />
+
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/container_summary_date_picker"
             android:name="com.kondenko.pocketwaka.screens.summary.FragmentDatePicker"
@@ -50,19 +59,36 @@
             app:behavior_hideable="false"
             app:behavior_peekHeight="@dimen/height_summary_toolbar_collapsed"
             app:layout_behavior=".ui.TopSheetBehavior"
+            tools:background="@color/color_text_black_primary"
             />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/main_bottom_navigation"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="2dp"
-        app:itemIconTint="@color/color_bottomnav_item"
-        app:itemTextColor="@color/color_bottomnav_item"
-        app:menu="@menu/main_bottomnav_menu"
-        />
+        android:layout_height="@dimen/height_bottom_navigation"
+        >
+
+        <View
+            android:id="@+id/view_scrim_bottom_nav"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_bottom_navigation"
+            android:background="@color/color_bottom_sheet_scrim"
+            android:alpha="0"
+            tools:alpha="1"
+            android:translationZ="9dp"
+            />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/main_bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_bottom_navigation"
+            android:elevation="2dp"
+            app:itemIconTint="@color/color_bottomnav_item"
+            app:itemTextColor="@color/color_bottomnav_item"
+            app:menu="@menu/main_bottomnav_menu"
+            />
+
+    </FrameLayout>
 
 </LinearLayout>

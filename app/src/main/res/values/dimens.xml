@@ -20,6 +20,8 @@
     <dimen name="margin_state_screen_button_top">40dp</dimen>
     <dimen name="margin_state_screen_image_offline">76dp</dimen>
 
+    <dimen name="height_bottom_navigation">56dp</dimen>
+
     <item name="main_transition_scale_collapsed" type="fraction">0.98</item>
 
     <!--Login-->

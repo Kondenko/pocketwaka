@@ -6,6 +6,8 @@
     <color name="color_accent">#2595ff</color>
     <color name="color_ripple">#402595FF</color>
 
+    <color name="color_bottom_sheet_scrim">#33000000</color>
+
     <color name="color_primary_disabled">#3335434F</color>
 
     <color name="color_background_white">#FFFFFF</color>
