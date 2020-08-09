@@ -147,3 +147,5 @@ fun <T, R> List<T>.appendOrReplace(other: List<T>, keySelector: (T) -> R): List<
       (other.reversed() + this.reversed())
             .distinctBy { keySelector(it) }
             .reversed()
+
+fun <T> Array<T>.onEach(action: (T) -> Unit): Array<T> = apply { forEach(action) }

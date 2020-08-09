@@ -11,15 +11,12 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.forEach
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
-import com.google.android.material.button.MaterialButton
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner.THIS_MONTH
@@ -29,7 +26,6 @@ import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.summary.model.AvailableRange
 import com.kondenko.pocketwaka.ui.TopSheetBehavior
-import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.date.contains
 import com.kondenko.pocketwaka.utils.extensions.*
 import kotlinx.android.synthetic.main.fragment_content.*
@@ -56,15 +52,6 @@ class FragmentDatePicker : Fragment() {
     private val vm: DatePickerViewModel by sharedViewModel()
 
     // UI
-
-    private val predefinedRangeToButtonIdMap = mapOf(
-          DateRange.PredefinedRange.Today.range to R.id.button_summary_today,
-          DateRange.PredefinedRange.Yesterday.range to R.id.button_summary_yesterday,
-          DateRange.PredefinedRange.ThisWeek.range to R.id.button_summary_this_week,
-          DateRange.PredefinedRange.LastWeek.range to R.id.button_summary_last_week,
-          DateRange.PredefinedRange.ThisMonth.range to R.id.button_summary_this_month,
-          DateRange.PredefinedRange.LastMonth.range to R.id.button_summary_last_month
-    )
 
     private val surfaceColorResting = R.color.color_app_bar_resting
 
@@ -97,32 +84,30 @@ class FragmentDatePicker : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // UI
         val bottomSheetView = view.findViewWithParent { it is CoordinatorLayout }
         val behavior = bottomSheetView?.setupBottomSheetBehavior()
         val scrimBottomNav = requireActivity().view_scrim_bottom_nav
         val scrimContent = requireActivity().view_scrim_content
+
         forEachNonNull(scrimBottomNav, scrimContent) {
-            it.setOnClickListener { behavior?.state = TopSheetBehavior.STATE_COLLAPSED }
+            it.setOnClickListener { behavior?.dismiss() }
         }
-        contentViews = arrayOf(
-              scrimBottomNav,
-              scrimContent,
-              button_summary_today,
-              button_summary_yesterday,
-              button_summary_this_week,
-              button_summary_last_week,
-              button_summary_this_month,
-              button_summary_last_month,
-              calendar_datepicker
-        )
-        contentViews.forEach { it.isVisible = false }
-        setupButtons()
+        contentViews = arrayOf(scrimBottomNav, scrimContent, calendar_datepicker, buttonDatePickerApply).onEach {
+            it.isVisible = false
+        }
+
         setupCalendar(behavior, view.context, null)
-        vm.dataSelectionEvents().observe(viewLifecycleOwner) { selectedDate ->
+
+        buttonDatePickerApply.setOnClickListener {
+            confirmDateSelection()
+            behavior?.dismiss()
+        }
+
+        // Observers
+        vm.dataSelectionEvents().observe(viewLifecycleOwner) {
             // (secondary) TODO Only update changed days
             calendar_datepicker.notifyCalendarChanged()
-            val buttonToSelect = predefinedRangeToButtonIdMap[selectedDate]
-            setButtonSelected(buttonToSelect?.let { view.findViewById<Button>(it) })
         }
         vm.closeEvents().observe(viewLifecycleOwner) {
             behavior?.state = TopSheetBehavior.STATE_COLLAPSED
@@ -130,19 +115,7 @@ class FragmentDatePicker : Fragment() {
         vm.availableRangeChanges().observe(viewLifecycleOwner) { availableRange ->
             imageview_icon_expand.isVisible = true
             setupCalendar(behavior, view.context, availableRange)
-            val isRangeLimited = availableRange != AvailableRange.Unlimited
-            forEach(button_summary_last_month, button_summary_this_month) {
-                // (secondary) TODO Unlock button_summary_this_month if today is less that 2 weeks away from start of month
-                it?.lock(isRangeLimited)
-            }
         }
-    }
-
-    private fun MaterialButton.lock(lock: Boolean) {
-        isEnabled = !lock
-        // TODO Test on pre 8.0 Android versions
-        val drawableStart = if (lock) context.drawable(R.drawable.ic_date_locked) else null
-        icon = drawableStart
     }
 
     private fun View.setupBottomSheetBehavior(): TopSheetBehavior<*> {
@@ -192,22 +165,6 @@ class FragmentDatePicker : Fragment() {
         return behavior
     }
 
-    private fun setupButtons() {
-        fun onClick(view: View) {
-            predefinedRangeToButtonIdMap
-                  .entries
-                  .find { (_, id) -> view.id == id }
-                  ?.key // date
-                  ?.let(vm::onButtonClicked)
-        }
-        button_summary_today.setOnClickListener(::onClick)
-        button_summary_yesterday.setOnClickListener(::onClick)
-        button_summary_this_week.setOnClickListener(::onClick)
-        button_summary_last_week.setOnClickListener(::onClick)
-        button_summary_this_month.setOnClickListener(::onClick)
-        button_summary_last_month.setOnClickListener(::onClick)
-    }
-
     private fun setupCalendar(
           behavior: TopSheetBehavior<*>?,
           context: Context,
@@ -222,22 +179,12 @@ class FragmentDatePicker : Fragment() {
         }
         // (secondary) TODO Extract binders into separate files
         dayBinder = object : DayBinder<DayViewContainer> {
-
-            override fun create(view: View) =
-                  DayViewContainer(view)
-
-            override fun bind(container: DayViewContainer, day: CalendarDay) =
-                  bindDay(container, day, availableRange)
-
+            override fun create(view: View) = DayViewContainer(view)
+            override fun bind(container: DayViewContainer, day: CalendarDay) = bindDay(container, day, availableRange)
         }
         monthHeaderBinder = object : MonthHeaderFooterBinder<MonthViewContainer> {
-
-            override fun create(view: View) =
-                  MonthViewContainer(view)
-
-            override fun bind(container: MonthViewContainer, month: CalendarMonth) =
-                  bindMonth(container, month)
-
+            override fun create(view: View) = MonthViewContainer(view)
+            override fun bind(container: MonthViewContainer, month: CalendarMonth) = bindMonth(container, month)
         }
     }
 
@@ -303,24 +250,21 @@ class FragmentDatePicker : Fragment() {
         text = month.yearMonth.format(formatter)
     }
 
-    private fun setButtonSelected(view: View?) {
-        group_datepicker_buttons.forEach {
-            it.isSelected = it.id == view?.id
-        }
-    }
-
     fun setTitle(title: String) {
         textview_summary_current_date.text = title
+    }
+
+    private fun confirmDateSelection() {
+        vm.dateToScrollTo?.let { date ->
+            calendar_datepicker.scrollToMonth(YearMonth.of(date.year, date.month))
+        }
+        vm.confirmDateSelection()
     }
 
     private fun handleStateChange(newState: Int) {
         updateBackground(newState)
         when (newState) {
             TopSheetBehavior.STATE_COLLAPSED -> {
-                vm.dateToScrollTo?.let { date ->
-                    calendar_datepicker.scrollToMonth(YearMonth.of(date.year, date.month))
-                }
-                vm.confirmDateSelection()
                 imageview_icon_expand.isInvisible = false
                 imageview_handle.isInvisible = true
             }
@@ -362,12 +306,13 @@ class FragmentDatePicker : Fragment() {
 
     private fun onOffsetChanged(bottomSheet: View, slideOffset: Float, isOpening: Boolean) {
         val toolbarAlpha = 1 - (slideOffset / toolbarSlideOffsetBoundary).coerceAtMost(1f)
+        val contentAlpha = (-2 * (toolbarSlideOffsetBoundary - slideOffset)).coerceAtLeast(0f)
         forEach(textview_summary_current_date, imageview_icon_expand) {
             it?.alpha = toolbarAlpha
         }
         forEach(*contentViews) {
             it?.isVisible = true
-            it?.alpha = 1 - toolbarAlpha
+            it?.alpha = contentAlpha
         }
         bottomSheet.elevation = (finalElevation * slideOffset)
               .coerceAtLeast(if (isOpening && slideOffset > 0f) initialElevation else 0f)
@@ -380,6 +325,10 @@ class FragmentDatePicker : Fragment() {
             surfaceColorAnimator.setCurrentFraction(fraction)
             isToolbarColorAnimationRequired = isOpening
         }
+    }
+
+    private fun TopSheetBehavior<*>.dismiss() {
+        state = TopSheetBehavior.STATE_COLLAPSED
     }
 
     enum class DaySelectionState {

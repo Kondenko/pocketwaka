@@ -6,9 +6,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
-    android:paddingTop="24dp"
+    android:paddingTop="8dp"
     tools:context=".screens.summary.FragmentDatePicker"
     >
+
+    <TextView
+        android:id="@+id/textViewDatePickerLimitedCaption"
+        android:text="@string/summary_date_picker_limited_caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/color_text_black_tertiary"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="50dp"
+        tools:visibility="visible"
+        />
 
     <TextView
         android:id="@+id/textview_summary_current_date"
@@ -37,136 +50,49 @@
         tools:visibility="visible"
         />
 
+    <com.kizitonwose.calendarview.CalendarView
+        android:id="@+id/calendar_datepicker"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cv_dayViewResource="@layout/item_calendar_day"
+        app:cv_monthHeaderResource="@layout/item_calendar_month"
+        app:cv_orientation="horizontal"
+        app:cv_scrollMode="paged"
+        app:layout_constraintBottom_toTopOf="@id/buttonDatePickerApply"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_height="240dp"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonDatePickerApply"
+        style="@style/App.Button.Rounded"
+        android:text="@string/summary_date_picker_action_apply"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginTop="24dp"
+        android:insetLeft="0dp"
+        android:insetBottom="0dp"
+        android:insetTop="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/imageview_handle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendar_datepicker"
+        />
+
     <ImageView
         android:id="@+id/imageview_handle"
         android:src="@drawable/handle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
         android:visibility="invisible"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textview_summary_current_date"
         app:layout_constraintStart_toStartOf="@+id/textview_summary_current_date"
-        />
-
-    <Button
-        android:id="@+id/button_summary_today"
-        style="@style/App.Button.SelectableButton.Date"
-        android:layout_margin="@dimen/margin_datepicker_button"
-        android:text="@string/summary_date_today"
-        android:layout_width="@dimen/width_datepicker_button"
-        android:layout_height="@dimen/height_datepicker_button"
-        app:layout_constraintBottom_toTopOf="@+id/button_summary_this_week"
-        app:layout_constraintEnd_toStartOf="@+id/button_summary_yesterday"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintVertical_chainStyle="packed"
-        />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_summary_yesterday"
-        style="@style/App.Button.SelectableButton.Date"
-        android:layout_margin="@dimen/margin_datepicker_button"
-        android:text="@string/summary_date_yesterday"
-        android:layout_width="@dimen/width_datepicker_button"
-        android:layout_height="@dimen/height_datepicker_button"
-        app:layout_constraintBottom_toBottomOf="@+id/button_summary_today"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button_summary_today"
-        app:layout_constraintTop_toTopOf="@+id/button_summary_today"
-        />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_summary_this_week"
-        style="@style/App.Button.SelectableButton.Date"
-        android:layout_margin="@dimen/margin_datepicker_button"
-        android:text="@string/summary_date_this_week"
-        android:layout_width="@dimen/width_datepicker_button"
-        android:layout_height="@dimen/height_datepicker_button"
-        app:layout_constraintBottom_toTopOf="@+id/button_summary_last_month"
-        app:layout_constraintEnd_toEndOf="@+id/button_summary_today"
-        app:layout_constraintStart_toStartOf="@+id/button_summary_today"
-        app:layout_constraintTop_toBottomOf="@+id/button_summary_today"
-        />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_summary_last_week"
-        style="@style/App.Button.SelectableButton.Date"
-        android:layout_margin="@dimen/margin_datepicker_button"
-        android:text="@string/summary_date_last_week"
-        android:layout_width="@dimen/width_datepicker_button"
-        android:layout_height="@dimen/height_datepicker_button"
-        app:layout_constraintBottom_toBottomOf="@+id/button_summary_this_week"
-        app:layout_constraintEnd_toEndOf="@+id/button_summary_yesterday"
-        app:layout_constraintStart_toStartOf="@+id/button_summary_yesterday"
-        app:layout_constraintTop_toTopOf="@+id/button_summary_this_week"
-        />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_summary_last_month"
-        style="@style/App.Button.SelectableButton.Date"
-        android:layout_margin="@dimen/margin_datepicker_button"
-        android:layout_width="@dimen/width_datepicker_button"
-        android:layout_height="@dimen/height_datepicker_button"
-        android:text="@string/summary_date_last_month"
-        app:layout_constraintBottom_toBottomOf="@+id/button_summary_this_month"
-        app:layout_constraintBottom_toTopOf="@+id/calendar_datepicker"
-        app:layout_constraintEnd_toEndOf="@+id/button_summary_this_week"
-        app:layout_constraintStart_toStartOf="@+id/button_summary_this_week"
-        app:layout_constraintTop_toBottomOf="@+id/button_summary_this_week"
-        />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_summary_this_month"
-        style="@style/App.Button.SelectableButton.Date"
-        android:text="@string/summary_date_this_month"
-        android:layout_margin="@dimen/margin_datepicker_button"
-        android:layout_width="@dimen/width_datepicker_button"
-        android:layout_height="@dimen/height_datepicker_button"
-        app:layout_constraintBottom_toBottomOf="@id/button_summary_last_month"
-        app:layout_constraintEnd_toEndOf="@+id/button_summary_last_week"
-        app:layout_constraintStart_toStartOf="@+id/button_summary_last_week"
-        app:layout_constraintTop_toTopOf="@+id/button_summary_last_month"
-        tools:enabled="false"
-        tools:icon="@drawable/ic_date_locked"
-        tools:iconTint="@null"
-        />
-
-    <com.kizitonwose.calendarview.CalendarView
-        android:id="@+id/calendar_datepicker"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:layout_marginBottom="32dp"
-        app:cv_dayViewResource="@layout/item_calendar_day"
-        app:cv_monthHeaderResource="@layout/item_calendar_month"
-        app:cv_orientation="horizontal"
-        app:cv_scrollMode="paged"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_summary_this_month"
-        app:layout_constraintVertical_bias="0.0"
-        tools:layout_height="240dp"
-        />
-
-    <TextView
-        android:id="@+id/textViewDatePickerLimitedCaption"
-        android:text="@string/summary_date_picker_limited_caption"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:textColor="@color/color_text_black_tertiary"
-        android:visibility="invisible"
-        android:layout_marginTop="18dp"
-        android:layout_marginBottom="14dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calendar_datepicker"
-        tools:visibility="visible"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

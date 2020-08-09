@@ -12,6 +12,13 @@
         <item name="rippleColor">@color/color_ripple</item>
     </style>
 
+    <style name="App.Button.Rounded" parent="App.Button">
+        <item name="cornerRadius">90dp</item>
+        <item name="android:paddingStart">@dimen/padding_button_rounded_horizontal</item>
+        <item name="android:paddingEnd">@dimen/padding_button_rounded_horizontal</item>
+        <item name="android:elevation">0dp</item>
+    </style>
+
     <style name="App.Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:textColor">@color/color_text_primary</item>
         <item name="android:textAllCaps">false</item>

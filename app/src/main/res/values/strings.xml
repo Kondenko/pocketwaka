@@ -90,13 +90,9 @@
 
     <string name="summary_range_separator" translatable="false">%s–%s</string>
     <string name="summary_date_today">Today</string>
-    <string name="summary_date_yesterday">Yesterday</string>
-    <string name="summary_date_this_week">This week</string>
-    <string name="summary_date_last_week">Last week</string>
-    <string name="summary_date_this_month">This month</string>
-    <string name="summary_date_last_month">Last month</string>
 
     <string name="summary_date_picker_limited_caption">Stats older than 2 weeks are not available on the free plan</string>
+    <string name="summary_date_picker_action_apply">Apply</string>
 
     <!-- MENU -->
     <string name="menu_version_template">Version %s</string>

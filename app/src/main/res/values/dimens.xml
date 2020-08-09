@@ -8,6 +8,8 @@
     <dimen name="size_all_icon_small">16dp</dimen>
     <dimen name="radius_all_card">4dp</dimen>
 
+    <dimen name="height_button_rounded">32dp</dimen>
+    <dimen name="padding_button_rounded_horizontal">16dp</dimen>
 
     <dimen name="height_all_skeleton_text">11dp</dimen>
     <dimen name="width_all_skeleton_text">100dp</dimen>
@@ -75,10 +77,6 @@
     <item name="duration_datepicker_elevation_anim" type="integer">300</item>
     <item name="duration_datepicker_color_anim" type="integer">200</item>
     <dimen name="elevation_datepicker_min">2dp</dimen>
-
-    <dimen name="width_datepicker_button">148dp</dimen>
-    <dimen name="height_datepicker_button">40dp</dimen>
-    <dimen name="margin_datepicker_button">8dp</dimen>
 
     <dimen name="size_datepicker_calendar_day">36dp</dimen>
 
