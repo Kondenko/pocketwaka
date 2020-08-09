@@ -171,7 +171,11 @@ class FragmentDatePicker : Fragment() {
           availableRange: AvailableRange?
     ) = with(calendar_datepicker) {
         val firstDayOfWeek = WeekFields.of(context.getCurrentLocale()).firstDayOfWeek
-        setup(startMonth = YearMonth.of(firstYear, firstMonth), endMonth = currentMonth, firstDayOfWeek = firstDayOfWeek)
+        val startMonth: YearMonth = when(availableRange) {
+            is AvailableRange.Limited -> availableRange.date.start.yearMonth
+            else -> YearMonth.of(firstYear, firstMonth)
+        }
+        setup(startMonth = startMonth, endMonth = currentMonth, firstDayOfWeek = firstDayOfWeek)
         scrollToMonth(currentMonth)
         setOnTouchListener { view, event ->
             // Propagate touch events to the bottom sheet when it's collapsed
