@@ -16,10 +16,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
+        android:layout_marginTop="8dp"
         android:textColor="@color/color_text_black_tertiary"
         android:visibility="invisible"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonDatePickerApply"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendar_datepicker"
         tools:visibility="visible"
         />
 
@@ -58,7 +61,7 @@
         app:cv_monthHeaderResource="@layout/item_calendar_month"
         app:cv_orientation="horizontal"
         app:cv_scrollMode="paged"
-        app:layout_constraintBottom_toTopOf="@id/buttonDatePickerApply"
+        app:layout_constraintBottom_toTopOf="@id/textViewDatePickerLimitedCaption"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -73,14 +76,14 @@
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:layout_marginBottom="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:insetLeft="0dp"
         android:insetBottom="0dp"
         android:insetTop="0dp"
         app:layout_constraintBottom_toTopOf="@+id/imageview_handle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calendar_datepicker"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDatePickerLimitedCaption"
         />
 
     <ImageView
