@@ -5,6 +5,8 @@ import com.kondenko.pocketwaka.screens.StatusMarker
 
 sealed class SummaryUiModel {
 
+    object Onboarding : SummaryUiModel()
+
     data class Status(override val status: ScreenStatus) : SummaryUiModel(), StatusMarker
 
     data class TimeTracked(val time: String, val percentDelta: Int?) : SummaryUiModel()

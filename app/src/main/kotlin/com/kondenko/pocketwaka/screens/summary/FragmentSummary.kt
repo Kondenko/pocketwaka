@@ -43,25 +43,25 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
 
     }
 
-    private val vm: SummaryViewModel by viewModel { parametersOf(arguments?.getParcelable(KEY_DATE)) }
+    private val date: DateRange by lazy { requireArguments().getParcelable<DateRange>(KEY_DATE) }
+
+    private val vm: SummaryViewModel by viewModel { parametersOf(date) }
 
 
     private val eventTracker: EventTracker by inject()
 
     private val browserWindow: BrowserWindow by inject { parametersOf(context, viewLifecycleOwner) }
 
-
     override val containerId: Int = R.id.framelayout_summary_root
 
     override val stateFragment = SummaryStateFragment()
-
 
     private val projectSkeleton = Project(
           name = "",
           totalSeconds = 0,
           isRepoConnected = true,
           repositoryUrl = "",
-          branches = mapOf("" to Branch("", 0, (0..2).map { Commit("", "", 0) } )
+          branches = mapOf("" to Branch("", 0, (0..2).map { Commit("", "", 0) })
           )
     ).let(SummaryUiModel::ProjectItem)
 
@@ -72,7 +72,6 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
           projectSkeleton,
           projectSkeleton
     )
-
 
     override fun getDataView(): RecyclerView = recyclerview_summary
 
@@ -97,23 +96,26 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
         vm.updateDataIfRepoHasBeenConnected()
     }
 
-    private fun setupList(view: View) {
-        with(view.recyclerview_summary) {
-            itemAnimator = null
-            listSkeleton.actualAdapter.apply {
-                connectRepoClicks()
-                      .doOnNext { eventTracker.log(Event.Summary.ConnectRepoClicks) }
-                      .subscribeBy(
-                            onNext = vm::connectRepoClicked,
-                            onError = WakaLog::w
-                      )
-            }
+    private fun setupList(view: View) = with(view.recyclerview_summary) {
+        itemAnimator = null
+        listSkeleton.actualAdapter.apply {
+            dismissOnboardingClicks()
+                  .subscribeBy(
+                        onNext = { vm.dismissOnboarding() },
+                        onError = WakaLog::w
+                  )
+            connectRepoClicks()
+                  .doOnNext { eventTracker.log(Event.Summary.ConnectRepoClicks) }
+                  .subscribeBy(
+                        onNext = vm::connectRepoClicked,
+                        onError = WakaLog::w
+                  )
         }
     }
 
     private fun loadData() {
         vm.state().observe(viewLifecycleOwner) {
-            // WakaLog.d("New summary state: $it")
+            WakaLog.d("New summary state: $it")
             if (it is State.Empty) {
                 eventTracker.log(Event.EmptyState.Account(Screen.Summary))
             }
@@ -136,9 +138,11 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
     }
 
     override fun updateData(data: List<SummaryUiModel>?, status: ScreenStatus?) {
-        recyclerview_summary.apply {
-            val statusModel = status?.let(SummaryUiModel::Status).toListOrEmpty()
-            data?.let { listSkeleton.actualAdapter.items = statusModel + it }
+        val dateIsToday = (date as? DateRange.SingleDay) == DateRange.PredefinedRange.Today.range
+        val data = data?.filter { it !is SummaryUiModel.Onboarding || dateIsToday }
+        val statusModel = status?.let(SummaryUiModel::Status).toListOrEmpty()
+        data?.let {
+            listSkeleton.actualAdapter.items = statusModel + it
         }
     }
 

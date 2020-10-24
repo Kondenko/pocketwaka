@@ -27,6 +27,7 @@ import com.kondenko.pocketwaka.utils.extensions.limitWidthBy
 import com.kondenko.pocketwaka.utils.spannable.SpannableCreator
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
+import kotlinx.android.synthetic.main.item_summary_onboarding.view.*
 import kotlinx.android.synthetic.main.item_summary_project.view.*
 import kotlinx.android.synthetic.main.item_summary_project_branch.view.*
 import kotlinx.android.synthetic.main.item_summary_project_commit.view.*
@@ -51,14 +52,20 @@ class SummaryAdapter(
         Status(0),
         TimeTracked(1),
         ProjectsTitle(2),
-        ProjectItem(3)
+        ProjectItem(3),
+        Onboarding(4),
     }
 
     private val connectRepoClicks = PublishSubject.create<String>()
 
+    private val dismissOnboardingClicks = PublishSubject.create<Unit>()
+
     fun connectRepoClicks(): Observable<String> = connectRepoClicks
 
+    fun dismissOnboardingClicks(): Observable<Unit> = dismissOnboardingClicks
+
     override fun getItemViewType(position: Int): Int = when (items[position]) {
+        is Onboarding -> ViewType.Onboarding
         is Status -> ViewType.Status
         is TimeTracked -> ViewType.TimeTracked
         is ProjectsTitle -> ViewType.ProjectsTitle
@@ -66,6 +73,10 @@ class SummaryAdapter(
     }.type
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (ViewType.values().getOrNull(viewType)) {
+        ViewType.Onboarding -> {
+            val view = inflate(R.layout.item_summary_onboarding, parent)
+            OnboardingViewHolder(view)
+        }
         ViewType.Status -> {
             val view = inflate(R.layout.item_status, parent)
             StatusViewHolder(view)
@@ -127,6 +138,16 @@ class SummaryAdapter(
 
     abstract inner class ViewHolder<out T : SummaryUiModel>(view: View, skeleton: Skeleton?)
         : SkeletonViewHolder<T>(view, skeleton)
+
+    inner class OnboardingViewHolder(view: View) : ViewHolder<Onboarding>(view, null) {
+        override fun bind(item: Onboarding) {
+            super.bind(item)
+            itemView.buttonSummaryOnboardingDismiss.setOnClickListener {
+                items = items.filterNot { it is Onboarding }
+                dismissOnboardingClicks.onNext(Unit) // (secondary) TODO Try clicks().subscribeWith(subject)
+            }
+        }
+    }
 
     private inner class StatusViewHolder(private val view: View) : ViewHolder<Status>(view, null) {
         override fun bind(item: Status) = view.renderStatus(item.status)

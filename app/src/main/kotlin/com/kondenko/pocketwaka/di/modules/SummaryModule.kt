@@ -78,22 +78,22 @@ val summaryModule = module {
         )
     }
     single {
+        ShouldShowOnboarding(get())
+    }
+    single {
+        SetOnboardingShown(get())
+    }
+    single {
         GetSummaryState(
-              schedulers = get(),
               getSummary = get<GetSummary>(),
               clearCache = get<ClearCache>(),
-              connectivityStatusProvider = get()
+              shouldShowOnboarding = get<ShouldShowOnboarding>(),
+              connectivityStatusProvider = get(),
+              schedulers = get(),
+              dateProvider = get()
         )
     }
     factory { (context: Context, showSkeleton: Boolean) -> SummaryAdapter(context, showSkeleton, get<TimeSpannableCreator>(), get()) }
-    scope(named<FragmentSummary>()) {
-        scoped { (context: Context, skeletonItems: List<SummaryUiModel>) ->
-            RecyclerViewSkeleton(
-                  adapterCreator = { showSkeleton: Boolean -> get<SummaryAdapter> { parametersOf(context, showSkeleton) } },
-                  skeletonItems = skeletonItems
-            )
-        }
-    }
     factory {
         GetAvailableRange(get(), get(), get())
     }
@@ -107,7 +107,16 @@ val summaryModule = module {
         SummaryViewModel(
               range = date,
               uiScheduler = get(Scheduler.Ui),
-              getSummaryState = get<GetSummaryState>()
+              getSummaryState = get<GetSummaryState>(),
+              setOnboardingShown = get<SetOnboardingShown>()
         )
+    }
+    scope(named<FragmentSummary>()) {
+        scoped { (context: Context, skeletonItems: List<SummaryUiModel>) ->
+            RecyclerViewSkeleton(
+                  adapterCreator = { showSkeleton: Boolean -> get<SummaryAdapter> { parametersOf(context, showSkeleton) } },
+                  skeletonItems = skeletonItems
+            )
+        }
     }
 }

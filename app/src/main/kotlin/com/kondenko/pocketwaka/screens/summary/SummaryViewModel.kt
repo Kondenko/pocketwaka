@@ -1,5 +1,6 @@
 package com.kondenko.pocketwaka.screens.summary
 
+import com.kondenko.pocketwaka.domain.DisposableUseCase
 import com.kondenko.pocketwaka.domain.UseCase
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.domain.summary.usecase.GetSummary
@@ -14,7 +15,8 @@ import io.reactivex.rxkotlin.plusAssign
 class SummaryViewModel(
       private val range: DateRange,
       private val uiScheduler: Scheduler,
-      private val getSummaryState: UseCase<GetSummary.Params, State<List<SummaryUiModel>>, Observable<State<List<SummaryUiModel>>>>
+      private val getSummaryState: DisposableUseCase<GetSummary.Params, State<List<SummaryUiModel>>, Observable<State<List<SummaryUiModel>>>>,
+      private val setOnboardingShown: UseCase<Boolean, Nothing, Unit>
 ) : BaseViewModel<List<SummaryUiModel>>() {
 
     private val refreshRate = 1
@@ -37,6 +39,10 @@ class SummaryViewModel(
 
     fun connectRepoClicked(url: String) {
         setState(SummaryState.ConnectRepo(url, state?.data))
+    }
+
+    fun dismissOnboarding() {
+        setOnboardingShown(true)
     }
 
     fun updateDataIfRepoHasBeenConnected() {

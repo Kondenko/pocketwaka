@@ -23,6 +23,7 @@ class SummaryResponseConverter : (SummaryRepository.Params, SummaryDbModel, Summ
     private infix fun List<SummaryUiModel>.merge(other: List<SummaryUiModel>): List<SummaryUiModel> =
           appendOrReplace(other) {
               when (it) {
+                  is SummaryUiModel.Onboarding -> it
                   is SummaryUiModel.Status -> it
                   is SummaryUiModel.TimeTracked -> it
                   is SummaryUiModel.ProjectsTitle -> it

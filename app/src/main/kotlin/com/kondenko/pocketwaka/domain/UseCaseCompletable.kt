@@ -7,7 +7,7 @@ import io.reactivex.disposables.Disposable
 /**
  * The base class for all UseCases that use [Completable]
  */
-abstract class UseCaseCompletable<PARAMS>(private val schedulers: SchedulersContainer) : UseCase<PARAMS, Nothing, Completable>, Disposable {
+abstract class UseCaseCompletable<PARAMS>(private val schedulers: SchedulersContainer) : DisposableUseCase<PARAMS, Nothing, Completable>, Disposable {
 
     private var disposable: Disposable? = null
 

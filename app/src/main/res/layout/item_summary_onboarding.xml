@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:orientation="vertical"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:paddingStart="@dimen/padding_all_card_inner"
+    android:paddingEnd="@dimen/padding_all_card_inner"
+    android:paddingBottom="@dimen/padding_all_card_inner"
+    >
+
+    <Button
+        android:id="@+id/buttonSummaryOnboardingDismiss"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:textColor="@color/color_accent"
+        android:background="?selectableItemBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Ok"
+        />
+
+</LinearLayout>

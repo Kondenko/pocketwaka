@@ -8,7 +8,7 @@ import io.reactivex.disposables.Disposable
  * The base class for all UseCases that use [Single].
  */
 abstract class UseCaseSingle<PARAMS, RESULT>(private val schedulers: SchedulersContainer)
-    : UseCase<PARAMS, RESULT, Single<RESULT>> {
+    : DisposableUseCase<PARAMS, RESULT, Single<RESULT>> {
 
     private var disposable: Disposable? = null
 

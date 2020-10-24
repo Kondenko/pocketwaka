@@ -21,7 +21,7 @@ abstract class BaseViewModel<T> : ViewModel() {
         setState(State.Failure.Unknown(exception = throwable, isFatal = true))
     }
 
-    protected fun setState(state: State<T>) {
+    protected open fun setState(state: State<T>) {
         stateLiveData.postValue(state)
     }
 

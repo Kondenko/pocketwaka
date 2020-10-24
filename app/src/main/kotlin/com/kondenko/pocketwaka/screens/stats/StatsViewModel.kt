@@ -1,6 +1,6 @@
 package com.kondenko.pocketwaka.screens.stats
 
-import com.kondenko.pocketwaka.domain.UseCase
+import com.kondenko.pocketwaka.domain.DisposableUseCase
 import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
 import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsForRange
 import com.kondenko.pocketwaka.screens.State
@@ -12,7 +12,7 @@ import io.reactivex.rxkotlin.plusAssign
 
 class StatsViewModel(
       private val range: String?,
-      private val getStats: UseCase<GetStatsForRange.Params, State<List<StatsUiModel>>, Observable<State<List<StatsUiModel>>>>,
+      private val getStats: DisposableUseCase<GetStatsForRange.Params, State<List<StatsUiModel>>, Observable<State<List<StatsUiModel>>>>,
       private val uiScheduler: Scheduler
 ) : BaseViewModel<List<StatsUiModel>>() {
 

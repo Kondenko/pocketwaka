@@ -1,10 +1,8 @@
 package com.kondenko.pocketwaka.data.summary.repository
 
 import com.kondenko.pocketwaka.data.ContinuousCacheBackedRepository
-import com.kondenko.pocketwaka.data.common.model.database.StatsEntity
 import com.kondenko.pocketwaka.data.summary.dao.SummaryDao
 import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
-import com.kondenko.pocketwaka.data.summary.model.server.GrandTotal
 import com.kondenko.pocketwaka.data.summary.model.server.SummaryData
 import com.kondenko.pocketwaka.data.summary.model.server.plus
 import com.kondenko.pocketwaka.data.summary.service.SummaryService
