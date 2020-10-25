@@ -17,8 +17,8 @@ import com.kondenko.pocketwaka.BuildConfig
 import io.reactivex.Single
 import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
-import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -134,11 +134,11 @@ infix fun LocalDate.dailyRangeTo(other: LocalDate): List<LocalDate> {
 
 fun YearMonth.getMonthYearFormat(currentYear: Int) = getMonthYearFormat(year, currentYear)
 
-fun getMonthYearFormat(year: Int, currentYear: Int): DateTimeFormatter {
-    val patternCurrentYear = "MMMM"
-    val patternOtherYear = "MMMM yyyy"
+fun getMonthYearFormat(year: Int, currentYear: Int): SimpleDateFormat {
+    val patternCurrentYear = "LLLL"
+    val patternOtherYear = "LLLL yyyy"
     val pattern = if (year == currentYear) patternCurrentYear else patternOtherYear
-    return DateTimeFormatter.ofPattern(pattern)
+    return SimpleDateFormat(pattern, Locale.getDefault())
 }
 
 inline fun <reified R> Iterable<*>.findInstance(): R? = find { it is R } as R

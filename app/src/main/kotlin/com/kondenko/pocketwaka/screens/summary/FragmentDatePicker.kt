@@ -38,6 +38,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
 import org.threeten.bp.temporal.WeekFields
+import java.util.*
 
 class FragmentDatePicker : Fragment() {
 
@@ -249,12 +250,10 @@ class FragmentDatePicker : Fragment() {
         }
     }
 
-    private fun bindMonth(
-          container: MonthViewContainer,
-          month: CalendarMonth
-    ) = with(container.textViewMonth) {
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun bindMonth(container: MonthViewContainer, month: CalendarMonth) {
         val formatter = month.yearMonth.getMonthYearFormat(currentMonth.year)
-        text = month.yearMonth.format(formatter)
+        container.textViewMonth.text = formatter.format(month.month).capitalize(Locale.getDefault())
     }
 
     fun setTitle(title: String) {
