@@ -72,31 +72,32 @@ class SummaryAdapter(
         is ProjectItem -> ViewType.ProjectItem
     }.type
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (ViewType.values().getOrNull(viewType)) {
-        ViewType.Onboarding -> {
-            val view = inflate(R.layout.item_summary_onboarding, parent)
-            OnboardingViewHolder(view)
-        }
-        ViewType.Status -> {
-            val view = inflate(R.layout.item_status, parent)
-            StatusViewHolder(view)
-        }
-        ViewType.TimeTracked -> {
-            val view = inflate(R.layout.item_summary_time_tracked, parent)
-            TimeTrackedViewHolder(view, createSkeleton(view))
-        }
-        ViewType.ProjectsTitle -> {
-            val view = inflate(R.layout.item_summary_projects_title, parent)
-            ProjectsTitleViewHolder(view)
-        }
-        ViewType.ProjectItem -> {
-            val view = inflate(R.layout.item_summary_project, parent)
-            ProjectsViewHolder(view, createSkeleton(view))
-        }
-        else -> {
-            throw IllegalViewTypeException()
-        }
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+          when (ViewType.values().getOrNull(viewType)) {
+              ViewType.Onboarding -> {
+                  val view = inflate(R.layout.item_summary_onboarding, parent)
+                  OnboardingViewHolder(view)
+              }
+              ViewType.Status -> {
+                  val view = inflate(R.layout.item_status, parent)
+                  StatusViewHolder(view)
+              }
+              ViewType.TimeTracked -> {
+                  val view = inflate(R.layout.item_summary_time_tracked, parent)
+                  TimeTrackedViewHolder(view, createSkeleton(view))
+              }
+              ViewType.ProjectsTitle -> {
+                  val view = inflate(R.layout.item_summary_projects_title, parent)
+                  ProjectsTitleViewHolder(view)
+              }
+              ViewType.ProjectItem -> {
+                  val view = inflate(R.layout.item_summary_project, parent)
+                  ProjectsViewHolder(view, createSkeleton(view))
+              }
+              else -> {
+                  throw IllegalViewTypeException()
+              }
+          }
 
     override fun onBindViewHolder(holder: ViewHolder<SummaryUiModel>, position: Int, payloads: List<Any>) {
         if (payloads.isEmpty()) {
@@ -222,7 +223,8 @@ class SummaryAdapter(
                 val branchItem = if (showSkeleton) emptyList() else listOf(branch)
                 branchItem + branch.commits.let {
                     // If commits list is null, then there are commits to load, so we don't show an empty commit message
-                    if (project.isRepoConnected && it?.isEmpty() == true) listOf(NoCommitsLabel) else it ?: emptyList()
+                    if (project.isRepoConnected && it?.isEmpty() == true) listOf(NoCommitsLabel) else it
+                          ?: emptyList()
                 }
             }
             with(itemView) {

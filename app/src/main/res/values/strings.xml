@@ -94,6 +94,14 @@
     <string name="summary_date_picker_limited_caption">Stats older than 2 weeks are not available on the free plan</string>
     <string name="summary_date_picker_action_apply">Apply</string>
 
+    <!-- Onboarding -->
+    <string name="summary_onboarding_title">Date picker is here!</string>
+    <string name="summary_onboarding_headline1">Swipe left or right</string>
+    <string name="summary_onboarding_body1">to see previous or next day</string>
+    <string name="summary_onboarding_headline2">Tap or pull the title</string>
+    <string name="summary_onboarding_body2">to choose a date</string>
+    <string name="summary_onboarding_action_dismiss">Awesome!</string>
+
     <!-- MENU -->
     <string name="menu_version_template">Version %s</string>
     <string name="menu_action_rate">Rate PocketWaka</string>

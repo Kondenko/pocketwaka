@@ -118,4 +118,16 @@
         <item name="android:textColor">@color/color_button_date_text</item>
     </style>
 
+    <style name="App.Text.SummaryOnboarding.Headline" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/color_primary</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="App.Text.SummaryOnboarding.Body" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/color_primary</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
 </resources>
