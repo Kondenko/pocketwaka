@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -38,8 +39,6 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
 import org.threeten.bp.temporal.WeekFields
 
-// (won't implement for now) TODO Dim background and make it closable by clicking on the outside
-// should be the topmost fragment
 class FragmentDatePicker : Fragment() {
 
     companion object {
@@ -72,6 +71,10 @@ class FragmentDatePicker : Fragment() {
 
     private lateinit var contentViews: Array<View>
 
+    private val scrimBottomNav by lazy { requireActivity().view_scrim_bottom_nav }
+
+    private val scrimContent by lazy { requireActivity().view_scrim_content }
+
     // Logic
 
     private val firstYear = 2013 // The year Wakatime was created
@@ -88,13 +91,11 @@ class FragmentDatePicker : Fragment() {
         // UI
         val bottomSheetView = view.findViewWithParent { it is CoordinatorLayout }
         val behavior = bottomSheetView?.setupBottomSheetBehavior()
-        val scrimBottomNav = requireActivity().view_scrim_bottom_nav
-        val scrimContent = requireActivity().view_scrim_content
 
         forEachNonNull(scrimBottomNav, scrimContent) {
             it.setOnClickListener { behavior?.dismiss() }
         }
-        contentViews = arrayOf(scrimBottomNav, scrimContent, calendar_datepicker, buttonDatePickerApply).onEach {
+        contentViews = arrayOf(scrimBottomNav, scrimContent, calendar_datepicker, buttonDatePickerApply, textViewDatePickerLimitedCaption).onEach {
             it.isVisible = false
         }
 
@@ -115,6 +116,7 @@ class FragmentDatePicker : Fragment() {
         }
         vm.availableRangeChanges().observe(viewLifecycleOwner) { availableRange ->
             imageview_icon_expand.isVisible = true
+            textViewDatePickerLimitedCaption.alpha = if (vm.isStatsRangeUnlimited) 1f else 0f
             setupCalendar(behavior, view.context, availableRange)
         }
     }
@@ -172,7 +174,7 @@ class FragmentDatePicker : Fragment() {
           availableRange: AvailableRange?
     ) = with(calendar_datepicker) {
         val firstDayOfWeek = WeekFields.of(context.getCurrentLocale()).firstDayOfWeek
-        val startMonth: YearMonth = when(availableRange) {
+        val startMonth: YearMonth = when (availableRange) {
             is AvailableRange.Limited -> availableRange.date.start.yearMonth
             else -> YearMonth.of(firstYear, firstMonth)
         }
@@ -274,15 +276,12 @@ class FragmentDatePicker : Fragment() {
                 imageview_handle.isInvisible = true
             }
             TopSheetBehavior.STATE_DRAGGING -> {
-                textViewDatePickerLimitedCaption.isInvisible = true
                 imageview_handle.isInvisible = false
             }
             TopSheetBehavior.STATE_EXPANDED -> {
-                textViewDatePickerLimitedCaption.isInvisible = vm.isStatsRangeUnlimited
                 imageview_handle.isInvisible = false
             }
             TopSheetBehavior.STATE_SETTLING -> {
-                textViewDatePickerLimitedCaption.isInvisible = true
                 imageview_handle.isInvisible = false
             }
             else -> {
@@ -295,12 +294,14 @@ class FragmentDatePicker : Fragment() {
     private fun updateBackground(newState: Int) = context?.let {
         when (newState) {
             TopSheetBehavior.STATE_COLLAPSED -> {
+                showScrim(false)
                 if (isToolbarColorAnimationRequired) {
                     surfaceColorAnimator.reverse()
                     isToolbarColorAnimationRequired = true
                 }
             }
             else -> {
+                showScrim(true)
                 if (isToolbarColorAnimationRequired) {
                     surfaceColorAnimator.start()
                     isToolbarColorAnimationRequired = false
@@ -334,6 +335,10 @@ class FragmentDatePicker : Fragment() {
 
     private fun TopSheetBehavior<*>.dismiss() {
         state = TopSheetBehavior.STATE_COLLAPSED
+    }
+
+    private fun showScrim(show: Boolean) = forEach(scrimBottomNav, scrimContent) {
+        it?.isGone = !show
     }
 
     enum class DaySelectionState {

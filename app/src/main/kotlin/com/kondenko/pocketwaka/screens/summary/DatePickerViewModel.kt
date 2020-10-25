@@ -20,8 +20,8 @@ import io.reactivex.rxkotlin.subscribeBy
 import org.threeten.bp.LocalDate
 
 class DatePickerViewModel(
-      private val dateProvider: DateProvider,
       private val dateFormatter: HumanReadableDateFormatter,
+      dateProvider: DateProvider,
       getAvailableRange: GetAvailableRange
 ) : BaseViewModel<Nothing>() {
 
@@ -82,12 +82,6 @@ class DatePickerViewModel(
     fun dataSelectionEvents(): LiveData<DateRange?> = calendarInvalidationEvents.map { selectedDateRange }
 
     fun closeEvents(): LiveData<Unit> = closeEvents
-
-    fun onButtonClicked(dateRange: DateRange) {
-        selectDate(dateRange, true)
-        calendarInvalidationEvents.value = Unit
-        closeEvents.value = Unit
-    }
 
     fun selectDate(dateRange: DateRange, invalidateScreens: Boolean) {
         titles.value = dateFormatter.format(dateRange)
