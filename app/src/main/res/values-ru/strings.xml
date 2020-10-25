@@ -74,10 +74,12 @@
     <string name="loginactivity_subtitle_default">"Думайте о коде,\nа не о тайм-трекинге "</string>
     <string name="loginactivity_title_webview">Вход</string>
     <string name="summary_date_today">Сегодня</string>
-    <string name="summary_date_yesterday">Вчера</string>
-    <string name="summary_date_this_week">Эта неделя</string>
-    <string name="summary_date_last_week">7 дней</string>
-    <string name="summary_date_this_month">Этот месяц</string>
-    <string name="summary_date_last_month">30 дней</string>
     <string name="summary_date_picker_limited_caption">Данные старше 2 недель недоступны без премиум-аккаунта</string>
+    <string name="summary_date_picker_action_apply">Применить</string>
+    <string name="summary_onboarding_title">Выбирайте любую дату</string>
+    <string name="summary_onboarding_headline1">Свайп влево или вправо</string>
+    <string name="summary_onboarding_body1">чтобы посмотреть соседние дни</string>
+    <string name="summary_onboarding_headline2">Тапните или потяните заголовок</string>
+    <string name="summary_onboarding_body2">чтобы выбрать дату</string>
+    <string name="summary_onboarding_action_dismiss">Круто!</string>
 </resources>
