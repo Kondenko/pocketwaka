@@ -28,6 +28,7 @@ import com.kizitonwose.calendarview.utils.yearMonth
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.domain.summary.model.AvailableRange
 import com.kondenko.pocketwaka.ui.TopSheetBehavior
+import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.contains
 import com.kondenko.pocketwaka.utils.extensions.*
 import kotlinx.android.synthetic.main.fragment_content.*
@@ -70,11 +71,16 @@ class FragmentDatePicker : Fragment() {
 
     private var isToolbarColorAnimationRequired = true
 
+    private val bottomSheetView by lazy {
+        view?.findViewWithParent { it is CoordinatorLayout }
+    }
+
     private lateinit var contentViews: Array<View>
 
     private val scrimBottomNav by lazy { requireActivity().view_scrim_bottom_nav }
 
     private val scrimContent by lazy { requireActivity().view_scrim_content }
+
 
     // Logic
 
@@ -90,7 +96,6 @@ class FragmentDatePicker : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // UI
-        val bottomSheetView = view.findViewWithParent { it is CoordinatorLayout }
         val behavior = bottomSheetView?.setupBottomSheetBehavior()
 
         forEachNonNull(scrimBottomNav, scrimContent) {
@@ -252,7 +257,7 @@ class FragmentDatePicker : Fragment() {
 
     @OptIn(ExperimentalStdlibApi::class)
     private fun bindMonth(container: MonthViewContainer, month: CalendarMonth) {
-        val formatter = month.yearMonth.getMonthYearFormat(currentMonth.year)
+        val formatter = month.yearMonth.getMonthYearFormat(currentMonth.year) // STOPSHIP TODO Fix January always being displayed
         container.textViewMonth.text = formatter.format(month.month).capitalize(Locale.getDefault())
     }
 
@@ -268,19 +273,23 @@ class FragmentDatePicker : Fragment() {
     }
 
     private fun handleStateChange(newState: Int) {
-        updateBackground(newState)
         when (newState) {
             TopSheetBehavior.STATE_COLLAPSED -> {
                 imageview_icon_expand.isInvisible = false
                 imageview_handle.isInvisible = true
-            }
-            TopSheetBehavior.STATE_DRAGGING -> {
-                imageview_handle.isInvisible = false
+                /*
+                    These onOffsetChanged are required here because when the user opens the app
+                    and taps the top sheet for the first time, onOffsetChanged is only called once
+                    by onSlide with some negative offset value. These two calls assure
+                    that the content views have correct alpha values when opening the top sheet.
+                 */
+                onOffsetChanged(bottomSheetView!!, 0f, false)
             }
             TopSheetBehavior.STATE_EXPANDED -> {
                 imageview_handle.isInvisible = false
+                onOffsetChanged(bottomSheetView!!, 1f, true)
             }
-            TopSheetBehavior.STATE_SETTLING -> {
+            TopSheetBehavior.STATE_DRAGGING, TopSheetBehavior.STATE_SETTLING -> {
                 imageview_handle.isInvisible = false
             }
             else -> {
@@ -288,6 +297,7 @@ class FragmentDatePicker : Fragment() {
                 imageview_handle.isInvisible = false
             }
         }
+        updateBackground(newState)
     }
 
     private fun updateBackground(newState: Int) = context?.let {
@@ -310,6 +320,7 @@ class FragmentDatePicker : Fragment() {
     }
 
     private fun onOffsetChanged(bottomSheet: View, slideOffset: Float, isOpening: Boolean) {
+        WakaLog.d("onOffsetChanged(slideOffset = $slideOffset, isOpening = $isOpening)")
         val toolbarAlpha = 1 - (slideOffset / toolbarSlideOffsetBoundary).coerceAtMost(1f)
         val contentAlpha = (-2 * (toolbarSlideOffsetBoundary - slideOffset)).coerceAtLeast(0f)
         forEach(textview_summary_current_date, imageview_icon_expand) {
