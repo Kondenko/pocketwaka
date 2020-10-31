@@ -16,7 +16,6 @@ import com.crashlytics.android.Crashlytics
 import com.kondenko.pocketwaka.BuildConfig
 import io.reactivex.Single
 import org.threeten.bp.LocalDate
-import org.threeten.bp.YearMonth
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -131,8 +130,6 @@ infix fun LocalDate.dailyRangeTo(other: LocalDate): List<LocalDate> {
     }
     return list
 }
-
-fun YearMonth.getMonthYearFormat(currentYear: Int) = getMonthYearFormat(year, currentYear)
 
 fun getMonthYearFormat(year: Int, currentYear: Int): SimpleDateFormat {
     val patternCurrentYear = "LLLL"

@@ -257,8 +257,10 @@ class FragmentDatePicker : Fragment() {
 
     @OptIn(ExperimentalStdlibApi::class)
     private fun bindMonth(container: MonthViewContainer, month: CalendarMonth) {
-        val formatter = month.yearMonth.getMonthYearFormat(currentMonth.year) // STOPSHIP TODO Fix January always being displayed
-        container.textViewMonth.text = formatter.format(month.month).capitalize(Locale.getDefault())
+        val formatter = getMonthYearFormat(month.year, currentMonth.year)
+        val date = Date(currentMonth.year, month.month - 1, 1)
+        val monthName = formatter.format(date).capitalize(Locale.getDefault())
+        container.textViewMonth.text = monthName
     }
 
     fun setTitle(title: String) {
