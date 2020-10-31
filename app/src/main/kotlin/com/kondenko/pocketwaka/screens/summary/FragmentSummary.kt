@@ -26,8 +26,6 @@ import com.kondenko.pocketwaka.utils.extensions.toListOrEmpty
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_summary.*
 import kotlinx.android.synthetic.main.fragment_summary.view.*
-import org.koin.android.ext.android.inject
-import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -46,7 +44,6 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
     private val date: DateRange by lazy { requireArguments().getParcelable<DateRange>(KEY_DATE) }
 
     private val vm: SummaryViewModel by viewModel { parametersOf(date) }
-
 
     private val eventTracker: EventTracker by inject()
 
@@ -77,7 +74,7 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        listSkeleton = currentScope.get { parametersOf(context, skeletonItems) }
+        listSkeleton = get { parametersOf(context, skeletonItems) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

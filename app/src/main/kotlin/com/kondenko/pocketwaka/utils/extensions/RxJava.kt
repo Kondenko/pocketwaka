@@ -5,13 +5,15 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import com.kondenko.pocketwaka.screens.State
-import io.reactivex.Observable
-import io.reactivex.ObservableSource
-import io.reactivex.Scheduler
+import io.reactivex.*
 import io.reactivex.disposables.Disposable
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.observers.TestObserver
 import java.util.concurrent.TimeUnit
+
+fun <T> T?.toMaybe(): Maybe<T> = if (this != null) Maybe.just(this) else Maybe.empty()
+
+fun <T> T.toSingle(): Single<T> = Single.just(this)
 
 fun <T> Observable<T>.testWithLogging(): TestObserver<T> = this
         .doOnEach {

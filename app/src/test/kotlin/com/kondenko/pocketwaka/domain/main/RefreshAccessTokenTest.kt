@@ -7,8 +7,8 @@ import com.kondenko.pocketwaka.domain.auth.GetAppSecret
 import com.kondenko.pocketwaka.testutils.testSchedulers
 import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.encryption.TokenEncryptor
+import com.kondenko.pocketwaka.utils.extensions.toSingle
 import com.nhaarman.mockito_kotlin.*
-import io.reactivex.rxkotlin.toSingle
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before

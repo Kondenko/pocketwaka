@@ -4,13 +4,9 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.kondenko.pocketwaka.utils.exceptions.RemoteConfigValueNotFoundException
-import com.kondenko.pocketwaka.utils.extensions.getLongMaybe
-import com.kondenko.pocketwaka.utils.extensions.getOrNull
-import com.kondenko.pocketwaka.utils.extensions.getStringMaybe
-import com.kondenko.pocketwaka.utils.extensions.report
+import com.kondenko.pocketwaka.utils.extensions.*
 import com.kondenko.pocketwaka.utils.remoteconfig.remoteConfigDefaults
 import io.reactivex.Maybe
-import io.reactivex.rxkotlin.toMaybe
 
 abstract class RemoteConfigRepository(private val remoteConfig: FirebaseRemoteConfig, private val prefs: SharedPreferences) {
 

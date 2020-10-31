@@ -6,7 +6,6 @@ import androidx.annotation.CallSuper
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.kondenko.pocketwaka.Const
@@ -22,10 +21,10 @@ import com.kondenko.pocketwaka.ui.skeleton.RecyclerViewSkeleton
 import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.extensions.report
 import com.kondenko.pocketwaka.utils.extensions.transaction
-import org.koin.android.ext.android.inject
+import org.koin.androidx.scope.ScopeFragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> : Fragment() {
+abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> : ScopeFragment() {
 
     protected open val stateFragment = StateFragment()
 

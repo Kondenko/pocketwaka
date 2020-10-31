@@ -13,8 +13,8 @@ import com.kondenko.pocketwaka.domain.stats.model.StatsItem
 import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
 import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.extensions.notNull
+import com.kondenko.pocketwaka.utils.extensions.toMaybe
 import io.reactivex.Maybe
-import io.reactivex.rxkotlin.toMaybe
 import kotlin.math.roundToLong
 
 class StatsResponseConverter(

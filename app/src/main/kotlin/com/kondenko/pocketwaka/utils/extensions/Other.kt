@@ -12,7 +12,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.model.KeyPath
 import com.airbnb.lottie.value.LottieValueCallback
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kondenko.pocketwaka.BuildConfig
 import io.reactivex.Single
 import org.threeten.bp.LocalDate
@@ -39,7 +39,7 @@ fun Throwable.report(message: String? = null, printLog: Boolean = true) {
     }
     @Suppress("ConstantConditionIf")
     if (!BuildConfig.DEBUG) {
-        Crashlytics.logException(this)
+        FirebaseCrashlytics.getInstance().recordException(this)
     }
 }
 

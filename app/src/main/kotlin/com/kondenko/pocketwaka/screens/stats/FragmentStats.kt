@@ -30,8 +30,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_stats.*
-import org.koin.android.ext.android.inject
-import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
@@ -75,7 +73,7 @@ class FragmentStats : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapte
     override fun onAttach(context: Context) {
         super.onAttach(context)
         vm = getViewModel { parametersOf(range) }
-        listSkeleton = currentScope.get { parametersOf(context, skeletonItems) }
+        listSkeleton = get { parametersOf(context, skeletonItems) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
