@@ -61,7 +61,9 @@ abstract class StatefulUseCase<
                                 val prevData = prevState?.data
                                 when {
                                     next.isOnComplete -> {
-                                        prevData?.let { Notification.createOnNext(changeState(prevState, Success(prevData))) } ?: prev
+                                        // STOPSHIP TODO This returns Success even if previous state was Offline or something else
+                                        prevData?.let { Notification.createOnNext(changeState(prevState, Success(prevData))) }
+                                              ?: prev
                                     }
                                     else -> {
                                         next
@@ -81,18 +83,18 @@ abstract class StatefulUseCase<
           dataProvider.build(params)
                 .retry(retryAttempts.toLong())
                 .map { databaseModelToState(it, isConnected) }
-                .onErrorResumeNext { t: Throwable ->
+                .onErrorResumeNext { throwable: Throwable ->
                     when {
-                        t is UnauthorizedException -> {
+                        throwable is UnauthorizedException -> {
                             clearCache.build()
                                   .onErrorComplete()
-                                  .andThen(Observable.just(Failure.Unauthorized(t)))
+                                  .andThen(Observable.just(Failure.Unauthorized(throwable)))
                         }
                         isConnected -> {
-                            Observable.just(Failure.Unknown(exception = t))
+                            Observable.just(Failure.Unknown(exception = throwable))
                         }
                         else -> {
-                            Observable.just(Failure.NoNetwork(exception = t))
+                            Observable.just(Failure.NoNetwork(exception = throwable))
                         }
                     }
                 }

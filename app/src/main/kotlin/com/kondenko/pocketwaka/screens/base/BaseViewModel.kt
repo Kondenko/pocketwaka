@@ -17,12 +17,12 @@ abstract class BaseViewModel<T> : ViewModel() {
 
     fun state(): LiveData<State<T>> = stateLiveData
 
-    protected fun handleError(throwable: Throwable) {
-        setState(State.Failure.Unknown(exception = throwable, isFatal = true))
-    }
-
     protected open fun setState(state: State<T>) {
         stateLiveData.postValue(state)
+    }
+
+    protected fun handleError(throwable: Throwable) {
+        setState(State.Failure.Unknown(exception = throwable, isFatal = true))
     }
 
     override fun onCleared() {

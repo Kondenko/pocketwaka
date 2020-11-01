@@ -5,7 +5,6 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.LevelListDrawable
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -338,11 +337,8 @@ class FragmentDatePicker : Fragment() {
     }
 
     private fun animateBackground(fraction: Float, isOpening: Boolean) {
-        // TODO Bump minSdk
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            surfaceColorAnimator.setCurrentFraction(fraction)
-            isToolbarColorAnimationRequired = isOpening
-        }
+        surfaceColorAnimator.setCurrentFraction(fraction)
+        isToolbarColorAnimationRequired = isOpening
     }
 
     private fun TopSheetBehavior<*>.dismiss() {
