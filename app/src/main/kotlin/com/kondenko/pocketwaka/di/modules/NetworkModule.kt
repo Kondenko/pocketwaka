@@ -29,12 +29,10 @@ val networkModule = module {
     single { RxJava2CallAdapterFactory.create() }
     single { GsonConverterFactory.create() }
     single {
-        HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
-            override fun log(message: String) = WakaLog.d(message)
-        }).apply {
-            setLevel(HttpLoggingInterceptor.Level.BASIC)
-        }
+        HttpLoggingInterceptor { message -> WakaLog.d(message) }
+              .apply { setLevel(HttpLoggingInterceptor.Level.BASIC) }
     }
+    single { UnauthorizedAccessInterceptor() }
     single {
         val cacheSizeBytes: Long = 1024 * 1024 * 4
         Cache(androidContext().cacheDir, cacheSizeBytes)
@@ -44,7 +42,7 @@ val networkModule = module {
               .connectTimeout(15, TimeUnit.SECONDS)
               .readTimeout(30, TimeUnit.SECONDS)
               .cache(get())
-              .addNetworkInterceptor(UnauthorizedAccessInterceptor())
+              .addNetworkInterceptor(get<UnauthorizedAccessInterceptor>())
               .addLoggingInterceptor(get<HttpLoggingInterceptor>())
               .build()
     }
