@@ -11,7 +11,7 @@ ext {
 
             // Dependencies
             kotlin           : '1.4.10',
-            koin             : '2.2.0-rc-3',
+            koin             : '2.2.0-rc-4',
             rxJava           : '2.2.13',
             rxAndroid        : '2.0.1',
             rxKotlin         : '2.2.0',
