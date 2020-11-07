@@ -1,7 +1,6 @@
 package com.kondenko.pocketwaka.screens.stats
 
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -70,8 +69,8 @@ class FragmentStats : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapte
         context?.dp(value) ?: value
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         vm = getViewModel { parametersOf(range) }
         listSkeleton = get { parametersOf(context, skeletonItems) }
     }
