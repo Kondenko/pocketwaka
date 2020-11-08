@@ -25,11 +25,11 @@ class GetSummaryState(
       connectivityStatusProvider = connectivityStatusProvider
 ) {
 
-    override fun databaseModelToState(model: SummaryDbModel, isConnected: Boolean): State<List<SummaryUiModel>> =
+    override fun databaseModelToState(model: SummaryDbModel, isConnected: Boolean, expectMoreData: Boolean): State<List<SummaryUiModel>> =
           when {
               model.isEmpty == true -> SummaryState.EmptyRange
               model.isAccountEmpty == true -> State.Empty
-              else -> super.databaseModelToState(model, isConnected).let { addOnboarding(it) }
+              else -> super.databaseModelToState(model, isConnected, expectMoreData).let(::addOnboarding)
           }
 
     private fun addOnboarding(state: State<List<SummaryUiModel>>): State<List<SummaryUiModel>> {
