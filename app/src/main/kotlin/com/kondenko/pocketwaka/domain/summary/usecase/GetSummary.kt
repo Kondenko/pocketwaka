@@ -39,7 +39,7 @@ class GetSummary(
           val branches: String? = null,
           override val refreshRate: Int,
           override val retryAttempts: Int
-    ) : StatefulUseCase.ParamsWrapper(refreshRate, retryAttempts) {
+    ) : StatefulUseCase.ParamsWrapper(refreshRate, retryAttempts, isPaged = true) {
         override fun isValid(): Boolean = dateRange.end >= dateRange.start
     }
 
