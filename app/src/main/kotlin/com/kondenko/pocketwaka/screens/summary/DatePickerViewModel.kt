@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.map
 import com.kizitonwose.calendarview.model.CalendarDay
+import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
 import com.kondenko.pocketwaka.data.android.HumanReadableDateFormatter
 import com.kondenko.pocketwaka.domain.summary.model.AvailableRange
 import com.kondenko.pocketwaka.domain.summary.usecase.GetAvailableRange
@@ -13,7 +14,6 @@ import com.kondenko.pocketwaka.screens.summary.FragmentDatePicker.DaySelectionSt
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.date.DateRange
-import com.kondenko.pocketwaka.utils.extensions.isDebug
 import com.kondenko.pocketwaka.utils.extensions.notNull
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
@@ -21,6 +21,7 @@ import org.threeten.bp.LocalDate
 
 class DatePickerViewModel(
       private val dateFormatter: HumanReadableDateFormatter,
+      private val connectivityStatusProvider: ConnectivityStatusProvider,
       dateProvider: DateProvider,
       getAvailableRange: GetAvailableRange
 ) : BaseViewModel<Nothing>() {
@@ -47,7 +48,7 @@ class DatePickerViewModel(
 
     private var endDate: LocalDate? = null
 
-    private val adjacentDatesNumber = if (isDebug) 2 else 2
+    private val adjacentDatesNumber = 2
 
     // Properties
 
@@ -68,9 +69,21 @@ class DatePickerViewModel(
         get() = endDate ?: startDate
 
     init {
-        disposables += getAvailableRange.build()
-              .doOnSuccess { selectDate(today, true) }
-              .subscribeBy(onSuccess = availableRange::postValue, onError = WakaLog::e)
+        disposables +=
+              connectivityStatusProvider.isNetworkAvailable()
+                    .concatMapSingle { getAvailableRange.build() }
+                    .doOnNext { takeIf { availableRange.value == null }?.selectDate(today, true) }
+                    .filter {
+                        /*
+                        If the app was launched with no connection, emit AvailableRange.Unknown.
+                        If it lost the connection in the midtime, ignore AvailableRange.Unknown values
+                        and allow choosing dates.
+                        */
+                        val isNetworkErrorOnLaunch = availableRange.value == null && it is AvailableRange.Unknown
+                        val isSubsequentRangeChoice = availableRange.value != null && it !is AvailableRange.Unknown
+                        isNetworkErrorOnLaunch || isSubsequentRangeChoice
+                    }
+                    .subscribeBy(onNext = availableRange::postValue, onError = WakaLog::e)
     }
 
     fun availableRangeChanges(): LiveData<AvailableRange> = availableRange
@@ -154,10 +167,6 @@ class DatePickerViewModel(
         }
     }
 
-    fun toText(date: LocalDate) {
-
-    }
-
     private fun DateRange.Range.loadRange(invalidateScreens: Boolean) {
         selectedRange.value = SummaryRangeState(listOf(this), invalidateScreens)
     }
@@ -169,7 +178,7 @@ class DatePickerViewModel(
         } else {
             val numberOfDaysOnEachSide = adjacentDatesNumber / 2
             val range = (1L..numberOfDaysOnEachSide)
-            val daysOnLeftLimit = when(val range = availableRange.value) {
+            val daysOnLeftLimit = when (val range = availableRange.value) {
                 is AvailableRange.Limited -> range.date.start
                 else -> null
             }

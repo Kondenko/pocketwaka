@@ -26,6 +26,7 @@ class GetAvailableRange(
                     if (hasPremium) AvailableRange.Unlimited
                     else getDatesAvailableToFreeUsers()
                 }
+                .onErrorReturnItem(AvailableRange.Unknown)
 
     private fun getDatesAvailableToFreeUsers() =
           dateProvider.today
