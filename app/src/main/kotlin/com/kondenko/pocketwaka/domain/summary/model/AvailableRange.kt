@@ -8,4 +8,6 @@ sealed class AvailableRange {
 
     data class Limited(val date: DateRange) : AvailableRange()
 
+    object Unknown : AvailableRange()
+
 }

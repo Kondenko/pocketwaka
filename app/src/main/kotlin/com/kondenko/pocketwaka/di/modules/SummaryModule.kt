@@ -101,7 +101,7 @@ val summaryModule = module {
         HumanReadableDateFormatter(get(), get(), get())
     }
     viewModel {
-        DatePickerViewModel(get(), get(), get())
+        DatePickerViewModel(get(), get(), get(), get())
     }
     viewModel { (date: DateRange) ->
         SummaryViewModel(

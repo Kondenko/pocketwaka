@@ -120,6 +120,7 @@ class FragmentDatePicker : Fragment() {
             behavior?.state = TopSheetBehavior.STATE_COLLAPSED
         }
         vm.availableRangeChanges().observe(viewLifecycleOwner) { availableRange ->
+            view.isGone = availableRange == AvailableRange.Unknown
             imageview_icon_expand.isVisible = true
             textViewDatePickerLimitedCaption.alpha = if (vm.isStatsRangeUnlimited) 1f else 0f
             setupCalendar(behavior, view.context, availableRange)
@@ -217,9 +218,9 @@ class FragmentDatePicker : Fragment() {
                   && year == currentMonth.year
         }
         val isUnlocked = when (availableRange) {
-            null -> false
             is AvailableRange.Unlimited -> true
             is AvailableRange.Limited -> day.date in availableRange.date
+            else -> false
         }
         isActivated = if (isUnlocked) day.run { owner == THIS_MONTH } else false
         typeface = if (isActivated) FONT_DAY_ACTIVE else FONT_DAY_INACTIVE
