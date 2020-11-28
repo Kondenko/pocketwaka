@@ -4,6 +4,7 @@ import com.kondenko.pocketwaka.data.CacheableModel
 import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.State.*
+import com.kondenko.pocketwaka.screens.copyWithData
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.exceptions.UnauthorizedException
 import com.kondenko.pocketwaka.utils.extensions.returnAfterCompletion
@@ -19,11 +20,7 @@ import java.util.concurrent.TimeUnit
  * @param UI_MODEL the class to be passed to a ViewModel and rendered
  * @param DATABASE_MODEL the class returned from a repository
  */
-abstract class StatefulUseCase<
-      PARAMS : StatefulUseCase.ParamsWrapper,
-      UI_MODEL,
-      DATABASE_MODEL : CacheableModel<UI_MODEL>
-      >(
+abstract class StatefulUseCase<PARAMS : StatefulUseCase.ParamsWrapper, UI_MODEL, DATABASE_MODEL : CacheableModel<UI_MODEL>>(
       private val schedulers: SchedulersContainer,
       private val dataProvider: UseCaseObservable<PARAMS, DATABASE_MODEL>,
       private val clearCache: UseCaseCompletable<Nothing>,
@@ -44,12 +41,10 @@ abstract class StatefulUseCase<
               schedulers.workerScheduler
         )
         val loading = Observable.just(Loading<UI_MODEL>(null, true))
-        return connectivityStatus
+        return Observable.combineLatest(interval, connectivityStatus) { time, isConnected -> isConnected }
               .switchMapDelayError { isConnected ->
-                  interval.flatMap {
-                      val data = getData(params, params.retryAttempts, isConnected, params.isPaged)
-                      Observable.concatArray(loading, data)
-                  }
+                  val data = getData(params, params.retryAttempts, isConnected, params.isPaged)
+                  Observable.concatArray(loading, data)
               }
               .scan { old, new -> changeState(old, new, params.isPaged) }
               .distinctUntilChanged(::equal)
@@ -92,6 +87,7 @@ abstract class StatefulUseCase<
             else Offline(uiModel)
         } else {
             when {
+                !isConnected -> Offline(uiModel)
                 model.isEmpty == true -> Empty
                 expectMoreData -> Loading(uiModel, isInterrupting = false)
                 else -> Success(uiModel)
@@ -107,7 +103,7 @@ abstract class StatefulUseCase<
     private fun changeState(old: State<UI_MODEL>, new: State<UI_MODEL>, expectMoreData: Boolean): State<UI_MODEL> = when {
         new is Loading<UI_MODEL> -> transitionToLoadingState(old, new, expectMoreData)
         old is Loading<UI_MODEL> -> transitionToNewState(old, new)
-        else -> new
+        else -> old.data?.let { new.copyWithData(it) } ?: new
     }
 
     private fun transitionToLoadingState(old: State<UI_MODEL>, new: Loading<UI_MODEL>, expectMoreData: Boolean) = new.copy(

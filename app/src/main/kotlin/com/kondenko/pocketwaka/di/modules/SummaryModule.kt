@@ -89,8 +89,7 @@ val summaryModule = module {
               clearCache = get<ClearCache>(),
               shouldShowOnboarding = get<ShouldShowOnboarding>(),
               connectivityStatusProvider = get(),
-              schedulers = get(),
-              dateProvider = get()
+              schedulers = get()
         )
     }
     factory { (context: Context, showSkeleton: Boolean) -> SummaryAdapter(context, showSkeleton, get<TimeSpannableCreator>(), get()) }

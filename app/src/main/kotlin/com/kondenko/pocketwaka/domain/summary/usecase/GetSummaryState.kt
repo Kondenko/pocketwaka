@@ -9,14 +9,12 @@ import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.summary.SummaryState
 import com.kondenko.pocketwaka.utils.SchedulersContainer
-import com.kondenko.pocketwaka.utils.date.DateProvider
 
 class GetSummaryState(
       getSummary: UseCaseObservable<GetSummary.Params, SummaryDbModel>,
       clearCache: UseCaseCompletable<Nothing>,
       private val shouldShowOnboarding: ShouldShowOnboarding,
       connectivityStatusProvider: ConnectivityStatusProvider,
-      private val dateProvider: DateProvider,
       schedulers: SchedulersContainer
 ) : StatefulUseCase<GetSummary.Params, List<SummaryUiModel>, SummaryDbModel>(
       schedulers = schedulers,

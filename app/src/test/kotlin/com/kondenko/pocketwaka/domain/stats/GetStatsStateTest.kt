@@ -159,9 +159,9 @@ class GetStatsStateTest {
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading }
             assertValueAt(1) { it is State.Success && it.data == actualModel }
-            testConnectivitySubject.onNext(false)
             whenever(getStatsForRange.build(params)).doReturn(Observable.just(cacheDto))
-            testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
+            testConnectivitySubject.onNext(false)
+            testScheduler.triggerActions()
             assertValueAt(2) { it is State.Loading && !it.isInterrupting }
             assertValueAt(3) { it is State.Offline && it.data == actualModel }
             assertNotTerminated()
@@ -175,8 +175,8 @@ class GetStatsStateTest {
     fun `should show an offline state and then update with new data`() {
         val testConnectivitySubject = BehaviorSubject.createDefault(true)
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(testConnectivitySubject)
-        whenever(getStatsForRange.build(params)).doReturn(Observable.just(serverDto))
         with(getState.invoke(params).testWithLogging()) {
+            whenever(getStatsForRange.build(params)).doReturn(Observable.just(serverDto))
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading }
             assertValueAt(1) { it is State.Success && it.data == actualModel }

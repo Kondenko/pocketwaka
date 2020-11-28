@@ -7,7 +7,7 @@ ext {
             androidCompileSdk: 28,
             androidBuildTools: '28.0.3',
             androidPlugin    : '3.0.0',
-            gradle           : '4.1.0',
+            gradle           : '4.1.1',
 
             // Dependencies
             kotlin           : '1.4.10',
