@@ -6,7 +6,6 @@ import com.kondenko.pocketwaka.di.qualifiers.Auth
 import com.kondenko.pocketwaka.di.qualifiers.Scheduler
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.UnauthorizedAccessInterceptor
-import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.extensions.ifDebug
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -29,7 +28,7 @@ val networkModule = module {
     single { RxJava2CallAdapterFactory.create() }
     single { GsonConverterFactory.create() }
     single {
-        HttpLoggingInterceptor { message -> WakaLog.d(message) }
+        HttpLoggingInterceptor()
               .apply { setLevel(HttpLoggingInterceptor.Level.BASIC) }
     }
     single { UnauthorizedAccessInterceptor() }

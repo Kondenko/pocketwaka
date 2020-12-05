@@ -27,7 +27,6 @@ class GetAvailableRange(
                     else getDatesAvailableToFreeUsers()
                 }
                 .onErrorReturnItem(AvailableRange.Unknown)
-                .map { getDatesAvailableToFreeUsers() } // STOPSHIP
 
     private fun getDatesAvailableToFreeUsers() =
           dateProvider.today
