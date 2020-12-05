@@ -8,6 +8,7 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.AppBarLayout
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.analytics.Screen
@@ -96,10 +97,12 @@ class FragmentContent : Fragment() {
         }
         main_bottom_navigation.setOnNavigationItemSelectedListener {
             refreshEventsDisposable?.dispose()
-            when (it.itemId) {
-                R.id.bottomnav_item_summaries -> showSummaries()
-                R.id.bottomnav_item_stats -> showStats()
-                R.id.bottomnav_item_menu -> showMenu()
+            viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+                when (it.itemId) {
+                    R.id.bottomnav_item_summaries -> showSummaries()
+                    R.id.bottomnav_item_stats -> showStats()
+                    R.id.bottomnav_item_menu -> showMenu()
+                }
             }
             true
         }

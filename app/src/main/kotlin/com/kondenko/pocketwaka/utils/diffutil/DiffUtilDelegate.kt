@@ -5,14 +5,13 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlin.reflect.KProperty
 
 fun <T, A : RecyclerView.Adapter<*>> diffUtil(
-        initialValue: List<T> = emptyList(),
-        callbackFactory: DiffUtilCallback<T> = { old, new -> SimpleCallback(old, new) }
+      initialValue: List<T> = emptyList(),
+      callbackFactory: DiffUtilCallback<T> = { old, new -> SimpleCallback(old, new) }
 ) = DiffUtilDelegate<T, A>(initialValue, callbackFactory)
 
-class DiffUtilDelegate<T, A : RecyclerView.Adapter<*>>
-internal constructor(
-        initialValue: List<T>,
-        private val callbackFactory: DiffUtilCallback<T>
+class DiffUtilDelegate<T, A : RecyclerView.Adapter<*>> internal constructor(
+      initialValue: List<T>,
+      private val callbackFactory: DiffUtilCallback<T>
 ) {
 
     private var currentValue: List<T> = initialValue
