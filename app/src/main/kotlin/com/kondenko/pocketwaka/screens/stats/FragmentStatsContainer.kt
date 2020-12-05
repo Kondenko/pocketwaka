@@ -66,9 +66,11 @@ class FragmentStatsContainer : Fragment(), Refreshable {
         val surfaceColorElevated = view.context.color(R.color.color_app_bar_elevated)
         this.surfaceColorResting = surfaceColorResting
         this.colorAnimator = createColorAnimator(surfaceColorResting, surfaceColorElevated) { color ->
-            activity?.window?.statusBarColor = color
-            appbar_main?.setBackgroundColor(color)
-            framelayout_stats_tab_container?.setBackgroundColor(color)
+            activity?.apply{
+                window?.statusBarColor = color
+                appbar_main?.setBackgroundColor(color)
+                framelayout_stats_tab_container?.setBackgroundColor(color)
+            }
         }
         setupViewPager()
     }
