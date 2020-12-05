@@ -5,6 +5,7 @@
     <color name="color_primary_dark">#28333c</color>
     <color name="color_accent">#2595ff</color>
     <color name="color_ripple">#402595FF</color>
+    <color name="color_ripple_light">#0D2696FF</color>
     <color name="color_ripple_on_dark">#26FFFFFF</color>
 
     <color name="color_bottom_sheet_scrim">#33000000</color>

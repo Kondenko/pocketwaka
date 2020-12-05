@@ -75,8 +75,8 @@
             android:layout_height="@dimen/height_bottom_navigation"
             android:background="@color/color_bottom_sheet_scrim"
             android:alpha="0"
-            tools:alpha="1"
             android:translationZ="9dp"
+            tools:alpha="1"
             />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -84,7 +84,9 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_bottom_navigation"
             android:elevation="2dp"
+            android:background="@color/color_background_white"
             app:itemIconTint="@color/color_bottomnav_item"
+            app:itemRippleColor="@color/color_ripple_light"
             app:itemTextColor="@color/color_bottomnav_item"
             app:menu="@menu/main_bottomnav_menu"
             />
