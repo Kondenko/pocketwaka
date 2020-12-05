@@ -24,7 +24,7 @@ class TimeTrackedConverter(
 
     override fun invoke(param: SummaryRepository.Params, model: SummaryData): Maybe<SummaryDbModel> {
         return model.convertTimeTracked(showAverage = param.dateRange is DateRange.SingleDay).flatMap { uiModel ->
-            val date = param.dateRange.hashCode().toLong()
+            val date = param.dateRange.hashCode()
             val isAccountEmpty = uiModel.run { time.isEmpty() && percentDelta == null }
             val isTodayEmpty = model.grandTotal.totalSeconds == 0f && !isAccountEmpty
             Maybe.just(SummaryDbModel(

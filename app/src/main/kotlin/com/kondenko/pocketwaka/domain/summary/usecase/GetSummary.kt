@@ -81,7 +81,7 @@ class GetSummary(
               .cast(SummaryUiModel::class.java)
               .startWithIfNotEmpty(SummaryUiModel.ProjectsTitle)
               .map {
-                  SummaryDbModel(params.dateRange.hashCode().toLong(), data = listOf(it))
+                  SummaryDbModel(params.dateRange.hashCode(), data = listOf(it))
               }
         return projectObservables.startWith(timeTrackedSource)
     }

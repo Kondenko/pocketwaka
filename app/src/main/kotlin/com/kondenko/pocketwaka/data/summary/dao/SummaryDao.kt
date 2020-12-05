@@ -11,8 +11,8 @@ import io.reactivex.Maybe
 @Dao
 interface SummaryDao {
 
-    @Query("SELECT * FROM summary WHERE date NOTNULL AND date BETWEEN :start AND :end")
-    fun getSummaries(start: Long, end: Long): Maybe<List<SummaryDbModel>>
+    @Query("SELECT * FROM summary WHERE date NOTNULL AND date==:dateHash")
+    fun getSummaries(dateHash: Int): Maybe<List<SummaryDbModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun cacheSummary(summary: SummaryDbModel): Completable

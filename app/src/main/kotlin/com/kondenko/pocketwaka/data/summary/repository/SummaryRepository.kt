@@ -29,11 +29,9 @@ class SummaryRepository(
                 }
       },
       continuousCachedDataProvider = {
-          it.dateRange.run {
-              summaryDao
-                    .getSummaries(start.toEpochDay(), end.toEpochDay())
-                    .flatMapObservable { it.toObservable() }
-          }
+          summaryDao
+                .getSummaries(it.dateRange.hashCode())
+                .flatMapObservable { it.toObservable() }
       },
       reduceModels = reduceModels
 ) {
