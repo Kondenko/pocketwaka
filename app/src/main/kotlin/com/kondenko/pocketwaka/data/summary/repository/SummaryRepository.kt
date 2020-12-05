@@ -6,6 +6,7 @@ import com.kondenko.pocketwaka.data.summary.model.database.SummaryDbModel
 import com.kondenko.pocketwaka.data.summary.model.server.SummaryData
 import com.kondenko.pocketwaka.data.summary.model.server.plus
 import com.kondenko.pocketwaka.data.summary.service.SummaryService
+import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.date.DateRangeString
 import io.reactivex.Scheduler
@@ -45,7 +46,7 @@ class SummaryRepository(
           val branches: String? = null
     )
 
-    override fun cacheData(data: SummaryDbModel) = summaryDao.cacheSummary(data)
+    override fun cacheData(data: SummaryDbModel) = summaryDao.cacheSummary(data).doOnSubscribe { WakaLog.d("Caching summary") }
 
     override fun setIsFromCache(model: SummaryDbModel, isFromCache: Boolean): SummaryDbModel = model.copy(isFromCache = isFromCache)
 

@@ -48,8 +48,8 @@ abstract class ContinuousCacheBackedRepository<Params, ServerModel, DbModel>(
                             cacheData(it)
                                   .subscribeOn(workerScheduler)
                                   .subscribeBy(
-                                        onComplete = { WakaLog.v("Data cached: $dto") },
-                                        onError = { WakaLog.w("Failed to cache data") }
+                                        onComplete = { WakaLog.d("Data cached: $dto") },
+                                        onError = { e -> WakaLog.w("Failed to cache data", e) }
                                   )
                         }
                         ?: WakaLog.v("An empty collection won't be reduced")
