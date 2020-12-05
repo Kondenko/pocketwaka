@@ -80,7 +80,6 @@ class FragmentDatePicker : Fragment() {
 
     private val scrimContent by lazy { requireActivity().view_scrim_content }
 
-
     // Logic
 
     private val firstYear = 2013 // The year Wakatime was created
@@ -120,9 +119,7 @@ class FragmentDatePicker : Fragment() {
             behavior?.state = TopSheetBehavior.STATE_COLLAPSED
         }
         vm.availableRangeChanges().observe(viewLifecycleOwner) { availableRange ->
-            view.isGone = availableRange == AvailableRange.Unknown
             imageview_icon_expand.isVisible = true
-            textViewDatePickerLimitedCaption.alpha = if (vm.isStatsRangeUnlimited) 1f else 0f
             setupCalendar(behavior, view.context, availableRange)
         }
     }
@@ -329,8 +326,9 @@ class FragmentDatePicker : Fragment() {
             it?.alpha = toolbarAlpha
         }
         forEach(*contentViews) {
+            val hideLimitedDatesCaption = it?.id == R.id.textViewDatePickerLimitedCaption && vm.isStatsRangeUnlimited
+            it?.alpha = if (hideLimitedDatesCaption) 0f else contentAlpha
             it?.isVisible = true
-            it?.alpha = contentAlpha
         }
         bottomSheet.elevation = (finalElevation * slideOffset)
               .coerceAtLeast(if (isOpening && slideOffset > 0f) initialElevation else 0f)

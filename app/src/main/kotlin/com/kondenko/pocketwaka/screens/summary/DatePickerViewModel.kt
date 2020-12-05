@@ -73,16 +73,6 @@ class DatePickerViewModel(
               connectivityStatusProvider.isNetworkAvailable()
                     .concatMapSingle { getAvailableRange.build() }
                     .doOnNext { takeIf { availableRange.value == null }?.selectDate(today, true) }
-                    .filter {
-                        /*
-                        If the app was launched with no connection, emit AvailableRange.Unknown.
-                        If it lost the connection in the midtime, ignore AvailableRange.Unknown values
-                        and allow choosing dates.
-                        */
-                        val isNetworkErrorOnLaunch = availableRange.value == null && it is AvailableRange.Unknown
-                        val isSubsequentRangeChoice = availableRange.value != null && it !is AvailableRange.Unknown
-                        isNetworkErrorOnLaunch || isSubsequentRangeChoice
-                    }
                     .subscribeBy(onNext = availableRange::postValue, onError = WakaLog::e)
     }
 
