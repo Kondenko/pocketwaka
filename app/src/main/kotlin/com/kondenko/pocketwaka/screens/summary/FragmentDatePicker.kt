@@ -6,10 +6,8 @@ import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.LevelListDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.isGone
@@ -35,12 +33,11 @@ import kotlinx.android.synthetic.main.fragment_date_picker.*
 import kotlinx.android.synthetic.main.item_calendar_day.view.*
 import kotlinx.android.synthetic.main.item_calendar_month.view.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
 import org.threeten.bp.temporal.WeekFields
 import java.util.*
 
-class FragmentDatePicker : Fragment() {
+class FragmentDatePicker : Fragment(R.layout.fragment_date_picker) {
 
     companion object {
 
@@ -88,11 +85,8 @@ class FragmentDatePicker : Fragment() {
 
     private val currentMonth = YearMonth.now()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
-          inflater.inflate(R.layout.fragment_date_picker, container, false)
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         // UI
         val behavior = bottomSheetView?.setupBottomSheetBehavior()
 
@@ -100,10 +94,8 @@ class FragmentDatePicker : Fragment() {
             it.setOnClickListener { behavior?.dismiss() }
         }
         contentViews = arrayOf(scrimBottomNav, scrimContent, calendar_datepicker, buttonDatePickerApply, textViewDatePickerLimitedCaption).onEach {
-            it.isVisible = false
+            it.isInvisible = true
         }
-
-        setupCalendar(behavior, view.context, null)
 
         buttonDatePickerApply.setOnClickListener {
             confirmDateSelection()
@@ -111,29 +103,24 @@ class FragmentDatePicker : Fragment() {
         }
 
         // Observers
+        vm.availableRangeChanges().observe(viewLifecycleOwner) { availableRange ->
+            imageview_icon_expand.isVisible = true
+            setupCalendar(behavior, requireView().context, availableRange)
+        }
         vm.dataSelectionEvents().observe(viewLifecycleOwner) {
             // (secondary) TODO Only update changed days
             calendar_datepicker.notifyCalendarChanged()
         }
+
         vm.closeEvents().observe(viewLifecycleOwner) {
             behavior?.state = TopSheetBehavior.STATE_COLLAPSED
         }
-        vm.availableRangeChanges().observe(viewLifecycleOwner) { availableRange ->
-            imageview_icon_expand.isVisible = true
-            setupCalendar(behavior, view.context, availableRange)
-        }
     }
 
-    private fun View.setupBottomSheetBehavior(): TopSheetBehavior<*> {
-        val behavior = TopSheetBehavior.from(this)
+    private fun View.setupBottomSheetBehavior() = TopSheetBehavior.from(this).also { behavior ->
         isClickable = true
         stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.state_list_animator_date_picker)
-        surfaceColorAnimator = createColorAnimator(
-              context,
-              surfaceColorResting,
-              surfaceColorElevated,
-              resources.getInteger(R.integer.duration_datepicker_color_anim).toLong()
-        ) { color ->
+        surfaceColorAnimator = createColorAnimator(context, surfaceColorResting, surfaceColorElevated, resources.getInteger(R.integer.duration_datepicker_color_anim).toLong()) { color ->
             activity?.window?.statusBarColor = color
             background.setTint(color)
         }!!
@@ -168,7 +155,6 @@ class FragmentDatePicker : Fragment() {
             }
             false
         }
-        return behavior
     }
 
     private fun setupCalendar(
@@ -198,12 +184,7 @@ class FragmentDatePicker : Fragment() {
         }
     }
 
-    private fun bindDay(
-          container: DayViewContainer,
-          day: CalendarDay,
-          availableRange: AvailableRange?
-    ) = with(container.textViewDay) {
-        val today = LocalDate.now()
+    private fun bindDay(container: DayViewContainer, day: CalendarDay, availableRange: AvailableRange?) = with(container.textViewDay) {
         text = day.date.dayOfMonth.toString()
         val isValidPastDate = day.date.run {
             month.value < currentMonth.monthValue && year == currentMonth.year
@@ -211,7 +192,7 @@ class FragmentDatePicker : Fragment() {
         }
         val isValidInCurrentMonth = day.date.run {
             monthValue == currentMonth.monthValue
-                  && dayOfMonth <= today.dayOfMonth
+                  && dayOfMonth <= vm.today.date.dayOfMonth
                   && year == currentMonth.year
         }
         val isUnlocked = when (availableRange) {
@@ -252,7 +233,6 @@ class FragmentDatePicker : Fragment() {
         }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     private fun bindMonth(container: MonthViewContainer, month: CalendarMonth) {
         val formatter = getMonthYearFormat(month.year, currentMonth.year)
         val date = Date(currentMonth.year, month.month - 1, 1)

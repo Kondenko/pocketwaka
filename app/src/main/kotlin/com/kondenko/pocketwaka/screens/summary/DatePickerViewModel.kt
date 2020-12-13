@@ -42,7 +42,7 @@ class DatePickerViewModel(
 
     // Dates
 
-    private val today = DateRange.SingleDay(dateProvider.today)
+    val today = DateRange.SingleDay(dateProvider.today)
 
     private var startDate: LocalDate? = null
 
