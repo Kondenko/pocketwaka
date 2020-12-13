@@ -7,14 +7,14 @@ apply plugin: 'com.google.firebase.crashlytics'
 
 android {
 
-    compileSdkVersion versions.androidCompileSdk
-    buildToolsVersion versions.androidBuildTools
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
 
     defaultConfig {
         applicationId "com.kondenko.pocketwaka"
 
-        minSdkVersion versions.androidMinSdk
-        targetSdkVersion versions.androidTargetSdk
+        minSdkVersion 22
+        targetSdkVersion 28
 
         def appMajor = 2
         def appMinor = 1
