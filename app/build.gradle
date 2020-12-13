@@ -17,10 +17,10 @@ android {
         targetSdkVersion 28
 
         def appMajor = 2
-        def appMinor = 1
-        def appPatch = 2
+        def appMinor = 2
+        def appPatch = 0
         versionName "${appMajor}.${appMinor}.${appPatch}"
-        versionCode 10
+        versionCode 11
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
