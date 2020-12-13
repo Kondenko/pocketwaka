@@ -35,7 +35,7 @@ class GetSummaryStateTest {
 
     private val secondPage = actualModel + listOf(SummaryUiModel.ProjectsTitle)
 
-    private val serverDto = SummaryDbModel(1L, false, false, false, actualModel)
+    private val serverDto = SummaryDbModel(1, false, false, false, actualModel)
 
     private val refreshInterval = 1
 
