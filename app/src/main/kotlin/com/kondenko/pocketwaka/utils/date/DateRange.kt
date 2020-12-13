@@ -43,6 +43,17 @@ sealed class DateRange(open val start: LocalDate, open val end: LocalDate) : Par
 
 }
 
+@OptIn(ExperimentalStdlibApi::class)
+fun DateRange.toListOfDays(): List<LocalDate> = buildList {
+    if (end.isBefore(start)) return@buildList
+    var date = start
+    while(date.isBefore(end)) {
+        add(date)
+        date = date.plusDays(1)
+    }
+    add(end)
+}
+
 operator fun DateRange.contains(date: LocalDate) =
       if (start == end) date == start
       else date == start || date == end || (date.isAfter(start) && date.isBefore(end))

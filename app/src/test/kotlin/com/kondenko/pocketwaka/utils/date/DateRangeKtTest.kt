@@ -1,8 +1,7 @@
 package com.kondenko.pocketwaka.utils.date
 
 import com.kondenko.pocketwaka.TestApp
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -53,6 +52,33 @@ class DateRangeKtTest {
         val dateUnderTest = LocalDate.now().minusDays(1)
         val range = DateRange.SingleDay(date)
         assertFalse(dateUnderTest in range)
+    }
+
+    @Test
+    fun `iterable should include all days`() {
+        val start = LocalDate.of(2020, 12, 1)
+        val end = LocalDate.of(2020, 12, 5)
+        val range = DateRange.Range(start, end)
+        val days = range.toListOfDays()
+        assertEquals(
+              listOf(
+                    LocalDate.of(2020, 12, 1),
+                    LocalDate.of(2020, 12, 2),
+                    LocalDate.of(2020, 12, 3),
+                    LocalDate.of(2020, 12, 4),
+                    LocalDate.of(2020, 12, 5),
+              ),
+              days
+        )
+    }
+
+    @Test
+    fun `iterable should be empty for an invalid range`() {
+        val start = LocalDate.of(2020, 12, 5)
+        val end = LocalDate.of(2020, 12, 1)
+        val range = DateRange.Range(start, end)
+        val days = range.toListOfDays()
+        assertTrue(days.isEmpty())
     }
 
 }
