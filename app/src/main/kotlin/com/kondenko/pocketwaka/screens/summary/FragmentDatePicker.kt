@@ -106,14 +106,13 @@ class FragmentDatePicker : Fragment(R.layout.fragment_date_picker) {
         vm.availableRangeChanges().observe(viewLifecycleOwner) { availableRange ->
             imageview_icon_expand.isVisible = true
             setupCalendar(behavior, requireView().context, availableRange)
-        }
-        vm.dataSelectionEvents().observe(viewLifecycleOwner) {
-            // (secondary) TODO Only update changed days
-            calendar_datepicker.notifyCalendarChanged()
-        }
-
-        vm.closeEvents().observe(viewLifecycleOwner) {
-            behavior?.state = TopSheetBehavior.STATE_COLLAPSED
+            vm.dataSelectionEvents().takeUnless { it.hasObservers() }?.observe(viewLifecycleOwner) {
+                // (secondary) TODO Only update changed days
+                calendar_datepicker.notifyCalendarChanged()
+            }
+            vm.closeEvents().takeUnless { it.hasObservers() }?.observe(viewLifecycleOwner) {
+                behavior?.state = TopSheetBehavior.STATE_COLLAPSED
+            }
         }
     }
 

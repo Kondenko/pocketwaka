@@ -75,6 +75,7 @@
         android:text="@string/summary_date_picker_action_apply"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
+        android:visibility="invisible"
         android:layout_marginBottom="24dp"
         android:layout_marginTop="16dp"
         android:insetLeft="0dp"
