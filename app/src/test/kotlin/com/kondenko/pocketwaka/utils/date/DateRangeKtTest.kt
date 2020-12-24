@@ -9,7 +9,7 @@ import org.robolectric.annotation.Config
 import org.threeten.bp.LocalDate
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [21], application = TestApp::class)
+@Config(sdk = [22], application = TestApp::class)
 class DateRangeKtTest {
 
     @Test

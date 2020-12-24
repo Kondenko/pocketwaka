@@ -2,44 +2,46 @@ package com.kondenko.pocketwaka.domain.summary.usecase
 
 import android.net.Uri
 import com.kondenko.pocketwaka.data.android.DateFormatter
-import com.kondenko.pocketwaka.data.branches.DurationsRepository
-import com.kondenko.pocketwaka.data.branches.model.DurationsServerModel
 import com.kondenko.pocketwaka.data.commits.CommitsRepository
 import com.kondenko.pocketwaka.data.commits.model.CommitServerModel
 import com.kondenko.pocketwaka.data.common.model.database.StatsEntity
+import com.kondenko.pocketwaka.data.summary.model.server.SummaryData
+import com.kondenko.pocketwaka.data.summary.model.server.plus
+import com.kondenko.pocketwaka.data.summary.service.SummaryService
 import com.kondenko.pocketwaka.domain.UseCaseObservable
 import com.kondenko.pocketwaka.domain.summary.model.Branch
 import com.kondenko.pocketwaka.domain.summary.model.Commit
 import com.kondenko.pocketwaka.domain.summary.model.Project
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.date.DateRange
+import com.kondenko.pocketwaka.utils.date.contains
 import com.kondenko.pocketwaka.utils.extensions.asHttpException
 import com.kondenko.pocketwaka.utils.extensions.concatMapEagerDelayError
 import com.kondenko.pocketwaka.utils.rx.mapLatestOnError
 import com.kondenko.pocketwaka.utils.rx.scanMap
 import com.kondenko.pocketwaka.utils.types.KOptional
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.rxkotlin.toObservable
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import java.net.HttpURLConnection
+import kotlin.math.roundToLong
 
 // (secondary) TODO Split up into two use cases for branches and commits
 class FetchBranchesAndCommits(
       private val schedulersContainer: SchedulersContainer,
-      private val durationsRepository: DurationsRepository,
+      private val summaryService: SummaryService,
       private val commitsRepository: CommitsRepository,
       private val dateFormatter: DateFormatter
 ) : UseCaseObservable<FetchBranchesAndCommits.Params, Project>(schedulersContainer) {
 
-    data class Params(val tokenHeader: String, val date: DateRange.SingleDay, val project: StatsEntity)
+    data class Params(val tokenHeader: String, val date: DateRange, val project: StatsEntity)
 
     override fun build(params: Params?): Observable<Project> = params?.run {
-        fetchBranchesAndCommits(tokenHeader, date.date, project)
+        fetchBranchesAndCommits(tokenHeader, date, project)
     } ?: Observable.error(NullPointerException("Params are null"))
 
-    private fun fetchBranchesAndCommits(token: String, date: LocalDate, projectEntity: StatsEntity): Observable<Project> {
+    private fun fetchBranchesAndCommits(token: String, date: DateRange, projectEntity: StatsEntity): Observable<Project> {
         val projectName = projectEntity.name
               ?: throw NullPointerException("A project with a null name wasn't filtered out: $projectEntity")
         val projectObservable: Observable<Project> = Observable.just(
@@ -89,14 +91,19 @@ class FetchBranchesAndCommits(
               }
     }
 
-    private fun getBranches(date: LocalDate, token: String, projectName: String): Single<List<Branch>> =
-          durationsRepository.getData(DurationsRepository.Params(token, dateFormatter.formatDateAsParameter(date), projectName))
+    private fun getBranches(date: DateRange, token: String, projectName: String)/*: Single<List<Branch>>*/ =
+          summaryService.getSummaries(
+                token,
+                dateFormatter.formatDateAsParameter(date.start),
+                dateFormatter.formatDateAsParameter(date.end),
+                projectName
+          )
                 .subscribeOn(schedulersContainer.workerScheduler)
-                .flatMapObservable { durationsModel -> groupByBranches(durationsModel).toObservable() }
+                .flatMapObservable { it.summaryData.reduce(SummaryData::plus).branches.orEmpty().toObservable() }
+                .map { Branch(it.name, it.totalSeconds.roundToLong(), null) }
                 .toList()
-                .onErrorReturnItem(emptyList())
 
-    private fun getCommits(date: LocalDate, token: String, projectName: String, branch: String): Observable<List<Commit>> =
+    private fun getCommits(date: DateRange, token: String, projectName: String, branch: String): Observable<List<Commit>> =
           commitsRepository.getData(CommitsRepository.Params(token, projectName, branch))
                 .subscribeOn(schedulersContainer.workerScheduler)
                 .mapLatestOnError(emptyList()) { list, throwable ->
@@ -107,24 +114,17 @@ class FetchBranchesAndCommits(
                     }
                 }
                 .flatMap { it.toObservable() }
-                .filter { it.getLocalDate() == date }
+                .filter { date.contains(it.getLocalDate()) }
                 // (secondary) TODO Uncomment and test if this works
                 // .takeUntil { it.getLocalDate().isBefore(date) }
                 .map { it.toUiModel() }
                 .toList()
                 .toObservable()
 
-    private fun groupByBranches(durations: DurationsServerModel): List<Branch> =
-          durations.branchesData
-                .groupBy { it.branch }
-                .map { (name, durations) -> name to durations.sumByDouble { it.duration } }
-                .filter { (branch, _) -> branch != null }
-                .map { (branch: String?, duration) -> Branch(branch!!, duration.toLong(), null) }
-
     private fun CommitServerModel.toUiModel() = Commit(hash, message, totalSeconds.toLong())
 
     private fun connectRepoLink(project: String) = "https://wakatime.com/projects/${Uri.encode(project)}/edit"
 
-    private fun CommitServerModel.getLocalDate() = LocalDate.parse(authorDate, DateTimeFormatter.ISO_DATE_TIME)
+    private fun CommitServerModel.getLocalDate(): LocalDate = LocalDate.parse(authorDate, DateTimeFormatter.ISO_DATE_TIME)
 
 }

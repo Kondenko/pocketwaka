@@ -22,10 +22,7 @@ class SummaryRepository(
       serverDataProvider = { (tokenHeader, _, range, project, branches): Params ->
           summaryService.getSummaries(tokenHeader, range.start, range.end, project, branches)
                 .flatMap {
-                    it.summaryData
-                          .toObservable()
-                          .reduce(SummaryData?::plus)
-                          .toSingle()
+                    it.summaryData.toObservable().reduce(SummaryData?::plus).toSingle()
                 }
       },
       continuousCachedDataProvider = {

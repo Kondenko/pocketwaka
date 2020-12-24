@@ -61,7 +61,7 @@ val summaryModule = module {
     single {
         FetchBranchesAndCommits(
               schedulersContainer = get(),
-              durationsRepository = get(),
+              summaryService = get(),
               commitsRepository = get(),
               dateFormatter = get()
         )
