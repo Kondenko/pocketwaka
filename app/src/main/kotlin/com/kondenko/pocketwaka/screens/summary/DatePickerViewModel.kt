@@ -19,10 +19,9 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import org.threeten.bp.LocalDate
 
-// FIXME Fix the bug where tapping a selected day would deselect it
 class DatePickerViewModel(
       private val dateFormatter: HumanReadableDateFormatter,
-      private val connectivityStatusProvider: ConnectivityStatusProvider,
+      connectivityStatusProvider: ConnectivityStatusProvider,
       dateProvider: DateProvider,
       getAvailableRange: GetAvailableRange
 ) : BaseViewModel<Nothing>() {
@@ -87,6 +86,23 @@ class DatePickerViewModel(
 
     fun closeEvents(): LiveData<Unit> = closeEvents
 
+    fun onDayClicked(day: CalendarDay) {
+        val date = day.date
+        if (startDate != null) {
+            if (date <= startDate || endDate != null) {
+                startDate = date
+                endDate = null
+            } else if (date != startDate) {
+                endDate = date
+            } else {
+                startDate = null
+            }
+        } else {
+            startDate = date
+        }
+        calendarInvalidationEvents.value = Unit
+    }
+
     fun selectDate(dateRange: DateRange, invalidateScreens: Boolean) {
         titles.value = dateFormatter.format(dateRange)
         startDate = dateRange.start
@@ -99,23 +115,6 @@ class DatePickerViewModel(
                 endDate = dateRange.end
                 dateRange.loadRange(invalidateScreens)
             }
-        }
-        calendarInvalidationEvents.value = Unit
-    }
-
-    fun onDayClicked(day: CalendarDay) {
-        val date = day.date
-        if (startDate != null) {
-            if (date < startDate || endDate != null) {
-                startDate = date
-                endDate = null
-            } else if (date != startDate) {
-                endDate = date
-            } else {
-                startDate = null
-            }
-        } else {
-            startDate = date
         }
         calendarInvalidationEvents.value = Unit
     }
