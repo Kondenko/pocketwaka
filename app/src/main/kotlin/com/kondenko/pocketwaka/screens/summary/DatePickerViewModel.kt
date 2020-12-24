@@ -19,6 +19,7 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import org.threeten.bp.LocalDate
 
+// FIXME Fix the bug where tapping a selected day would deselect it
 class DatePickerViewModel(
       private val dateFormatter: HumanReadableDateFormatter,
       private val connectivityStatusProvider: ConnectivityStatusProvider,

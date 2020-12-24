@@ -22,7 +22,8 @@ import com.kondenko.pocketwaka.utils.rx.scanMap
 import com.kondenko.pocketwaka.utils.types.KOptional
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.toObservable
-import org.threeten.bp.LocalDate
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.net.HttpURLConnection
 import kotlin.math.roundToLong
@@ -114,7 +115,7 @@ class FetchBranchesAndCommits(
                     }
                 }
                 .flatMap { it.toObservable() }
-                .filter { date.contains(it.getLocalDate()) }
+                .filter { it.authorDateInCurrentTimeZone in date }
                 // (secondary) TODO Uncomment and test if this works
                 // .takeUntil { it.getLocalDate().isBefore(date) }
                 .map { it.toUiModel() }
@@ -125,6 +126,9 @@ class FetchBranchesAndCommits(
 
     private fun connectRepoLink(project: String) = "https://wakatime.com/projects/${Uri.encode(project)}/edit"
 
-    private fun CommitServerModel.getLocalDate(): LocalDate = LocalDate.parse(authorDate, DateTimeFormatter.ISO_DATE_TIME)
+    private val CommitServerModel.authorDateInCurrentTimeZone
+        get() = ZonedDateTime.parse(authorDate, DateTimeFormatter.ISO_DATE_TIME)
+              .withZoneSameInstant(ZoneId.systemDefault())
+              .toLocalDate()
 
 }

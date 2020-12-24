@@ -2,7 +2,7 @@ package com.kondenko.pocketwaka.utils.date
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
-import org.threeten.bp.LocalDate
+import org.threeten.bp.*
 
 
 sealed class DateRange(open val start: LocalDate, open val end: LocalDate) : Parcelable {
@@ -47,7 +47,7 @@ sealed class DateRange(open val start: LocalDate, open val end: LocalDate) : Par
 fun DateRange.toListOfDays(): List<LocalDate> = buildList {
     if (end.isBefore(start)) return@buildList
     var date = start
-    while(date.isBefore(end)) {
+    while (date.isBefore(end)) {
         add(date)
         date = date.plusDays(1)
     }
