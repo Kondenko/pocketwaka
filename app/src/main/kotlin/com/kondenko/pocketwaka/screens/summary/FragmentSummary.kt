@@ -41,7 +41,7 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
 
     }
 
-    private val date: DateRange by lazy { requireArguments().getParcelable<DateRange>(KEY_DATE) }
+    private val date: DateRange by lazy { requireArguments().getParcelable<DateRange>(KEY_DATE) ?: throw IllegalArgumentException("You must pass a DateRange to this fragment") }
 
     private val vm: SummaryViewModel by viewModel { parametersOf(date) }
 
