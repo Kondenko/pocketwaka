@@ -17,7 +17,7 @@ android {
         targetSdkVersion 29
 
         def appMajor = 2
-        def appMinor = 2
+        def appMinor = 3
         def appPatch = 0
         versionName "${appMajor}.${appMinor}.${appPatch}"
         versionCode 11
