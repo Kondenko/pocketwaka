@@ -20,7 +20,7 @@ android {
         def appMinor = 3
         def appPatch = 0
         versionName "${appMajor}.${appMinor}.${appPatch}"
-        versionCode 11
+        versionCode 12
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
