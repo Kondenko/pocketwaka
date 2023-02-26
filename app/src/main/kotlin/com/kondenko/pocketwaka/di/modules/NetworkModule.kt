@@ -29,7 +29,7 @@ val networkModule = module {
     single { GsonConverterFactory.create() }
     single {
         HttpLoggingInterceptor()
-              .apply { setLevel(HttpLoggingInterceptor.Level.BASIC) }
+              .apply { setLevel(HttpLoggingInterceptor.Level.BODY) }
     }
     single { UnauthorizedAccessInterceptor() }
     single {
