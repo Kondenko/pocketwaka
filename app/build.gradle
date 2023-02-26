@@ -7,14 +7,13 @@ apply plugin: 'com.google.firebase.crashlytics'
 
 android {
 
-    compileSdkVersion 29
-    buildToolsVersion "28.0.3"
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "com.kondenko.pocketwaka"
 
         minSdkVersion 22
-        targetSdkVersion 29
+        targetSdkVersion 31
 
         def appMajor = 2
         def appMinor = 3
@@ -28,9 +27,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments += [
-                        "room.incremental": "true",
-                ]
+                arguments += ["room.incremental": "true",]
             }
         }
     }

@@ -10,15 +10,15 @@ class AppConnectivityStatusProvider(private val connectivityManager: Connectivit
 
     override fun isNetworkAvailable() = connectivityManager?.let { manager ->
         val isNetworkInitiallyAvailable = manager.activeNetworkInfo?.isConnected == true
-        val subject = BehaviorSubject.createDefault<Boolean>(isNetworkInitiallyAvailable)
+        val subject = BehaviorSubject.createDefault(isNetworkInitiallyAvailable)
         val networkRequest = NetworkRequest.Builder().build()
         val callback = object : ConnectivityManager.NetworkCallback() {
-            override fun onLost(network: Network?) {
+            override fun onLost(network: Network) {
                 super.onLost(network)
                 subject.onNext(false)
             }
 
-            override fun onAvailable(network: Network?) {
+            override fun onAvailable(network: Network) {
                 super.onAvailable(network)
                 subject.onNext(true)
             }

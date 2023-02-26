@@ -32,8 +32,12 @@ class FragmentOauthWebView : Fragment() {
 
     private val onLogIn: OnLogIn by sharedViewModel<MainViewModel>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-          inflater.inflate(R.layout.fragment_web_view, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
+        inflater.inflate(R.layout.fragment_web_view, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,19 +45,21 @@ class FragmentOauthWebView : Fragment() {
         val url = arguments?.getString(ARG_URL, null)
         val redirectUrl = arguments?.getString(ARG_REDIRECT_URL, null)
 
-        webview_fragmentwebview.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                if (redirectUrl != null && url != null && url.contains(redirectUrl)) {
-                    activity?.intent = Intent(activity?.intent).apply {
-                        data = url.toUri()
+        with(webview_fragmentwebview) {
+            webViewClient = object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                    if (redirectUrl != null && url != null && url.contains(redirectUrl)) {
+                        activity?.intent = Intent(activity?.intent).apply {
+                            data = url.toUri()
+                        }
+                        onLogIn.closeWebView()
+                        return true
                     }
-                    onLogIn.closeWebView()
-                    return true
+                    return false
                 }
-                return false
             }
+            url?.let(::loadUrl)
         }
-        webview_fragmentwebview.loadUrl(url)
 
         with(toolbar_fragmentwebview) {
             setTitle(R.string.loginactivity_title_webview)
