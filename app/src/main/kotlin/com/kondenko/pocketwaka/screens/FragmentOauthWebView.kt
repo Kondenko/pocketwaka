@@ -46,6 +46,7 @@ class FragmentOauthWebView : Fragment() {
         val redirectUrl = arguments?.getString(ARG_REDIRECT_URL, null)
 
         with(webview_fragmentwebview) {
+            settings.javaScriptEnabled = true
             webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                     if (redirectUrl != null && url != null && url.contains(redirectUrl)) {
