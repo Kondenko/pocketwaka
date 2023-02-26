@@ -1,5 +1,6 @@
 package com.kondenko.pocketwaka.di.modules
 
+import com.google.gson.Gson
 import com.kondenko.pocketwaka.Const
 import com.kondenko.pocketwaka.di.qualifiers.Api
 import com.kondenko.pocketwaka.di.qualifiers.Auth
@@ -26,7 +27,8 @@ val networkModule = module {
     factory(Scheduler.Ui) { AndroidSchedulers.mainThread() }
     factory { SchedulersContainer(uiScheduler = get(Scheduler.Ui), workerScheduler = get(Scheduler.Worker)) }
     single { RxJava2CallAdapterFactory.create() }
-    single { GsonConverterFactory.create() }
+    single { Gson() }
+    single { GsonConverterFactory.create(get()) }
     single {
         HttpLoggingInterceptor()
               .apply { setLevel(HttpLoggingInterceptor.Level.BODY) }

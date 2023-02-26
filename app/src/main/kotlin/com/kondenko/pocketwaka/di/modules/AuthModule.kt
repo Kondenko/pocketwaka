@@ -17,20 +17,37 @@ val authModule = module {
     factory { TokenEncryptor(stringEncryptor = get<StringEncryptor>()) }
     factory { EncryptedKeysRepository() }
     factory { get<Retrofit>(Auth).create<AccessTokenService>() }
-    factory { AccessTokenRepository(service = get(), prefs = get()) }
+    factory { AccessTokenRepository(service = get(), prefs = get(), gson = get()) }
     factory { GetAuthUrl(schedulers = get(), getAppId = get()) }
-    factory { GetAppId(schedulers = get(), encryptedKeysRepository = get(), stringEncryptor = get<StringEncryptor>()) }
-    factory { GetAppSecret(schedulers = get(), encryptedKeysRepository = get(), stringEncryptor = get<StringEncryptor>()) }
     factory {
-        GetAccessToken(
-                schedulers = get(),
-                dateProvider = get(),
-                tokenEncryptor = get<TokenEncryptor>(),
-                accessTokenRepository = get(),
-                getAppId = get(),
-                getAppSecret = get()
+        GetAppId(
+            schedulers = get(),
+            encryptedKeysRepository = get(),
+            stringEncryptor = get<StringEncryptor>()
         )
     }
-    factory { GetTokenHeaderValue(schedulers = get(), stringEncryptor = get<StringEncryptor>(), accessTokenRepository = get()) }
+    factory {
+        GetAppSecret(
+            schedulers = get(),
+            encryptedKeysRepository = get(),
+            stringEncryptor = get<StringEncryptor>()
+        )
+    }
+    factory {
+        GetAccessToken(
+            schedulers = get(),
+            tokenEncryptor = get<TokenEncryptor>(),
+            accessTokenRepository = get(),
+            getAppId = get(),
+            getAppSecret = get()
+        )
+    }
+    factory {
+        GetTokenHeaderValue(
+            schedulers = get(),
+            stringEncryptor = get<StringEncryptor>(),
+            accessTokenRepository = get()
+        )
+    }
     single { LoginPresenter(getAuthUrl = get(), getAccessToken = get()) }
 }

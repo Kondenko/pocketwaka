@@ -30,17 +30,17 @@ class LoginPresenter(private val getAuthUrl: GetAuthUrl, private val getAccessTo
 
     fun checkIfAuthIsSuccessful(uri: Uri?) {
         if (isLoggingIn) {
-            if (uri != null && uri.toString().startsWith(Const.AUTH_REDIRECT_URI)) {
+            isLoggingIn = if (uri != null && uri.toString().startsWith(Const.AUTH_REDIRECT_URI)) {
                 val code = uri.getQueryParameter("code")
                 if (code != null) {
                     getToken(code)
                 } else uri.getQueryParameter("error")?.let {
                     view?.showError(RuntimeException(it))
                 }
-                isLoggingIn = false
+                false
             } else {
                 view?.onLoginCancelled()
-                isLoggingIn = false
+                false
             }
         }
     }

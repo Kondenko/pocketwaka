@@ -15,7 +15,7 @@ import com.airbnb.lottie.value.LottieValueCallback
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kondenko.pocketwaka.BuildConfig
 import io.reactivex.Single
-import org.threeten.bp.LocalDate
+import org.threeten.bp.*
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,8 +23,9 @@ import java.util.concurrent.TimeUnit
 
 fun Float.negateIfTrue(condition: Boolean) = if (condition) -this else this
 
-fun <T> T?.singleOrErrorIfNull(exception: Throwable = NullPointerException("Couldn't convert a null object to a Single")): Single<T> = this?.let { Single.just(it) }
-      ?: Single.error(exception)
+fun <T> T?.singleOrErrorIfNull(exception: Throwable = NullPointerException("Couldn't convert a null object to a Single")): Single<T> =
+    this?.let { Single.just(it) }
+        ?: Single.error(exception)
 
 inline fun FragmentManager.transaction(crossinline action: androidx.fragment.app.FragmentTransaction.() -> Unit) {
     this.beginTransaction().apply(action).commit()
@@ -61,10 +62,10 @@ operator fun <T> List<T>.times(times: Int): List<T> {
 }
 
 fun SharedPreferences.getStringOrThrow(key: String) =
-      getString(key, null) ?: throw NullPointerException("Preference with key $key not found")
+    getString(key, null) ?: throw NullPointerException("Preference with key $key not found")
 
 fun <T> SharedPreferences.getOrNull(key: String, getter: SharedPreferences.(String) -> T): T? =
-      if (!contains(key)) null else getter(key)
+    if (!contains(key)) null else getter(key)
 
 fun <T> T?.toListOrEmpty() = this?.let { listOf(it) } ?: emptyList()
 
@@ -74,12 +75,16 @@ operator fun <T> List<T>.get(range: IntRange): List<T> {
 }
 
 fun LottieAnimationView.setFillTint(color: Int) =
-      addValueCallback(KeyPath("**"), LottieProperty.COLOR, LottieValueCallback(color))
+    addValueCallback(KeyPath("**"), LottieProperty.COLOR, LottieValueCallback(color))
 
 fun LottieAnimationView.setStrokeTint(color: Int) =
-      addValueCallback(KeyPath("**"), LottieProperty.STROKE_COLOR, LottieValueCallback(color))
+    addValueCallback(KeyPath("**"), LottieProperty.STROKE_COLOR, LottieValueCallback(color))
 
-fun LottieAnimationView.playAnimation(duration: Long, interpolator: Interpolator = LinearInterpolator(), reverse: Boolean = false) {
+fun LottieAnimationView.playAnimation(
+    duration: Long,
+    interpolator: Interpolator = LinearInterpolator(),
+    reverse: Boolean = false
+) {
     val values = if (reverse) floatArrayOf(1f, 0f) else floatArrayOf(0f, 1f)
     ValueAnimator.ofFloat(*values).apply {
         setDuration(duration)
@@ -90,7 +95,10 @@ fun LottieAnimationView.playAnimation(duration: Long, interpolator: Interpolator
     }.start()
 }
 
-inline fun <reified T : Any> T.className(includeSuperclass: Boolean = false, separator: String = "_"): String {
+inline fun <reified T : Any> T.className(
+    includeSuperclass: Boolean = false,
+    separator: String = "_"
+): String {
     val className = this::class.java.simpleName
     val superclassName = this::class.java.superclass?.simpleName
     return if (!includeSuperclass || superclassName == null) className else "$superclassName$separator$className"
@@ -113,6 +121,11 @@ fun Long.roundDateToDay() = Calendar.getInstance().run {
 }
 
 fun Long.isSameDay(other: Long) = other.roundDateToDay() == this.roundDateToDay()
+
+fun Long.toZonedDateTime() = ZonedDateTime.ofInstant(
+    Instant.ofEpochMilli(this),
+    ZoneId.systemDefault()
+)
 
 fun Number.secondsToHoursAndMinutes(): Pair<Long, Long> {
     val hours = TimeUnit.SECONDS.toHours(this.toLong())
@@ -141,8 +154,8 @@ fun getMonthYearFormat(year: Int, currentYear: Int): SimpleDateFormat {
 inline fun <reified R> Iterable<*>.findInstance(): R? = find { it is R } as R
 
 fun <T, R> List<T>.appendOrReplace(other: List<T>, keySelector: (T) -> R): List<T> =
-      (other.reversed() + this.reversed())
-            .distinctBy { keySelector(it) }
-            .reversed()
+    (other.reversed() + this.reversed())
+        .distinctBy { keySelector(it) }
+        .reversed()
 
 fun <T> Array<T>.onEach(action: (T) -> Unit): Array<T> = apply { forEach(action) }
