@@ -29,11 +29,15 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_stats.*
+import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
-class FragmentStats : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapter, State<List<StatsUiModel>>>(), Refreshable {
+class FragmentStats :
+    BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapter, State<List<StatsUiModel>>>(),
+    Refreshable {
 
     companion object Args {
         const val argRange = "range"
@@ -54,10 +58,10 @@ class FragmentStats : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapte
     private val skeletonStatsCard = mutableListOf(StatsItem("", null, null)) * 3
 
     private val skeletonItems = listOf(
-          StatsUiModel.Info(null, null),
-          StatsUiModel.BestDay("", "", 0),
-          StatsUiModel.Stats("", skeletonStatsCard),
-          StatsUiModel.Stats("", skeletonStatsCard)
+        StatsUiModel.Info(null, null),
+        StatsUiModel.BestDay("", "", 0),
+        StatsUiModel.Stats("", skeletonStatsCard),
+        StatsUiModel.Stats("", skeletonStatsCard)
     )
 
     /**
@@ -75,7 +79,11 @@ class FragmentStats : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapte
         listSkeleton = get { parametersOf(context, skeletonItems) }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_stats, container, false)
     }
@@ -117,13 +125,14 @@ class FragmentStats : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapte
     }
 
     private fun updateAppBarElevation() {
-        shadowAnimationNeeded = if (recyclerview_stats.computeVerticalScrollOffset() >= minScrollOffset) {
-            if (shadowAnimationNeeded) scrollDirection.onNext(ScrollDirection.Down)
-            false
-        } else {
-            scrollDirection.onNext(ScrollDirection.Up)
-            true
-        }
+        shadowAnimationNeeded =
+            if (recyclerview_stats.computeVerticalScrollOffset() >= minScrollOffset) {
+                if (shadowAnimationNeeded) scrollDirection.onNext(ScrollDirection.Down)
+                false
+            } else {
+                scrollDirection.onNext(ScrollDirection.Up)
+                true
+            }
     }
 
     override fun reloadScreen() = vm.update()
@@ -134,8 +143,8 @@ class FragmentStats : BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapte
 
     override fun subscribeToRefreshEvents(refreshEvents: Observable<Unit>): Disposable {
         return refreshEvents.subscribeBy(
-              onNext = { reloadScreen() },
-              onError = WakaLog::e
+            onNext = { reloadScreen() },
+            onError = WakaLog::e
         )
     }
 

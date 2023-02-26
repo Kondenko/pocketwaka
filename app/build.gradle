@@ -179,10 +179,8 @@ dependencies {
     implementation "com.ogaclejapan.smarttablayout:utils-v4:${versions.smartTabLayout}@aar"
 
     // koin
-    implementation "org.koin:koin-core:${versions.koin}"
-    implementation "org.koin:koin-android:${versions.koin}"
-    implementation "org.koin:koin-androidx-scope:$versions.koin"
-    implementation "org.koin:koin-androidx-viewmodel:${versions.koin}"
+    implementation "io.insert-koin:koin-core:${versions.koin}"
+    implementation "io.insert-koin:koin-android:${versions.koin}"
 
     // constraintLayout
     implementation "androidx.constraintlayout:constraintlayout:2.0.4"

@@ -26,10 +26,13 @@ import com.kondenko.pocketwaka.utils.extensions.toListOrEmpty
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_summary.*
 import kotlinx.android.synthetic.main.fragment_summary.view.*
+import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, SummaryAdapter, SummaryState>() {
+class FragmentSummary :
+    BaseFragment<SummaryUiModel, List<SummaryUiModel>, SummaryAdapter, SummaryState>() {
 
     companion object {
 
@@ -41,7 +44,10 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
 
     }
 
-    private val date: DateRange by lazy { requireArguments().getParcelable<DateRange>(KEY_DATE) ?: throw IllegalArgumentException("You must pass a DateRange to this fragment") }
+    private val date: DateRange by lazy {
+        requireArguments().getParcelable<DateRange>(KEY_DATE)
+            ?: throw IllegalArgumentException("You must pass a DateRange to this fragment")
+    }
 
     private val vm: SummaryViewModel by viewModel { parametersOf(date) }
 
@@ -54,20 +60,21 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
     override val stateFragment = SummaryStateFragment()
 
     private val projectSkeleton = Project(
-          name = "",
-          totalSeconds = 0,
-          isRepoConnected = true,
-          repositoryUrl = "",
-          branches = mapOf("" to Branch("", 0, (0..2).map { Commit("", "", 0) })
-          )
+        name = "",
+        totalSeconds = 0,
+        isRepoConnected = true,
+        repositoryUrl = "",
+        branches = mapOf(
+            "" to Branch("", 0, (0..2).map { Commit("", "", 0) })
+        )
     ).let(SummaryUiModel::ProjectItem)
 
     private val skeletonItems: List<SummaryUiModel> = listOf(
-          SummaryUiModel.TimeTracked("", 1),
-          SummaryUiModel.ProjectsTitle,
-          projectSkeleton,
-          projectSkeleton,
-          projectSkeleton
+        SummaryUiModel.TimeTracked("", 1),
+        SummaryUiModel.ProjectsTitle,
+        projectSkeleton,
+        projectSkeleton,
+        projectSkeleton
     )
 
     override fun getDataView(): RecyclerView = recyclerview_summary
@@ -77,8 +84,10 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
         listSkeleton = get { parametersOf(context, skeletonItems) }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_summary, container, false)
     }
 
@@ -97,16 +106,16 @@ class FragmentSummary : BaseFragment<SummaryUiModel, List<SummaryUiModel>, Summa
         itemAnimator = null
         listSkeleton.actualAdapter.apply {
             dismissOnboardingClicks()
-                  .subscribeBy(
-                        onNext = { vm.dismissOnboarding() },
-                        onError = WakaLog::w
-                  )
+                .subscribeBy(
+                    onNext = { vm.dismissOnboarding() },
+                    onError = WakaLog::w
+                )
             connectRepoClicks()
-                  .doOnNext { eventTracker.log(Event.Summary.ConnectRepoClicks) }
-                  .subscribeBy(
-                        onNext = vm::connectRepoClicked,
-                        onError = WakaLog::w
-                  )
+                .doOnNext { eventTracker.log(Event.Summary.ConnectRepoClicks) }
+                .subscribeBy(
+                    onNext = vm::connectRepoClicked,
+                    onError = WakaLog::w
+                )
         }
     }
 
