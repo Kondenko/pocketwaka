@@ -116,6 +116,10 @@ class FragmentMenu : Fragment() {
                     eventTracker.log(Event.Menu.GithubClicked)
                     browserWindow.openUrl(it.data.githubUrl)
                 }
+                is MenuState.OpenPrivacyPolicy -> {
+                    eventTracker.log(Event.Menu.PrivacyPolicyClicked)
+                    browserWindow.openUrl(it.data.privacyPolicyUrl)
+                }
                 is MenuState.LogOut -> {
                     logout()
                 }
@@ -135,6 +139,9 @@ class FragmentMenu : Fragment() {
           },
           MenuUiModel.Action(R.drawable.ic_menu_github, R.string.menu_action_open_github, isGithubEnabled) {
               vm.openGithub()
+          },
+        MenuUiModel.Action(R.drawable.ic_privacy_policy_24, R.string.menu_action_privacy_policy) {
+              vm.openPrivacyPolicy()
           },
           MenuUiModel.Action(R.drawable.ic_menu_logout, R.string.menu_action_logout) {
               vm.logout()

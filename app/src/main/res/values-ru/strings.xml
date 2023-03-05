@@ -82,4 +82,5 @@
     <string name="summary_onboarding_headline2">Тапните или потяните заголовок</string>
     <string name="summary_onboarding_body2">чтобы выбрать дату</string>
     <string name="summary_onboarding_action_dismiss">Круто!</string>
+    <string name="menu_action_privacy_policy">Политика приватности</string>
 </resources>

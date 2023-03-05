@@ -14,7 +14,7 @@ import io.reactivex.subjects.PublishSubject
 
 class MenuViewModel(
       private val clearCache: ClearCache,
-      getMenuUiModel: GetMenuUiModel
+      getMenuUiModel: GetMenuUiModel,
 ) : BaseViewModel<MenuUiModel?>() {
 
     private val rateAppClicks = PublishSubject.create<Unit>()
@@ -22,6 +22,8 @@ class MenuViewModel(
     private val sendFeedbackClicks = PublishSubject.create<Unit>()
 
     private val githubClicks = PublishSubject.create<Unit>()
+
+    private val privacyPolicyClicks = PublishSubject.create<Unit>()
 
     private val stateObservable = stateLiveData.toObservable()
 
@@ -31,6 +33,10 @@ class MenuViewModel(
         })
         githubClicks.waitForData("Error opening Github") {
             stateLiveData.value = (MenuState.OpenGithub(it))
+            stateLiveData.value = (State.Success(state?.data ?: it))
+        }
+        privacyPolicyClicks.waitForData("Error opening Privacy Policy") {
+            stateLiveData.value = (MenuState.OpenPrivacyPolicy(it))
             stateLiveData.value = (State.Success(state?.data ?: it))
         }
         sendFeedbackClicks.waitForData("Error fetching feedback email") {
@@ -79,6 +85,10 @@ class MenuViewModel(
 
     fun openGithub() {
         githubClicks.onNext(Unit)
+    }
+
+    fun openPrivacyPolicy() {
+        privacyPolicyClicks.onNext(Unit)
     }
 
     fun logout() {

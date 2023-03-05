@@ -22,6 +22,9 @@ class MenuRepository(
     fun getSupportEmail(): Single<String> =
         getString(RemoteConfigKeys.supportEmail).toSingle()
 
+    fun getPrivacyPolicyUrl(): Single<String> =
+        getString(RemoteConfigKeys.privacyPolicyUrl).toSingle()
+
     fun getSupportEmailSubject() =
         stringProvider.getSupportEmailSubject()
 

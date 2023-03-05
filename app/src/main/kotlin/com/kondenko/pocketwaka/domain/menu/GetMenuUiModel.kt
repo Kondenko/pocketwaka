@@ -18,10 +18,15 @@ class GetMenuUiModel(
         val emailText = getInitialEmailText(deviceInfo)
         val emailSubject = menuRepository.getSupportEmailSubject()
         return menuRepository.run {
-            Singles.zip(getGithubUrl(), getSupportEmail(), getPositiveReviewThreshold())
-            { github, email, positiveReviewThreshold ->
+            Singles.zip(
+                getGithubUrl(),
+                getPrivacyPolicyUrl(),
+                getSupportEmail(),
+                getPositiveReviewThreshold()
+            ) { github, privacyPolicyUrl, email, positiveReviewThreshold ->
                 MenuUiModel(
                     githubUrl = github,
+                    privacyPolicyUrl = privacyPolicyUrl,
                     supportEmail = email,
                     emailSubject = emailSubject,
                     initialEmailText = emailText,
