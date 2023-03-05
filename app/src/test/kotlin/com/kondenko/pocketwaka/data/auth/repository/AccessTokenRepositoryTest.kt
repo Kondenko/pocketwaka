@@ -7,14 +7,13 @@ import com.kondenko.pocketwaka.data.auth.service.AccessTokenService
 import com.kondenko.pocketwaka.testutils.RxRule
 import com.kondenko.pocketwaka.testutils.getAccessTokenMock
 import com.kondenko.pocketwaka.utils.exceptions.UnauthorizedException
-import com.nhaarman.mockito_kotlin.anyOrNull
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyFloat
 import org.mockito.ArgumentMatchers.anyString
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 
 class AccessTokenRepositoryTest {
 
@@ -23,11 +22,11 @@ class AccessTokenRepositoryTest {
 
     private val accessTokenService: AccessTokenService = mock()
 
-    private val sp: SharedPreferences = mock()
+    private val sharedPrefs: SharedPreferences = mock()
 
     private val gson: Gson = mock()
 
-    private val accessTokenRepository = AccessTokenRepository(accessTokenService, gson, sp)
+    private val accessTokenRepository = AccessTokenRepository(accessTokenService, gson, sharedPrefs)
 
     @Test
     fun `should acquire new token`() {
@@ -44,7 +43,7 @@ class AccessTokenRepositoryTest {
 
     @Test
     fun `should fail if not saved`() {
-        whenever(sp.contains(anyString())).doReturn(false)
+        whenever(sharedPrefs.contains(anyString())).doReturn(false)
         val errorSingle = accessTokenRepository.getEncryptedToken()
         with(errorSingle.test()) {
             assertFailure(UnauthorizedException::class.java)
@@ -56,10 +55,15 @@ class AccessTokenRepositoryTest {
     @Test
     fun `should return encrypted token`() {
         val tokenStringField = "foo"
-        val token: AccessToken = getAccessTokenMock(tokenStringField)
-        whenever(sp.contains(anyString())).doReturn(true)
-        whenever(sp.getString(anyString(), anyOrNull())).doReturn(tokenStringField)
-        whenever(sp.getFloat(anyString(), anyFloat())).doReturn(0f)
+        val expiresAtEncoded = "2023-05-04T10%3A59%3A47Z"
+        val expiresAt = ZonedDateTime.of(
+            2023, 5, 4, 10, 59, 47, 0, ZoneId.of("Z")
+        )
+        val token: AccessToken = getAccessTokenMock(tokenStringField, expiresAt)
+        whenever(sharedPrefs.contains(anyString())).doReturn(true)
+        whenever(sharedPrefs.getString(anyString(), anyOrNull())).doReturn(tokenStringField)
+        whenever(sharedPrefs.getString(eq(KEY_EXPIRES_AT), anyOrNull())).doReturn(expiresAtEncoded)
+        whenever(sharedPrefs.getFloat(anyString(), anyFloat())).doReturn(0f)
         val tokenSingle = accessTokenRepository.getEncryptedToken()
         with(tokenSingle.test()) {
             assertValue(token)

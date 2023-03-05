@@ -1,6 +1,7 @@
 package com.kondenko.pocketwaka.data.auth.repository
 
 import android.content.SharedPreferences
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
 import com.google.gson.Gson
 import com.kondenko.pocketwaka.data.auth.model.server.AccessToken
@@ -19,7 +20,9 @@ private const val KEY_REFRESH_TOKEN = "refresh_token"
 private const val KEY_SCOPE = "scope"
 private const val KEY_TOKEN_TYPE = "token_type"
 private const val KEY_UID = "uid"
-private const val KEY_EXPIRES_AT = "expires_at"
+
+@VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+const val KEY_EXPIRES_AT = "expires_at"
 
 class AccessTokenRepository(
     private val service: AccessTokenService,
@@ -59,7 +62,7 @@ class AccessTokenRepository(
                 uid = requireNotNull(map["uid"]),
                 expiresIn = requireNotNull(map["expires_in"]).toDouble(),
                 expiresAt = requireNotNull(map["expires_at"])
-                    .let { URLDecoder.decode(it, Charsets.UTF_8.name()) }
+                    .decodeHtmlDate()
                     .let(ZonedDateTime::parse),
             )
         }
@@ -83,7 +86,9 @@ class AccessTokenRepository(
                     scope = prefs.getStringOrThrow(KEY_SCOPE),
                     uid = prefs.getStringOrThrow(KEY_UID),
                     expiresIn = prefs.getFloat(KEY_EXPIRES_IN, 0f).toDouble(),
-                    expiresAt = prefs.getString(KEY_EXPIRES_AT, null).let(ZonedDateTime::parse)
+                    expiresAt = prefs.getString(KEY_EXPIRES_AT, null)
+                        ?.decodeHtmlDate()
+                        .let(ZonedDateTime::parse)
                 )
             )
         }
@@ -122,5 +127,7 @@ class AccessTokenRepository(
     }
 
     fun isTokenSaved(): Single<Boolean> = Single.just(prefs.contains(KEY_ACCESS_TOKEN))
+
+    private fun String.decodeHtmlDate() = URLDecoder.decode(this, Charsets.UTF_8.name())
 
 }
