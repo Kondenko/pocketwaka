@@ -73,23 +73,16 @@ class FragmentStats :
         context?.dp(value) ?: value
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        vm = getViewModel { parametersOf(range) }
-        listSkeleton = get { parametersOf(context, skeletonItems) }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.fragment_stats, container, false)
-    }
+    ): View? = inflater.inflate(R.layout.fragment_stats, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        vm = getViewModel { parametersOf(range) }
+        listSkeleton = get { parametersOf(context, skeletonItems) }
         view.postDelayed(50) {
             setupUi()
             vm.state().observe(viewLifecycleOwner) {

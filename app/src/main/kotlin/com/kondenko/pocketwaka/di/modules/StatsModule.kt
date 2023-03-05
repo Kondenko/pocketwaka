@@ -22,7 +22,6 @@ import com.kondenko.pocketwaka.utils.spannable.TimeSpannableCreator
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.parameter.parametersOf
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
@@ -68,7 +67,7 @@ val statsModule = module {
               get()
         )
     }
-    scope(named<FragmentStats>()) {
+    scope<FragmentStats> {
         scoped { (context: Context, skeletonItems: List<StatsUiModel>) ->
             RecyclerViewSkeleton<StatsUiModel, StatsAdapter>(
                   adapterCreator = { showSkeleton: Boolean -> get { parametersOf(context, showSkeleton) } },

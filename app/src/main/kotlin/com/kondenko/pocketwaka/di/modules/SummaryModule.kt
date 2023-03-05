@@ -23,7 +23,6 @@ import com.kondenko.pocketwaka.utils.extensions.create
 import com.kondenko.pocketwaka.utils.spannable.TimeSpannableCreator
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.parameter.parametersOf
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
@@ -36,15 +35,15 @@ val summaryModule = module {
     }
     single {
         GetAverage(
-              schedulersContainer = get(),
-              statsRepository = get(),
-              getTokenHeaderValue = get<GetTokenHeaderValue>()
+            schedulersContainer = get(),
+            statsRepository = get(),
+            getTokenHeaderValue = get<GetTokenHeaderValue>()
         )
     }
     single {
         TimeTrackedConverter(
-              dateFormatter = get(),
-              getAverage = get()
+            dateFormatter = get(),
+            getAverage = get()
         )
     }
     single {
@@ -52,29 +51,29 @@ val summaryModule = module {
     }
     single {
         SummaryRepository(
-              summaryService = get(),
-              summaryDao = get(),
-              workerScheduler = get(Scheduler.Worker),
-              reduceModels = get<SummaryResponseConverter>()
+            summaryService = get(),
+            summaryDao = get(),
+            workerScheduler = get(Scheduler.Worker),
+            reduceModels = get<SummaryResponseConverter>()
         )
     }
     single {
         FetchBranchesAndCommits(
-              schedulersContainer = get(),
-              summaryService = get(),
-              commitsRepository = get(),
-              dateFormatter = get()
+            schedulersContainer = get(),
+            summaryService = get(),
+            commitsRepository = get(),
+            dateFormatter = get()
         )
     }
     single {
         GetSummary(
-              schedulers = get(),
-              summaryRepository = get<SummaryRepository>(),
-              getTokenHeader = get<GetTokenHeaderValue>(),
-              dateFormatter = get(),
-              summaryResponseConverter = get<SummaryResponseConverter>(),
-              timeTrackedConverter = get<TimeTrackedConverter>(),
-              fetchBranchesAndCommits = get<FetchBranchesAndCommits>()
+            schedulers = get(),
+            summaryRepository = get<SummaryRepository>(),
+            getTokenHeader = get<GetTokenHeaderValue>(),
+            dateFormatter = get(),
+            summaryResponseConverter = get<SummaryResponseConverter>(),
+            timeTrackedConverter = get<TimeTrackedConverter>(),
+            fetchBranchesAndCommits = get<FetchBranchesAndCommits>()
         )
     }
     single {
@@ -85,14 +84,21 @@ val summaryModule = module {
     }
     single {
         GetSummaryState(
-              getSummary = get<GetSummary>(),
-              clearCache = get<ClearCache>(),
-              shouldShowOnboarding = get<ShouldShowOnboarding>(),
-              connectivityStatusProvider = get(),
-              schedulers = get()
+            getSummary = get<GetSummary>(),
+            clearCache = get<ClearCache>(),
+            shouldShowOnboarding = get<ShouldShowOnboarding>(),
+            connectivityStatusProvider = get(),
+            schedulers = get()
         )
     }
-    factory { (context: Context, showSkeleton: Boolean) -> SummaryAdapter(context, showSkeleton, get<TimeSpannableCreator>(), get()) }
+    factory { (context: Context, showSkeleton: Boolean) ->
+        SummaryAdapter(
+            context,
+            showSkeleton,
+            get<TimeSpannableCreator>(),
+            get()
+        )
+    }
     factory {
         GetAvailableRange(get(), get(), get())
     }
@@ -104,17 +110,19 @@ val summaryModule = module {
     }
     viewModel { (date: DateRange) ->
         SummaryViewModel(
-              range = date,
-              uiScheduler = get(Scheduler.Ui),
-              getSummaryState = get<GetSummaryState>(),
-              setOnboardingShown = get<SetOnboardingShown>()
+            range = date,
+            uiScheduler = get(Scheduler.Ui),
+            getSummaryState = get<GetSummaryState>(),
+            setOnboardingShown = get<SetOnboardingShown>()
         )
     }
-    scope(named<FragmentSummary>()) {
+    scope<FragmentSummary> {
         scoped { (context: Context, skeletonItems: List<SummaryUiModel>) ->
             RecyclerViewSkeleton(
-                  adapterCreator = { showSkeleton: Boolean -> get<SummaryAdapter> { parametersOf(context, showSkeleton) } },
-                  skeletonItems = skeletonItems
+                adapterCreator = { showSkeleton: Boolean ->
+                    get<SummaryAdapter> { parametersOf(context, showSkeleton) }
+                },
+                skeletonItems = skeletonItems
             )
         }
     }
