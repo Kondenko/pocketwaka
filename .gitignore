@@ -65,3 +65,5 @@ app/release/
 
 **/*.trace
 **/.cxx
+
+**/.run
