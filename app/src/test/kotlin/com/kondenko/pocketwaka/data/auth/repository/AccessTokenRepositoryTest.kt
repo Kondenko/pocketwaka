@@ -45,13 +45,9 @@ class AccessTokenRepositoryTest {
         val expectedResult = AccessToken(
             accessToken = "ACCESS_TOKEN",
             refreshToken = "REFRESH_TOKEN",
-            expiresIn = 5184000.0,
             expiresAt = ZonedDateTime.of(
                 2023, 5, 4, 10, 59, 47, 0, ZoneId.of("Z")
             ),
-            scope = "email,read_stats,read_logged_time",
-            tokenType = "bearer",
-            uid = "UID"
         )
         whenever(
             accessTokenService.getAccessToken(

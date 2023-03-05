@@ -22,23 +22,15 @@ class GetStoredAccessTokenTest {
 
     @Test
     fun `should decrypt access token`() {
-        val encryptedToken: AccessToken = AccessToken(
+        val encryptedToken = AccessToken(
             accessToken = "encrypted",
             refreshToken = "encrypted",
-            expiresIn = 0.0,
             expiresAt = ZonedDateTime.now(),
-            scope = "encrypted",
-            tokenType = "encrypted",
-            uid = "encrypted",
         )
-        val decryptedToken: AccessToken = AccessToken(
+        val decryptedToken = AccessToken(
             accessToken = "decrypted",
             refreshToken = "decrypted",
-            expiresIn = 0.0,
             expiresAt = ZonedDateTime.now(),
-            scope = "decrypted",
-            tokenType = "decrypted",
-            uid = "decrypted",
         )
 
         whenever(repository.getEncryptedToken()).doReturn(encryptedToken.toSingle())

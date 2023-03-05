@@ -9,10 +9,6 @@ import org.threeten.bp.ZonedDateTime
  */
 fun getAccessTokenMock(defaultStringValue: String = "", expiresAt: ZonedDateTime) = AccessToken(
         accessToken = defaultStringValue,
-        expiresIn = 0.0,
-        expiresAt = expiresAt,
         refreshToken = defaultStringValue,
-        scope = defaultStringValue,
-        tokenType = defaultStringValue,
-        uid = defaultStringValue,
+        expiresAt = expiresAt,
 )

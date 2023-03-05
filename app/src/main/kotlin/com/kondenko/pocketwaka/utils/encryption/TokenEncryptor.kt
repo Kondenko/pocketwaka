@@ -6,21 +6,13 @@ class TokenEncryptor(private val stringEncryptor: Encryptor<String>) : Encryptor
 
     override fun encrypt(token: AccessToken) = AccessToken(
         accessToken = stringEncryptor.encrypt(token.accessToken),
-        expiresIn = token.expiresIn,
         refreshToken = stringEncryptor.encrypt(token.refreshToken),
-        scope = stringEncryptor.encrypt(token.scope),
-        tokenType = stringEncryptor.encrypt(token.tokenType),
-        uid = stringEncryptor.encrypt(token.uid),
         expiresAt = token.expiresAt,
     )
 
     override fun decrypt(token: AccessToken) = AccessToken(
         accessToken = stringEncryptor.decrypt(token.accessToken),
-        expiresIn = token.expiresIn,
         refreshToken = stringEncryptor.decrypt(token.refreshToken),
-        scope = stringEncryptor.decrypt(token.scope),
-        tokenType = stringEncryptor.decrypt(token.tokenType),
-        uid = stringEncryptor.decrypt(token.uid),
         expiresAt = token.expiresAt,
     )
 

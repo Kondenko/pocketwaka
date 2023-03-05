@@ -50,13 +50,9 @@ class RefreshAccessTokenTest {
     @Before
     fun before() {
         token = AccessToken(
-            "at",
-            "rt",
-            0.0,
+            "ACCESS_TOKEN",
+            "REFRESH_TOKEN",
             ZonedDateTime.now(),
-            "s",
-            "tt",
-            "uid",
         )
     }
 
@@ -64,7 +60,7 @@ class RefreshAccessTokenTest {
     fun `token should be valid`() {
         val currentTime = dateProvider.getCurrentTimeMillis()
         val expiresAt = currentTime.toZonedDateTime().plusDays(1)
-        val token = token.copy(expiresIn = 100.0, expiresAt = expiresAt)
+        val token = token.copy(expiresAt = expiresAt)
         assertTrue(token.isValid(currentTime))
     }
 
@@ -72,7 +68,7 @@ class RefreshAccessTokenTest {
     fun `token should NOT be valid`() {
         val currentTime = dateProvider.getCurrentTimeMillis()
         val expiresAt = currentTime.toZonedDateTime().minusDays(1)
-        val token = token.copy(expiresIn = 100.0, expiresAt = expiresAt)
+        val token = token.copy(expiresAt = expiresAt)
         assertFalse(token.isValid(currentTime))
     }
 
