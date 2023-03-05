@@ -56,6 +56,11 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
         }
     }
 
+    override fun onDestroyView() {
+        scope = null
+        super.onDestroyView()
+    }
+
     protected fun State<ST>.render() {
         listSkeleton.show(getDataView(), (this as? State.Loading<*>)?.isInterrupting == true)
         when (this) {
