@@ -7,7 +7,10 @@ import com.kondenko.pocketwaka.data.auth.service.AccessTokenService
 import com.kondenko.pocketwaka.testutils.RxRule
 import com.kondenko.pocketwaka.testutils.getAccessTokenMock
 import com.kondenko.pocketwaka.utils.exceptions.UnauthorizedException
+import com.kondenko.pocketwaka.utils.extensions.toSingle
 import com.nhaarman.mockito_kotlin.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyFloat
@@ -29,15 +32,47 @@ class AccessTokenRepositoryTest {
     private val accessTokenRepository = AccessTokenRepository(accessTokenService, gson, sharedPrefs)
 
     @Test
-    fun `should acquire new token`() {
-        val token: AccessToken = mock()
-        TODO("Rewrite this test taking JSON and HTML parsing into account")
-        // whenever(accessTokenService.getAccessToken(anyString(), anyString(), anyString(), anyString(), anyString())).doReturn(Single.just(token))
-        val tokenSingle = accessTokenRepository.getNewAccessToken("string", "string", "string", "string", "string")
+    fun `should acquire new token and parse HTML`() {
+        val htmlResponse =
+            "access_token=ACCESS_TOKEN" +
+                    "&refresh_token=REFRESH_TOKEN" +
+                    "&uid=UID" +
+                    "&token_type=bearer" +
+                    "&expires_at=2023-05-04T10%3A59%3A47Z" +
+                    "&expires_in=5184000" +
+                    "&scope=email%2Cread_stats%2Cread_logged_time"
+        val responseBody = htmlResponse.toResponseBody("text/html".toMediaType())
+        val expectedResult = AccessToken(
+            accessToken = "ACCESS_TOKEN",
+            refreshToken = "REFRESH_TOKEN",
+            expiresIn = 5184000.0,
+            expiresAt = ZonedDateTime.of(
+                2023, 5, 4, 10, 59, 47, 0, ZoneId.of("Z")
+            ),
+            scope = "email,read_stats,read_logged_time",
+            tokenType = "bearer",
+            uid = "UID"
+        )
+        whenever(
+            accessTokenService.getAccessToken(
+                anyString(),
+                anyString(),
+                anyString(),
+                anyString(),
+                anyString(),
+            )
+        ) doReturn responseBody.toSingle()
+        val tokenSingle = accessTokenRepository.getNewAccessToken(
+            "id",
+            "secret",
+            "redirectUri",
+            "grantType",
+            "code"
+        )
         with(tokenSingle.test()) {
             assertNoErrors()
             assertComplete()
-            assertValue(token)
+            assertValue(expectedResult)
         }
     }
 

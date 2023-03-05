@@ -58,11 +58,11 @@ class AccessTokenRepository(
                 accessToken = requireNotNull(map["access_token"]),
                 refreshToken = requireNotNull(map["refresh_token"]),
                 tokenType = requireNotNull(map["token_type"]),
-                scope = requireNotNull(map["scope"]),
+                scope = requireNotNull(map["scope"]).decodeHtml(),
                 uid = requireNotNull(map["uid"]),
                 expiresIn = requireNotNull(map["expires_in"]).toDouble(),
                 expiresAt = requireNotNull(map["expires_at"])
-                    .decodeHtmlDate()
+                    .decodeHtml()
                     .let(ZonedDateTime::parse),
             )
         }
@@ -87,7 +87,7 @@ class AccessTokenRepository(
                     uid = prefs.getStringOrThrow(KEY_UID),
                     expiresIn = prefs.getFloat(KEY_EXPIRES_IN, 0f).toDouble(),
                     expiresAt = prefs.getString(KEY_EXPIRES_AT, null)
-                        ?.decodeHtmlDate()
+                        ?.decodeHtml()
                         .let(ZonedDateTime::parse)
                 )
             )
@@ -128,6 +128,6 @@ class AccessTokenRepository(
 
     fun isTokenSaved(): Single<Boolean> = Single.just(prefs.contains(KEY_ACCESS_TOKEN))
 
-    private fun String.decodeHtmlDate() = URLDecoder.decode(this, Charsets.UTF_8.name())
+    private fun String.decodeHtml() = URLDecoder.decode(this, Charsets.UTF_8.name())
 
 }
