@@ -10,6 +10,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Test
+import org.threeten.bp.ZonedDateTime
 
 class GetStoredAccessTokenTest {
 
@@ -22,22 +23,22 @@ class GetStoredAccessTokenTest {
     @Test
     fun `should decrypt access token`() {
         val encryptedToken: AccessToken = AccessToken(
-                "encrypted",
-                .0,
-                "encrypted",
-                "encrypted",
-                "encrypted",
-                "encrypted",
-                0f
+            accessToken = "encrypted",
+            refreshToken = "encrypted",
+            expiresIn = 0.0,
+            expiresAt = ZonedDateTime.now(),
+            scope = "encrypted",
+            tokenType = "encrypted",
+            uid = "encrypted",
         )
         val decryptedToken: AccessToken = AccessToken(
-                "decrypted",
-                .0,
-                "decrypted",
-                "decrypted",
-                "decrypted",
-                "decrypted",
-                0f
+            accessToken = "decrypted",
+            refreshToken = "decrypted",
+            expiresIn = 0.0,
+            expiresAt = ZonedDateTime.now(),
+            scope = "decrypted",
+            tokenType = "decrypted",
+            uid = "decrypted",
         )
 
         whenever(repository.getEncryptedToken()).doReturn(encryptedToken.toSingle())

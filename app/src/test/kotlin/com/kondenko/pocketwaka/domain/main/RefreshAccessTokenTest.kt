@@ -9,14 +9,13 @@ import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.encryption.TokenEncryptor
 import com.kondenko.pocketwaka.utils.extensions.toSingle
 import com.nhaarman.mockito_kotlin.*
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyFloat
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.junit.MockitoJUnitRunner
+import org.threeten.bp.ZonedDateTime
 
 @RunWith(MockitoJUnitRunner::class)
 class RefreshAccessTokenTest {
@@ -39,21 +38,35 @@ class RefreshAccessTokenTest {
 
     @Before
     fun before() {
-        token = AccessToken("at", 0.0, "rt", "s", "tt", "uid", 0f)
+        token = AccessToken(
+            "at",
+            "rt",
+            0.0,
+            ZonedDateTime.now(),
+            "s",
+            "tt",
+            "uid",
+        )
     }
 
     @Test
     fun `token should be valid`() {
+        TODO("Rewrite this test")
+/*
         val token = token.copy(expiresIn = 100.0, createdAt = 1000f)
         assertTrue(token.isValid(1099f))
         assertTrue(token.isValid(1000f))
+*/
     }
 
     @Test
     fun `token should NOT be valid`() {
+        TODO("Rewrite this test")
+/*
         val token = token.copy(expiresIn = 100.0, createdAt = 1000f)
         assertFalse(token.isValid(1100f))
         assertFalse(token.isValid(1101f))
+*/
     }
 
     @Test
@@ -105,7 +118,7 @@ class RefreshAccessTokenTest {
             verify(accessTokenRepository).getRefreshToken()
             verify(accessTokenRepository).getRefreshedAccessToken(eq(appId), eq(appSecret), anyString(), anyString(), eq(refreshToken))
             verify(tokenEncryptor).encrypt(newToken)
-            verify(accessTokenRepository).saveToken(encryptedNewToken, currentTime)
+            verify(accessTokenRepository).saveToken(encryptedNewToken)
         }
 
         with(single.test()) {

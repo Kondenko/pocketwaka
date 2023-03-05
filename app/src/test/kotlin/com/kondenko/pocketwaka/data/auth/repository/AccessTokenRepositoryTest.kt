@@ -1,6 +1,7 @@
 package com.kondenko.pocketwaka.data.auth.repository
 
 import android.content.SharedPreferences
+import com.google.gson.Gson
 import com.kondenko.pocketwaka.data.auth.model.server.AccessToken
 import com.kondenko.pocketwaka.data.auth.service.AccessTokenService
 import com.kondenko.pocketwaka.testutils.RxRule
@@ -10,7 +11,6 @@ import com.nhaarman.mockito_kotlin.anyOrNull
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import io.reactivex.Single
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyFloat
@@ -25,13 +25,15 @@ class AccessTokenRepositoryTest {
 
     private val sp: SharedPreferences = mock()
 
-    private val accessTokenRepository = AccessTokenRepository(accessTokenService, sp)
+    private val gson: Gson = mock()
+
+    private val accessTokenRepository = AccessTokenRepository(accessTokenService, gson, sp)
 
     @Test
     fun `should acquire new token`() {
         val token: AccessToken = mock()
-        whenever(accessTokenService.getAccessToken(anyString(), anyString(), anyString(), anyString(), anyString()))
-                .doReturn(Single.just(token))
+        TODO("Rewrite this test taking JSON and HTML parsing into account")
+        // whenever(accessTokenService.getAccessToken(anyString(), anyString(), anyString(), anyString(), anyString())).doReturn(Single.just(token))
         val tokenSingle = accessTokenRepository.getNewAccessToken("string", "string", "string", "string", "string")
         with(tokenSingle.test()) {
             assertNoErrors()

@@ -216,7 +216,8 @@ dependencies {
     testImplementation "androidx.test:rules:${versions.testRunner}"
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
     testImplementation "com.nhaarman:mockito-kotlin:${versions.mockitoKotlin}"
-    testImplementation "org.koin:koin-test:${versions.koin}"
+    testImplementation "io.insert-koin:koin-test:${versions.koin}"
+    testImplementation "io.insert-koin:koin-test-junit4:${versions.koin}"
     testImplementation("org.robolectric:robolectric:${versions.robolectric}") {
         exclude group: 'commons-logging', module: 'commons-logging'
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'

@@ -1,16 +1,17 @@
 package com.kondenko.pocketwaka.utils.date
 
-import com.kondenko.pocketwaka.TestApp
+import com.kondenko.pocketwaka.App
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.koin.test.ClosingKoinTest
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.threeten.bp.LocalDate
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [22], application = TestApp::class)
-class DateRangeKtTest {
+@Config(sdk = [22], application = App::class)
+class DateRangeKtTest : ClosingKoinTest {
 
     @Test
     fun `single day should contain the date`() {
