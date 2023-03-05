@@ -16,6 +16,6 @@ class DateProvider {
 
     fun getCurrentTimeMillis() = System.currentTimeMillis()
 
-    fun getCurrentTimeSec() = TimeUnit.MILLISECONDS.toSeconds(getCurrentTimeMillis()).toFloat()
+    fun getCurrentTimeSec() = TimeUnit.MILLISECONDS.toSeconds(getCurrentTimeMillis())
 
 }

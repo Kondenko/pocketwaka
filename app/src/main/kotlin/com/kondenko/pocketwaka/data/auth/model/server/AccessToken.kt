@@ -21,6 +21,6 @@ data class AccessToken(
     var uid: String,
 ) {
 
-    fun isValid(currentTimeSec: Float): Boolean =
-        currentTimeSec.toLong().toZonedDateTime().isAfter(expiresAt)
+    fun isValid(currentTimeSec: Long): Boolean =
+        currentTimeSec.toZonedDateTime().isBefore(expiresAt)
 }

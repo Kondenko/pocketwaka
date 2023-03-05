@@ -11,7 +11,6 @@ import com.kondenko.pocketwaka.utils.exceptions.WakatimeException
 import com.kondenko.pocketwaka.utils.types.KOptional
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
-import kotlin.math.roundToLong
 
 
 private typealias CommitsObservable = Observable<List<CommitServerModel>>
@@ -63,7 +62,7 @@ class CommitsRepository(
     }
 
     private fun getFromCache(params: Params) = params.run {
-        val currentTime = timeProvider.getCurrentTimeSec().roundToLong()
+        val currentTime = timeProvider.getCurrentTimeSec()
         // WakaLog.d(COMMITS, "[CACHE] Getting from cache (time=${Date(currentTime)})")
         // TODO Add timeout
         commitsDao.get(project, branch, currentTime)
@@ -79,7 +78,7 @@ class CommitsRepository(
 
     private fun List<CommitServerModel>.saveToCache(project: String) =
           map { it.toDbModel(project) }.let { commits ->
-              val currentTime = timeProvider.getCurrentTimeSec().roundToLong()
+              val currentTime = timeProvider.getCurrentTimeSec()
               // val cacheLifetime = cacheLifetimeCommitsSec
               // WakaLog.d(COMMITS, "Cached commits at ${Date(currentTime)}, next invalidation at ${Date(currentTime + cacheLifetime)}")
               commitsDao.insert(commits, currentTime)
