@@ -11,6 +11,7 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
+import org.threeten.bp.ZonedDateTime
 
 class TokenEncryptorTest {
 
@@ -20,7 +21,7 @@ class TokenEncryptorTest {
 
     private val decryptedString = "decrypted"
 
-    private val token = getAccessTokenMock(decryptedString)
+    private val token = getAccessTokenMock(decryptedString, ZonedDateTime.now())
 
     @Before
     fun setup() {

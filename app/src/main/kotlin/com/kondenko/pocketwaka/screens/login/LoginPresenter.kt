@@ -11,10 +11,10 @@ class LoginPresenter(private val getAuthUrl: GetAuthUrl, private val getAccessTo
 
     private var isLoggingIn = false
 
-    fun onLoginButtonClicked() {
+    fun onLoginButtonClicked(forceWebView: Boolean = false) {
         isLoggingIn = true
         getAuthUrl.invoke(
-              onSuccess = { url -> view?.openAuthUrl(url) },
+              onSuccess = { url -> view?.openAuthUrl(url, Const.AUTH_REDIRECT_URI, forceWebView) },
               onError = { view?.showError(it) }
         )
     }
@@ -29,18 +29,18 @@ class LoginPresenter(private val getAuthUrl: GetAuthUrl, private val getAccessTo
     }
 
     fun checkIfAuthIsSuccessful(uri: Uri?) {
-        if (uri != null && uri.toString().startsWith(Const.AUTH_REDIRECT_URI)) {
-            val code = uri.getQueryParameter("code")
-            if (code != null) {
-                getToken(code)
-            } else uri.getQueryParameter("error")?.let {
-                view?.showError(RuntimeException(it))
-            }
-            isLoggingIn = false
-        } else {
-            if (isLoggingIn) {
+        if (isLoggingIn) {
+            isLoggingIn = if (uri != null && uri.toString().startsWith(Const.AUTH_REDIRECT_URI)) {
+                val code = uri.getQueryParameter("code")
+                if (code != null) {
+                    getToken(code)
+                } else uri.getQueryParameter("error")?.let {
+                    view?.showError(RuntimeException(it))
+                }
+                false
+            } else {
                 view?.onLoginCancelled()
-                isLoggingIn = false
+                false
             }
         }
     }

@@ -8,6 +8,8 @@
     <dimen name="size_all_icon_small">16dp</dimen>
     <dimen name="radius_all_card">4dp</dimen>
 
+    <dimen name="height_button_rounded">32dp</dimen>
+    <dimen name="padding_button_rounded_horizontal">16dp</dimen>
 
     <dimen name="height_all_skeleton_text">11dp</dimen>
     <dimen name="width_all_skeleton_text">100dp</dimen>
@@ -19,6 +21,8 @@
     <dimen name="margin_state_screen_button_bottom">24dp</dimen>
     <dimen name="margin_state_screen_button_top">40dp</dimen>
     <dimen name="margin_state_screen_image_offline">76dp</dimen>
+
+    <dimen name="height_bottom_navigation">56dp</dimen>
 
     <item name="main_transition_scale_collapsed" type="fraction">0.98</item>
 
@@ -65,11 +69,23 @@
 
     <!-- Summary -->
 
+    <dimen name="height_summary_toolbar_collapsed">54dp</dimen>
+    <dimen name="height_summary_toolbar_expanded">544dp</dimen>
+
+    <dimen name="radius_datepicker_corner">16dp</dimen>
+
+    <item name="duration_datepicker_elevation_anim" type="integer">300</item>
+    <item name="duration_datepicker_color_anim" type="integer">200</item>
+    <dimen name="elevation_datepicker_min">2dp</dimen>
+
+    <dimen name="size_datepicker_calendar_day">36dp</dimen>
+
     <item name="height_summary_skeleton" type="integer">14</item>
 
     <dimen name="margin_summary_projects_section_title_top">4dp</dimen>
     <dimen name="margin_summary_projects_section_title_bottom">8dp</dimen>
 
+    <dimen name="min_height_summary_time">106dp</dimen>
     <dimen name="textsize_summary_number">29sp</dimen> <!-- Total and average time -->
     <dimen name="textsize_summary_text">18sp</dimen>
 
@@ -82,6 +98,8 @@
     <dimen name="size_summary_icon_connect_repo">32dp</dimen>
     <dimen name="margin_summary_icon_connect_repo_horizontal">16dp</dimen>
     <dimen name="textsize_summary_label_connect_repo">13sp</dimen>
+
+    <dimen name="margin_summary_onboarding_headline_body">4dp</dimen>
 
     <!-- MENU -->
     <dimen name="size_menu_icon_app">84dp</dimen>

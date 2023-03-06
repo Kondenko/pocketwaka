@@ -12,19 +12,20 @@ import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.model.KeyPath
 import com.airbnb.lottie.value.LottieValueCallback
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kondenko.pocketwaka.BuildConfig
 import io.reactivex.Single
+import org.threeten.bp.*
 import timber.log.Timber
+import java.text.SimpleDateFormat
 import java.util.*
-import java.util.Calendar.*
-
-fun notNull(vararg values: Any?): Boolean = values.all { it != null }
+import java.util.concurrent.TimeUnit
 
 fun Float.negateIfTrue(condition: Boolean) = if (condition) -this else this
 
-fun <T> T?.singleOrErrorIfNull(exception: Throwable = NullPointerException("Couldn't convert a null object to a Single")): Single<T> = this?.let { Single.just(it) }
-      ?: Single.error(exception)
+fun <T> T?.singleOrErrorIfNull(exception: Throwable = NullPointerException("Couldn't convert a null object to a Single")): Single<T> =
+    this?.let { Single.just(it) }
+        ?: Single.error(exception)
 
 inline fun FragmentManager.transaction(crossinline action: androidx.fragment.app.FragmentTransaction.() -> Unit) {
     this.beginTransaction().apply(action).commit()
@@ -39,13 +40,8 @@ fun Throwable.report(message: String? = null, printLog: Boolean = true) {
     }
     @Suppress("ConstantConditionIf")
     if (!BuildConfig.DEBUG) {
-        Crashlytics.logException(this)
+        FirebaseCrashlytics.getInstance().recordException(this)
     }
-}
-
-fun createPath(build: Path.() -> Unit): Path = Path().apply {
-    build()
-    close()
 }
 
 fun Path.applyMatrix(actions: Matrix.() -> Unit) = Matrix().also { matrix ->
@@ -66,10 +62,10 @@ operator fun <T> List<T>.times(times: Int): List<T> {
 }
 
 fun SharedPreferences.getStringOrThrow(key: String) =
-      getString(key, null) ?: throw NullPointerException("Preference with key $key not found")
+    getString(key, null) ?: throw NullPointerException("Preference with key $key not found")
 
 fun <T> SharedPreferences.getOrNull(key: String, getter: SharedPreferences.(String) -> T): T? =
-      if (!contains(key)) null else getter(key)
+    if (!contains(key)) null else getter(key)
 
 fun <T> T?.toListOrEmpty() = this?.let { listOf(it) } ?: emptyList()
 
@@ -79,12 +75,16 @@ operator fun <T> List<T>.get(range: IntRange): List<T> {
 }
 
 fun LottieAnimationView.setFillTint(color: Int) =
-      addValueCallback(KeyPath("**"), LottieProperty.COLOR, LottieValueCallback(color))
+    addValueCallback(KeyPath("**"), LottieProperty.COLOR, LottieValueCallback(color))
 
 fun LottieAnimationView.setStrokeTint(color: Int) =
-      addValueCallback(KeyPath("**"), LottieProperty.STROKE_COLOR, LottieValueCallback(color))
+    addValueCallback(KeyPath("**"), LottieProperty.STROKE_COLOR, LottieValueCallback(color))
 
-fun LottieAnimationView.playAnimation(duration: Long, interpolator: Interpolator = LinearInterpolator(), reverse: Boolean = false) {
+fun LottieAnimationView.playAnimation(
+    duration: Long,
+    interpolator: Interpolator = LinearInterpolator(),
+    reverse: Boolean = false
+) {
     val values = if (reverse) floatArrayOf(1f, 0f) else floatArrayOf(0f, 1f)
     ValueAnimator.ofFloat(*values).apply {
         setDuration(duration)
@@ -95,21 +95,13 @@ fun LottieAnimationView.playAnimation(duration: Long, interpolator: Interpolator
     }.start()
 }
 
-inline fun <reified T : Any> T.className(includeSuperclass: Boolean = false, separator: String = "_"): String {
+inline fun <reified T : Any> T.className(
+    includeSuperclass: Boolean = false,
+    separator: String = "_"
+): String {
     val className = this::class.java.simpleName
     val superclassName = this::class.java.superclass?.simpleName
     return if (!includeSuperclass || superclassName == null) className else "$superclassName$separator$className"
-}
-
-fun <T> forEachNonNull(vararg items: T, action: (T) -> Unit) = items.forEach(action)
-
-fun <T> forEach(vararg items: T?, action: (T?) -> Unit) = items.forEach(action)
-
-fun date(day: Int, month: Int, year: Int): Long = Calendar.getInstance().run {
-    set(DAY_OF_MONTH, day)
-    set(MONTH, month)
-    set(YEAR, year)
-    time.time
 }
 
 val DialogFragment.isShown
@@ -118,3 +110,52 @@ val DialogFragment.isShown
 fun DialogFragment.safeDismiss() {
     if (isShown) dismiss()
 }
+
+fun Long.roundDateToDay() = Calendar.getInstance().run {
+    time = Date(this@roundDateToDay)
+    set(Calendar.HOUR_OF_DAY, 0)
+    set(Calendar.MINUTE, 0)
+    set(Calendar.SECOND, 0)
+    set(Calendar.MILLISECOND, 0)
+    time.time
+}
+
+fun Long.isSameDay(other: Long) = other.roundDateToDay() == this.roundDateToDay()
+
+fun Long.toZonedDateTime() = ZonedDateTime.ofInstant(
+    Instant.ofEpochMilli(this),
+    ZoneId.systemDefault()
+)
+
+fun Number.secondsToHoursAndMinutes(): Pair<Long, Long> {
+    val hours = TimeUnit.SECONDS.toHours(this.toLong())
+    val minutes = TimeUnit.SECONDS.toMinutes(this.toLong()) - TimeUnit.HOURS.toMinutes(hours)
+    return hours to minutes
+}
+
+infix fun LocalDate.dailyRangeTo(other: LocalDate): List<LocalDate> {
+    if (this.isAfter(other)) throw IllegalArgumentException("Start date comes after end ∂ate")
+    val list = mutableListOf<LocalDate>()
+    var nextDate: LocalDate = this
+    while (nextDate <= other) {
+        list.add(nextDate)
+        nextDate = nextDate.plusDays(1)
+    }
+    return list
+}
+
+fun getMonthYearFormat(year: Int, currentYear: Int): SimpleDateFormat {
+    val patternCurrentYear = "LLLL"
+    val patternOtherYear = "LLLL yyyy"
+    val pattern = if (year == currentYear) patternCurrentYear else patternOtherYear
+    return SimpleDateFormat(pattern, Locale.getDefault())
+}
+
+inline fun <reified R> Iterable<*>.findInstance(): R? = find { it is R } as R
+
+fun <T, R> List<T>.appendOrReplace(other: List<T>, keySelector: (T) -> R): List<T> =
+    (other.reversed() + this.reversed())
+        .distinctBy { keySelector(it) }
+        .reversed()
+
+fun <T> Array<T>.onEach(action: (T) -> Unit): Array<T> = apply { forEach(action) }

@@ -10,8 +10,6 @@ package com.kondenko.pocketwaka.domain
  */
 interface UseCase<PARAMS, RESULT, CONTEXT> {
 
-    fun build(params: PARAMS? = null): CONTEXT
-
     operator fun invoke(
             params: PARAMS? = null,
             onSuccess: (RESULT) -> Unit = {},

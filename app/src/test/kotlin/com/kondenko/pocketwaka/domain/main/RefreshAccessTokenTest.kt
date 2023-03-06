@@ -7,16 +7,18 @@ import com.kondenko.pocketwaka.domain.auth.GetAppSecret
 import com.kondenko.pocketwaka.testutils.testSchedulers
 import com.kondenko.pocketwaka.utils.date.DateProvider
 import com.kondenko.pocketwaka.utils.encryption.TokenEncryptor
+import com.kondenko.pocketwaka.utils.extensions.toSingle
+import com.kondenko.pocketwaka.utils.extensions.toZonedDateTime
 import com.nhaarman.mockito_kotlin.*
-import io.reactivex.rxkotlin.toSingle
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.anyFloat
+import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.junit.MockitoJUnitRunner
+import org.threeten.bp.ZonedDateTime
 
 @RunWith(MockitoJUnitRunner::class)
 class RefreshAccessTokenTest {
@@ -33,33 +35,47 @@ class RefreshAccessTokenTest {
 
     private val getAppSecret: GetAppSecret = mock()
 
-    private val useCase = RefreshAccessToken(testSchedulers, dateProvider, tokenEncryptor, accessTokenRepository, getStoredAccessToken, getAppId, getAppSecret)
+    private val useCase = RefreshAccessToken(
+        testSchedulers,
+        dateProvider,
+        tokenEncryptor,
+        accessTokenRepository,
+        getStoredAccessToken,
+        getAppId,
+        getAppSecret
+    )
 
     lateinit var token: AccessToken
 
     @Before
     fun before() {
-        token = AccessToken("at", 0.0, "rt", "s", "tt", "uid", 0f)
+        token = AccessToken(
+            "ACCESS_TOKEN",
+            "REFRESH_TOKEN",
+            ZonedDateTime.now(),
+        )
     }
 
     @Test
     fun `token should be valid`() {
-        val token = token.copy(expiresIn = 100.0, createdAt = 1000f)
-        assertTrue(token.isValid(1099f))
-        assertTrue(token.isValid(1000f))
+        val currentTime = dateProvider.getCurrentTimeMillis()
+        val expiresAt = currentTime.toZonedDateTime().plusDays(1)
+        val token = token.copy(expiresAt = expiresAt)
+        assertTrue(token.isValid(currentTime))
     }
 
     @Test
     fun `token should NOT be valid`() {
-        val token = token.copy(expiresIn = 100.0, createdAt = 1000f)
-        assertFalse(token.isValid(1100f))
-        assertFalse(token.isValid(1101f))
+        val currentTime = dateProvider.getCurrentTimeMillis()
+        val expiresAt = currentTime.toZonedDateTime().minusDays(1)
+        val token = token.copy(expiresAt = expiresAt)
+        assertFalse(token.isValid(currentTime))
     }
 
     @Test
     fun `should return token if it's valid`() {
         val token: AccessToken = mock()
-        val currentTime = 500f
+        val currentTime = 500L
 
         whenever(getStoredAccessToken.build()).doReturn(token.toSingle())
         whenever(dateProvider.getCurrentTimeSec()).doReturn(currentTime)
@@ -83,19 +99,25 @@ class RefreshAccessTokenTest {
         val invalidToken: AccessToken = mock()
         val newToken: AccessToken = mock()
         val encryptedNewToken: AccessToken = mock()
-        val currentTime = 500f
+        val currentTime = 500L
         val appId = "foo"
         val appSecret = "bar"
         val refreshToken = "baz"
 
         whenever(getStoredAccessToken.build()).doReturn(invalidToken.toSingle())
         whenever(dateProvider.getCurrentTimeSec()).doReturn(currentTime)
-        whenever(invalidToken.isValid(anyFloat())).doReturn(false)
+        whenever(invalidToken.isValid(anyLong())).doReturn(false)
         whenever(getAppId.build()).doReturn(appId.toSingle())
         whenever(getAppSecret.build()).doReturn(appSecret.toSingle())
         whenever(accessTokenRepository.getRefreshToken()).doReturn(refreshToken.toSingle())
         whenever(tokenEncryptor.encrypt(newToken)).doReturn(encryptedNewToken)
-        whenever(accessTokenRepository.getRefreshedAccessToken(eq(appId), eq(appSecret), anyString(), anyString(), eq(refreshToken))).doReturn(newToken.toSingle())
+        whenever(accessTokenRepository.getRefreshedAccessToken(
+            clientId = eq(appId),
+            clientSecret = eq(appSecret),
+            redirectUri = anyString(),
+            grantType = anyString(),
+            refreshToken = eq(refreshToken)
+        )).doReturn(newToken.toSingle())
 
         val single = useCase.invoke()
 
@@ -103,9 +125,15 @@ class RefreshAccessTokenTest {
         verify(getAppSecret).build()
         inOrder(accessTokenRepository, tokenEncryptor) {
             verify(accessTokenRepository).getRefreshToken()
-            verify(accessTokenRepository).getRefreshedAccessToken(eq(appId), eq(appSecret), anyString(), anyString(), eq(refreshToken))
+            verify(accessTokenRepository).getRefreshedAccessToken(
+                eq(appId),
+                eq(appSecret),
+                anyString(),
+                anyString(),
+                eq(refreshToken)
+            )
             verify(tokenEncryptor).encrypt(newToken)
-            verify(accessTokenRepository).saveToken(encryptedNewToken, currentTime)
+            verify(accessTokenRepository).saveToken(encryptedNewToken)
         }
 
         with(single.test()) {

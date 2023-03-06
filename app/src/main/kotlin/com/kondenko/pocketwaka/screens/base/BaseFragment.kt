@@ -2,13 +2,10 @@ package com.kondenko.pocketwaka.screens.base
 
 import android.content.Context
 import android.net.Uri
-import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.kondenko.pocketwaka.Const
@@ -18,24 +15,30 @@ import com.kondenko.pocketwaka.analytics.EventTracker
 import com.kondenko.pocketwaka.screens.ScreenStatus
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.StateFragment
-import com.kondenko.pocketwaka.screens.login.LoginActivity
+import com.kondenko.pocketwaka.screens.main.MainViewModel
+import com.kondenko.pocketwaka.screens.main.OnLogOut
 import com.kondenko.pocketwaka.ui.skeleton.RecyclerViewSkeleton
 import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.extensions.report
-import com.kondenko.pocketwaka.utils.extensions.startActivity
 import com.kondenko.pocketwaka.utils.extensions.transaction
 import org.koin.android.ext.android.inject
+import org.koin.androidx.scope.ScopeFragment
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> : Fragment() {
+abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> : ScopeFragment() {
 
     protected open val stateFragment = StateFragment()
-    private val fragmentStateTag = "state"
-
-    private val eventTracker: EventTracker by inject()
 
     protected abstract val containerId: Int
 
     protected lateinit var listSkeleton: RecyclerViewSkeleton<T, A>
+
+    private val fragmentStateTag = "state"
+
+    private val eventTracker: EventTracker by inject()
+
+    private val onLogOut: OnLogOut by sharedViewModel<MainViewModel>()
+
 
     protected abstract fun updateData(data: ST?, status: ScreenStatus? = null)
 
@@ -51,6 +54,11 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
                 add(containerId, stateFragment, fragmentStateTag)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        scope = null
+        super.onDestroyView()
     }
 
     protected fun State<ST>.render() {
@@ -110,7 +118,7 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
 
     private fun State.Empty.render() {
         showData(false)
-        stateFragment.setState(this, ::openPlugins)
+        stateFragment.setState(this) { openPlugins() }
     }
 
     protected fun showData(show: Boolean) {
@@ -123,20 +131,17 @@ abstract class BaseFragment<T, ST, A : SkeletonAdapter<T, *>, in S : State<ST>> 
         }
     }
 
-    private fun openPlugins() {
+    private fun openPlugins() = context?.let {
         val uri = Const.URL_PLUGINS
         val builder = CustomTabsIntent.Builder()
-        builder.setToolbarColor(ContextCompat.getColor(context!!, R.color.color_primary_light))
+        builder.setToolbarColor(ContextCompat.getColor(it, R.color.color_primary_light))
         val customTabsIntent = builder.build()
-        customTabsIntent.launchUrl(context, Uri.parse(uri))
+        customTabsIntent.launchUrl(it, Uri.parse(uri))
     }
 
     private fun forceLogOut() {
-        activity?.apply {
-            eventTracker.log(Event.ForcedLogout)
-            finish()
-            startActivity<LoginActivity>(bundleOf(LoginActivity.wasAccessLost to true))
-        }
+        eventTracker.log(Event.ForcedLogout)
+        onLogOut.logOut(forced = true)
     }
 
 }

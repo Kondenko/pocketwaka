@@ -3,25 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="56dp"
     android:gravity="center_vertical"
     android:paddingStart="@dimen/padding_all_card_inner"
     android:paddingEnd="@dimen/padding_all_card_inner"
     >
-
-
-    <TextView
-        android:id="@+id/textview_summary_project_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/color_text_primary"
-        android:textSize="18sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textview_summary_project_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textview_summary_project_name"
-        tools:text="10h 5m"
-        />
-
 
     <TextView
         android:id="@+id/textview_summary_project_name"
@@ -53,5 +39,17 @@
             />
 
     </TextView>
+
+    <TextView
+        android:id="@+id/textview_summary_project_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_text_primary"
+        android:textSize="18sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textview_summary_project_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textview_summary_project_name"
+        tools:text="10h 5m"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

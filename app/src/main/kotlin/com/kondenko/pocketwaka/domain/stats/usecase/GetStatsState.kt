@@ -15,7 +15,7 @@ class GetStatsState(
       connectivityStatusProvider: ConnectivityStatusProvider
 ) : StatefulUseCase<GetStatsForRange.Params, List<StatsUiModel>, StatsDbModel>(
       schedulers = schedulers,
-      useCase = getStatsForRange,
+      dataProvider = getStatsForRange,
       clearCache = clearCache,
       connectivityStatusProvider = connectivityStatusProvider
 )

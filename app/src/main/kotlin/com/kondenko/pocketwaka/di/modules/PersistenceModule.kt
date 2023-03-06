@@ -1,6 +1,7 @@
 package com.kondenko.pocketwaka.di.modules
 
 import androidx.room.Room
+import com.kondenko.pocketwaka.data.SharedPreferencesRepository
 import com.kondenko.pocketwaka.data.persistence.AppDatabase
 import com.kondenko.pocketwaka.databaseName
 import org.koin.android.ext.koin.androidContext
@@ -11,5 +12,8 @@ val persistenceModule = module {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, databaseName)
               .fallbackToDestructiveMigration()
               .build()
+    }
+    single {
+        SharedPreferencesRepository(sharedPreferences = get())
     }
 }

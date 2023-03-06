@@ -6,9 +6,9 @@ import com.kondenko.pocketwaka.data.stats.repository.StatsRepository
 import com.kondenko.pocketwaka.domain.auth.GetTokenHeaderValue
 import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsForRange
 import com.kondenko.pocketwaka.testutils.testSchedulers
+import com.kondenko.pocketwaka.utils.extensions.toSingle
 import com.nhaarman.mockito_kotlin.*
 import io.reactivex.Maybe
-import io.reactivex.rxkotlin.toSingle
 import org.junit.Test
 import timber.log.Timber
 

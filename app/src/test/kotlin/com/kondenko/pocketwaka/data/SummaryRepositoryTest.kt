@@ -22,7 +22,7 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.toObservable
 import io.reactivex.schedulers.TestScheduler
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyLong
+import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import java.util.concurrent.TimeUnit
 
@@ -45,12 +45,12 @@ class SummaryRepositoryTest {
 
     private val convertedDataFromServer = listOf(dbModel.copy(isAccountEmpty = true), dbModel)
 
-    private val params = SummaryRepository.Params("", DateRange(0, 0), DateRangeString("", ""), null, null)
+    private val params = SummaryRepository.Params("", DateRange.SingleDay(mock()), DateRangeString("", ""), null, null)
 
     @Test
     fun `should only emit data from cache`() {
         val delay = 100L
-        whenever(dao.getSummaries(anyLong(), anyLong()))
+        whenever(dao.getSummaries(anyInt()))
                 .thenReturn(Maybe.just(dataFromCache))
         whenever(service.getSummaries(anyString(), anyString(), anyString(), anyOrNull(), anyOrNull()))
                 .thenReturn(Single.error(TestException()))
@@ -73,7 +73,7 @@ class SummaryRepositoryTest {
     @Test
     fun `should return data from server`() {
         val delay = 100L
-        whenever(dao.getSummaries(anyLong(), anyLong()))
+        whenever(dao.getSummaries(anyInt()))
                 .thenReturn(Maybe.just(dataFromCache))
         whenever(service.getSummaries(anyString(), anyString(), anyString(), anyOrNull(), anyOrNull()))
                 .thenReturn(Single.just(dataFromServer).delay(delay, TimeUnit.MILLISECONDS, scheduler))
@@ -96,7 +96,7 @@ class SummaryRepositoryTest {
     @Test
     fun `should ignore caching error`() {
         val delay = 100L
-        whenever(dao.getSummaries(anyLong(), anyLong()))
+        whenever(dao.getSummaries(anyInt()))
                 .thenReturn(Maybe.just(dataFromCache))
         whenever(service.getSummaries(anyString(), anyString(), anyString(), anyOrNull(), anyOrNull()))
                 .thenReturn(Single.just(dataFromServer).delay(delay, TimeUnit.MILLISECONDS, scheduler))

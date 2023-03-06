@@ -4,12 +4,13 @@ import com.kondenko.pocketwaka.data.auth.model.server.AccessToken
 import com.kondenko.pocketwaka.data.auth.repository.AccessTokenRepository
 import com.kondenko.pocketwaka.testutils.testSchedulers
 import com.kondenko.pocketwaka.utils.encryption.TokenEncryptor
+import com.kondenko.pocketwaka.utils.extensions.toSingle
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
-import io.reactivex.rxkotlin.toSingle
 import org.junit.Test
+import org.threeten.bp.ZonedDateTime
 
 class GetStoredAccessTokenTest {
 
@@ -21,23 +22,15 @@ class GetStoredAccessTokenTest {
 
     @Test
     fun `should decrypt access token`() {
-        val encryptedToken: AccessToken = AccessToken(
-                "encrypted",
-                .0,
-                "encrypted",
-                "encrypted",
-                "encrypted",
-                "encrypted",
-                0f
+        val encryptedToken = AccessToken(
+            accessToken = "encrypted",
+            refreshToken = "encrypted",
+            expiresAt = ZonedDateTime.now(),
         )
-        val decryptedToken: AccessToken = AccessToken(
-                "decrypted",
-                .0,
-                "decrypted",
-                "decrypted",
-                "decrypted",
-                "decrypted",
-                0f
+        val decryptedToken = AccessToken(
+            accessToken = "decrypted",
+            refreshToken = "decrypted",
+            expiresAt = ZonedDateTime.now(),
         )
 
         whenever(repository.getEncryptedToken()).doReturn(encryptedToken.toSingle())

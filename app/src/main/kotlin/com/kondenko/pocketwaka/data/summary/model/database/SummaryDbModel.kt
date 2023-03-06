@@ -8,7 +8,7 @@ import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
 @Entity(tableName = "summary")
 data class SummaryDbModel(
         @PrimaryKey
-        val date: Long,
+        val date: Int, // This is a hash code, not a timestamp 🤦‍
         val isAccountEmpty: Boolean? = null,
         override val isFromCache: Boolean = false,
         override val isEmpty: Boolean? = null,

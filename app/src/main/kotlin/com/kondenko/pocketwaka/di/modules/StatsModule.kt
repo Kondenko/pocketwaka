@@ -12,7 +12,7 @@ import com.kondenko.pocketwaka.domain.main.ClearCache
 import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
 import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsForRange
 import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsState
-import com.kondenko.pocketwaka.screens.stats.FragmentStatsTab
+import com.kondenko.pocketwaka.screens.stats.FragmentStats
 import com.kondenko.pocketwaka.screens.stats.StatsViewModel
 import com.kondenko.pocketwaka.screens.stats.adapter.StatsAdapter
 import com.kondenko.pocketwaka.ui.skeleton.RecyclerViewSkeleton
@@ -22,7 +22,6 @@ import com.kondenko.pocketwaka.utils.spannable.TimeSpannableCreator
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.parameter.parametersOf
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
@@ -68,7 +67,7 @@ val statsModule = module {
               get()
         )
     }
-    scope(named<FragmentStatsTab>()) {
+    scope<FragmentStats> {
         scoped { (context: Context, skeletonItems: List<StatsUiModel>) ->
             RecyclerViewSkeleton<StatsUiModel, StatsAdapter>(
                   adapterCreator = { showSkeleton: Boolean -> get { parametersOf(context, showSkeleton) } },

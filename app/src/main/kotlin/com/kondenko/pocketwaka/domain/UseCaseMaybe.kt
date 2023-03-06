@@ -7,7 +7,7 @@ import io.reactivex.disposables.Disposable
 /**
  * The base class for all UseCases that use [Maybe].
  */
-abstract class UseCaseMaybe<PARAMS, RESULT>(private val schedulers: SchedulersContainer) : UseCase<PARAMS, RESULT, Maybe<RESULT>>, Disposable {
+abstract class UseCaseMaybe<PARAMS, RESULT>(private val schedulers: SchedulersContainer) : DisposableUseCase<PARAMS, RESULT, Maybe<RESULT>>, Disposable {
 
     private var disposable: Disposable? = null
 

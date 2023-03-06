@@ -14,10 +14,9 @@ import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.alphaDisabledView
 import com.kondenko.pocketwaka.analytics.Event
 import com.kondenko.pocketwaka.analytics.EventTracker
-import com.kondenko.pocketwaka.analytics.Screen
-import com.kondenko.pocketwaka.analytics.ScreenTracker
 import com.kondenko.pocketwaka.domain.menu.AppRatingBottomSheetDialog
-import com.kondenko.pocketwaka.screens.login.LoginActivity
+import com.kondenko.pocketwaka.screens.main.MainViewModel
+import com.kondenko.pocketwaka.screens.main.OnLogOut
 import com.kondenko.pocketwaka.utils.BrowserWindow
 import com.kondenko.pocketwaka.utils.WakaLog
 import com.kondenko.pocketwaka.utils.createAdapter
@@ -27,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_menu.*
 import kotlinx.android.synthetic.main.item_menu_action.view.*
 import kotlinx.android.synthetic.main.item_menu_logo.view.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -47,11 +47,14 @@ class FragmentMenu : Fragment() {
 
     private val vm: MenuViewModel by viewModel()
 
+    private val onLogOut: OnLogOut by sharedViewModel<MainViewModel>()
+
     private val eventTracker: EventTracker by inject()
 
     private val browserWindow: BrowserWindow by inject { parametersOf(context, viewLifecycleOwner) }
 
     private lateinit var ratingDialog: AppRatingBottomSheetDialog
+
     private val tagRatingDialog = "ratingDialog"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -113,6 +116,10 @@ class FragmentMenu : Fragment() {
                     eventTracker.log(Event.Menu.GithubClicked)
                     browserWindow.openUrl(it.data.githubUrl)
                 }
+                is MenuState.OpenPrivacyPolicy -> {
+                    eventTracker.log(Event.Menu.PrivacyPolicyClicked)
+                    browserWindow.openUrl(it.data.privacyPolicyUrl)
+                }
                 is MenuState.LogOut -> {
                     logout()
                 }
@@ -132,6 +139,9 @@ class FragmentMenu : Fragment() {
           },
           MenuUiModel.Action(R.drawable.ic_menu_github, R.string.menu_action_open_github, isGithubEnabled) {
               vm.openGithub()
+          },
+        MenuUiModel.Action(R.drawable.ic_privacy_policy_24, R.string.menu_action_privacy_policy) {
+              vm.openPrivacyPolicy()
           },
           MenuUiModel.Action(R.drawable.ic_menu_logout, R.string.menu_action_logout) {
               vm.logout()
@@ -171,11 +181,8 @@ class FragmentMenu : Fragment() {
     )
 
     private fun logout() {
-        requireActivity().apply {
-            eventTracker.log(Event.Menu.Logout)
-            finish()
-            startActivity<LoginActivity>()
-        }
+        eventTracker.log(Event.Menu.Logout)
+        onLogOut.logOut(forced = false)
     }
 
     private fun getMailActivity() = context?.let {

@@ -4,8 +4,10 @@ import com.kondenko.pocketwaka.data.CacheableModel
 import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.State.*
+import com.kondenko.pocketwaka.screens.copyWithData
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 import com.kondenko.pocketwaka.utils.exceptions.UnauthorizedException
+import com.kondenko.pocketwaka.utils.extensions.returnAfterCompletion
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
@@ -16,21 +18,16 @@ import java.util.concurrent.TimeUnit
  * @param modelMapper if the class stored in the database is not the class to be rendered, convert it
  *
  * @param UI_MODEL the class to be passed to a ViewModel and rendered
- * @param INTERMEDIATE_MODEL the class stored in the database
  * @param DATABASE_MODEL the class returned from a repository
  */
-abstract class StatefulUseCase<
-      PARAMS : StatefulUseCase.ParamsWrapper,
-      UI_MODEL,
-      DATABASE_MODEL : CacheableModel<UI_MODEL>
-      >(
+abstract class StatefulUseCase<PARAMS : StatefulUseCase.ParamsWrapper, UI_MODEL, DATABASE_MODEL : CacheableModel<UI_MODEL>>(
       private val schedulers: SchedulersContainer,
-      private val useCase: UseCaseObservable<PARAMS, DATABASE_MODEL>,
+      private val dataProvider: UseCaseObservable<PARAMS, DATABASE_MODEL>,
       private val clearCache: UseCaseCompletable<Nothing>,
       private val connectivityStatusProvider: ConnectivityStatusProvider
 ) : UseCaseObservable<PARAMS, State<UI_MODEL>>(schedulers) {
 
-    abstract class ParamsWrapper(open val refreshRate: Int, open val retryAttempts: Int) {
+    abstract class ParamsWrapper(open val refreshRate: Int, open val retryAttempts: Int, open val isPaged: Boolean) {
         abstract fun isValid(): Boolean
     }
 
@@ -43,23 +40,21 @@ abstract class StatefulUseCase<
               TimeUnit.MINUTES,
               schedulers.workerScheduler
         )
-        val loading = Observable.just(Loading(null, true))
-        return connectivityStatus
+        val loading = Observable.just(Loading<UI_MODEL>(null, true))
+        return Observable.combineLatest(interval, connectivityStatus) { time, isConnected -> isConnected }
               .switchMapDelayError { isConnected ->
-                  interval.flatMap {
-                      val data = getData(params, params.retryAttempts, isConnected)
-                      Observable.concatArray(loading, data)
-                  }
+                  val data = getData(params, params.retryAttempts, isConnected, params.isPaged)
+                  Observable.concatArray(loading, data)
               }
-              .scan(::changeState)
+              .scan { old, new -> changeState(old, new, params.isPaged) }
               .distinctUntilChanged(::equal)
               .subscribeOn(schedulers.workerScheduler)
     }
 
-    private fun getData(params: PARAMS, retryAttempts: Int, isConnected: Boolean): Observable<State<UI_MODEL>> =
-          useCase.build(params)
+    private fun getData(params: PARAMS, retryAttempts: Int, isConnected: Boolean, expectMoreData: Boolean): Observable<State<UI_MODEL>> =
+          dataProvider.build(params)
                 .retry(retryAttempts.toLong())
-                .map { databaseModelToState(it, isConnected) }
+                .map { databaseModelToState(it, isConnected, expectMoreData) }
                 .onErrorResumeNext { t: Throwable ->
                     when {
                         t is UnauthorizedException -> {
@@ -76,15 +71,27 @@ abstract class StatefulUseCase<
                     }
                 }
                 .subscribeOn(schedulers.workerScheduler)
+                .returnAfterCompletion<State<UI_MODEL>> {
+                    if (it is Loading && it.data != null) {
+                        Observable.just(Success(it.data
+                              ?: throw NullPointerException("Unexpected null data in Loading")))
+                    } else {
+                        it?.let { Observable.just(it) } ?: Observable.empty()
+                    }
+                }
 
-    protected open fun databaseModelToState(model: DATABASE_MODEL, isConnected: Boolean): State<UI_MODEL> {
+    protected open fun databaseModelToState(model: DATABASE_MODEL, isConnected: Boolean, expectMoreData: Boolean): State<UI_MODEL> {
         val uiModel = model.data
         return if (model.isFromCache) {
             if (isConnected) Loading(uiModel)
             else Offline(uiModel)
         } else {
-            if (model.isEmpty == true) Empty
-            else Success(uiModel)
+            when {
+                !isConnected -> Offline(uiModel)
+                model.isEmpty == true -> Empty
+                expectMoreData -> Loading(uiModel, isInterrupting = false)
+                else -> Success(uiModel)
+            }
         }
     }
 
@@ -93,15 +100,15 @@ abstract class StatefulUseCase<
         else -> old == new
     }
 
-    private fun changeState(old: State<UI_MODEL>, new: State<UI_MODEL>): State<UI_MODEL> = when {
-        new is Loading<UI_MODEL> -> transitionToLoadingState(old, new)
+    private fun changeState(old: State<UI_MODEL>, new: State<UI_MODEL>, expectMoreData: Boolean): State<UI_MODEL> = when {
+        new is Loading<UI_MODEL> -> transitionToLoadingState(old, new, expectMoreData)
         old is Loading<UI_MODEL> -> transitionToNewState(old, new)
-        else -> new
+        else -> old.data?.let { new.copyWithData(it) } ?: new
     }
 
-    private fun transitionToLoadingState(old: State<UI_MODEL>, new: Loading<UI_MODEL>) = new.copy(
+    private fun transitionToLoadingState(old: State<UI_MODEL>, new: Loading<UI_MODEL>, expectMoreData: Boolean) = new.copy(
           new.data ?: old.data, // keep showing old data while displaying a loading indicator
-          old.data == null // show a full-screen loading indicator if no data is present
+          old.data == null && !expectMoreData // show a full-screen loading indicator if no data is present
     )
 
     private fun transitionToNewState(old: Loading<UI_MODEL>, new: State<UI_MODEL>) = when (new) {

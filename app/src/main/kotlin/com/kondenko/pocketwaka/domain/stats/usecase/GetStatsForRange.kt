@@ -18,7 +18,7 @@ class GetStatsForRange(
       private val serverModelConverter: (StatsRepository.Params, StatsServerModel) -> Maybe<StatsDbModel>
 ) : UseCaseObservable<GetStatsForRange.Params, StatsDbModel>(schedulers) {
 
-    class Params(val range: String?, refreshRate: Int = 1, retryAttempts: Int = 3) : StatefulUseCase.ParamsWrapper(refreshRate, retryAttempts) {
+    class Params(val range: String?, refreshRate: Int = 1, retryAttempts: Int = 3) : StatefulUseCase.ParamsWrapper(refreshRate, retryAttempts, false) {
         override fun isValid(): Boolean = range != null
     }
 

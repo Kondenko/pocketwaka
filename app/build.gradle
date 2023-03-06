@@ -2,25 +2,34 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
 
-    compileSdkVersion versions.androidCompileSdk
-    buildToolsVersion versions.androidBuildTools
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "com.kondenko.pocketwaka"
 
-        minSdkVersion versions.androidMinSdk
-        targetSdkVersion versions.androidTargetSdk
+        minSdkVersion 22
+        targetSdkVersion 31
 
-        versionCode versions.code
-        versionName "${versions.appMajor}.${versions.appMinor}.${versions.appPatch}"
+        def appMajor = 2
+        def appMinor = 3
+        def appPatch = 1
+        versionName "${appMajor}.${appMinor}.${appPatch}"
+        versionCode 13
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         vectorDrawables.useSupportLibrary = true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.incremental": "true",]
+            }
+        }
     }
 
     signingConfigs {
@@ -44,6 +53,10 @@ android {
             shrinkResources true
             minifyEnabled true
             signingConfig signingConfigs.config
+        }
+        preRelease {
+            initWith release
+            debuggable true
         }
         debug {
             shrinkResources false
@@ -104,6 +117,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    lintOptions {
+        fatal 'StopShip'
+    }
 }
 
 afterEvaluate {
@@ -125,12 +141,16 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
 
     // androidKtx
-    implementation "androidx.core:core-ktx:${versions.ktx}"
+    implementation "androidx.core:core-ktx:1.3.2"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
 
     // support
     implementation "androidx.appcompat:appcompat:${versions.appcompat}"
-    implementation "com.google.android.material:material:${versions.androidx}"
+    implementation "com.google.android.material:material:1.3.0-alpha04"
     implementation "androidx.cardview:cardview:${versions.cardview}"
+    implementation "androidx.viewpager2:viewpager2:${versions.viewpager2}"
     implementation "androidx.browser:browser:${versions.browser}"
 
     // archComponents
@@ -140,6 +160,7 @@ dependencies {
     // room
     implementation "androidx.room:room-runtime:${versions.room}"
     implementation "androidx.room:room-rxjava2:${versions.room}"
+    kapt "androidx.room:room-compiler:${versions.room}"
 
     // rx
     implementation "io.reactivex.rxjava2:rxjava:${versions.rxJava}"
@@ -147,23 +168,22 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxandroid:${versions.rxAndroid}"
     implementation "com.jakewharton.rxbinding3:rxbinding:${versions.rxBinding}"
 
-    // retrofit
+    // networking
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
     implementation "com.squareup.retrofit2:adapter-rxjava2:${versions.retrofit}"
+    implementation('com.squareup.okhttp3:logging-interceptor:4.9.0')
 
     // smartTabLayout
     implementation "com.ogaclejapan.smarttablayout:library:${versions.smartTabLayout}@aar"
     implementation "com.ogaclejapan.smarttablayout:utils-v4:${versions.smartTabLayout}@aar"
 
     // koin
-    implementation "org.koin:koin-core:${versions.koin}"
-    implementation "org.koin:koin-android:${versions.koin}"
-    implementation "org.koin:koin-androidx-scope:$versions.koin"
-    implementation "org.koin:koin-androidx-viewmodel:${versions.koin}"
+    implementation "io.insert-koin:koin-core:${versions.koin}"
+    implementation "io.insert-koin:koin-android:${versions.koin}"
 
     // constraintLayout
-    implementation "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
+    implementation "androidx.constraintlayout:constraintlayout:2.0.4"
 
     // timber
     implementation "com.jakewharton.timber:timber:${versions.timber}"
@@ -178,14 +198,17 @@ dependencies {
     implementation "com.google.firebase:firebase-analytics:${versions.analytics}"
 
     // Crashlytics
-    implementation "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
+    implementation 'com.google.firebase:firebase-crashlytics:17.3.0'
 
     // remoteConfig
-    implementation "com.google.firebase:firebase-config-ktx:${versions.remoteConfig}"
+    implementation "com.google.firebase:firebase-config-ktx:20.0.1"
 
+    // calendar
+    implementation "com.github.kizitonwose:CalendarView:0.3.4"
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.3.0'
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8.1'
     debugImplementation "com.amitshekhar.android:debug-db:${versions.databaseBrowser}"
-
-    kapt "androidx.room:room-compiler:${versions.room}"
 
     testImplementation "androidx.test:core:${versions.androidxTest}"
     testImplementation "androidx.test.ext:junit:${versions.junit}"
@@ -193,18 +216,17 @@ dependencies {
     testImplementation "androidx.test:rules:${versions.testRunner}"
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
     testImplementation "com.nhaarman:mockito-kotlin:${versions.mockitoKotlin}"
-    testImplementation "org.robolectric:robolectric:${versions.robolectric}"
-    testImplementation "org.koin:koin-test:${versions.koin}"
+    testImplementation "io.insert-koin:koin-test:${versions.koin}"
+    testImplementation "io.insert-koin:koin-test-junit4:${versions.koin}"
+    testImplementation("org.robolectric:robolectric:${versions.robolectric}") {
+        exclude group: 'commons-logging', module: 'commons-logging'
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
+    testImplementation('org.threeten:threetenbp:1.5.0') {
+        exclude group: 'com.jakewharton.threetenabp', module: 'threetenabp'
+    }
 
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: versions.mockito
-
-    androidTestImplementation "androidx.annotation:annotation:${versions.annotation}"
-    androidTestImplementation "androidx.test:runner:${versions.testRunner}"
-    androidTestImplementation "androidx.test:rules:${versions.testRunner}"
-
-    androidTestImplementation("androidx.test.espresso:espresso-core:${versions.espresso}", {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
 
 }
 
@@ -218,5 +240,3 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:${versions.kotlin}"
     }
 }
-
-apply plugin: 'com.google.gms.google-services'

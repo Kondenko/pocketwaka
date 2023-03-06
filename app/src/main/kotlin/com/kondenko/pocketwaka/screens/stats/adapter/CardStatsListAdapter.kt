@@ -1,6 +1,7 @@
 package com.kondenko.pocketwaka.screens.stats.adapter
 
 import android.content.Context
+import android.util.TimeUtils
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
@@ -12,6 +13,7 @@ import com.kondenko.pocketwaka.ui.skeleton.SkeletonAdapter
 import com.kondenko.pocketwaka.utils.extensions.gone
 import com.kondenko.pocketwaka.utils.extensions.invisible
 import com.kondenko.pocketwaka.utils.extensions.limitWidthBy
+import com.kondenko.pocketwaka.utils.extensions.secondsToHoursAndMinutes
 import kotlinx.android.synthetic.main.item_stats_entity.view.*
 import kotlin.math.roundToInt
 
@@ -39,10 +41,9 @@ class CardStatsListAdapter(
             textview_stats_item_name.text = item.name
             textview_stats_item_name.limitWidthBy(textview_stats_item_percent, progressbar_stats_item_percentage.id)
             textview_stats_item_percent?.let {
-                val hours = item.hours
-                val minutes = item.minutes
-                if (!showSkeleton && hours != null && minutes != null) {
-                    it.text = dateFormatter.toHumanReadableTime(hours, minutes, DateFormatter.Format.Short)
+                val (hours, minutes) = (item.totalSeconds?.toLong() ?: 0).secondsToHoursAndMinutes()
+                if (!showSkeleton) {
+                    it.text = dateFormatter.toHumanReadableTime(hours.toInt(), minutes.toInt(), DateFormatter.Format.Short)
                 } else {
                     it.invisible()
                 }

@@ -4,7 +4,7 @@
 
     <string name="all_error_invalid_url">Can\'t open this url</string>
 
-    <string name="all_error_invalid_access">Connection to Wakatime is lost.\nPlease, log in again.</string>
+    <string name="all_error_invalid_access">Connection to Wakatime was lost.\nPlease, log in again.</string>
 
     <!-- Main activity -->
 
@@ -34,7 +34,9 @@
 
     <!-- Login -->
 
-    <string name="loginactivity_sign_in">Log in</string>
+    <string name="loginactivity_title_webview">Log in</string>
+
+    <string name="loginactivity_action_sign_in">Log in</string>
     <string name="loginactivity_subtitle_default">Focus on your code,\nnot on tracking time</string>
     <string name="loginactivity_subtitle_loading">Logging in</string>
 
@@ -70,12 +72,14 @@
 
     <!-- SUMMARIES -->
 
+    <string name="summary_date_picker_tag" translatable="false">fragment_date_picker</string>
+
     <string name="summary_title_time_tracked">Time tracked</string>
     <string name="summary_title_projects">Projects</string>
 
     <string name="summary_projects_state_empty_today_title">No activity today</string>
 
-    <string name="summary_projects_label_no_commits">No commits pushed this day</string>
+    <string name="summary_projects_label_no_commits">No commits pushed during this period</string>
     <string name="summary_projects_label_no_repo">Connect repository to see commits</string>
     <string name="summary_projects_template_more_commits">Show %d more commites</string>
 
@@ -84,11 +88,26 @@
     <string name="summary_template_average_delta_below" formatted="false">below</string>
     <string name="summary_template_average_delta" formatted="false">%d%% %s monthly average</string>
 
+    <string name="summary_range_separator" translatable="false">%s–%s</string>
+    <string name="summary_date_today">Today</string>
+
+    <string name="summary_date_picker_limited_caption">Stats older than 2 weeks are not available on the free plan</string>
+    <string name="summary_date_picker_action_apply">Apply</string>
+
+    <!-- Onboarding -->
+    <string name="summary_onboarding_title">Date picker is here!</string>
+    <string name="summary_onboarding_headline1">Swipe left or right</string>
+    <string name="summary_onboarding_body1">to see previous or next day</string>
+    <string name="summary_onboarding_headline2">Tap or pull the title</string>
+    <string name="summary_onboarding_body2">to choose a date</string>
+    <string name="summary_onboarding_action_dismiss">Awesome!</string>
+
     <!-- MENU -->
     <string name="menu_version_template">Version %s</string>
     <string name="menu_action_rate">Rate PocketWaka</string>
     <string name="menu_action_send_feedback">Send feedback</string>
     <string name="menu_action_open_github">PocketWaka on GitHub</string>
+    <string name="menu_action_privacy_policy">Privacy policy</string>
     <string name="menu_action_logout">Log out</string>
     <string name="menu_support_email_subject">PocketWaka feedback</string>
     <string name="rating_dialog_title">Rate PocketWaka</string>

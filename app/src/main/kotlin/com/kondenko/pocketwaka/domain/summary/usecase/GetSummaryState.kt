@@ -11,22 +11,36 @@ import com.kondenko.pocketwaka.screens.summary.SummaryState
 import com.kondenko.pocketwaka.utils.SchedulersContainer
 
 class GetSummaryState(
-      schedulers: SchedulersContainer,
       getSummary: UseCaseObservable<GetSummary.Params, SummaryDbModel>,
       clearCache: UseCaseCompletable<Nothing>,
-      connectivityStatusProvider: ConnectivityStatusProvider
+      private val shouldShowOnboarding: ShouldShowOnboarding,
+      connectivityStatusProvider: ConnectivityStatusProvider,
+      schedulers: SchedulersContainer
 ) : StatefulUseCase<GetSummary.Params, List<SummaryUiModel>, SummaryDbModel>(
       schedulers = schedulers,
-      useCase = getSummary,
+      dataProvider = getSummary,
       clearCache = clearCache,
       connectivityStatusProvider = connectivityStatusProvider
 ) {
 
-    override fun databaseModelToState(model: SummaryDbModel, isConnected: Boolean): State<List<SummaryUiModel>> {
+    override fun databaseModelToState(model: SummaryDbModel, isConnected: Boolean, expectMoreData: Boolean): State<List<SummaryUiModel>> =
+          when {
+              model.isEmpty == true -> SummaryState.EmptyRange
+              model.isAccountEmpty == true -> State.Empty
+              else -> super.databaseModelToState(model, isConnected, expectMoreData).let(::addOnboarding)
+          }
+
+    private fun addOnboarding(state: State<List<SummaryUiModel>>): State<List<SummaryUiModel>> {
         return when {
-            model.isEmpty == true -> SummaryState.EmptyRange
-            model.isAccountEmpty == true -> State.Empty
-            else -> super.databaseModelToState(model, isConnected)
+            shouldShowOnboarding() && state is State.Success -> {
+                state.copy(listOf(SummaryUiModel.Onboarding) + state.data)
+            }
+            shouldShowOnboarding() && (state is State.Loading && !state.data.isNullOrEmpty()) -> {
+                state.copy(listOf(SummaryUiModel.Onboarding) + state.data.orEmpty())
+            }
+            else -> {
+                state
+            }
         }
     }
 

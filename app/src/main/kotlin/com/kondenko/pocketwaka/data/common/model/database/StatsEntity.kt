@@ -7,11 +7,8 @@ import com.google.gson.annotations.SerializedName
  * with the same fields found in Wakatime API.
  */
 data class StatsEntity(
+      val name: String,
       @SerializedName("total_seconds")
-      val totalSeconds: Float? = null,
-      val hours: Int? = null,
-      val minutes: Int? = null,
-      val name: String? = null,
-      val percent: Double? = null,
-      val text: String? = null
+      val totalSeconds: Float,
+      val percent: Double? = null
 )

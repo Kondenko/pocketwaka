@@ -7,7 +7,7 @@ import io.reactivex.disposables.Disposable
 /**
  * The base class for all UseCases that use [Observable].
  */
-abstract class UseCaseObservable<PARAMS, RESULT>(private val schedulers: SchedulersContainer) : UseCase<PARAMS, RESULT, Observable<RESULT>>, Disposable {
+abstract class UseCaseObservable<PARAMS, RESULT>(private val schedulers: SchedulersContainer) : DisposableUseCase<PARAMS, RESULT, Observable<RESULT>> {
 
     private var disposable: Disposable? = null
 

@@ -34,6 +34,7 @@ abstract class ContinuousCacheBackedRepository<Params, ServerModel, DbModel>(
      * @param params parameters to fetch data with
      * @param convert a function to convert [ServerModel] to [DbModel]
      */
+    // (secondary) TODO Replace receiver Single with a parameter for better readablility of function arguments
     fun getData(params: Params, convert: Single<ServerModel>.(Params) -> Observable<DbModel>): Observable<DbModel> {
         val cache: Observable<DbModel> = getDataFromCache(params)
               .onErrorResumeNext(Observable.empty())
@@ -41,17 +42,17 @@ abstract class ContinuousCacheBackedRepository<Params, ServerModel, DbModel>(
               .convert(params)
               .doOnComplete { dto: List<DbModel> ->
                   dto.takeIf { it.isNotEmpty() }
-                        ?.also { WakaLog.d("Reducing a non-empty collection") }
+                        ?.also { WakaLog.v("Reducing a non-empty collection") }
                         ?.reduce { a, b -> reduceModels(params, a, b) }
                         ?.let {
                             cacheData(it)
                                   .subscribeOn(workerScheduler)
                                   .subscribeBy(
                                         onComplete = { WakaLog.d("Data cached: $dto") },
-                                        onError = { WakaLog.w("Failed to cache data") }
+                                        onError = { e -> WakaLog.w("Failed to cache data", e) }
                                   )
                         }
-                        ?: WakaLog.d("An empty collection won't be reduced")
+                        ?: WakaLog.v("An empty collection won't be reduced")
               }
               .onErrorResumeNext { error: Throwable ->
                   // Pass the network error down the stream if cache is empty

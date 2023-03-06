@@ -21,9 +21,9 @@ import java.util.concurrent.TimeUnit
  *
  */
 abstract class CacheBackedRepository<Params, ServerModel, DbModel>(
-        private val serverDataProvider: (Params) -> Single<ServerModel>,
-        private val cachedDataProvider: (Params) -> Maybe<DbModel>,
-        private val cacheRetrievalTimeoutMs: Long = 3000
+      private val serverDataProvider: (Params) -> Single<ServerModel>,
+      private val cachedDataProvider: (Params) -> Maybe<DbModel>,
+      private val cacheRetrievalTimeoutMs: Long = 3000
 ) {
     /**
      * First returns data from cache if it's available. Then returns data from server and caches it.
@@ -34,34 +34,36 @@ abstract class CacheBackedRepository<Params, ServerModel, DbModel>(
     fun getData(params: Params, mapper: Single<ServerModel>.(Params) -> Single<DbModel>): Observable<DbModel> {
         val cache = getDataFromCache(params)
         val server = getDataFromServer(params)
-                .mapper(params)
-                .doOnSuccess { dto: DbModel ->
-                    cacheData(dto).subscribeBy(
-                            onComplete = { Timber.d("Data cached: $dto") },
-                            onError = { Timber.w(it, "Failed to cache data") }
-                    )
-                }
-                .onErrorResumeNext { error: Throwable ->
-                    // Pass the network error down the stream if cache is empty
-                    cache.switchIfEmpty(Single.error(error))
-                }
+              .mapper(params)
+              .doOnSuccess { dto: DbModel ->
+                  cacheData(dto)
+                        .onErrorComplete()
+                        .subscribeBy(
+                              onComplete = { Timber.d("Data cached: $dto") },
+                              onError = { Timber.w(it, "Failed to cache data") }
+                        )
+              }
+              .onErrorResumeNext { error: Throwable ->
+                  // Pass the network error down the stream if cache is empty
+                  cache.switchIfEmpty(Single.error(error))
+              }
         return Maybe.concatArrayEager(cache, server.toMaybe())
-                .distinctUntilChanged()
-                .toObservable()
+              .distinctUntilChanged()
+              .toObservable()
     }
 
     /**
      * Fetches data from server without caching.
      */
     private fun getDataFromServer(params: Params): Single<ServerModel> =
-            serverDataProvider.invoke(params)
+          serverDataProvider.invoke(params)
 
     private fun getDataFromCache(params: Params): Maybe<DbModel> =
-            cachedDataProvider.invoke(params)
-                    .map { setIsFromCache(it, true) }
-                    .timeout(cacheRetrievalTimeoutMs, TimeUnit.MILLISECONDS)
-                    .doOnSuccess { Timber.d("Retrieved a model from cache: $it") }
-                    .doOnError { Timber.d("Error retrieving a model from cache: $it") }
+          cachedDataProvider.invoke(params)
+                .map { setIsFromCache(it, true) }
+                .timeout(cacheRetrievalTimeoutMs, TimeUnit.MILLISECONDS)
+                .doOnSuccess { Timber.d("Retrieved a model from cache: $it") }
+                .doOnError { Timber.d("Error retrieving a model from cache: $it") }
 
     /**
      * Put [data] into cache

@@ -1,20 +1,22 @@
 package com.kondenko.pocketwaka.screens.summary
 
+import com.kondenko.pocketwaka.domain.DisposableUseCase
 import com.kondenko.pocketwaka.domain.UseCase
 import com.kondenko.pocketwaka.domain.summary.model.SummaryUiModel
-import com.kondenko.pocketwaka.domain.summary.usecase.GetDefaultSummaryRange
 import com.kondenko.pocketwaka.domain.summary.usecase.GetSummary
 import com.kondenko.pocketwaka.screens.State
 import com.kondenko.pocketwaka.screens.base.BaseViewModel
+import com.kondenko.pocketwaka.utils.date.DateRange
 import com.kondenko.pocketwaka.utils.extensions.debounceStateUpdates
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.plusAssign
 
 class SummaryViewModel(
+      private val range: DateRange,
       private val uiScheduler: Scheduler,
-      private val getDefaultSummaryRange: GetDefaultSummaryRange,
-      private val getSummaryState: UseCase<GetSummary.Params, State<List<SummaryUiModel>>, Observable<State<List<SummaryUiModel>>>>
+      private val getSummaryState: DisposableUseCase<GetSummary.Params, State<List<SummaryUiModel>>, Observable<State<List<SummaryUiModel>>>>,
+      private val setOnboardingShown: UseCase<Boolean, Nothing, Unit>
 ) : BaseViewModel<List<SummaryUiModel>>() {
 
     private val refreshRate = 1
@@ -22,15 +24,15 @@ class SummaryViewModel(
     private val retryAttempts = 1
 
     init {
-        getSummaryForRange() // For today
+        fetchSummary()
     }
 
-    fun getSummaryForRange() {
-        val rangeSource = getDefaultSummaryRange()
-        disposables += rangeSource
-              .flatMapObservable { range ->
-                  getSummaryState.build(GetSummary.Params(range, refreshRate = refreshRate, retryAttempts = retryAttempts))
-              }
+    fun fetchSummary() {
+        disposables += getSummaryState.build(GetSummary.Params(
+              range,
+              refreshRate = refreshRate,
+              retryAttempts = retryAttempts
+        ))
               .debounceStateUpdates(timeout = 100, scheduler = uiScheduler)
               .subscribe(::setState, this::handleError)
     }
@@ -39,9 +41,13 @@ class SummaryViewModel(
         setState(SummaryState.ConnectRepo(url, state?.data))
     }
 
+    fun dismissOnboarding() {
+        setOnboardingShown(true)
+    }
+
     fun updateDataIfRepoHasBeenConnected() {
         if (state is SummaryState.ConnectRepo) {
-            getSummaryForRange()
+            fetchSummary()
         }
     }
 

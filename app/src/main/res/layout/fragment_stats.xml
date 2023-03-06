@@ -5,7 +5,7 @@
     android:id="@+id/framelayout_stats_range_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screens.stats.FragmentStatsTab"
+    tools:context=".screens.stats.FragmentStats"
     >
 
     <androidx.recyclerview.widget.RecyclerView

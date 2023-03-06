@@ -1,193 +1,144 @@
 package com.kondenko.pocketwaka.screens.stats
 
 
-import android.animation.ArgbEvaluator
-import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
-import androidx.core.view.doOnLayout
-import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
-import com.kondenko.pocketwaka.Const
+import androidx.core.view.postDelayed
+import androidx.recyclerview.widget.RecyclerView
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.analytics.Event
 import com.kondenko.pocketwaka.analytics.EventTracker
 import com.kondenko.pocketwaka.analytics.Screen
-import com.kondenko.pocketwaka.analytics.ScreenTracker
+import com.kondenko.pocketwaka.domain.stats.model.StatsItem
+import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
 import com.kondenko.pocketwaka.screens.Refreshable
+import com.kondenko.pocketwaka.screens.ScreenStatus
+import com.kondenko.pocketwaka.screens.State
+import com.kondenko.pocketwaka.screens.base.BaseFragment
+import com.kondenko.pocketwaka.screens.stats.adapter.StatsAdapter
 import com.kondenko.pocketwaka.screens.stats.model.ScrollDirection
-import com.kondenko.pocketwaka.screens.stats.model.TabsElevationState
 import com.kondenko.pocketwaka.utils.WakaLog
-import com.kondenko.pocketwaka.utils.extensions.getColorCompat
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
+import com.kondenko.pocketwaka.utils.extensions.dp
+import com.kondenko.pocketwaka.utils.extensions.observe
+import com.kondenko.pocketwaka.utils.extensions.times
+import com.kondenko.pocketwaka.utils.extensions.toListOrEmpty
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_stats_container.*
+import io.reactivex.subjects.BehaviorSubject
+import kotlinx.android.synthetic.main.fragment_stats.*
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.core.parameter.parametersOf
+import timber.log.Timber
 
+class FragmentStats :
+    BaseFragment<StatsUiModel, List<StatsUiModel>, StatsAdapter, State<List<StatsUiModel>>>(),
+    Refreshable {
 
-class FragmentStats : Fragment(), Refreshable {
+    companion object Args {
+        const val argRange = "range"
+    }
 
-    private val screenTracker: ScreenTracker by inject()
+    val range: String? by lazy { arguments?.getString(argRange) }
+
+    private lateinit var vm: StatsViewModel
 
     private val eventTracker: EventTracker by inject()
 
-    private lateinit var pagerAdapter: FragmentPagerItemAdapter
+    override val containerId: Int = R.id.framelayout_stats_range_root
 
-    private val refreshEvents = PublishSubject.create<Unit>()
+    private val scrollDirection = BehaviorSubject.create<ScrollDirection>()
 
-    private var scrollSubscription: Disposable? = null
+    private var shadowAnimationNeeded = true
 
-    private var refreshSubscription: Disposable? = null
+    private val skeletonStatsCard = mutableListOf(StatsItem("", null, null)) * 3
 
-    private lateinit var tabsElevation: TabsElevationState
-    private val keyTabsElevation = "tabsElevationState"
+    private val skeletonItems = listOf(
+        StatsUiModel.Info(null, null),
+        StatsUiModel.BestDay("", "", 0),
+        StatsUiModel.Stats("", skeletonStatsCard),
+        StatsUiModel.Stats("", skeletonStatsCard)
+    )
 
-    private lateinit var colorAnimator: ValueAnimator
+    /**
+     * The minimum value the RecyclerView has to be scrolled for
+     * for the AppBar shadow to be shown
+     */
+    private val minScrollOffset: Float by lazy {
+        val value = 8f
+        context?.dp(value) ?: value
+    }
 
-    private var surfaceColorResting: Int? = null
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(R.layout.fragment_stats_container, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? = inflater.inflate(R.layout.fragment_stats, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tabsElevation = savedInstanceState?.getParcelable(keyTabsElevation) ?: TabsElevationState()
-        val surfaceColorResting = view.context.getColorCompat(R.color.color_app_bar_resting)
-        val surfaceColorElevated = view.context.getColorCompat(R.color.color_app_bar_elevated)
-        this.surfaceColorResting = surfaceColorResting
-        this.colorAnimator = createColorAnimator(activity as? AppCompatActivity, surfaceColorResting, surfaceColorElevated)
-        setupViewPager()
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (hidden) {
-            surfaceColorResting?.let {
-                activity?.window?.statusBarColor = it
-                (activity as? AppCompatActivity)?.appbar_main?.setBackgroundColor(it)
-            }
-        } else {
-            restoreTabsElevation(stats_viewpager_content.currentItem)
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable(keyTabsElevation, tabsElevation)
-        super.onSaveInstanceState(outState)
-    }
-
-    private fun setupViewPager() {
-        pagerAdapter = FragmentPagerItemAdapter(
-              childFragmentManager,
-              FragmentPagerItems.with(activity)
-                    .addFragment(R.string.stats_tab_7_days, Const.STATS_RANGE_7_DAYS)
-                    .addFragment(R.string.stats_tab_30_days, Const.STATS_RANGE_30_DAYS)
-                    .addFragment(R.string.stats_tab_6_months, Const.STATS_RANGE_6_MONTHS)
-                    .addFragment(R.string.stats_tab_1_year, Const.STATS_RANGE_1_YEAR)
-                    .create()
-        )
-        with(stats_viewpager_content) {
-            offscreenPageLimit = 1
-            adapter = pagerAdapter
-        }
-        with(stats_smarttablayout_ranges) {
-            setViewPager(stats_viewpager_content)
-            setOnTabClickListener {
-                if (stats_viewpager_content.currentItem == it) {
-                    (pagerAdapter.getPage(it) as? FragmentStatsTab)?.scrollToTop()
+        vm = getViewModel { parametersOf(range) }
+        listSkeleton = get { parametersOf(context, skeletonItems) }
+        view.postDelayed(50) {
+            setupUi()
+            vm.state().observe(viewLifecycleOwner) {
+                Timber.d("New stats state (${range}): $it")
+                if (it is State.Empty) {
+                    eventTracker.log(Event.EmptyState.Account(Screen.Stats(range)))
                 }
+                it.render()
             }
-            setOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
-                override fun onPageSelected(position: Int) {
-                    onFragmentSelected(position)
+        }
+    }
+
+    override fun getDataView() = recyclerview_stats
+
+    private fun setupUi() {
+        with(recyclerview_stats) {
+            adapter = listSkeleton.skeletonAdapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    updateAppBarElevation()
                 }
             })
-        }
-        stats_viewpager_content.doOnLayout {
-            onFragmentSelected(0)
+            showData(true)
         }
     }
 
-    @Suppress("UsePropertyAccessSyntax")
-    private fun createColorAnimator(activity: AppCompatActivity?, initialColor: Int, finalColor: Int) =
-          ValueAnimator.ofInt(initialColor, finalColor).apply {
-              activity?.apply {
-                  setDuration(Const.DEFAULT_ANIM_DURATION)
-                  setEvaluator(ArgbEvaluator())
-                  addUpdateListener {
-                      val color = animatedValue as Int
-                      window.statusBarColor = color
-                      appbar_main?.setBackgroundColor(color)
-                      framelayout_stats_tab_container?.setBackgroundColor(color)
-                  }
-              }
-          }
-
-    private fun onFragmentSelected(position: Int) =
-          (pagerAdapter.getPage(position) as? FragmentStatsTab?)?.let { fragment ->
-              screenTracker.log(activity, Screen.Stats(fragment.arguments?.getString(FragmentStatsTab.argRange)))
-              restoreTabsElevation(position)
-              refreshSubscription?.dispose()
-              scrollSubscription?.dispose()
-              refreshSubscription = fragment.subscribeToRefreshEvents(refreshEvents)
-              scrollSubscription = fragment.scrollDirection()
-                    .distinctUntilChanged()
-                    .skip(1) // Skip first emission (ScrollDirection.Up) causing an unwanted animation
-                    .subscribeBy(
-                          onNext = { scrollDirection ->
-                              animateTabs(scrollDirection == ScrollDirection.Down)
-                          },
-                          onError = {
-                              WakaLog.e(it)
-                          }
-                    )
-          } ?: WakaLog.w("Fragment at position $position is null")
-
-    private fun restoreTabsElevation(currentTabIndex: Int) {
-        val wasPreviousTabElevated = tabsElevation.run { isElevated && this.currentTabIndex != currentTabIndex }
-        tabsElevation.currentTabIndex = currentTabIndex
-        val isCurrentTabElevated = tabsElevation.isElevated
-        if (!wasPreviousTabElevated && isCurrentTabElevated) animateTabs(true)
-        else if (wasPreviousTabElevated && !isCurrentTabElevated) animateTabs(false)
-    }
-
-    private fun animateTabs(elevate: Boolean) {
-        // Tabs background color
-        tabsElevation.isElevated = elevate
-        colorAnimator.cancel()
-        with(colorAnimator) {
-            if (elevate) start()
-            else reverse()
+    override fun updateData(data: List<StatsUiModel>?, status: ScreenStatus?) {
+        recyclerview_stats.apply {
+            val statusModel = status?.let(StatsUiModel::Status).toListOrEmpty()
+            data?.let { listSkeleton.actualAdapter.items = statusModel + it }
         }
-        // Custom tabs elevation
-        stats_view_shadow.animate()
-              .alpha(if (elevate) Const.MAX_SHADOW_OPACITY else 0f)
-              .start()
     }
 
-    fun getSelectedTab() =
-          (pagerAdapter.getPage(stats_viewpager_content.currentItem) as? FragmentStatsTab?)?.range
-
-    @SuppressLint("CheckResult")
-    override fun subscribeToRefreshEvents(refreshEvents: Observable<Unit>): Disposable? {
-        refreshEvents
-              .doOnDispose { refreshSubscription?.dispose() }
-              .doOnNext { eventTracker.log(Event.ManualUpdate) }
-              .subscribeWith(this.refreshEvents)
-        return refreshSubscription
+    private fun updateAppBarElevation() {
+        shadowAnimationNeeded =
+            if (recyclerview_stats.computeVerticalScrollOffset() >= minScrollOffset) {
+                if (shadowAnimationNeeded) scrollDirection.onNext(ScrollDirection.Down)
+                false
+            } else {
+                scrollDirection.onNext(ScrollDirection.Up)
+                true
+            }
     }
 
-    private fun FragmentPagerItems.Creator.addFragment(@StringRes title: Int, range: String) =
-          add(title, FragmentStatsTab::class.java, bundleOf(FragmentStatsTab.argRange to range))
+    override fun reloadScreen() = vm.update()
+
+    fun scrollToTop() = recyclerview_stats.smoothScrollToPosition(0)
+
+    fun scrollDirection(): Observable<ScrollDirection> = scrollDirection
+
+    override fun subscribeToRefreshEvents(refreshEvents: Observable<Unit>): Disposable {
+        return refreshEvents.subscribeBy(
+            onNext = { reloadScreen() },
+            onError = WakaLog::e
+        )
+    }
 
 }

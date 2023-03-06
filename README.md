@@ -6,7 +6,7 @@ href='https://play.google.com/store/apps/details?id=com.kondenko.pocketwaka&utm_
 <img width="200" height="-1" alt='Get it on Google Play' src='https://play.google.com/intl/en_gb/badges/images/generic/en_badge_web_generic.png'/>
 </a>
 
-<img width="250" height="-1" alt='Login screen' src='https://kondenko.github.io/name=img/src/assets/projects/code/pocketwaka/1.gif?bc22f1a106e1a00d0e57788c5618e89b'/>   <img width="250" height="-1" alt='Stats' src='https://kondenko.github.io/name=img/src/assets/projects/code/pocketwaka/2.png?31f3b5d8e0790d265b6f4a4a496af6ce'/> 
+<img width="250" height="-1" alt='Summary' src='https://kondenko.github.io/name=img/src/assets/projects/code/pocketwaka/2.png?3611287ea7252968edd757df6f496488'/>   <img width="250" height="-1" alt='Stats' src='https://kondenko.github.io/name=img/src/assets/projects/code/pocketwaka/3.png?d74adbc3f99eab63b097a8394c375612'/> 
 
 **Built with:**
 - Kotlin
@@ -15,3 +15,6 @@ href='https://play.google.com/store/apps/details?id=com.kondenko.pocketwaka&utm_
 - RxJava / RxBinding
 - <a href="https://insert-koin.io/">Koin</a>
 - Lottie
+#
+<a href='https://www.browserstack.com'><img height="32" width="-1" src='https://i.ibb.co/k9wHd9K/Browserstack-logo-2x.png'/></a>
+<br>BrowserStack helps me to test PocketWaka on a wide range of Android devices.

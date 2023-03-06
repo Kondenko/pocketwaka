@@ -8,7 +8,7 @@
     <string name="empty_state_title">Кажется, у вас нет статистики</string>
     <string name="empty_state_subtitle">Установите плагин для вашего редактора кода и она появится</string>
     <string name="empty_state_action">Найти плагины</string>
-    <string name="loginactivity_sign_in">Войти</string>
+    <string name="loginactivity_action_sign_in">Войти</string>
     <string name="stats_tab_7_days">Неделя</string>
     <string name="stats_tab_30_days">Месяц</string>
     <string name="stats_tab_6_months">Полгода</string>
@@ -72,4 +72,15 @@
     <string name="all_error_invalid_url">Не можем открыть этот URL</string>
     <string name="all_error_invalid_access">Не можем соединиться с Wakatime.\nПожалуйста, войдите снова.</string>
     <string name="loginactivity_subtitle_default">"Думайте о коде,\nа не о тайм-трекинге "</string>
+    <string name="loginactivity_title_webview">Вход</string>
+    <string name="summary_date_today">Сегодня</string>
+    <string name="summary_date_picker_limited_caption">Данные старше 2 недель недоступны без премиум-аккаунта</string>
+    <string name="summary_date_picker_action_apply">Применить</string>
+    <string name="summary_onboarding_title">Выбирайте любую дату</string>
+    <string name="summary_onboarding_headline1">Свайп влево или вправо</string>
+    <string name="summary_onboarding_body1">чтобы посмотреть соседние дни</string>
+    <string name="summary_onboarding_headline2">Тапните или потяните заголовок</string>
+    <string name="summary_onboarding_body2">чтобы выбрать дату</string>
+    <string name="summary_onboarding_action_dismiss">Круто!</string>
+    <string name="menu_action_privacy_policy">Политика приватности</string>
 </resources>

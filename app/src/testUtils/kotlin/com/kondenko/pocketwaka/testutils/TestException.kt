@@ -1,3 +1,3 @@
 package com.kondenko.pocketwaka.testutils
 
-class TestException(message: String? = null) : Throwable(message)
+data class TestException(override val message: String? = null) : Throwable(message)

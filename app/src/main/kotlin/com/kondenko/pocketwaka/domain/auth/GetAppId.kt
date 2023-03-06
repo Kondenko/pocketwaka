@@ -16,6 +16,7 @@ class GetAppId(
         private val stringEncryptor: Encryptor<String>
 ) : UseCaseSingle<Nothing, String>(schedulers) {
 
-    override fun build(params: Nothing?): Single<String> = encryptedKeysRepository.appId.map { stringEncryptor.decrypt(it) }
+    override fun build(params: Nothing?): Single<String> =
+        encryptedKeysRepository.appId.map(stringEncryptor::decrypt)
 
 }

@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import com.kondenko.pocketwaka.R
 import java.util.*
@@ -30,7 +31,9 @@ fun Context.getCurrentLocale(): Locale = resources.configuration.run {
 fun Context.dp(number: Number): Float
     = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, number.toFloat(), resources.displayMetrics)
 
-fun Context.getColorCompat(@ColorRes colorRes: Int) = ContextCompat.getColor(this, colorRes)
+fun Context.color(@ColorRes colorRes: Int) = ContextCompat.getColor(this, colorRes)
+
+fun Context.drawable(@DrawableRes drawableRes: Int) = ContextCompat.getDrawable(this, drawableRes)
 
 fun <T> Context.getTypedValue(resId: Int, getFromArray: TypedArray.() -> T): T {
     val array = obtainStyledAttributes(TypedValue().data, intArrayOf(resId))

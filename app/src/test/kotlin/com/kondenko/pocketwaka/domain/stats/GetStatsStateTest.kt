@@ -2,6 +2,7 @@ package com.kondenko.pocketwaka.domain.stats
 
 import com.kondenko.pocketwaka.data.android.ConnectivityStatusProvider
 import com.kondenko.pocketwaka.data.stats.model.database.StatsDbModel
+import com.kondenko.pocketwaka.domain.main.ClearCache
 import com.kondenko.pocketwaka.domain.stats.model.StatsUiModel
 import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsForRange
 import com.kondenko.pocketwaka.domain.stats.usecase.GetStatsState
@@ -33,10 +34,13 @@ class GetStatsStateTest {
 
     private val connectivityStatusProvider: ConnectivityStatusProvider = mock()
 
+    private val clearCache: ClearCache = mock()
+
     private val getState = GetStatsState(
-            SchedulersContainer(testScheduler, testScheduler),
-            getStatsForRange,
-            connectivityStatusProvider
+          SchedulersContainer(testScheduler, testScheduler),
+          getStatsForRange,
+          clearCache,
+          connectivityStatusProvider
     )
 
     private val refreshInterval = 1
@@ -48,11 +52,11 @@ class GetStatsStateTest {
     private val params = GetStatsForRange.Params(range, refreshInterval, retryAttempts)
 
     private val cachedModel: List<StatsUiModel> = listOf(
-            StatsUiModel.Info("1h", "1h")
+          StatsUiModel.Info("1h", "1h")
     )
 
     private val actualModel: List<StatsUiModel> = listOf(
-            StatsUiModel.Info("1h", "1h")
+          StatsUiModel.Info("1h", "1h")
     )
 
     private val cacheDto = StatsDbModel(range, 0, true, false, cachedModel)
@@ -155,9 +159,9 @@ class GetStatsStateTest {
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading }
             assertValueAt(1) { it is State.Success && it.data == actualModel }
-            testConnectivitySubject.onNext(false)
             whenever(getStatsForRange.build(params)).doReturn(Observable.just(cacheDto))
-            testScheduler.advanceTimeBy(refreshInterval.toLong(), TimeUnit.MINUTES)
+            testConnectivitySubject.onNext(false)
+            testScheduler.triggerActions()
             assertValueAt(2) { it is State.Loading && !it.isInterrupting }
             assertValueAt(3) { it is State.Offline && it.data == actualModel }
             assertNotTerminated()
@@ -171,8 +175,8 @@ class GetStatsStateTest {
     fun `should show an offline state and then update with new data`() {
         val testConnectivitySubject = BehaviorSubject.createDefault(true)
         whenever(connectivityStatusProvider.isNetworkAvailable()).doReturn(testConnectivitySubject)
-        whenever(getStatsForRange.build(params)).doReturn(Observable.just(serverDto))
         with(getState.invoke(params).testWithLogging()) {
+            whenever(getStatsForRange.build(params)).doReturn(Observable.just(serverDto))
             testScheduler.triggerActions()
             assertValueAt(0) { it is State.Loading }
             assertValueAt(1) { it is State.Success && it.data == actualModel }

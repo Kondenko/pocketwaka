@@ -41,6 +41,8 @@ sealed class Event {
 
         object GithubClicked : Menu()
 
+        object PrivacyPolicyClicked : Menu()
+
         object Logout : Menu()
 
     }
