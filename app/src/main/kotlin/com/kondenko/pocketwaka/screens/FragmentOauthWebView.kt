@@ -13,7 +13,8 @@ import androidx.fragment.app.Fragment
 import com.kondenko.pocketwaka.R
 import com.kondenko.pocketwaka.screens.main.MainViewModel
 import com.kondenko.pocketwaka.screens.main.OnLogIn
-import kotlinx.android.synthetic.main.fragment_web_view.*
+import kotlinx.android.synthetic.main.fragment_web_view.toolbar_fragmentwebview
+import kotlinx.android.synthetic.main.fragment_web_view.webview_fragmentwebview
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class FragmentOauthWebView : Fragment() {
@@ -49,7 +50,7 @@ class FragmentOauthWebView : Fragment() {
             settings.javaScriptEnabled = true
             webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                    if (redirectUrl != null && url != null && url.contains(redirectUrl)) {
+                    if (redirectUrl != null && url != null && url.startsWith(redirectUrl)) {
                         activity?.intent = Intent(activity?.intent).apply {
                             data = url.toUri()
                         }
