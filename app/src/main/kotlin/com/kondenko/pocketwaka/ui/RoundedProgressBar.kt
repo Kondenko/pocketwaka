@@ -42,9 +42,9 @@ class RoundedProgressBar
         paint.strokeWidth = measuredHeight.toFloat()
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas?.drawLine(height / 2f /*cap radius*/, height / 2f, progressBarWidth, height / 2f, paint)
+        canvas.drawLine(height / 2f /*cap radius*/, height / 2f, progressBarWidth, height / 2f, paint)
     }
 
 }
